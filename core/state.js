@@ -10,7 +10,7 @@
     missions:{close:false,flip:false,bchange:false},
     aha:{reversal:false,bEffect:false,offEffect:false,unlocked:false},
     evidence:[], trialSeq:0,
-    ui:{flowSpeed:0.55,replaySeconds:0},
+    ui:{flowSpeed:0.55,replaySeconds:0,quality:'standard'},
     engineering:{motion:null,need:'',constraint:'',brief:''},
     collab:{round:0}
   };

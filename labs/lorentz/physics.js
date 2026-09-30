@@ -25,7 +25,7 @@
       const acc=(d.fEffective*Math.cos(d.alpha))/(p.mass*p.length) - (G/p.length)*Math.sin(d.alpha) - p.damping*d.omega;
       d.omega+=acc*dt;
       d.alpha+=d.omega*dt;
-      const max=72*Math.PI/180;
+      const max=50*Math.PI/180; // batas mekanik rig: kawat tetap berada di celah magnet dan tidak menembus kutub
       if(d.alpha>max){d.alpha=max;d.omega*=.25}if(d.alpha<-max){d.alpha=-max;d.omega*=.25}
       d.x=p.length*Math.sin(d.alpha);
     }

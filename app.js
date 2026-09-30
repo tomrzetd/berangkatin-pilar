@@ -35,6 +35,7 @@
   $('#frontView').onclick=()=>render&&render.setView('front');$('#obliqueView').onclick=()=>render&&render.setView('oblique');
   $('#flowSpeed').oninput=e=>P.state.patch(s=>{s.ui.flowSpeed=+e.target.value});
   $('#rewindBtn').onclick=()=>{if(render&&render.rewindCurrent)render.rewindCurrent();toast('Animasi arus diulang','Fisika dan posisi kawat tidak di-reset.');};
+  $('#qualitySelect').onchange=e=>P.state.patch(s=>{s.ui.quality=e.target.value});
   $$('#phaseTabs button').forEach(b=>b.onclick=()=>{const target=b.dataset.phase,s=P.state.get();if(['aha','buktikan','rekayasa'].includes(target)&&!s.aha.unlocked)return toast('Belum terbuka','Selesaikan pola reversal dan pengaruh B terlebih dahulu.');if(['buktikan','rekayasa'].includes(target)&&!s.reveal.formula)return toast('Belum terbuka','Masuk AHA dan rumuskan temuan terlebih dahulu.');if(target==='rekayasa'&&!P.lorentzMissions.proofSuccess())return toast('Belum terbuka','Buktikan dulu: capai target α 35°–45° dan catat hasil.');go(target)});
 
   function updateUI(s){
@@ -53,6 +54,8 @@
     $('#vectorLegend').hidden=!(s.reveal.field||s.reveal.current||s.reveal.force);
     if(Math.abs(+$('#flowSpeed').value-s.ui.flowSpeed)>.001)$('#flowSpeed').value=s.ui.flowSpeed;
     $('#flowSpeedOut').textContent=fmt(s.ui.flowSpeed,2)+'×';
+    if($('#qualitySelect').value!==s.ui.quality)$('#qualitySelect').value=s.ui.quality;
+    if(render&&render.quality!==s.ui.quality)render.setQuality(s.ui.quality);
     const body=$('#ledgerBody');body.innerHTML=s.evidence.slice().reverse().map(r=>`<tr><td>${r.id}</td><td>${fmt(r.B,2)}</td><td>${fmt(Math.abs(r.current),2)}</td><td>${fmt(Math.abs(r.fIdeal),3)}</td><td>${fmt(Math.abs(r.fEffective),3)}</td><td>${fmt(r.alpha,0)}°</td><td>${r.reason.replaceAll('_',' ')}</td></tr>`).join('');
     const proof=s.evidence.find(x=>x.alpha>=35&&x.alpha<=45);$('#proofHint').innerHTML=proof?'<b>Target tercapai.</b> Percobaan #'+proof.id+' berada pada rentang 35°–45°. Coba ulang untuk melihat apakah hasil konsisten.':'Cari kombinasi V, R, dan B yang membawa α ke rentang target.';
     $$('#engineeringModes button').forEach(b=>b.classList.toggle('selected',b.dataset.motion===s.engineering.motion));$('#engineeringBrief').textContent=s.engineering.brief||'Belum ada brief.';
@@ -60,6 +63,7 @@
     if(s.aha.unlocked&&!['aha','buktikan','rekayasa'].includes(s.phase))$('#engineStatus').textContent='AHA siap dibuka';else $('#engineStatus').textContent='Physics state tunggal · WebGL aktif';
   }
   P.state.subscribe(updateUI);
+  if(P.ownership)P.ownership.stamp($('#ownershipMark'));
 
   try{render=P.render3d.init($('#stage'));$('#stageBadge').textContent='3D siap · drag untuk memutar';}catch(e){console.error(e);$('#stageBadge').textContent='3D gagal: '+e.message;$('#engineStatus').textContent='Fallback UI aktif'}
   function loop(now){requestAnimationFrame(loop);const dt=Math.min(.03,(now-last)/1000);last=now;const s=P.state.get();P.lorentzPhysics.step(s,dt);P.evidence.tick(now);if(render)render.update(s,dt);if(now-lastHud>90){lastHud=now;updateUI(s)}}

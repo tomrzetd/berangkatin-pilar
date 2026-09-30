@@ -1,5 +1,5 @@
-const CACHE='pilar-lorentz-v051';
-const ASSETS=['./','index.html','css/app.css','app.js','core/state.js','core/intent.js','core/evidence-engine.js','core/mission-engine.js','core/scoring.js','labs/lorentz/physics.js','labs/lorentz/missions.js','labs/lorentz/engineering.js','input/pointer.js','input/vision-adapter.js','render/three-engine.js','manifest.webmanifest'];
+const CACHE='pilar-lorentz-v052';
+const ASSETS=['./','index.html','css/app.css','app.js','core/ownership.js','core/state.js','core/intent.js','core/evidence-engine.js','core/mission-engine.js','core/scoring.js','labs/lorentz/physics.js','labs/lorentz/missions.js','labs/lorentz/engineering.js','input/pointer.js','input/vision-adapter.js','render/three-engine.js','manifest.webmanifest'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)))});
 self.addEventListener('activate',e=>e.waitUntil(Promise.all([self.clients.claim(),caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))])));
 self.addEventListener('fetch',e=>{

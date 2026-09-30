@@ -1,30 +1,32 @@
-# PILAR Lorentz v0.5 — AHA Kernel
+# PILAR Lorentz v0.5.2 — Real Materials & Rig Fix
 
-PILAR adalah kerangka lab maya yang mendorong alur **Lihat → Tebak → Coba → AHA → Buktikan → Rekayasa**. Seri ini berfokus pada gaya Lorentz tingkat SMP.
+PILAR memakai alur **Lihat → Tebak → Coba → AHA → Buktikan → Rekayasa**. Seri ini berfokus pada eksplorasi gaya Lorentz tingkat SMP dan jembatannya menuju rekayasa aktuator.
 
-## Hal baru di v0.5
-- Arsitektur dipisah menjadi `core`, `render`, `input`, dan `labs/lorentz`.
-- Satu authoritative physics state: HUD, WebGL, evidence, dan challenge membaca state fisika yang sama.
-- Model ayunan 1-DOF deterministik, bukan solver rigid-body generik.
-- `F ideal = BIL` dibedakan dari `F efektif = F ideal × faktor medan`.
-- `α` = sudut ayunan; `θ` = sudut antara I dan B. Pada rig ini θ = 90°.
-- Evidence Ledger otomatis mencatat B, I, F ideal, F efektif, α, arah, dan alasan percobaan.
-- AHA unlock setelah siswa membuktikan pembalikan arah gaya dan pengaruh B.
-- Engineering Bridge mengubah konsep gaya Lorentz menjadi brief produk/aktuator.
-- Adapter vision sudah disiapkan sebagai hook, tetapi ML kamera belum diaktifkan di v0.5.
+## Perubahan v0.5.2
+- **Rig fix**: geometri magnet dan batas mekanik ayunan diselaraskan agar kawat aktif bergerak di **celah magnet**, bukan menembus badan kutub.
+- Physics 1-DOF membatasi ayunan maksimum sekitar **50°** sesuai clearance rig visual.
+- **Material procedural PBR ringan** untuk meja/kayu, statif logam, magnet bercat dan tergores, kawat tembaga, tali serat, kabel karet, holder plastik, dan baterai 18650 bekas/reclaimed.
+- **Realtime lighting + soft shadow** dengan tiga preset kualitas: Hemat, Standar, Realistis.
+- Baterai 18650 memiliki sleeve procedural dengan goresan/aus dan fingerprint build kecil.
+- Tali dan kabel kini berupa mesh 3D dengan material, bump, lighting, dan shadow, bukan sekadar garis datar.
+- Animasi arus tetap memiliki kontrol kecepatan + rewind tanpa mereset physics/evidence.
+- **Ownership mark 3 lapis**: watermark visual runtime, fingerprint build, dan signature di metadata scene. Alamat pemilik tidak ditulis sebagai string utuh di HTML.
+- Cache PWA dinaikkan ke `pilar-lorentz-v052` agar GitHub Pages tidak terus menyajikan build lama.
+
+## Penting tentang ownership mark
+Obfuscation di aplikasi client-side **bukan proteksi kriptografis**. Pengguna teknis tetap dapat menganalisis JavaScript. Tujuannya adalah attribution + fingerprinting yang tidak tampil sebagai string email polos di HTML, bukan DRM.
 
 ## Menjalankan
-### GitHub Pages
-Upload seluruh isi folder ini ke repository dan aktifkan GitHub Pages pada branch/folder yang sesuai. `index.html` berada di root bundle.
+GitHub Pages: unggah seluruh isi folder ini ke root repository/branch Pages.
 
-### Tes lokal
-Bisa dicoba dengan membuka `index.html` selama internet tersedia untuk memuat Three.js dari CDN. Untuk perilaku PWA/service worker, gunakan server lokal, misalnya:
-
+Tes lokal:
 ```bash
 python -m http.server 8000
 ```
-
 lalu buka `http://localhost:8000`.
 
-## Catatan arsitektur
-`input/vision-adapter.js` sengaja hanya mengirim `Intent`. Saat MediaPipe/hand pose/face landmark ditambahkan nanti, physics engine tidak perlu diubah.
+## Struktur
+- `core/ownership.js` — signature/fingerprint runtime.
+- `render/three-engine.js` — WebGL, material, lighting, shadow, kabel/tali 3D.
+- `labs/lorentz/physics.js` — authoritative physics state.
+- `input/vision-adapter.js` — hook Intent untuk Vision ML tahap berikutnya.
