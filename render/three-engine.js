@@ -27,9 +27,10 @@
       const iArrow=new THREE.ArrowHelper(new THREE.Vector3(0,0,1),new THREE.Vector3(),.82,0xffd36c,.18,.1);scene.add(iArrow);const iLabel=sprite('I','#ffd36c',.48);
       const fArrow=new THREE.ArrowHelper(new THREE.Vector3(1,0,0),new THREE.Vector3(),.7,0x63e3a0,.2,.11);scene.add(fArrow);const fLabel=sprite('F','#63e3a0',.48);
       const arcG=new THREE.Group();scene.add(arcG);const arc=[];const L=.22*10,H=1.6;for(let a=-60;a<=60;a+=2){const r=a*Math.PI/180;arc.push(new THREE.Vector3(Math.sin(r)*L,H-Math.cos(r)*L,-.9))}arcG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(arc),new THREE.LineBasicMaterial({color:0x879bb5,transparent:true,opacity:.6})));
-      const currG=new THREE.Group();scene.add(currG);const currPts=[];for(let i=0;i<24;i++){const p=new THREE.Mesh(new THREE.SphereGeometry(.045,8,6),new THREE.MeshBasicMaterial({color:0x8ff7ff,depthTest:false,transparent:true,opacity:.92}));p.userData.base=i/24;currG.add(p);currPts.push(p)}
+      const currG=new THREE.Group();scene.add(currG);const currPts=[];for(let i=0;i<18;i++){const p=new THREE.Mesh(new THREE.SphereGeometry(.052,10,8),new THREE.MeshBasicMaterial({color:0x8ff7ff,depthTest:false,transparent:true,opacity:.95}));p.userData.base=i/18;currG.add(p);currPts.push(p)}
       const api={scene,cam,rd,orb,rod,cell,swLever,fieldG,bLabel,iArrow,iLabel,fArrow,fLabel,arcG,currG,currPts,lead1,lead2,phase:0,
         setView(name){if(name==='front'){orb.taz=0;orb.tel=.06}else{orb.taz=.52;orb.tel=.25}},
+        rewindCurrent(){api.phase=0;},
         resize(){const w=stage.clientWidth,h=stage.clientHeight;rd.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()},
         update(state,dt){
           const d=state.dynamics,c=state.circuit;
@@ -41,7 +42,7 @@
           if(iArrow.visible){const sign=Math.sign(c.currentActual)||1;iArrow.position.set(x,y+.24,0);iArrow.setDirection(new THREE.Vector3(0,0,sign));iLabel.position.set(x,y+.24,sign*.86)}
           if(fArrow.visible){const sign=Math.sign(d.fEffective)||1;const len=.38+Math.min(.9,Math.abs(d.fEffective)*8);fArrow.position.set(x,y,0);fArrow.setDirection(new THREE.Vector3(sign,0,0));fArrow.setLength(len,.20,.11);fArrow.setColor(new THREE.Color(sign>0?0x63e3a0:0xff6d83));fLabel.material.color=new THREE.Color(sign>0?0x63e3a0:0xff6d83);fLabel.position.set(x+sign*(len+.24),y,0)}
           currG.visible=state.reveal.current&&c.on&&Math.abs(c.currentActual)>.03;
-          if(currG.visible){api.phase=(api.phase+dt*.24*state.ui.speed*Math.max(.5,Math.abs(c.currentActual)))%1;const sign=Math.sign(c.currentActual)||1;const path=[...p1,...p2,new THREE.Vector3(1.45,-1.48,1.45),new THREE.Vector3(2.2,-1.48,1.45),new THREE.Vector3(2.95,-1.48,1.45)];for(const q of currPts){const u=((q.userData.base+api.phase*sign)%1+1)%1,f=u*(path.length-1),k=Math.min(path.length-2,Math.floor(f));q.position.lerpVectors(path[k],path[k+1],f-k)}}
+          if(currG.visible){const flowSpeed=Math.max(.05,Number(state.ui.flowSpeed)||.55);api.phase=(api.phase+dt*.18*flowSpeed*Math.max(.45,Math.min(1.8,Math.abs(c.currentActual))))%1;const sign=Math.sign(c.currentActual)||1;const path=[...p1,...p2,new THREE.Vector3(1.45,-1.48,1.45),new THREE.Vector3(2.2,-1.48,1.45),new THREE.Vector3(2.95,-1.48,1.45)];for(const q of currPts){const u=((q.userData.base+api.phase*sign)%1+1)%1,f=u*(path.length-1),k=Math.min(path.length-2,Math.floor(f));q.position.lerpVectors(path[k],path[k+1],f-k)}}
           orb.az+=(orb.taz-orb.az)*.11;orb.el+=(orb.tel-orb.el)*.11;cam.position.set(orb.r*Math.sin(orb.az)*Math.cos(orb.el),orb.r*Math.sin(orb.el)-.1,orb.r*Math.cos(orb.az)*Math.cos(orb.el));cam.lookAt(0,-.2,0);
           rd.render(scene,cam)
         }

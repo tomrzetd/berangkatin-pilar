@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#08111d">
-  <title>PILAR Lorentz v0.5 · AHA Kernel</title>
+  <title>PILAR Lorentz v0.5.1 · AHA Kernel</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="css/app.css">
 </head>
@@ -13,7 +13,7 @@
     <header class="topbar">
       <div class="brand-wrap">
         <strong class="brand">PILAR</strong>
-        <span class="lab-name">Lorentz · AHA Kernel v0.5</span>
+        <span class="lab-name">Lorentz · AHA Kernel v0.5.1</span>
       </div>
       <div class="top-actions">
         <span class="status-pill" id="engineStatus">3D menyiapkan…</span>
@@ -177,8 +177,11 @@
       <div class="stage-tools">
         <button id="frontView">Tampak depan</button>
         <button id="obliqueView">Serong</button>
-        <button id="speedBtn">1×</button>
-        <button id="rewindBtn">⏪</button>
+        <div class="flow-control" title="Hanya mengatur kecepatan visual aliran arus, bukan besar arus atau fisika eksperimen">
+          <label for="flowSpeed">Arus <output id="flowSpeedOut">0,55×</output></label>
+          <input id="flowSpeed" type="range" min="0.20" max="1.50" step="0.05" value="0.55" aria-label="Kecepatan animasi aliran arus">
+        </div>
+        <button id="rewindBtn" title="Mengulang animasi aliran arus tanpa mereset eksperimen">⏪ Ulang arus</button>
       </div>
       <div class="stage-badge" id="stageBadge">3D memuat…</div>
       <div class="vector-legend" id="vectorLegend" hidden>
