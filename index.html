@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#08111d">
+  <title>PILAR Lorentz v0.5 · AHA Kernel</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-wrap">
+        <strong class="brand">PILAR</strong>
+        <span class="lab-name">Lorentz · AHA Kernel v0.5</span>
+      </div>
+      <div class="top-actions">
+        <span class="status-pill" id="engineStatus">3D menyiapkan…</span>
+        <span class="xp-pill">⚡ <b id="xp">0</b> XP</span>
+      </div>
+    </header>
+
+    <aside class="side-panel">
+      <nav class="phase-tabs" id="phaseTabs" aria-label="Tahap eksplorasi">
+        <button data-phase="lihat">1 Lihat</button>
+        <button data-phase="tebak">2 Tebak</button>
+        <button data-phase="coba">3 Coba</button>
+        <button data-phase="aha">4 AHA</button>
+        <button data-phase="buktikan">5 Buktikan</button>
+        <button data-phase="rekayasa">6 Rekayasa</button>
+      </nav>
+
+      <section class="phase-card" data-panel="lihat">
+        <div class="eyebrow">PEKA · OBSERVASI</div>
+        <h1>Lihat alatnya dulu. Jangan buru-buru cari rumus.</h1>
+        <p>Kawat tembaga tergantung di celah magnet. Ada baterai, sakelar, dan dua tali penyangga. Amati hubungan bendanya.</p>
+        <div class="prompt-box">
+          <b>Pertanyaan awal</b>
+          <span>Kalau sakelar ditutup, apa yang mungkin terjadi pada kawat?</span>
+        </div>
+        <button class="primary" id="toPredict">Mulai menebak</button>
+      </section>
+
+      <section class="phase-card" data-panel="tebak" hidden>
+        <div class="eyebrow">INTUISI · PREDIKSI</div>
+        <h1>Tebak dulu. Salah justru berguna.</h1>
+        <p>Tampak depan dipakai sebagai acuan arah.</p>
+        <div class="prediction-grid" id="predictionGrid">
+          <button data-pred="kiri">◀ Kiri</button>
+          <button data-pred="diam">● Diam</button>
+          <button data-pred="kanan">Kanan ▶</button>
+        </div>
+        <div class="prompt-box" id="predictionFeedback">Belum ada tebakan yang dikunci.</div>
+        <button class="primary" id="lockPrediction">Kunci tebakan & mulai eksperimen</button>
+      </section>
+
+      <section class="phase-card" data-panel="coba" hidden>
+        <div class="eyebrow">LAB · GANGGU SISTEM</div>
+        <h1>Coba satu perubahan pada satu waktu.</h1>
+        <div class="collab-strip" id="collabStrip">
+          <span data-role="0"><b>A</b> Pengamat</span><span data-role="1"><b>B</b> Operator</span><span data-role="2"><b>C</b> Engineer</span>
+          <button id="rotateRoles">Rotasi peran</button>
+        </div>
+        <div class="mission-list" id="missionList">
+          <div data-mission="close">○ Tutup sakelar dan lihat gerak kawat</div>
+          <div data-mission="flip">○ Balik baterai dan amati arah baru</div>
+          <div data-mission="bchange">○ Ubah kekuatan magnet saat rangkaian aktif</div>
+        </div>
+        <div class="control-grid">
+          <button class="primary" id="switchBtn">Tutup sakelar</button>
+          <button id="flipBtn">↔ Balik baterai</button>
+          <button id="resetBtn">↺ Ulang eksperimen</button>
+        </div>
+
+        <div class="slider-row">
+          <label for="Bslider">Kekuatan magnet <b>B</b></label><output id="Bout"></output>
+          <input id="Bslider" type="range" min="0.10" max="0.50" step="0.05" value="0.30">
+        </div>
+
+        <details class="advanced">
+          <summary>Kontrol engineering awal</summary>
+          <div class="slider-row">
+            <label for="Vslider">Tegangan baterai <b>V</b></label><output id="Vout"></output>
+            <input id="Vslider" type="range" min="1.5" max="6" step="0.1" value="3.7">
+          </div>
+          <div class="slider-row">
+            <label for="Rslider">Hambatan rangkaian <b>R</b></label><output id="Rout"></output>
+            <input id="Rslider" type="range" min="1" max="10" step="0.5" value="2">
+          </div>
+        </details>
+
+        <div class="reveal-row">
+          <button id="fieldBtn" aria-pressed="false">Lihat medan B</button>
+          <button id="currentBtn" aria-pressed="false">Lihat arus I</button>
+          <button id="forceBtn" aria-pressed="false">Lihat gaya F</button>
+        </div>
+        <div class="prompt-box" id="experimentHint">Mulai dengan menutup sakelar.</div>
+      </section>
+
+      <section class="phase-card" data-panel="aha" hidden>
+        <div class="eyebrow">AHA · POLA MUNCUL</div>
+        <h1>Bukan rumus dulu. Temukan polanya.</h1>
+        <div class="pattern-cards">
+          <article><span>↔</span><div><b>Arah arus dibalik</b><p>Arah gaya ikut berbalik.</p></div></article>
+          <article><span>🧲</span><div><b>B diperbesar</b><p>Besar gaya ikut membesar.</p></div></article>
+          <article><span>⏻</span><div><b>Arus nol</b><p>Gaya Lorentz pada kawat hilang.</p></div></article>
+        </div>
+        <button class="primary" id="revealFormula">Rumuskan temuan</button>
+        <div class="formula-panel" id="formulaPanel" hidden>
+          <div class="formula">F = B · I · L</div>
+          <p>Pada alat ini, arah arus selalu tegak lurus medan magnet, sehingga <b>θ = 90°</b> dan <b>sin θ = 1</b>.</p>
+          <div class="formula secondary">Umum: F = B · I · L · sin θ</div>
+          <div class="angle-note"><b>α</b> = sudut ayunan kawat &nbsp;•&nbsp; <b>θ</b> = sudut antara I dan B. Keduanya berbeda.</div>
+        </div>
+        <button id="toProof">Lanjut: buktikan dengan data</button>
+      </section>
+
+      <section class="phase-card" data-panel="buktikan" hidden>
+        <div class="eyebrow">BUKTI · LITERASI & NUMERASI</div>
+        <h1>Bisakah hasilmu diulang?</h1>
+        <p>Targetkan sudut ayunan <b>35°–45°</b>. Ubah V, R, atau B. Sistem mencatat setiap percobaan.</p>
+        <div class="target-meter">
+          <span>Target α</span><b>35°–45°</b>
+        </div>
+        <div class="slider-row">
+          <label for="proofV">V</label><output id="proofVout"></output>
+          <input id="proofV" type="range" min="1.5" max="6" step="0.1" value="3.7">
+        </div>
+        <div class="slider-row">
+          <label for="proofR">R</label><output id="proofRout"></output>
+          <input id="proofR" type="range" min="1" max="10" step="0.5" value="2">
+        </div>
+        <div class="slider-row">
+          <label for="proofB">B</label><output id="proofBout"></output>
+          <input id="proofB" type="range" min="0.10" max="0.50" step="0.05" value="0.30">
+        </div>
+        <div class="control-grid">
+          <button class="primary" id="proofSwitch">Jalankan</button>
+          <button id="recordNow">Catat percobaan</button>
+        </div>
+        <div class="ledger-wrap">
+          <table class="ledger">
+            <thead><tr><th>#</th><th>B</th><th>I</th><th>F ideal</th><th>F efektif</th><th>α</th><th>hasil</th></tr></thead>
+            <tbody id="ledgerBody"></tbody>
+          </table>
+        </div>
+        <div class="prompt-box" id="proofHint">Belum ada data yang cukup untuk membandingkan.</div>
+        <div class="control-grid"><button id="copyReport">Salin laporan bukti</button><button id="toEngineering">Lanjut ke rekayasa</button></div>
+      </section>
+
+      <section class="phase-card" data-panel="rekayasa" hidden>
+        <div class="eyebrow">AKSI REKAYASA · PRODUK</div>
+        <h1>Ubah gaya Lorentz menjadi fungsi.</h1>
+        <p>Pilih gerak yang ingin dimanfaatkan, lalu tetapkan kebutuhan dan batasannya.</p>
+        <div class="engineering-grid" id="engineeringModes">
+          <button data-motion="tarik-dorong">⇆ Tarik / dorong</button>
+          <button data-motion="getar">〰 Getar</button>
+          <button data-motion="putar">⟳ Putar</button>
+        </div>
+        <label class="field-label">Kebutuhan masyarakat / lingkungan
+          <textarea id="needInput" placeholder="Contoh: membuka katup kecil otomatis, memberi tanda getar, memutar kipas mini…"></textarea>
+        </label>
+        <label class="field-label">Batasan yang jujur
+          <textarea id="constraintInput" placeholder="Contoh: tegangan rendah, gaya kecil, bahan murah, aman untuk siswa…"></textarea>
+        </label>
+        <button class="primary" id="makeBrief">Buat brief rekayasa</button>
+        <div class="engineering-brief" id="engineeringBrief">Belum ada brief.</div>
+        <div class="reflection-box">
+          <b>MODEL CHECK</b>
+          <p>Simulator ini menyederhanakan medan magnet, hambatan kontak, panas kawat, sag baterai, hambatan udara, dan fleksibilitas tali. Produk nyata harus menguji ulang semuanya.</p>
+        </div>
+      </section>
+    </aside>
+
+    <section class="stage" id="stage">
+      <div class="stage-tools">
+        <button id="frontView">Tampak depan</button>
+        <button id="obliqueView">Serong</button>
+        <button id="speedBtn">1×</button>
+        <button id="rewindBtn">⏪</button>
+      </div>
+      <div class="stage-badge" id="stageBadge">3D memuat…</div>
+      <div class="vector-legend" id="vectorLegend" hidden>
+        <span class="b">B</span><span class="i">I</span><span class="f">F</span>
+      </div>
+      <div class="live-hud">
+        <div><span>α ayunan</span><b id="alphaHud">0°</b></div>
+        <div><span>Arus aktual</span><b id="currentHud">0,00 A</b></div>
+        <div><span>F ideal</span><b id="fIdealHud">0,000 N</b></div>
+        <div><span>F efektif</span><b id="fEffHud">0,000 N</b></div>
+      </div>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="core/state.js"></script>
+  <script src="core/intent.js"></script>
+  <script src="core/evidence-engine.js"></script>
+  <script src="core/mission-engine.js"></script>
+  <script src="core/scoring.js"></script>
+  <script src="labs/lorentz/physics.js"></script>
+  <script src="labs/lorentz/missions.js"></script>
+  <script src="labs/lorentz/engineering.js"></script>
+  <script src="input/pointer.js"></script>
+  <script src="input/vision-adapter.js"></script>
+  <script src="render/three-engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
