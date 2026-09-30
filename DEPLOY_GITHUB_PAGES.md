@@ -1,10 +1,10 @@
-# Deploy PILAR Lorentz v0.5.2 ke GitHub Pages
+# Deploy PILAR Lorentz v0.5.3 ke GitHub Pages
 
 1. Backup branch/repo yang sekarang live.
-2. Salin seluruh isi bundle v0.5.2 ke root repo `berangkatin-pilar` dan izinkan file lama ditimpa.
+2. Salin seluruh isi bundle v0.5.3 ke root repo `berangkatin-pilar` dan izinkan file lama ditimpa.
 3. Pastikan file baru `core/ownership.js` ikut ter-upload.
 4. Commit dan push ke branch yang dipakai GitHub Pages.
-5. Setelah deploy selesai, buka halaman lalu lakukan **hard refresh** satu kali (`Ctrl+Shift+R`). Service worker v0.5.2 memakai cache baru `pilar-lorentz-v052` dan akan menghapus cache PILAR lama saat aktivasi.
+5. Setelah deploy selesai, buka halaman lalu lakukan **hard refresh** satu kali (`Ctrl+Shift+R`). Service worker v0.5.3 memakai cache baru `pilar-lorentz-v053` dan akan menghapus cache PILAR lama saat aktivasi.
 
 ## Smoke test setelah deploy
 - Stage 3D muncul dan status berubah menjadi `3D siap`.
@@ -17,4 +17,4 @@
 - Watermark runtime muncul halus di kiri bawah stage dan fingerprint kecil tertanam pada aset baterai/scene metadata.
 
 ## Catatan
-Three.js r128 masih dimuat dari CDN, jadi load pertama memerlukan internet. Sesudah core v0.5.2 stabil, vendor Three.js lokal bisa menjadi pekerjaan optimasi/offline berikutnya.
+Three.js r128 masih dimuat dari CDN, jadi load pertama memerlukan internet. Sesudah core v0.5.3 stabil, vendor Three.js lokal bisa menjadi pekerjaan optimasi/offline berikutnya.

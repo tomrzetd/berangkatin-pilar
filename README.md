@@ -1,8 +1,8 @@
-# PILAR Lorentz v0.5.2 — Real Materials & Rig Fix
+# PILAR Lorentz v0.5.3 — U Magnet & Visual Clarity
 
 PILAR memakai alur **Lihat → Tebak → Coba → AHA → Buktikan → Rekayasa**. Seri ini berfokus pada eksplorasi gaya Lorentz tingkat SMP dan jembatannya menuju rekayasa aktuator.
 
-## Perubahan v0.5.2
+## Perubahan v0.5.3
 - **Rig fix**: geometri magnet dan batas mekanik ayunan diselaraskan agar kawat aktif bergerak di **celah magnet**, bukan menembus badan kutub.
 - Physics 1-DOF membatasi ayunan maksimum sekitar **50°** sesuai clearance rig visual.
 - **Material procedural PBR ringan** untuk meja/kayu, statif logam, magnet bercat dan tergores, kawat tembaga, tali serat, kabel karet, holder plastik, dan baterai 18650 bekas/reclaimed.
@@ -30,3 +30,6 @@ lalu buka `http://localhost:8000`.
 - `render/three-engine.js` — WebGL, material, lighting, shadow, kabel/tali 3D.
 - `labs/lorentz/physics.js` — authoritative physics state.
 - `input/vision-adapter.js` — hook Intent untuk Vision ML tahap berikutnya.
+
+
+Tambahan v0.5.3: magnet kini berbentuk U/horseshoe yang lebih masuk akal secara visual bagi siswa, dengan yoke penghubung yang menyatukan kutub N dan S. Label owner di pelat meja disembunyikan agar workbench lebih bersih; ownership tetap tertanam di metadata scene, watermark runtime, dan sleeve baterai.

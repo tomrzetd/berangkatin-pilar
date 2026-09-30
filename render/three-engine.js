@@ -86,13 +86,20 @@
       add(new THREE.BoxGeometry(2.45,.11,.12),oak,-1.18,1.6,0);
       add(new THREE.BoxGeometry(.13,.11,1.55),oak,0,1.6,0);
 
-      // ---------- magnetic gap: conductor is physically between the poles ----------
+      // ---------- U / horseshoe magnet: physically clearer for students ----------
       const magnetGroup=new THREE.Group();scene.add(magnetGroup);
-      const poleW=3.55,poleH=.46,poleD=1.00; // 1,00 scene unit ≈ L=0,10 m aktif; ujung kawat/tali tetap di luar badan magnet
-      add(new THREE.BoxGeometry(poleW,poleH,poleD),magnetN,0,-1.15,0,magnetGroup);
-      add(new THREE.BoxGeometry(poleW,poleH,poleD),magnetS,0,.58,0,magnetGroup);
-      const nL=sprite('N','#fff',.64,magnetGroup);nL.position.set(0,-1.15,.72);
-      const sL=sprite('S','#fff',.64,magnetGroup);sL.position.set(0,.58,.72);
+      const armW=3.30,armH=.46,armD=1.00;
+      const armX=-.18,legX=1.42,legW=.54,legH=2.18,legD=1.00;
+      const yokeMat=MAT('brushed',0x5a6470,{seed:43,rx:1,ry:2,bump:.018,roughness:.42,metalness:.72});
+      add(new THREE.BoxGeometry(armW,armH,armD),magnetN,armX,-1.15,0,magnetGroup);
+      add(new THREE.BoxGeometry(armW,armH,armD),magnetS,armX,.58,0,magnetGroup);
+      add(new THREE.BoxGeometry(legW,legH,legD),yokeMat,legX,-.285,0,magnetGroup);
+      // Slight pole caps so the active faces feel like real pole pieces
+      const poleCapW=.22,poleCapH=.50,poleCapD=1.04,poleCapX=armX-(armW/2)+(poleCapW/2)-.01;
+      add(new THREE.BoxGeometry(poleCapW,poleCapH,poleCapD),magnetN,poleCapX,-1.15,0,magnetGroup);
+      add(new THREE.BoxGeometry(poleCapW,poleCapH,poleCapD),magnetS,poleCapX,.58,0,magnetGroup);
+      const nL=sprite('N','#fff',.64,magnetGroup);nL.position.set(-.15,-1.15,.72);
+      const sL=sprite('S','#fff',.64,magnetGroup);sL.position.set(-.15,.58,.72);
 
       // ---------- active conductor + realistic ropes ----------
       const rod=add(new THREE.CylinderGeometry(.06,.06,1.25,28),copper,0,-.6,0);rod.rotation.x=Math.PI/2;
@@ -150,9 +157,11 @@
       for(let i=0;i<16;i++){const p=new THREE.Mesh(new THREE.SphereGeometry(.052,10,8),new THREE.MeshBasicMaterial({color:0x8ff7ff,depthTest:false,transparent:true,opacity:.94}));p.userData.base=i/16;currG.add(p);currPts.push(p)}
       const currChevron=[];for(let i=0;i<5;i++){const c=new THREE.Mesh(new THREE.ConeGeometry(.065,.18,9),new THREE.MeshBasicMaterial({color:0xffd36c,depthTest:false}));c.userData.base=i/5;currG.add(c);currChevron.push(c)}
 
-      // owner micro-mark in 3D metadata + physically unobtrusive build plate
-      const plate=add(new THREE.BoxGeometry(1.05,.025,.25),darkSteel,-3.25,-1.98,.62);plate.castShadow=false;
-      const plateTag=sprite((P.ownership&&P.ownership.tag())||'PILAR','#8ff7ff',.34);plateTag.position.set(-3.25,-1.94,.76);
+      // owner micro-mark stays in metadata and battery sleeve; remove prominent plate from workbench
+      const ownerAnchor=new THREE.Object3D();
+      ownerAnchor.position.set(-3.25,-2.22,.62);
+      ownerAnchor.userData.ownerTag=(P.ownership&&P.ownership.tag())||'PILAR';
+      scene.add(ownerAnchor);
 
       let quality='standard';
       function setQuality(q){
