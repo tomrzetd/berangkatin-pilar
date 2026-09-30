@@ -86,20 +86,24 @@
       add(new THREE.BoxGeometry(2.45,.11,.12),oak,-1.18,1.6,0);
       add(new THREE.BoxGeometry(.13,.11,1.55),oak,0,1.6,0);
 
-      // ---------- U / horseshoe magnet: physically clearer for students ----------
+      // ---------- U / horseshoe magnet with proper support touching the table ----------
       const magnetGroup=new THREE.Group();scene.add(magnetGroup);
-      const armW=3.30,armH=.46,armD=1.00;
-      const armX=-.18,legX=1.42,legW=.54,legH=2.18,legD=1.00;
-      const yokeMat=MAT('brushed',0x5a6470,{seed:43,rx:1,ry:2,bump:.018,roughness:.42,metalness:.72});
+      const armW=3.26,armH=.46,armD=1.00;
+      const armX=-.20,yokeX=1.46,yokeW=.52,yokeH=2.20,yokeD=1.04;
+      const yokeMat=MAT('brushed',0x5b6570,{seed:43,rx:1,ry:2,bump:.018,roughness:.42,metalness:.72});
+      const supportMat=MAT('brushed',0x47505b,{seed:45,rx:1,ry:2,bump:.016,roughness:.46,metalness:.68});
       add(new THREE.BoxGeometry(armW,armH,armD),magnetN,armX,-1.15,0,magnetGroup);
       add(new THREE.BoxGeometry(armW,armH,armD),magnetS,armX,.58,0,magnetGroup);
-      add(new THREE.BoxGeometry(legW,legH,legD),yokeMat,legX,-.285,0,magnetGroup);
+      add(new THREE.BoxGeometry(yokeW,yokeH,yokeD),yokeMat,yokeX,-.285,0,magnetGroup);
+      // support pedestal so the U magnet no longer floats
+      add(new THREE.BoxGeometry(.44,.66,.78),supportMat,yokeX,-1.68,0,magnetGroup);
+      add(new THREE.BoxGeometry(.92,.08,1.18),supportMat,yokeX,-1.96,0,magnetGroup);
       // Slight pole caps so the active faces feel like real pole pieces
       const poleCapW=.22,poleCapH=.50,poleCapD=1.04,poleCapX=armX-(armW/2)+(poleCapW/2)-.01;
       add(new THREE.BoxGeometry(poleCapW,poleCapH,poleCapD),magnetN,poleCapX,-1.15,0,magnetGroup);
       add(new THREE.BoxGeometry(poleCapW,poleCapH,poleCapD),magnetS,poleCapX,.58,0,magnetGroup);
-      const nL=sprite('N','#fff',.64,magnetGroup);nL.position.set(-.15,-1.15,.72);
-      const sL=sprite('S','#fff',.64,magnetGroup);sL.position.set(-.15,.58,.72);
+      const nL=sprite('N','#fff',.64,magnetGroup);nL.position.set(-.14,-1.15,.72);
+      const sL=sprite('S','#fff',.64,magnetGroup);sL.position.set(-.14,.58,.72);
 
       // ---------- active conductor + realistic ropes ----------
       const rod=add(new THREE.CylinderGeometry(.06,.06,1.25,28),copper,0,-.6,0);rod.rotation.x=Math.PI/2;
@@ -211,8 +215,12 @@
           currG.visible=state.reveal.current&&c.on&&Math.abs(c.currentActual)>.03;
           if(currG.visible){
             const flowSpeed=Math.max(.05,Number(state.ui.flowSpeed)||.55);api.phase=(api.phase+dt*.13*flowSpeed*Math.max(.42,Math.min(1.6,Math.abs(c.currentActual))))%1;const sign=Math.sign(c.currentActual)||1;
-            // The closed visual path runs from holder + contact through switch -> conductor -> holder −, then through the cell back to +.
-            const path=[tPos,sw,new THREE.Vector3(.75,.75,-.62),an1,a1,a2,an2,new THREE.Vector3(.72,.60,.86),tNeg,new THREE.Vector3(2.0,-1.50,1.45),new THREE.Vector3(2.42,-1.50,1.45),new THREE.Vector3(2.86,-1.50,1.45),tPos];
+            // Current must stay on conductive parts only: holder terminal -> switch -> red wire -> conductor -> black wire -> holder terminal -> inside cell.
+            const redMid=new THREE.Vector3(.75,.75,-.62);
+            const blackMid1=new THREE.Vector3(.72,.60,.86);
+            const blackMid2=new THREE.Vector3(1.30,-.95,1.25);
+            const battIn1=new THREE.Vector3(2.02,-1.50,1.45),battIn2=new THREE.Vector3(2.42,-1.50,1.45),battIn3=new THREE.Vector3(2.82,-1.50,1.45);
+            const path=[tPos,sw,redMid,a1,a2,blackMid1,blackMid2,tNeg,battIn1,battIn2,battIn3,tPos];
             const place=(q,base,arrow=false)=>{const u=((base+api.phase*sign)%1+1)%1;q.position.copy(pathSample(path,u));if(arrow){const tang=tangentSample(path,u,sign);q.quaternion.setFromUnitVectors(unitY,tang)}};
             currPts.forEach(q=>place(q,q.userData.base,false));currChevron.forEach(q=>place(q,q.userData.base,true));
           }
