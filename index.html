@@ -20,7 +20,7 @@
         </div>
         <div class="boot-head-right">
           <div class="creator-id">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div>
-          <div class="boot-app-meta"><b>PILAR Hub</b><span>Launcher · v0.5.5j</span></div>
+          <div class="boot-app-meta"><b>PILAR Hub</b><span>Launcher · v0.5.5l</span></div>
         </div>
       </header>
 
@@ -42,15 +42,42 @@
           </div>
         </section>
 
-        <aside class="boot-actions">
-          <div class="boot-mode-title">Masuk ke Gaya Lorentz</div>
-          <button class="boot-mode recommended" id="bootQuick">
-            <span class="boot-mode-icon">⚡</span><span><strong>Masuk Cepat</strong><small>Mouse · touch · multitouch IFP. Tanpa kamera dan tanpa modul Vision AI.</small></span><em>CEPAT</em>
+        <aside class="boot-actions" id="appInspector">
+          <div class="boot-mode-title">App terpilih</div>
+
+          <section class="app-inspector-card" aria-live="polite">
+            <div class="app-inspector-hero">
+              <div class="app-inspector-icon" id="selectedAppIcon" aria-hidden="true">🧲</div>
+              <div class="app-inspector-copy">
+                <span class="app-inspector-category" id="selectedAppCategory">SIMULASI</span>
+                <h2 id="selectedAppTitle">Gaya Lorentz</h2>
+                <p id="selectedAppSubtitle">Kawat berarus dalam medan magnet</p>
+              </div>
+            </div>
+            <div class="app-inspector-meta">
+              <span id="selectedAppVersion">v0.5.5</span>
+              <span id="selectedAppStatus">SIAP</span>
+            </div>
+          </section>
+
+          <div class="boot-mode-title launch-title" id="launchPrompt">Pilih cara masuk</div>
+
+          <div id="lorentzLaunchModes">
+            <button class="boot-mode recommended" id="bootQuick">
+              <span class="boot-mode-icon">⚡</span><span><strong>Masuk Cepat</strong><small>Mouse · touch · multitouch IFP. Tanpa kamera dan tanpa modul Vision AI.</small></span><em>CEPAT</em>
+            </button>
+            <button class="boot-mode" id="bootVision">
+              <span class="boot-mode-icon">✋</span><span><strong>Vision AI</strong><small>Memuat adapter Vision hanya setelah dipilih. Kamera diproses lokal di perangkat.</small></span><em>BETA</em>
+            </button>
+          </div>
+
+          <button class="boot-mode recommended app-open-mode" id="bootOpenApp" hidden>
+            <span class="boot-mode-icon" id="bootOpenIcon">✦</span>
+            <span><strong id="bootOpenTitle">Buka App</strong><small id="bootOpenDesc">Luncurkan app terpilih.</small></span>
+            <em id="bootOpenBadge">BUKA</em>
           </button>
-          <button class="boot-mode" id="bootVision">
-            <span class="boot-mode-icon">✋</span><span><strong>Vision AI</strong><small>Memuat adapter Vision hanya setelah dipilih. Kamera diproses lokal di perangkat.</small></span><em>BETA</em>
-          </button>
-          <p class="boot-privacy">Kamera tidak pernah diminta pada mode Masuk Cepat. Jika Vision AI gagal, simulasi tetap dapat dilanjutkan dengan mouse/touch.</p>
+
+          <p class="boot-privacy inspector-note" id="selectedAppNote">Masuk Cepat tidak meminta kamera. Vision AI hanya dimuat setelah dipilih.</p>
 
           <div class="boot-progress" id="bootProgress" hidden>
             <div class="boot-progress-top"><b id="bootStepTitle">MENYIAPKAN PILAR</b><span id="bootPercent">0%</span></div>
@@ -60,7 +87,7 @@
           </div>
         </aside>
       </div>
-      <footer class="boot-foot"><span>PILAR™ Runtime v0.5.5j · <b>by : rizalabdurrahman05@guru.smp.belajar.id</b></span><span id="bootRuntime">checking…</span></footer>
+      <footer class="boot-foot"><span>PILAR™ Runtime v0.5.5l · <b>by : rizalabdurrahman05@guru.smp.belajar.id</b></span><span id="bootRuntime">checking…</span></footer>
     </div>
   </section>
 
