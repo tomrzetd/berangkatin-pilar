@@ -81,7 +81,7 @@ function renderList(){
     const b=document.createElement('button');b.className='visitor'+(current?.user_id===p.user_id?' active':'');
     const dot=document.createElement('span');dot.className='dot '+(isOnline(p)?'on':'');
     const mid=document.createElement('span');const st=document.createElement('strong');st.textContent=p.public_id;const sm=document.createElement('small');sm.textContent=(p.current_app||'hub')+' · '+(p.device_class||'device')+' · '+time(p.last_seen);mid.append(st,sm);
-    const u=unreadFor(p.user_id),badge=document.createElement('span');badge.className='badge';badge.textContent=u?u+' baru':(isOnline(p)?'online':'');
+    const u=unreadFor(p.user_id),badge=document.createElement('span');badge.className='badge';badge.textContent=u?u+' baru':(isOnline(p)?'online':'offline');
     b.append(dot,mid,badge);b.onclick=()=>selectVisitor(p.user_id,true);box.appendChild(b);
   }
 }
