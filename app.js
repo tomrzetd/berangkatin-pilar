@@ -2,6 +2,7 @@
   'use strict';
   const P=window.PILAR,$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
   let render=null,last=performance.now(),lastHud=0,loopStarted=false,uiBound=false;
+  let selectedAppId='lorentz';
   const fmt=(x,d=2)=>Number(x).toFixed(d).replace('.',',');
   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
@@ -13,20 +14,80 @@
     Object.entries(checks).forEach(([name,fn])=>{const ok=!!fn();const el=document.createElement('span');el.className='boot-cap '+(ok?'ok':'warn');el.textContent=(ok?'● ':'○ ')+name;box.appendChild(el)});
     $('#bootRuntime').textContent=(checks.WebGL()?'WebGL siap':'WebGL tidak tersedia')+' · '+(navigator.onLine?'online':'offline');
   }
+  const inspectorNotes={
+    lorentz:'Masuk Cepat tidak meminta kamera. Vision AI hanya dimuat setelah dipilih.',
+    microscope:'Kamera hanya diminta setelah START dipilih di dalam Microscope Lab.',
+    'rubik-orbit':'3D, solver, dan Vision AI tersedia di dalam app. Pilih mode interaksi setelah app dibuka.',
+    'mbg-duel':'Touch, multitouch IFP, dan Vision AI dipilih di dalam MBG Delivery Duel.',
+    soundscope:'Mikrofon atau kamera hanya diminta ketika tool terkait diaktifkan di dalam SoundScope.',
+    'pak-taro':'Eksperimen, pola, dan Vision AI tersedia di dalam app. Kamera tetap berdasarkan izin pengguna.',
+    pressure:'Sedang disiapkan. Kartu dapat dipilih untuk melihat status, tetapi belum dapat diluncurkan.'
+  };
+  function renderInspector(item){
+    if(!item)return;
+    $('#selectedAppIcon').textContent=item.icon||'✦';
+    $('#selectedAppCategory').textContent=(item.category||'PILAR APP').toUpperCase();
+    $('#selectedAppTitle').textContent=item.title||'PILAR App';
+    $('#selectedAppSubtitle').textContent=item.subtitle||'';
+    $('#selectedAppVersion').textContent='v'+(item.version||'—');
+    $('#selectedAppStatus').textContent=item.status==='ready'?'SIAP':'SEGERA';
+    $('#selectedAppNote').textContent=inspectorNotes[item.id]||'Pilih app, lalu gunakan tombol peluncur yang tersedia.';
+    const isLorentz=item.id==='lorentz';
+    $('#lorentzLaunchModes').hidden=!isLorentz;
+    const open=$('#bootOpenApp');
+    open.hidden=isLorentz;
+    $('#launchPrompt').textContent=isLorentz?'Pilih cara masuk':item.status==='ready'?'Siap diluncurkan':'Dalam pengembangan';
+    if(!isLorentz){
+      $('#bootOpenIcon').textContent=item.icon||'✦';
+      $('#bootOpenTitle').textContent=item.status==='ready'?'Buka '+item.title:'Segera hadir';
+      $('#bootOpenDesc').textContent=item.status==='ready'
+        ? (item.category||'PILAR App')+' · v'+item.version
+        : 'App ini belum tersedia pada build PILAR saat ini.';
+      $('#bootOpenBadge').textContent=item.status==='ready'?'BUKA':'SEGERA';
+      open.disabled=item.status!=='ready';
+      open.onclick=async()=>{
+        if(item.status!=='ready')return;
+        try{await window.PILAR_PULSE?.track?.('hub_app_launch',{app_id:item.id})}catch(_){}
+        location.href=item.url;
+      };
+    }
+    if(!isLorentz)$('#bootProgress').hidden=true;
+  }
+  function selectApp(id,{track=true,focus=false}={}){
+    const apps=window.PILAR_APP_REGISTRY||[];
+    const item=apps.find(x=>x.id===id)||apps[0];
+    if(!item)return;
+    selectedAppId=item.id;
+    $('#pilarLibrary .pilar-app-card').forEach(card=>{
+      const selected=card.dataset.appId===item.id;
+      card.classList.toggle('current',selected);
+      card.setAttribute('aria-pressed',selected?'true':'false');
+      const badge=card.querySelector('em');
+      const app=apps.find(x=>x.id===card.dataset.appId);
+      if(badge&&app)badge.textContent=selected?'DIPILIH':(app.status==='ready'?'BUKA':'SEGERA');
+    });
+    renderInspector(item);
+    if(track){try{window.PILAR_PULSE?.track?.('hub_app_select',{app_id:item.id})}catch(_){}}
+    if(focus){
+      const target=item.id==='lorentz'?$('#bootQuick'):$('#bootOpenApp');
+      target?.focus();
+    }
+  }
   function renderLibrary(){
     const box=$('#pilarLibrary'); if(!box)return;
     const apps=window.PILAR_APP_REGISTRY||[];
     box.innerHTML='';
     apps.forEach(item=>{
       const b=document.createElement('button');
-      b.className='pilar-app-card '+(item.id==='lorentz'?'current ':'')+(item.status!=='ready'?'coming':'');
+      b.className='pilar-app-card '+(item.status!=='ready'?'coming':'');
       b.type='button';
-      b.innerHTML=`<span class="pilar-app-icon">${item.icon||'✦'}</span><span><strong>${item.title}</strong><small class="app-subtitle">${item.subtitle||''}</small><small>${item.category} · v${item.version}</small></span><em>${item.id==='lorentz'?'AKTIF':item.status==='ready'?'BUKA':'SEGERA'}</em>`;
-      if(item.status==='ready'&&item.id!=='lorentz') b.onclick=()=>location.href=item.url;
-      else if(item.id==='lorentz') b.onclick=()=>{ $('#bootQuick').focus(); };
-      else b.disabled=true;
+      b.dataset.appId=item.id;
+      b.setAttribute('aria-pressed','false');
+      b.innerHTML=`<span class="pilar-app-icon">${item.icon||'✦'}</span><span><strong>${item.title}</strong><small class="app-subtitle">${item.subtitle||''}</small><small>${item.category} · v${item.version}</small></span><em>${item.status==='ready'?'BUKA':'SEGERA'}</em>`;
+      b.onclick=()=>selectApp(item.id,{track:true,focus:true});
       box.appendChild(b);
     });
+    selectApp(selectedAppId,{track:false,focus:false});
   }
   function resetBootUI(){
     $('#bootProgress').hidden=true;
@@ -43,6 +104,7 @@
     bootEl.removeAttribute('aria-hidden');
     $('#appShell').setAttribute('aria-hidden','true');
     document.body.classList.add('boot-lock');
+    selectApp('lorentz',{track:false,focus:false});
   }
   function loadScript(src){return new Promise((resolve,reject)=>{const old=document.querySelector(`script[data-dynamic="${src}"]`);if(old)return resolve();const s=document.createElement('script');s.src=src;s.dataset.dynamic=src;s.onload=resolve;s.onerror=()=>reject(new Error('Gagal memuat '+src));document.body.appendChild(s)})}
   function setBootStep(i,total,title,msg){
