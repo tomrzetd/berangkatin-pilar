@@ -215,7 +215,7 @@ class PulseServerCallbacks : public BLEServerCallbacks {
 
 class PulseRxCallbacks : public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic* characteristic) override {
-    String value = characteristic->getValue();
+    String value(characteristic->getValue().c_str());
     if (!value.length()) return;
     int start = 0;
     for (int i = 0; i <= value.length(); ++i) {
