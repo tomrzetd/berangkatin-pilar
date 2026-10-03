@@ -152,12 +152,20 @@
       const plus=sprite('+','#ffaaa9',.34,batteryGroup);plus.position.set(.82,.40,0);const minus=sprite('−','#dbe6f0',.34,batteryGroup);minus.position.set(-.78,.40,0);
       addRounded(2.08,.25,.78,.09,plastic,2.55,-1.76,1.52);addRounded(.12,.48,.82,.045,plastic,1.65,-1.53,1.52);addRounded(.12,.48,.82,.045,plastic,3.45,-1.53,1.52);
 
-      // knife switch: isolated base, brass terminals, pivot and insulated handle
+      // knife switch: true mechanical pivot at left terminal.
+      // OPEN = blade visibly raised. CLOSED = blade horizontal and physically lands on the right contact.
       const switchX=1.90,switchZ=.58;
       addRounded(.94,.16,.62,.09,plastic,switchX,-1.76,switchZ);
       const swIn=terminalPost(1.60,-1.53,switchZ,0xc79c4b),swOut=terminalPost(2.20,-1.53,switchZ,0xc79c4b);
-      const swLever=add(new THREE.BoxGeometry(.66,.065,.095),steel,1.86,-1.42,switchZ);swLever.geometry.translate(-.25,0,0);swLever.rotation.z=-.65;
-      addRounded(.18,.13,.15,.05,plastic,2.08,-1.25,switchZ);
+      const swLever=new THREE.Group();
+      swLever.position.set(swIn.x,swIn.y+.025,switchZ);
+      scene.add(swLever);
+      const swBlade=add(new THREE.BoxGeometry(.60,.065,.095),steel,.30,0,0,swLever);
+      const swContact=add(new THREE.BoxGeometry(.10,.035,.11),copper,.575,-.018,0,swLever);
+      const swGrip=addRounded(.22,.13,.15,.05,plastic,.43,.105,0,swLever);
+      // pivot washer makes the hinge visually unambiguous
+      const swPivotWasher=add(new THREE.CylinderGeometry(.105,.105,.045,20),steel,0,.015,0,swLever);swPivotWasher.rotation.x=Math.PI/2;
+      swLever.rotation.z=.66;
       const swLabel=sprite('SAKELAR','#dfeaf5',.48);swLabel.position.set(switchX,-1.73,1.01);
 
       // cable system: every visible current path is insulated conductor, never the hanging strings.
@@ -235,7 +243,8 @@
           updateCable(redFlex,redFlexPath);updateCable(blackFlex,blackFlexPath);
 
           batteryGroup.rotation.y=c.batteryRotation;
-          swLever.rotation.z=c.on?-.08:-.65;
+          // Exact mechanical states: closed contact is horizontal; open lifts the blade clear of the right terminal.
+          swLever.rotation.z=c.on?0:.66;
 
           fieldG.visible=state.reveal.field;bLabel.visible=state.reveal.field;
           iArrow.visible=iLabel.visible=state.reveal.current&&Math.abs(c.currentActual)>.03;
