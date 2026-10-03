@@ -22,9 +22,10 @@
   async function requestVision(){
     if(!checks.Kamera())throw new Error('Kamera tidak tersedia pada browser/perangkat ini.');
     await loadScript('input/vision-adapter.js');
-    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
-    stream.getTracks().forEach(t=>t.stop());
-    if(P.vision)P.vision.setEnabled(true);
+    if(!P.vision||typeof P.vision.launchGate!=='function')throw new Error('Adapter Vision gagal dimuat.');
+    const result=await P.vision.launchGate();
+    if(P.vision)P.vision.setEnabled(!!result.enabled);
+    return result;
   }
 
   function toast(a,b=''){const el=$('#toast');el.innerHTML='<b>'+a+'</b>'+(b?'<br><small>'+b+'</small>':'');el.classList.add('show');clearTimeout(toast.id);toast.id=setTimeout(()=>el.classList.remove('show'),2600)}
@@ -118,7 +119,17 @@
       setBootStep(3,steps.length,steps[3][0],steps[3][1]);await sleep(120);
       setBootStep(4,steps.length,steps[4][0],steps[4][1]);
       if(mode==='vision'){
-        try{await requestVision();$('#bootMessage').textContent='Kamera siap. Adapter Vision aktif; gesture tetap melalui intent yang sama dengan mouse/touch.'}
+        try{
+          const vr=await requestVision();
+          if(vr&&vr.enabled){
+            $('#bootMessage').textContent='Smile recognition berhasil. Vision gate terbuka dan simulasi siap dimasuki.';
+            $('#engineStatus').textContent='Masuk via Vision AI';
+          }else{
+            mode='standard';
+            $('#bootMessage').textContent='Vision gate dilewati. Simulasi dilanjutkan dengan mouse/touch.';
+            if(P.vision)P.vision.setEnabled(false);
+          }
+        }
         catch(e){$('#bootMessage').textContent=(e&&e.message?e.message:'Vision AI tidak aktif')+' Melanjutkan otomatis tanpa Vision AI.';mode='standard';if(P.vision)P.vision.setEnabled(false);await sleep(700)}
       }else await sleep(100);
       setBootStep(5,steps.length,steps[5][0],steps[5][1]);await sleep(160);setBootStep(steps.length,steps.length,'READY',mode==='vision'?'Vision AI siap. Memasuki simulasi…':'Mode cepat siap. Memasuki simulasi…');
