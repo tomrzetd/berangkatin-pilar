@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="id"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>PILAR™ · SoundScope Lab — IFP Edition v3</title>
+<title>PILAR™ · SoundScope Lab — IFP Edition v3.1</title>
 <style>
 :root{color-scheme:dark;--bg1:#070a1a;--bg2:#101a3a;--panel:rgba(255,255,255,.08);--line:rgba(255,255,255,.16);--text:rgba(255,255,255,.94);--muted:rgba(255,255,255,.72);--good:#38e699;--warn:#ffd042;--bad:#ff5353;--blue:#3aa0ff;--pink:#ff4d6d;--btn:3.4rem;--r:1.2rem}
 *{box-sizing:border-box}
@@ -91,6 +91,24 @@ input[type=range]{width:100%;height:2rem;accent-color:var(--blue)}
 
 /* PILAR Hub integration */
 .pilar-top-left{display:flex;align-items:center;gap:.7rem;min-width:0}.hubBtn{display:inline-grid;place-items:center;width:2.8rem;height:2.8rem;border-radius:.85rem;border:1px solid var(--line);background:rgba(0,0,0,.28);color:var(--text);text-decoration:none;font-weight:900;flex:0 0 auto}.hubBtn:hover{border-color:var(--blue);background:rgba(58,160,255,.14)}.pilar-title{min-width:0}.pilar-title b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.creatorTag{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.68rem;color:var(--muted)}
+
+/* v3.1 · generator OFF + guitar tuner */
+.tools [data-tool="tuner"]{grid-column:1/-1}
+.generator-off{color:var(--good);font-weight:900}
+.tunerHero{display:grid;gap:.75rem;text-align:center}
+.tunerNote{font-size:clamp(2.8rem,9vw,5.4rem);font-weight:950;line-height:1;color:var(--good);letter-spacing:-.04em}
+.tunerHz{font-size:1.05rem;color:var(--muted);font-weight:800}
+.tunerTarget{font-size:.78rem;color:var(--muted)}
+.tunerMeter{position:relative;height:3.2rem;margin:.3rem 0 .5rem;border:1px solid var(--line);border-radius:1rem;overflow:hidden;background:
+ linear-gradient(90deg,rgba(58,160,255,.2),rgba(56,230,153,.13) 42%,rgba(56,230,153,.3) 48%,rgba(56,230,153,.3) 52%,rgba(255,77,109,.15) 58%,rgba(255,77,109,.2))}
+.tunerMeter::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--good);opacity:.9}
+.tunerNeedle{position:absolute;top:.25rem;bottom:.25rem;width:4px;border-radius:99px;background:#fff;box-shadow:0 0 14px rgba(255,255,255,.8);left:50%;transform:translateX(-50%);transition:left .12s ease}
+.tunerScale{display:flex;justify-content:space-between;color:var(--muted);font-size:.7rem;font-weight:800}
+.tunerState{font-weight:950;letter-spacing:.08em}
+.tunerStrings{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.35rem;margin-top:.7rem}
+.tunerStrings button{min-height:2.6rem;border:1px solid var(--line);border-radius:.8rem;background:rgba(0,0,0,.22);color:var(--text);font-weight:850}
+.tunerStrings button.on{border-color:var(--good);background:rgba(56,230,153,.18);box-shadow:0 0 0 1px rgba(56,230,153,.2)}
+@media(max-width:600px){.tunerStrings{grid-template-columns:repeat(4,minmax(0,1fr))}.tunerNote{font-size:4rem}}
 </style></head>
 <body>
 <div class="top">
@@ -104,7 +122,7 @@ input[type=range]{width:100%;height:2rem;accent-color:var(--blue)}
       <div class="row"><button class="btn good" id="bStart">🎤 Mulai Mic</button><button class="btn danger" id="bStop">Stop</button></div>
       <label>Mikrofon (IFP internal / eksternal)<select id="selMic"></select></label>
       <div class="card"><b>🧰 Tools</b>
-        <div class="tools"><button class="btn primary on" data-tool="lab">🧪 Lab</button><button class="btn primary" data-tool="det">🕵️ Detective</button><button class="btn primary" data-tool="sig">🧬 Signature</button><button class="btn primary" data-tool="cam">📷 Kamera AI</button></div>
+        <div class="tools"><button class="btn primary on" data-tool="lab">🧪 Lab</button><button class="btn primary" data-tool="det">🕵️ Detective</button><button class="btn primary" data-tool="sig">🧬 Signature</button><button class="btn primary" data-tool="cam">📷 Kamera AI</button><button class="btn good" data-tool="tuner">🎸 Guitar Tuner</button></div>
       </div>
       <div class="card"><b>🎚️ Tampilan</b>
         <label>Gain mic <input type="range" id="slGain" min="0" max="3" step=".01" value="1"></label>
@@ -115,8 +133,8 @@ input[type=range]{width:100%;height:2rem;accent-color:var(--blue)}
         <div class="row"><button class="btn" id="bReset">Reset</button><button class="btn warn" id="bFull">⛶ Layar penuh</button></div>
       </div>
       <div class="card"><b>🎹 Generator nada</b>
-        <label>Jenis gelombang <select id="selWave"><option value="sine">Sinus (murni, 1 puncak)</option><option value="triangle">Segitiga</option><option value="square">Persegi (banyak harmonik)</option><option value="sawtooth">Gigi gergaji (harmonik terkaya)</option></select></label>
-        <div class="hint">👆 Sentuh / geser pada <b>spektrum</b> untuk membunyikan nada. Lihat puncak harmonik muncul di kelipatan frekuensi dasar.</div>
+        <label>Jenis gelombang <select id="selWave"><option value="off" selected>OFF · Analisis mikrofon saja</option><option value="sine">Sinus (murni, 1 puncak)</option><option value="triangle">Segitiga</option><option value="square">Persegi (banyak harmonik)</option><option value="sawtooth">Gigi gergaji (harmonik terkaya)</option></select></label>
+        <div class="hint" id="generatorHint"><span class="generator-off">OFF</span> · spektrum hanya menganalisis suara dari mikrofon. Pilih bentuk gelombang untuk mengaktifkan generator sentuh.</div>
       </div>
     </div>
   </section>
@@ -143,6 +161,26 @@ input[type=range]{width:100%;height:2rem;accent-color:var(--blue)}
     <div class="ph"><h2 id="tTitle">🧪 Lab</h2></div>
     <div class="pb">
       <div id="tp-lab"><div class="card"><b>🎯 Misi Lab</b><div class="hint">1) Bersenandung → lihat <b>puncak</b> + nama nada.<br>2) Pelan vs keras → bandingkan <b>RMS</b>.<br>3) Ucapkan "iii" vs "uuu" → pola puncak (formant) berubah.<br>4) Ganti gelombang persegi → muncul harmonik ganjil.<br><br><b>Baca grafik:</b> waveform = tekanan udara vs waktu; spektrum = komposisi frekuensi; garis putus-putus = kelipatan frekuensi dasar (harmonik).</div></div></div>
+
+      <div id="tp-tuner" hidden>
+        <div class="card">
+          <div class="tunerHero">
+            <div><b>🎸 Guitar Tuner · Standard E A D G B E</b><div class="hint">Petik satu senar. Generator nada otomatis dibisukan agar pembacaan berasal dari mikrofon.</div></div>
+            <div class="tunerNote" id="tNote">—</div>
+            <div class="tunerHz" id="tHz">Nyalakan mikrofon</div>
+            <div class="tunerTarget" id="tTarget">Target: AUTO</div>
+            <div class="tunerMeter" aria-label="Selisih tuning minus 50 sampai plus 50 cents"><i class="tunerNeedle" id="tNeedle"></i></div>
+            <div class="tunerScale"><span>♭ -50¢</span><span>0¢</span><span>+50¢ ♯</span></div>
+            <div class="tunerState" id="tState">MENUNGGU</div>
+          </div>
+          <div class="tunerStrings" id="tStrings">
+            <button data-string="auto" class="on">AUTO</button>
+            <button data-string="E2">E2</button><button data-string="A2">A2</button><button data-string="D3">D3</button>
+            <button data-string="G3">G3</button><button data-string="B3">B3</button><button data-string="E4">E4</button>
+          </div>
+          <div class="hint" style="margin-top:.75rem">Hijau di tengah = ±5 cents. Untuk hasil stabil: dekatkan gitar ke mikrofon, petik satu senar, lalu biarkan bunyi meluruh alami.</div>
+        </div>
+      </div>
 
       <div id="tp-det" hidden>
         <div class="card"><b>🎯 Target</b><div class="big" id="dTarget">—</div>
@@ -220,8 +258,13 @@ function stopMic(silent){
 }
 function tone(f,v){
   ensure();
+  const mode=$("selWave").value;
+  if(mode==="off"){
+    if(S.og&&S.ctx)S.og.gain.setTargetAtTime(0,S.ctx.currentTime,.025);
+    S.tone=false;return;
+  }
   if(!S.osc){S.osc=S.ctx.createOscillator();S.og=S.ctx.createGain();S.og.gain.value=0;S.osc.connect(S.og);S.og.connect(S.mix);S.og.connect(S.ctx.destination);S.osc.start()}
-  const t=S.ctx.currentTime;S.osc.type=$("selWave").value;S.osc.frequency.setTargetAtTime(f,t,.03);S.og.gain.setTargetAtTime(v,t,.05);S.tone=v>.001;
+  const t=S.ctx.currentTime;S.osc.type=mode;S.osc.frequency.setTargetAtTime(f,t,.03);S.og.gain.setTargetAtTime(v,t,.05);S.tone=v>.001;
 }
 
 /* ---------- Analisis ---------- */
@@ -237,6 +280,73 @@ function findPeaks(){
   return out;
 }
 function rms(){let s=0;const n=2048,o=td.length-n;for(let i=0;i<n;i++)s+=td[o+i]*td[o+i];return Math.sqrt(s/n)}
+
+/* ---------- Guitar Tuner: autocorrelation lokal dari mikrofon ---------- */
+const GUITAR=[
+  {id:"E2",hz:82.4069},{id:"A2",hz:110},{id:"D3",hz:146.8324},
+  {id:"G3",hz:195.9977},{id:"B3",hz:246.9417},{id:"E4",hz:329.6276}
+];
+let tunerMode="auto",tunerSmooth=0,tunerLast=0;
+function centsBetween(f,target){return 1200*Math.log2(f/target)}
+function nearestString(f){
+  let best=GUITAR[0],err=Infinity;
+  for(const s of GUITAR){const e=Math.abs(centsBetween(f,s.hz));if(e<err){err=e;best=s}}
+  return best;
+}
+function estimatePitch(){
+  if(!S.ctx||!S.micOn)return 0;
+  const sr=S.ctx.sampleRate,N=Math.min(4096,td.length),start=td.length-N;
+  let mean=0,energy=0;
+  for(let i=start;i<td.length;i++)mean+=td[i];
+  mean/=N;
+  for(let i=start;i<td.length;i++){const v=td[i]-mean;energy+=v*v}
+  if(Math.sqrt(energy/N)<.006)return 0;
+
+  const minLag=Math.max(2,Math.floor(sr/360)),maxLag=Math.min(N-4,Math.ceil(sr/70));
+  const corr=new Float32Array(maxLag+2);
+  let bestLag=0,best=-1;
+  for(let lag=minLag;lag<=maxLag;lag++){
+    let sum=0,e1=0,e2=0;
+    for(let i=start;i<td.length-lag;i+=2){
+      const a=td[i]-mean,b=td[i+lag]-mean;
+      sum+=a*b;e1+=a*a;e2+=b*b;
+    }
+    const r=sum/Math.sqrt(Math.max(1e-12,e1*e2));corr[lag]=r;
+    if(r>best){best=r;bestLag=lag}
+  }
+  if(best<.48||!bestLag)return 0;
+
+  /* pilih peak lokal awal yang hampir sekuat peak terbaik untuk mengurangi error oktaf */
+  for(let lag=minLag+1;lag<bestLag;lag++){
+    if(corr[lag]>best*.93&&corr[lag]>=corr[lag-1]&&corr[lag]>=corr[lag+1]){bestLag=lag;break}
+  }
+  const y1=corr[bestLag-1]||corr[bestLag],y2=corr[bestLag],y3=corr[bestLag+1]||corr[bestLag];
+  const den=y1-2*y2+y3,shift=Math.abs(den)>1e-6?.5*(y1-y3)/den:0;
+  return sr/(bestLag+clamp(shift,-.5,.5));
+}
+function syncTunerButtons(){
+  document.querySelectorAll("#tStrings [data-string]").forEach(b=>b.classList.toggle("on",b.dataset.string===tunerMode));
+}
+function updateTuner(now){
+  if(tool!=="tuner"||now-tunerLast<90)return;tunerLast=now;
+  if(!S.micOn){
+    $("tNote").textContent="—";$("tHz").textContent="Nyalakan mikrofon";$("tState").textContent="MENUNGGU";$("tNeedle").style.left="50%";return;
+  }
+  const f=estimatePitch();
+  if(!f){
+    $("tHz").textContent="Petik satu senar…";$("tState").textContent="MENCARI NADA";$("tNeedle").style.left="50%";return;
+  }
+  tunerSmooth=tunerSmooth?lerp(tunerSmooth,f,.32):f;
+  const target=tunerMode==="auto"?nearestString(tunerSmooth):(GUITAR.find(s=>s.id===tunerMode)||nearestString(tunerSmooth));
+  const cents=centsBetween(tunerSmooth,target.hz),shown=clamp(cents,-50,50);
+  $("tNote").textContent=target.id;
+  $("tHz").textContent=tunerSmooth.toFixed(1)+" Hz · "+(cents>=0?"+":"")+Math.round(cents)+"¢";
+  $("tTarget").textContent="Target: "+target.id+" · "+target.hz.toFixed(2)+" Hz"+(tunerMode==="auto"?" · AUTO":"");
+  $("tNeedle").style.left=(50+shown)+"%";
+  const abs=Math.abs(cents);
+  $("tState").textContent=abs<=5?"✓ IN TUNE":cents<0?"♭ TERLALU RENDAH":"♯ TERLALU TINGGI";
+  $("tState").style.color=abs<=5?"var(--good)":abs<=15?"var(--warn)":"var(--bad)";
+}
 
 /* ---------- Gambar ---------- */
 function grid(c,L,T,w,h){c.strokeStyle="rgba(255,255,255,.09)";c.lineWidth=U;c.beginPath();for(let i=0;i<=10;i++){const x=L+w*i/10;c.moveTo(x,T);c.lineTo(x,T+h)}for(let j=0;j<=4;j++){const y=T+h*j/4;c.moveTo(L,y);c.lineTo(L+w,y)}c.stroke()}
@@ -283,7 +393,7 @@ function drawSpec(pk,dom){
   pk.forEach((q,i)=>{const x=fx(q.f),y=dy(q.db);c.fillStyle=i?"#fff":"#ffd042";c.beginPath();c.arc(x,y,(i?4:7)*U,0,7);c.fill();
     if(opt.lab&&i<4){const ny=clamp(y-(20+(i%2)*24)*U,T+30*U,T+h);pill(c,`${Math.round(q.f)} Hz · ${note(q.f).n}`,x,ny,i?"#fff":"#ffd042",L,L+w)}});
   if(ptr){const x=fx(ptr.f);c.strokeStyle="#ff4d6d";c.lineWidth=3*U;c.beginPath();c.moveTo(x,T);c.lineTo(x,T+h);c.stroke();pill(c,`🎹 ${Math.round(ptr.f)} Hz · ${note(ptr.f).n}`,x,T+h-16*U,"#ff4d6d",L,L+w)}
-  if(!S.micOn&&!S.tone){c.fillStyle="rgba(255,255,255,.85)";c.font=`800 ${18*U}px system-ui`;c.textAlign="center";c.textBaseline="middle";c.fillText("🎤 Tekan Mulai Mic — atau sentuh area ini untuk membunyikan nada",L+w/2,T+h/2)}
+  if(!S.micOn&&!S.tone){c.fillStyle="rgba(255,255,255,.85)";c.font=`800 ${18*U}px system-ui`;c.textAlign="center";c.textBaseline="middle";c.fillText($("selWave").value==="off"?"🎤 Tekan Mulai Mic — Generator OFF / mode analisis":"🎤 Tekan Mulai Mic — atau sentuh area ini untuk membunyikan nada",L+w/2,T+h/2)}
 }
 function plotFromX(e){const r=cvS.getBoundingClientRect(),x=(e.clientX-r.left)*(cvS.width/r.width),L=62*U,w=cvS.width-L-14*U;return clamp(20*Math.pow(1000,(x-L)/w),20,12000)}
 cvS.addEventListener("pointerdown",e=>{cvS.setPointerCapture(e.pointerId);ptr={id:e.pointerId,f:plotFromX(e)};tone(ptr.f,.2)});
@@ -369,15 +479,21 @@ function frame(now){
     $("kEmo").textContent=db>-12?"📢":db>-24?"😮":db>-40?"🙂":"🤫";
   }
   updDet(hzS,rmsS,dt);
+  updateTuner(now);
   drawWave(+$("slZoom").value);drawSpec(pk,dom);
 }
 
 /* ---------- Tools & UI ---------- */
-const TT={lab:"🧪 Lab",det:"🕵️ Frequency Detective",sig:"🧬 Sound Signature",cam:"📷 Kamera AI"};
+const TT={lab:"🧪 Lab",tuner:"🎸 Guitar Tuner",det:"🕵️ Frequency Detective",sig:"🧬 Sound Signature",cam:"📷 Kamera AI"};
 function setTool(t){
-  tool=t;["lab","det","sig","cam"].forEach(k=>$("tp-"+k).hidden=k!==t);$("tTitle").textContent=TT[t];
+  tool=t;["lab","tuner","det","sig","cam"].forEach(k=>$("tp-"+k).hidden=k!==t);$("tTitle").textContent=TT[t];
   document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("on",b.dataset.tool===t));
-  if(t!=="cam")tone(220,0);if(t==="det")detRender();if(t==="sig")sigRender();
+  if(t!=="cam")tone(220,0);
+  if(t==="tuner"){
+    $("selWave").value="off";syncGeneratorUI();tunerSmooth=0;
+    toast("Guitar Tuner: generator dimatikan, dengarkan mikrofon saja.","good");
+  }
+  if(t==="det")detRender();if(t==="sig")sigRender();
 }
 document.querySelectorAll("[data-tool]").forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
 document.querySelectorAll("[data-opt]").forEach(b=>b.onclick=()=>{const k=b.dataset.opt;opt[k]=!opt[k];b.setAttribute("aria-pressed",opt[k])});
@@ -394,7 +510,19 @@ $("tB").onclick=()=>{det.team="Biru";detRender()};$("tR").onclick=()=>{det.team=
 $("sRec").onclick=()=>sigDo("rec");$("sCmp").onclick=()=>sigDo("cmp");
 $("cStart").onclick=camStart;$("cStop").onclick=camStop;
 $("cSnap").onclick=e=>{cam.snap=!cam.snap;e.currentTarget.setAttribute("aria-pressed",cam.snap)};
-$("selWave").onchange=()=>{if(S.osc)S.osc.type=$("selWave").value};
+function syncGeneratorUI(){
+  const mode=$("selWave").value,h=$("generatorHint");
+  if(mode==="off"){
+    tone(220,0);
+    h.innerHTML='<span class="generator-off">OFF</span> · spektrum hanya menganalisis suara dari mikrofon. Pilih bentuk gelombang untuk mengaktifkan generator sentuh.';
+  }else{
+    h.innerHTML='👆 Sentuh / geser pada <b>spektrum</b> untuk membunyikan nada '+mode+'. Lihat puncak harmonik pada kelipatan frekuensi dasar.';
+    if(S.osc)S.osc.type=mode;
+  }
+}
+$("selWave").onchange=()=>{syncGeneratorUI()};
+document.querySelectorAll("#tStrings [data-string]").forEach(b=>b.onclick=()=>{tunerMode=b.dataset.string;tunerSmooth=0;syncTunerButtons()});
+syncTunerButtons();syncGeneratorUI();
 
 if(!navigator.mediaDevices?.getUserMedia)toast("Browser tidak mendukung mikrofon.","bad");else scan();
 setTool("lab");requestAnimationFrame(frame);
