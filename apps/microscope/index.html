@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PILAR™ Microscope Lab v0.6 — IFP/MPI</title>
+    <title>PILAR™ Microscope Lab v0.7 — Vision · ML · ESP32</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -1096,6 +1096,53 @@
         .camera-controls{grid-template-columns:repeat(4,1fr)}.control-btn.capture{grid-column:span 4}.ruler-container{touch-action:none}.camera-view.measuring{touch-action:none}.pilar-app-footer{max-width:1600px;margin:12px auto 20px;padding:0 20px;display:flex;justify-content:space-between;gap:12px;color:var(--gray);font:600 .72rem/1.3 ui-monospace,SFMono-Regular,Consolas,monospace}.pilar-app-footer span:last-child{text-align:right}.pilar-unsupported{color:var(--danger)!important}
         @media(max-width:1100px){.pilar-flow{grid-template-columns:repeat(5,minmax(110px,1fr));overflow-x:auto}.pilar-flow-status{display:none}}@media(max-width:768px){.camera-controls{grid-template-columns:repeat(2,1fr)}.control-btn.capture{grid-column:span 2}.pilar-app-footer{flex-direction:column}.pilar-app-footer span:last-child{text-align:left}.camera-meta{display:none}}
 
+    
+        /* ===== v0.7 · Vision/ML/ESP32 integration ===== */
+        html[data-ui="ifp"]{font-size:clamp(18px,.65vw + 6px,26px)}
+        html[data-ui="ifp"] .app-container{max-width:none;padding:22px 34px}
+        html[data-ui="ifp"] .main-content{grid-template-columns:minmax(0,1fr) minmax(470px,29vw)}
+        html[data-ui="ifp"] .camera-view{min-height:68vh}
+        html[data-ui="ifp"] .btn,html[data-ui="ifp"] .control-btn,html[data-ui="ifp"] .tool-item{min-height:56px}
+        html[data-ui="mobile"] .main-content{grid-template-columns:1fr}
+        html[data-ui="mobile"] .camera-view{min-height:52vh}
+        html[data-ui="mobile"] .app-container{padding:10px}
+        .pilar-source-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 20px;border-bottom:1px solid #e2e8f0}
+        .dark-mode .pilar-source-row{border-color:#475569}
+        .pilar-ai-input{min-width:0;padding:9px 11px;border:2px solid #e2e8f0;border-radius:9px;background:white;color:#1e293b}
+        .dark-mode .pilar-ai-input{background:#0f172a;color:#f8fafc;border-color:#475569}
+        .pilar-source-hint{font-size:.75rem;color:var(--gray);flex:1 1 220px}
+        #aiCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:9}
+        .ai-focus-hud{position:absolute;top:12px;left:12px;z-index:21;display:none;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(7,17,29,.82);color:#fff;font-size:.78rem;font-weight:800;backdrop-filter:blur(8px);border:1px solid rgba(126,238,255,.25)}
+        .camera-view.ai-live .ai-focus-hud{display:flex}
+        .ai-focus-hud i{width:76px;height:8px;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden}
+        .ai-focus-hud b{display:block;width:0;height:100%;background:#ef4444;transition:width .16s ease,background .16s ease}
+        .fab-capture{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);z-index:22;display:none;width:82px;height:82px;border-radius:50%;border:6px solid #fff;background:var(--danger);color:#fff;font-size:1.7rem;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);cursor:pointer;touch-action:manipulation}
+        html[data-ui="ifp"] .camera-view.ai-live .fab-capture,html[data-ui="mobile"] .camera-view.ai-live .fab-capture{display:flex}
+        .fab-capture:active{transform:translateX(-50%) scale(.92)}
+        .ai-lab-grid{display:grid;grid-template-columns:1fr;gap:10px}
+        .ai-card{padding:12px;border:1px solid #dbe5ef;border-radius:12px;background:rgba(99,102,241,.04)}
+        .dark-mode .ai-card{border-color:#334155;background:rgba(99,102,241,.08)}
+        .ai-card-head{display:flex;align-items:center;gap:8px;margin-bottom:9px;font-weight:800}
+        .ai-chip{margin-left:auto;font-size:.72rem;background:#334155;color:#fff;padding:3px 8px;border-radius:999px;white-space:nowrap}
+        .ai-row{display:flex;align-items:center;gap:8px;margin:8px 0;min-width:0}
+        .ai-row>span:first-child{min-width:max-content}
+        .ai-row input[type=range]{flex:1;min-width:80px}
+        .ai-row input[type=checkbox]{width:22px;height:22px;accent-color:var(--primary)}
+        .ai-out{padding:8px 10px;border-radius:9px;background:rgba(99,102,241,.09);font-size:.82rem;min-height:34px;margin-top:7px}
+        .ai-btn-wide{width:100%;justify-content:center;margin-top:7px}
+        .ai-classes{display:grid;gap:7px;margin-top:8px}
+        .ai-class-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;align-items:center}
+        .ai-xp{height:9px;border-radius:999px;background:rgba(100,116,139,.22);overflow:hidden}
+        .ai-xp i{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--secondary),var(--accent));transition:width .25s ease}
+        .ai-missions{list-style:none;margin-top:8px;font-size:.8rem}.ai-missions li{padding:3px 0}.ai-missions .ok{color:var(--secondary);font-weight:800}
+        .esp-actions{display:flex;gap:7px;flex-wrap:wrap}.esp-actions .btn{flex:1 1 90px;justify-content:center}
+        .esp-focus-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:8px}
+        .esp-focus-grid .btn{padding:8px 6px;justify-content:center}
+        .esp-foot{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+        .esp-foot a{color:var(--primary);font-weight:700;font-size:.78rem}
+        .pilar-mode-btn{white-space:nowrap}
+        @media(max-width:900px){.pilar-source-row{padding:8px 12px}.ai-class-row{grid-template-columns:1fr auto}.ai-class-row b{grid-column:2}.esp-focus-grid{grid-template-columns:repeat(2,1fr)}}
+
     </style>
 </head>
 <body>
@@ -1104,12 +1151,13 @@
             <div class="logo">
                 <i class="fas fa-microscope"></i>
                 <div class="logo-text-group">
-                    <div>PILAR™ Microscope Lab <small class="pilar-version">v0.6</small></div>
-                    <div class="tagline">IFP / MPI · Observasi · Kalibrasi · Pengukuran · Bukti</div>
+                    <div>PILAR™ Microscope Lab <small class="pilar-version">v0.7</small></div>
+                    <div class="tagline">IFP / MPI · Observasi · Vision · ML · Pengukuran · Bukti</div>
                 </div>
                 <div class="branding-pill" id="brandingPill"></div>
             </div>
             <div class="user-controls">
+                <button class="btn btn-outline pilar-mode-btn" id="modeBtn" aria-label="Mode tampilan"><i class="fas fa-display"></i> AUTO</button>
                 <a class="btn btn-outline pilar-home-btn" id="pilarHomeBtn" href="../../" title="Kembali ke PILAR Hub"><i class="fas fa-arrow-left"></i> PILAR Hub</a>
                 <button class="btn btn-outline" id="themeToggle">
                     <i class="fas fa-moon"></i> Dark Mode
@@ -1151,6 +1199,16 @@
                         <i class="fas fa-sync-alt"></i>
                     </button>
                 </div>
+
+                <div class="pilar-source-row">
+                    <select id="srcMode" class="pilar-ai-input" aria-label="Sumber video">
+                        <option value="local">USB Mikroskop / Webcam</option>
+                        <option value="ip">IP Cam MJPEG (eksperimental)</option>
+                    </select>
+                    <input id="ipUrl" class="pilar-ai-input" placeholder="http://192.168.4.2:81/stream" hidden>
+                    <button class="btn btn-accent btn-sm" id="ipBtn" hidden><i class="fas fa-plug"></i> Sambung</button>
+                    <span class="pilar-source-hint" id="sourceHint">USB camera direkomendasikan pada GitHub Pages HTTPS.</span>
+                </div>
                 
                 <div class="camera-view" id="cameraViewContainer">
                     <div class="overlay-container">
@@ -1173,6 +1231,9 @@
                         <div class="spinner"></div>
                     </div>
                     
+                    <canvas id="aiCanvas" aria-hidden="true"></canvas>
+                    <div class="ai-focus-hud" aria-live="polite"><span id="hudTxt">Fokus</span><i><b id="hudBar"></b></i><span id="hudScore">—</span></div>
+                    <button class="fab-capture" id="fabCapture" aria-label="Ambil gambar"><i class="fas fa-camera"></i></button>
                     <video id="videoElement" autoplay playsinline></video>
                     
                     <div class="no-camera" id="noCameraPlaceholder">
@@ -1296,6 +1357,63 @@
                     </div>
                 </div>
 
+                <div class="controls-panel" style="margin-top:20px">
+                    <div class="panel-section">
+                        <div class="panel-title"><i class="fas fa-brain"></i> PILAR Vision & ML Lab <span class="ai-chip" id="mlBackend">CV lokal</span></div>
+                        <div class="ai-lab-grid">
+                            <div class="ai-card">
+                                <div class="ai-card-head"><span>🎯 Focus Coach</span><span class="ai-chip" id="focusChip">idle</span></div>
+                                <button class="btn btn-accent ai-btn-wide" id="autoEnh"><i class="fas fa-wand-magic-sparkles"></i> Auto-Optimal Gambar</button>
+                                <div class="ai-out" id="focusOut">Nyalakan kamera untuk analisis ketajaman lokal.</div>
+                            </div>
+                            <div class="ai-card">
+                                <div class="ai-card-head"><span>🔎 Vision Count</span><span class="ai-chip">CV eksperimental</span></div>
+                                <label class="ai-row"><input type="checkbox" id="aiCount"> <span>Hitung objek / sel</span></label>
+                                <label class="ai-row"><span>Ukuran minimum</span><input type="range" id="blobMin" min="1" max="30" value="6"><b id="blobMinOut">6</b></label>
+                                <div class="ai-out" id="countOut">Segmentasi Otsu + connected components. Kalibrasi diperlukan untuk estimasi μm².</div>
+                            </div>
+                            <div class="ai-card">
+                                <div class="ai-card-head"><span>🧠 Teachable Microscope</span><span class="ai-chip" id="mlState">OFF</span></div>
+                                <label class="ai-row"><input type="checkbox" id="aiML"> <span>Aktifkan MobileNet + KNN</span></label>
+                                <div id="mlBox" hidden>
+                                    <div class="ai-classes" id="mlClasses"></div>
+                                    <div class="ai-out" id="mlOut">Model hanya dimuat setelah fitur diaktifkan.</div>
+                                    <button class="btn btn-danger btn-sm ai-btn-wide" id="mlReset">Reset contoh</button>
+                                </div>
+                            </div>
+                            <div class="ai-card">
+                                <div class="ai-card-head"><span>🏆 Misi Ilmuwan</span><span class="ai-chip" id="xpBadge">0 XP</span></div>
+                                <div class="ai-xp"><i id="xpBar"></i></div>
+                                <ul class="ai-missions" id="missionList"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-section" style="margin-bottom:0">
+                        <div class="panel-title"><i class="fas fa-microchip"></i> PILAR Focus Controller <span class="ai-chip" id="espStat">terputus</span></div>
+                        <div class="esp-actions">
+                            <button class="btn btn-primary btn-sm" id="espUsb"><i class="fas fa-usb"></i> USB Serial</button>
+                            <button class="btn btn-primary btn-sm" id="espBle"><i class="fas fa-bluetooth-b"></i> BLE</button>
+                            <button class="btn btn-outline btn-sm" id="espWifi"><i class="fas fa-wifi"></i> WiFi legacy</button>
+                        </div>
+                        <div class="ai-row"><span>Host</span><input class="pilar-ai-input" id="espHost" value="192.168.4.1" aria-label="IP ESP32"></div>
+                        <div class="esp-focus-grid">
+                            <button class="btn btn-accent btn-sm" data-m="-200">⏪ -200</button>
+                            <button class="btn btn-accent btn-sm" data-m="-20">◀ -20</button>
+                            <button class="btn btn-accent btn-sm" data-m="20">+20 ▶</button>
+                            <button class="btn btn-accent btn-sm" data-m="200">+200 ⏩</button>
+                        </div>
+                        <div class="ai-row"><span>💡 LED</span><input type="range" id="espLed" min="0" max="255" value="128"><b id="espLedOut">128</b></div>
+                        <div class="esp-actions">
+                            <button class="btn btn-outline btn-sm" id="espHome">⌂ Home</button>
+                            <button class="btn btn-danger btn-sm" id="espStop">■ Stop</button>
+                            <button class="btn btn-success btn-sm" id="espAF"><i class="fas fa-crosshairs"></i> Smart Autofocus</button>
+                        </div>
+                        <div class="ai-out" id="espLog">Hubungkan controller via USB atau BLE. WiFi ws:// hanya untuk halaman HTTP/file lokal.</div>
+                        <div class="esp-foot"><span class="pilar-source-hint">Autofocus memakai skor Laplacian dua tahap; ML classifier terpisah.</span><a href="firmware/ESP32_Microscope_Controller.ino" download>Firmware ESP32 v0.3</a></div>
+                    </div>
+                </div>
+
                 <div class="gallery-section" style="margin-top: 20px;">
                     <div class="gallery-header">
                         <div class="panel-title" style="margin-bottom: 0; border-bottom: none;">
@@ -1322,7 +1440,7 @@
         </div>
     </div>
 
-    <footer class="pilar-app-footer"><span>PILAR™ Microscope Lab · v0.6</span><span>PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span></footer>
+    <footer class="pilar-app-footer"><span>PILAR™ Microscope Lab · v0.7</span><span>PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span></footer>
 
     <div class="modal" id="imageModal">
         <img id="modalImage" src="" alt="Preview">
@@ -2040,6 +2158,288 @@
             window.microscope = new IFPMicroscope();
         });
     </script>
+  <script>
+  (() => {
+    'use strict';
+    const $=id=>document.getElementById(id);
+    const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+    const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+    const pulse=(name,details={})=>{ try{ window.PILAR_PULSE?.track?.(name,details); }catch(_){} };
+    const loadScriptOnce=(src,key)=>new Promise((resolve,reject)=>{
+      if(key&&window[key]) return resolve();
+      const old=[...document.scripts].find(s=>s.src===src);
+      if(old){ old.addEventListener('load',resolve,{once:true}); if(key&&window[key])resolve(); return; }
+      const s=document.createElement('script');s.src=src;s.async=true;s.onload=resolve;s.onerror=()=>reject(new Error('Gagal memuat library '+src));document.head.appendChild(s);
+    });
+
+    document.addEventListener('DOMContentLoaded',()=>{
+      const M=window.microscope;if(!M)return;
+      const V=M.videoElement,box=M.cameraViewContainer,root=document.documentElement;
+
+      // Device mode: explicit IFP/Desktop/Mobile, while Auto remains default.
+      const modes=['auto','ifp','desktop','mobile'];let modeIndex=0;
+      function applyMode(){
+        const requested=modes[modeIndex];
+        const detected=innerWidth>=1800?'ifp':innerWidth<=900?'mobile':'desktop';
+        const mode=requested==='auto'?detected:requested;
+        root.dataset.ui=mode;
+        $('modeBtn').innerHTML='<i class="fas fa-display"></i> '+(requested==='auto'?'AUTO · ':'')+mode.toUpperCase();
+        M.updateOverlays();
+      }
+      $('modeBtn').onclick=()=>{modeIndex=(modeIndex+1)%modes.length;applyMode();pulse('microscope_ui_mode',{mode:modes[modeIndex]})};
+      addEventListener('resize',()=>{if(modeIndex===0)applyMode()});applyMode();
+
+      // Entry badge from universal PILAR Vision Challenge.
+      const entry=new URLSearchParams(location.search).get('pilarEntry');
+      if(entry==='vision') M.showNotification('Vision Challenge selesai · selamat datang di Microscope Lab!','success');
+
+      // Quick capture on large touch displays/mobile.
+      $('fabCapture').onclick=()=>M.captureImage();
+
+      // Preserve stable PILAR core; add hardware manual-focus controls when camera exposes them.
+      const coreStart=M.startCamera.bind(M);
+      M.startCamera=async()=>{
+        await coreStart();
+        try{
+          const track=M.stream?.getVideoTracks?.()[0],caps=track?.getCapabilities?.()||{};
+          if(caps.focusDistance){
+            $('focusOut').textContent='Kamera mendukung hardware focusDistance.';
+          }
+        }catch(_){}
+      };
+
+      // Optional MJPEG input. GitHub Pages HTTPS usually blocks HTTP IP cameras; detect instead of pretending.
+      let ipImg=null,ipCanvas=null,ipTimer=0;
+      $('srcMode').onchange=e=>{
+        const ip=e.target.value==='ip';$('ipUrl').hidden=!ip;$('ipBtn').hidden=!ip;
+        $('sourceHint').textContent=ip?'IP Cam MJPEG bersifat eksperimental; HTTP private camera dapat diblok browser HTTPS.':'USB camera direkomendasikan pada GitHub Pages HTTPS.';
+      };
+      $('ipBtn').onclick=async()=>{
+        const url=$('ipUrl').value.trim();if(!url)return;
+        if(location.protocol==='https:'&&/^http:///i.test(url)){
+          return M.showNotification('Browser HTTPS memblok HTTP IP Cam. Gunakan USB camera atau jalankan PILAR dari host lokal HTTP.','error');
+        }
+        M.stopCamera();M.showLoading(true);
+        try{
+          ipImg=new Image();ipImg.crossOrigin='anonymous';
+          await new Promise((ok,no)=>{let done=false;const t=setTimeout(()=>{if(!done)no(new Error('Timeout IP Cam'))},8000);ipImg.onload=()=>{done=true;clearTimeout(t);ok()};ipImg.onerror=()=>{done=true;clearTimeout(t);no(new Error('IP Cam tidak merespons / CORS'))};ipImg.src=url});
+          ipCanvas=document.createElement('canvas');ipCanvas.width=ipImg.naturalWidth||1280;ipCanvas.height=ipImg.naturalHeight||720;
+          const ix=ipCanvas.getContext('2d');
+          ipTimer=setInterval(()=>{try{ix.drawImage(ipImg,0,0,ipCanvas.width,ipCanvas.height)}catch(_){}},40);
+          M.stream=ipCanvas.captureStream(25);V.srcObject=M.stream;V.style.display='block';M.noCameraPlaceholder.style.display='none';await V.play();
+          M.isStreaming=true;M.isFrozen=false;M.pixelScale=null;M.updateCameraStatus(true,'IP Cam');M.enableControls(true);M.applyTransformations();
+          M.showNotification('IP Cam terhubung','success');pulse('microscope_ipcam_connect');
+        }catch(e){M.showNotification(e.message,'error')}
+        finally{M.showLoading(false)}
+      };
+      const coreStop=M.stopCamera.bind(M);
+      M.stopCamera=(silent=false)=>{clearInterval(ipTimer);ipTimer=0;if(ipImg)ipImg.src='';ipImg=null;ipCanvas=null;return coreStop(silent)};
+
+      // Missions/XP stay local; no student image or classifier examples leave the browser.
+      const missions=[
+        ['cap','Ambil foto pertama',10],['meas','Ukur objek',15],['cal','Kalibrasi skala',20],
+        ['sharp','Capai fokus tajam ≥85%',15],['cnt','Deteksi ≥5 objek',20],['ml','Latih ≥2 kelas',30],['hw','Hubungkan ESP32',15]
+      ];
+      let done=new Set();try{done=new Set(JSON.parse(localStorage.getItem('pilarMicroscopeMissions')||'[]'))}catch(_){}
+      const titles=['Penjelajah','Peneliti','Ilmuwan','Profesor'];
+      function renderMissions(){
+        const xp=missions.filter(m=>done.has(m[0])).reduce((a,m)=>a+m[2],0),total=missions.reduce((a,m)=>a+m[2],0),level=Math.min(3,Math.floor(xp/Math.max(total,1)*4));
+        $('xpBar').style.width=(xp/total*100)+'%';$('xpBadge').textContent='⭐ '+xp+' XP · '+titles[level];
+        $('missionList').innerHTML=missions.map(m=>'<li class="'+(done.has(m[0])?'ok':'')+'">'+(done.has(m[0])?'✅':'⬜')+' '+m[1]+' <small>(+'+m[2]+')</small></li>').join('');
+      }
+      function award(id){if(done.has(id))return;done.add(id);try{localStorage.setItem('pilarMicroscopeMissions',JSON.stringify([...done]))}catch(_){}renderMissions();const m=missions.find(x=>x[0]===id);if(m)M.showNotification('🎉 Misi selesai! +'+m[2]+' XP','success')}
+      renderMissions();
+
+      const coreCapture=M.captureImage.bind(M);
+      M.captureImage=async()=>{const was=M.isStreaming;await coreCapture();if(was)award('cap')};
+      const coreCalibration=M.saveCalibration.bind(M);
+      M.saveCalibration=()=>{coreCalibration();if(M.pixelScale)award('cal')};
+      const coreMouseUp=M.handleMouseUp.bind(M);
+      M.handleMouseUp=e=>{coreMouseUp(e);if(M.measurements.length&&!M.calibrationMode)award('meas')};
+
+      // Frame extraction from visible digital-zoom crop.
+      const AC=document.createElement('canvas'),ax=AC.getContext('2d',{willReadFrequently:true});
+      function frame(width=320){
+        if(!M.isStreaming||!V.videoWidth||V.readyState<2)return null;
+        const z=M.zoomLevel||1,vw=V.videoWidth,vh=V.videoHeight,sw=vw/z,sh=vh/z;
+        AC.width=width;AC.height=Math.max(1,Math.round(width*vh/vw));
+        ax.filter=M.getFilterString?.()||'none';
+        ax.drawImage(V,(vw-sw)/2,(vh-sh)/2,sw,sh,0,0,AC.width,AC.height);ax.filter='none';
+        try{return ax.getImageData(0,0,AC.width,AC.height)}catch(e){return null}
+      }
+      function gray(d){const p=d.data,g=new Uint8Array(p.length/4);for(let i=0,j=0;i<g.length;i++,j+=4)g[i]=(p[j]*77+p[j+1]*150+p[j+2]*29)>>8;return g}
+      function lapVar(g,w,h,frac=.68){
+        const x0=Math.max(1,Math.floor(w*(1-frac)/2)),x1=Math.min(w-1,Math.ceil(w*(1+frac)/2));
+        const y0=Math.max(1,Math.floor(h*(1-frac)/2)),y1=Math.min(h-1,Math.ceil(h*(1+frac)/2));
+        let s=0,s2=0,n=0;
+        for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++){const i=y*w+x,l=4*g[i]-g[i-1]-g[i+1]-g[i-w]-g[i+w];s+=l;s2+=l*l;n++}
+        if(!n)return 0;const mean=s/n;return s2/n-mean*mean;
+      }
+      function otsu(g){const hist=new Uint32Array(256);for(const v of g)hist[v]++;let sum=0;for(let i=0;i<256;i++)sum+=i*hist[i];let wb=0,sb=0,best=0,t=128;for(let i=0;i<256;i++){wb+=hist[i];if(!wb)continue;const wf=g.length-wb;if(!wf)break;sb+=i*hist[i];const v=wb*wf*(sb/wb-(sum-sb)/wf)**2;if(v>best){best=v;t=i}}return t}
+      function blobs(g,w,h){
+        const threshold=otsu(g),mask=new Uint8Array(w*h);let fg=0;
+        for(let i=0;i<mask.length;i++)if(g[i]<=threshold){mask[i]=1;fg++}
+        if(fg>mask.length/2)for(let i=0;i<mask.length;i++)mask[i]^=1;
+        const minRatio=(+$('blobMin').value||6)/10000,maxArea=w*h*.25,minArea=w*h*minRatio,out=[],stack=[];
+        for(let i=0;i<mask.length;i++){
+          if(mask[i]!==1)continue;let area=0,x0=w,y0=h,x1=0,y1=0;stack.push(i);mask[i]=2;
+          while(stack.length){const p=stack.pop(),x=p%w,y=(p/w)|0;area++;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;
+            const ns=[x>0?p-1:-1,x<w-1?p+1:-1,y>0?p-w:-1,y<h-1?p+w:-1];for(const q of ns)if(q>=0&&mask[q]===1){mask[q]=2;stack.push(q)}}
+          if(area>=minArea&&area<=maxArea&&x0>0&&y0>0&&x1<w-1&&y1<h-1)out.push({area,x0,y0,x1,y1});
+        }
+        return out;
+      }
+
+      const aiCanvas=$('aiCanvas'),aictx=aiCanvas.getContext('2d');
+      function displayGeom(){return{left:(box.clientWidth-V.clientWidth)/2,top:(box.clientHeight-V.clientHeight)/2,w:V.clientWidth||1,h:V.clientHeight||1}}
+      function drawBlobs(list,w,h){
+        const dpr=Math.min(devicePixelRatio||1,2);aiCanvas.width=Math.max(1,Math.round(box.clientWidth*dpr));aiCanvas.height=Math.max(1,Math.round(box.clientHeight*dpr));aiCanvas.style.width=box.clientWidth+'px';aiCanvas.style.height=box.clientHeight+'px';
+        aictx.setTransform(dpr,0,0,dpr,0,0);aictx.clearRect(0,0,box.clientWidth,box.clientHeight);if(!list)return;
+        const g=displayGeom(),sx=g.w/w,sy=g.h/h;aictx.lineWidth=2;aictx.strokeStyle='#22d3ee';aictx.fillStyle='#22d3ee';aictx.font='800 13px system-ui';
+        list.forEach((b,i)=>{const x=g.left+b.x0*sx,y=g.top+b.y0*sy,wv=(b.x1-b.x0+1)*sx,hv=(b.y1-b.y0+1)*sy;aictx.strokeRect(x,y,wv,hv);aictx.fillText(String(i+1),x+3,y-4)});
+      }
+
+      $('blobMin').oninput=()=>{$('blobMinOut').textContent=$('blobMin').value};
+      $('aiCount').onchange=e=>{if(!e.target.checked){drawBlobs(null);$('countOut').textContent='Vision Count nonaktif.'}pulse('microscope_vision_count',{enabled:e.target.checked})};
+      $('autoEnh').onclick=()=>{
+        const d=frame(180);if(!d)return M.showNotification('Nyalakan kamera dulu','error');
+        const g=gray(d);let s=0,s2=0;for(const v of g){s+=v;s2+=v*v}const mean=s/g.length,sd=Math.sqrt(s2/g.length-mean*mean)||1;
+        const bright=clamp(100*118/Math.max(mean,1),60,165),contrast=clamp(100*58/(sd*bright/100),72,175);
+        for(const [id,val] of [['brightnessSlider',bright],['contrastSlider',contrast]]){const el=$(id);el.value=Math.round(val);el.dispatchEvent(new Event('input'))}
+        M.showNotification('Auto-Optimal menyesuaikan brightness + contrast','success');pulse('microscope_auto_enhance');
+      };
+
+      // Teachable ML: lazy loaded. WebGPU preferred when TensorFlow.js supports it, then WebGL/CPU fallback.
+      let net=null,knn=null,mlBusy=false;const labels=['Kelas A','Kelas B','Kelas C'],counts=[0,0,0];
+      $('mlClasses').innerHTML=labels.map((l,i)=>'<div class="ai-class-row"><input class="pilar-ai-input" value="'+l+'" data-i="'+i+'" aria-label="Nama kelas '+(i+1)+'"><button class="btn btn-accent btn-sm" data-add="'+i+'">+ Contoh</button><b id="mlN'+i+'">0</b></div>').join('');
+      $('mlClasses').querySelectorAll('input').forEach(el=>el.oninput=()=>labels[+el.dataset.i]=el.value);
+      async function ensureML(){
+        if(net)return;
+        $('mlOut').textContent='Memuat TensorFlow.js + MobileNet…';
+        await loadScriptOnce('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js','tf');
+        if(navigator.gpu){
+          try{await loadScriptOnce('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgpu@4.22.0/dist/tf-backend-webgpu.min.js');await tf.setBackend('webgpu');await tf.ready()}catch(e){console.warn('WebGPU TFJS fallback',e)}
+        }
+        if(tf.getBackend()!=='webgpu'){try{await tf.setBackend('webgl');await tf.ready()}catch(_){await tf.setBackend('cpu');await tf.ready()}}
+        await loadScriptOnce('https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/dist/mobilenet.min.js','mobilenet');
+        await loadScriptOnce('https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier@1.2.6/dist/knn-classifier.min.js','knnClassifier');
+        net=await mobilenet.load({version:2,alpha:.5});knn=knnClassifier.create();
+        $('mlBackend').textContent='ML · '+tf.getBackend().toUpperCase();$('mlState').textContent='READY';
+        $('mlOut').textContent='Siap. Kumpulkan ≥5 contoh untuk minimal dua kelas.';pulse('microscope_ml_ready',{backend:tf.getBackend()});
+      }
+      $('mlClasses').querySelectorAll('[data-add]').forEach(btn=>{
+        const idx=+btn.dataset.add;let timer=0;
+        const add=()=>{
+          if(!knn||!frame(224))return;
+          const emb=net.infer(AC,true);knn.addExample(emb,idx);emb.dispose?.();counts[idx]++;$('mlN'+idx).textContent=counts[idx];
+          if(counts.filter(n=>n>=5).length>=2)award('ml');
+        };
+        btn.addEventListener('pointerdown',e=>{btn.setPointerCapture?.(e.pointerId);add();timer=setInterval(add,250)});
+        ['pointerup','pointerleave','pointercancel'].forEach(ev=>btn.addEventListener(ev,()=>clearInterval(timer)));
+      });
+      $('aiML').onchange=async e=>{$('mlBox').hidden=!e.target.checked;if(e.target.checked){try{await ensureML()}catch(err){$('mlOut').textContent='ML gagal dimuat: '+err.message;e.target.checked=false;$('mlBox').hidden=true}}};
+      $('mlReset').onclick=()=>{knn?.clearAllClasses();counts.fill(0);counts.forEach((_,i)=>$('mlN'+i).textContent='0');$('mlOut').textContent='Contoh lokal direset.'};
+
+      // ESP32 transport: USB Serial primary, BLE wireless for HTTPS, legacy ws:// only when browser permits.
+      const SERVICE='6E400001-B5A3-F393-E0A9-E50E24DCCA9E',RX='6E400002-B5A3-F393-E0A9-E50E24DCCA9E',TX='6E400003-B5A3-F393-E0A9-E50E24DCCA9E';
+      const esp={port:null,writer:null,reader:null,ble:null,bleRx:null,bleTx:null,ws:null,waiter:null,
+        ok(){return !!(this.writer||this.bleRx||(this.ws&&this.ws.readyState===1))}};
+      function espState(label){$('espStat').textContent=label||(esp.ok()?'terhubung':'terputus');$('espStat').style.background=esp.ok()?'var(--secondary)':'#64748b'}
+      function espLine(text){
+        text=String(text||'').trim();if(!text)return;$('espLog').textContent='ESP32 · '+text;
+        if(esp.waiter&&/^(DONE|HOME|STOP|ERR)/.test(text)){const w=esp.waiter;esp.waiter=null;/^ERR/.test(text)?w.reject(new Error(text)):w.resolve(text)}
+      }
+      async function espSend(cmd){
+        const data=new TextEncoder().encode(cmd+'\n');
+        if(esp.writer)return esp.writer.write(data);
+        if(esp.bleRx){const fn=esp.bleRx.writeValueWithoutResponse?.bind(esp.bleRx)||esp.bleRx.writeValue.bind(esp.bleRx);return fn(data)}
+        if(esp.ws?.readyState===1)return esp.ws.send(cmd);
+        throw new Error('ESP32 belum terhubung');
+      }
+      function espCmd(cmd,timeout=10000){return new Promise(async(resolve,reject)=>{if(esp.waiter)return reject(new Error('Controller sedang memproses perintah'));const timer=setTimeout(()=>{if(esp.waiter){esp.waiter=null;reject(new Error('Timeout '+cmd))}},timeout);esp.waiter={resolve:v=>{clearTimeout(timer);resolve(v)},reject:e=>{clearTimeout(timer);reject(e)}};try{await espSend(cmd)}catch(e){clearTimeout(timer);esp.waiter=null;reject(e)}})}
+      $('espUsb').onclick=async()=>{
+        try{
+          if(!navigator.serial)throw new Error('Web Serial memerlukan Chrome/Edge desktop');
+          esp.port=await navigator.serial.requestPort();await esp.port.open({baudRate:115200});esp.writer=esp.port.writable.getWriter();espState('USB');
+          const decoder=new TextDecoder();esp.reader=esp.port.readable.getReader();
+          (async()=>{let buf='';try{for(;;){const{value,done}=await esp.reader.read();if(done)break;buf+=decoder.decode(value,{stream:true});let i;while((i=buf.indexOf('\n'))>=0){espLine(buf.slice(0,i));buf=buf.slice(i+1)}}}catch(e){console.warn(e)}finally{espState()}})();
+          award('hw');pulse('microscope_esp32_connect',{transport:'usb'});await espSend('I');
+        }catch(e){M.showNotification(e.message,'error')}
+      };
+      $('espBle').onclick=async()=>{
+        try{
+          if(!navigator.bluetooth)throw new Error('Web Bluetooth tidak tersedia di browser ini');
+          const dev=await navigator.bluetooth.requestDevice({filters:[{services:[SERVICE]}]});const server=await dev.gatt.connect(),service=await server.getPrimaryService(SERVICE);
+          esp.bleRx=await service.getCharacteristic(RX);esp.bleTx=await service.getCharacteristic(TX);await esp.bleTx.startNotifications();
+          esp.bleTx.addEventListener('characteristicvaluechanged',e=>espLine(new TextDecoder().decode(e.target.value)));
+          dev.addEventListener('gattserverdisconnected',()=>{esp.bleRx=esp.bleTx=null;espState()});esp.ble=dev;espState('BLE');
+          award('hw');pulse('microscope_esp32_connect',{transport:'ble'});await espSend('I');
+        }catch(e){M.showNotification('BLE: '+e.message,'error')}
+      };
+      $('espWifi').onclick=()=>{
+        if(location.protocol==='https:')return M.showNotification('GitHub Pages HTTPS memblok ws:// ESP32. Gunakan USB atau BLE.','error');
+        try{const ws=new WebSocket('ws://'+$('espHost').value.trim()+':81');ws.onopen=()=>{esp.ws=ws;espState('WiFi');award('hw');pulse('microscope_esp32_connect',{transport:'wifi'})};ws.onmessage=e=>espLine(e.data);ws.onerror=()=>M.showNotification('WebSocket ESP32 gagal','error');ws.onclose=()=>{esp.ws=null;espState()}}catch(e){M.showNotification(e.message,'error')}
+      };
+      document.querySelectorAll('[data-m]').forEach(btn=>btn.onclick=async()=>{try{await espCmd('M'+btn.dataset.m)}catch(e){M.showNotification(e.message,'error')}});
+      $('espHome').onclick=async()=>{try{$('espLog').textContent='Homing…';await espCmd('H',32000)}catch(e){M.showNotification(e.message,'error')}};
+      $('espStop').onclick=async()=>{try{await espSend('X')}catch(e){M.showNotification(e.message,'error')}};
+      let ledTick=0;$('espLed').oninput=e=>{const v=e.target.value;$('espLedOut').textContent=v;const now=performance.now();if(now-ledTick>70){ledTick=now;espSend('L'+v).catch(()=>{})}};
+
+      // Two-stage autofocus: coarse then fine, central ROI sharpness.
+      let afRunning=false;
+      const sharpness=()=>{const d=frame(320);return d?lapVar(gray(d),d.width,d.height,.62):0};
+      async function scanFocus(offsetStart,step,count,label){
+        await espCmd('M'+offsetStart);await sleep(140);let best={i:0,score:-1};
+        for(let i=0;i<count;i++){
+          await sleep(120);const score=sharpness();$('espLog').textContent=label+' '+(i+1)+'/'+count+' · '+score.toFixed(0);
+          if(score>best.score)best={i,score};if(i<count-1)await espCmd('M'+step);
+        }
+        const fromLast=(best.i-(count-1))*step;if(fromLast)await espCmd('M'+fromLast);
+        return best;
+      }
+      $('espAF').onclick=async()=>{
+        if(!esp.ok())return M.showNotification('Hubungkan ESP32 via USB/BLE dulu','error');
+        if(!M.isStreaming)return M.showNotification('Nyalakan kamera dulu','error');
+        if(afRunning)return;
+        afRunning=true;$('espAF').disabled=true;
+        try{
+          $('espLog').textContent='Autofocus coarse…';const coarse=await scanFocus(-240,60,9,'Coarse');
+          $('espLog').textContent='Autofocus fine…';const fine=await scanFocus(-40,10,9,'Fine');
+          $('espLog').textContent='Fokus terkunci · score '+fine.score.toFixed(0);M.showNotification('Smart Autofocus selesai ✔','success');pulse('microscope_autofocus',{coarse:Math.round(coarse.score),fine:Math.round(fine.score)});
+        }catch(e){M.showNotification('Autofocus: '+e.message,'error')}
+        finally{afRunning=false;$('espAF').disabled=false}
+      };
+
+      // Adaptive vision loop; sync to video frames when possible and throttle expensive work.
+      let sharpPeak=1,sharpSmooth=0,lastVision=0,tick=0;
+      async function visionStep(now){
+        if(document.hidden||!M.isStreaming||V.readyState<2||mlBusy)return;
+        if(now-lastVision<190)return;lastVision=now;mlBusy=true;
+        try{
+          tick++;const d=frame(320);if(!d)return;const g=gray(d),score=lapVar(g,d.width,d.height,.68);
+          sharpPeak=Math.max(sharpPeak*.998,score);const relative=clamp(Math.round(100*Math.sqrt(score/Math.max(sharpPeak,1))),0,100);sharpSmooth=Math.round(sharpSmooth*.62+relative*.38);
+          box.classList.add('ai-live');$('hudBar').style.width=sharpSmooth+'%';$('hudBar').style.background=sharpSmooth>=85?'#22c55e':sharpSmooth>=55?'#f59e0b':'#ef4444';$('hudTxt').textContent=sharpSmooth>=85?'Tajam':sharpSmooth>=55?'Hampir':'Buram';$('hudScore').textContent=sharpSmooth+'%';$('focusChip').textContent=sharpSmooth+'%';$('focusOut').textContent='Skor fokus relatif '+sharpSmooth+'% · Laplacian ROI '+score.toFixed(0);if(sharpSmooth>=85&&score>20)award('sharp');
+          if($('aiCount').checked&&tick%2===0){
+            const list=blobs(g,d.width,d.height);drawBlobs(list,d.width,d.height);let msg='🔬 '+list.length+' objek';
+            if(M.pixelScale&&list.length){const umPerFramePx=(V.videoWidth/(M.zoomLevel*d.width))*M.pixelScale;const avg=list.reduce((a,b)=>a+b.area,0)/list.length*umPerFramePx*umPerFramePx;msg+=' · rata² '+avg.toFixed(0)+' μm²'}
+            $('countOut').textContent=msg;if(list.length>=5)award('cnt');
+          }
+          if($('aiML').checked&&net&&knn&&knn.getNumClasses()>=2&&tick%3===0){
+            frame(224);const emb=net.infer(AC,true);const result=await knn.predictClass(emb);emb.dispose?.();const label=labels[+result.label]||result.label;const conf=Math.round((result.confidences[result.label]||0)*100);$('mlOut').textContent='🧠 '+label+' · '+conf+'%';
+          }
+        }catch(e){console.warn('[Microscope Vision]',e)}
+        finally{mlBusy=false}
+      }
+      function loop(t){requestAnimationFrame(loop);visionStep(t)}requestAnimationFrame(loop);
+
+      const originalStop=M.stopCamera.bind(M);
+      M.stopCamera=(silent=false)=>{box.classList.remove('ai-live');drawBlobs(null);return originalStop(silent)};
+
+      M.showHelp=()=>alert('PILAR Microscope Lab v0.7\n\n1. Hub memberi dua pintu: Masuk Cepat atau Vision Challenge.\n2. SCAN/START membuka USB microscope/webcam; FREEZE membantu pengukuran stabil.\n3. Vision Count = CV eksperimental (Otsu + connected components), bukan diagnosis dan bukan ML.\n4. Teachable Microscope = MobileNet + KNN lokal di browser; contoh gambar tidak diunggah oleh fitur ini.\n5. PILAR Focus Controller dapat memakai USB Serial atau BLE. WiFi ws:// tidak bekerja dari GitHub Pages HTTPS.\n6. Smart Autofocus memakai skor ketajaman Laplacian dua tahap.\n7. Kalibrasi tetap berbasis source pixel dan harus diulang bila set-up optik berubah.\n8. Capture tetap disimpan sebagai Blob di IndexedDB dengan overlay + Creator ID.');
+    });
+  })();
+  </script>
+
   <script src="../../pulse/config.js"></script>
   <script src="../../core/pulse.js"></script>
 </body>
