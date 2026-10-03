@@ -7,4 +7,4 @@ Setiap app memiliki folder sendiri di `apps/<app-id>/`. Untuk menambahkan app:
 4. Tampilkan PILAR Creator ID pada bagian atas app.
 5. Untuk app kamera/Vision AI, minta permission hanya setelah aksi eksplisit pengguna.
 
-App aktif saat ini: `microscope` dan `rubik-orbit`.
+App aktif saat ini: `microscope`, `rubik-orbit`, `mbg-duel`, `soundscope`, dan `pak-taro`.

@@ -1,0 +1,1206 @@
+<!doctype html>
+<!-- Lab Misteri Pak Taro v2 — IFP + Vision AI Edition -->
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071d22">
+<title>PILAR™ · Lab Misteri Pak Taro v2 — IFP Vision</title>
+<style>
+:root{
+  --bg:#061b1f; --panel:#0d2a30; --ink:#effcf8; --muted:#a8c9c6;
+  --mint:#66e3c4; --cyan:#5ed7ff; --gold:#ffd56a; --pink:#ff6f91; --red:#ff5e67;
+  --ok:#4ade80; --line:rgba(255,255,255,.12); --shadow:0 .5rem 1.5rem rgba(0,0,0,.28);
+  --btn:3.4rem; --top:5.4rem; --bot:5.2rem;
+}
+body[data-ui=ifp]{--btn:4.2rem;--bot:5.8rem}
+body[data-ui=mobile]{--btn:3rem;--top:3.6rem;--bot:3.8rem}
+body.hc{--ink:#fff;--muted:#e3f4f1;--line:rgba(255,255,255,.42);--bg:#000;--panel:#031418}
+*{box-sizing:border-box}
+html{font-size:16px}
+html,body{margin:0;width:100%;height:100%;height:100dvh;overflow:hidden;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+body{touch-action:none;overscroll-behavior:none;background:
+ radial-gradient(circle at 12% 14%,rgba(102,227,196,.14),transparent 28%),
+ radial-gradient(circle at 88% 8%,rgba(94,215,255,.12),transparent 25%),
+ linear-gradient(135deg,#05171b,#08252a 55%,#071c21)}
+body.hc{background:#000}
+button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+body.nomotion *{animation:none!important;transition:none!important}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+#app{width:100%;height:100%;display:grid;grid-template-rows:var(--top) 1fr var(--bot);position:relative}
+.topbar{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:1rem;padding:.7rem 1.4rem;border-bottom:1px solid var(--line);background:rgba(5,24,29,.96);z-index:30}
+.brand{display:flex;align-items:center;gap:.9rem;min-width:0}
+.logo{width:3.5rem;height:3.5rem;border-radius:1.1rem;display:grid;place-items:center;background:linear-gradient(145deg,var(--mint),var(--cyan));color:#062026;font-weight:900;font-size:1.7rem;flex:0 0 auto}
+.brand h1{font-size:1.6rem;line-height:1;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand small{display:block;color:var(--muted);margin-top:.4rem;font-size:.72rem;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.progressBox{min-width:14rem}
+.progressLine{height:.65rem;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+#progressBar{height:100%;width:0;background:linear-gradient(90deg,var(--mint),var(--gold));transition:.35s}
+.scoreRow{display:flex;justify-content:space-between;color:var(--muted);font-size:.75rem;margin-bottom:.4rem;gap:1rem}
+.top-actions{display:flex;gap:.6rem}
+.iconBtn,.btn{border:1px solid var(--line);background:rgba(255,255,255,.07);border-radius:1.1rem;min-height:var(--btn);padding:0 1.1rem;font-weight:800;cursor:pointer;transition:.18s}
+.iconBtn{min-width:var(--btn);padding:0;display:grid;place-items:center;font-size:1.35rem}
+.iconBtn:hover,.btn:hover{transform:translateY(-2px);border-color:rgba(102,227,196,.55)}
+.btn.primary{background:linear-gradient(135deg,#16a085,#25bda5);border-color:transparent;color:#041c1a;box-shadow:0 .7rem 1.6rem rgba(37,189,165,.24)}
+.btn.gold{background:linear-gradient(135deg,#f2b441,#ffd86a);color:#352300;border:0}
+.btn:disabled{opacity:.4;filter:grayscale(.5);cursor:not-allowed;transform:none}
+main{position:relative;min-height:0}
+.scene{position:absolute;inset:0;padding:1.3rem 1.6rem;opacity:0;visibility:hidden;pointer-events:none;transform:translateX(1.5rem);transition:opacity .3s,transform .3s,visibility 0s .3s;overflow:auto;display:flex;flex-direction:column;touch-action:pan-y}
+.scene.active{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition-delay:0s}
+.scene>.hero,.scene>.observeGrid,.scene>.expLayout,.scene>.boardLayout,.scene>.sandboxLayout{flex:1 1 0;min-height:0;height:auto}
+[hidden]{display:none!important}
+:focus-visible{outline:.2rem solid var(--gold);outline-offset:.2rem}
+.step.done:after{content:" ✓";color:var(--ok)}
+.nudge{animation:nudge 1.2s infinite}@keyframes nudge{50%{transform:scale(1.06);box-shadow:0 0 0 .5rem rgba(102,227,196,.22)}}
+.sceneHeader{flex:0 0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:1.2rem;margin-bottom:1rem}
+.sceneHeader h2{font-size:2.3rem;line-height:1.05;margin:0}
+.sceneHeader p{margin:.5rem 0 0;color:var(--muted);font-size:1.05rem}
+.kicker{font-size:.75rem;letter-spacing:.13em;color:var(--mint);font-weight:900;text-transform:uppercase;margin-bottom:.5rem}
+.card{background:linear-gradient(150deg,rgba(18,52,59,.92),rgba(8,34,39,.92));border:1px solid var(--line);border-radius:1.6rem;box-shadow:var(--shadow)}
+body.hc .card{background:#031418}
+.hint{border-left:.25rem solid var(--gold);background:rgba(255,213,106,.08);padding:.75rem 1rem;border-radius:0 1rem 1rem 0;color:#ffe9ac;font-weight:700}
+.bottomNav{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem;padding:.6rem 1.4rem;border-top:1px solid var(--line);background:rgba(5,24,29,.92);z-index:30}
+.steps{display:flex;justify-content:center;gap:.55rem;min-width:0}
+.step{height:var(--btn);min-width:3.2rem;border-radius:1rem;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--muted);font-weight:900;cursor:pointer;padding:0 .9rem}
+.step.active{background:rgba(102,227,196,.16);border-color:rgba(102,227,196,.5);color:#dffff7}
+.step span{display:none}
+@media(min-width:1000px){.step span{display:inline;margin-left:.5rem}}
+
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:1.4rem;align-items:stretch}
+.heroCopy{padding:2.1rem 2.4rem;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.heroCopy:after{content:"";position:absolute;width:27rem;height:27rem;border-radius:50%;right:-12rem;bottom:-14rem;background:radial-gradient(circle,var(--mint),transparent 65%);opacity:.1;pointer-events:none}
+.heroTitle{font-size:5.2rem;line-height:.92;margin:.6rem 0 1.1rem;letter-spacing:-.045em;font-weight:900}
+.heroTitle b{color:var(--gold)}
+.heroText{font-size:1.3rem;line-height:1.5;color:#cce3df;max-width:52rem;margin:0 0 1.3rem}
+.heroButtons{display:flex;gap:.8rem;flex-wrap:wrap}
+.heroButtons .btn{min-height:calc(var(--btn) + .6rem);font-size:1.15rem;padding:0 1.6rem}
+.modeRow{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:1rem}
+.modeChip{min-height:2.6rem;padding:0 1rem;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);font-weight:800;cursor:pointer}
+.modeChip[aria-pressed=true]{border-color:var(--mint);background:rgba(102,227,196,.16)}
+.mysteryPanel{padding:1.5rem;display:grid;grid-template-rows:auto 1fr auto;gap:.9rem;overflow:hidden}
+.vialRow{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;align-content:center}
+.vial{min-height:7rem;border:1px solid rgba(255,255,255,.13);background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.035));border-radius:1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;font-weight:900;font-size:1.9rem}
+.vial:before{content:"";width:46%;height:55%;position:absolute;bottom:-.5rem;border-radius:45% 45% 20% 20%;background:linear-gradient(rgba(94,215,255,.14),rgba(102,227,196,.35))}
+.vial>span{z-index:1}
+.mysteryFooter{font-weight:800;color:var(--muted);text-align:center}
+
+.observeGrid{display:grid;grid-template-columns:1.22fr .78fr;gap:1.1rem;min-height:0}
+.flowerCompare{padding:1.1rem;display:grid;grid-template-columns:1fr 1fr;gap:.9rem;min-height:0}
+.flowerPane{display:grid;grid-template-rows:auto 1fr;min-height:0;text-align:center}
+.paneTitle{font-weight:900;color:var(--muted);padding:.5rem}
+.flowerStage{min-height:0;display:grid;place-items:center;border-radius:1.4rem;background:radial-gradient(circle at 50% 65%,rgba(102,227,196,.10),transparent 46%),rgba(255,255,255,.025);overflow:hidden}
+.flowerStage svg{width:min(90%,26rem);height:min(90%,27rem)}
+.effectPanel{padding:1.1rem;display:grid;grid-template-rows:auto 1fr auto;gap:.8rem;min-height:0}
+.effectCards{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;align-content:start;overflow:auto}
+.effect-card{min-height:5.8rem;border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:1.25rem;color:var(--ink);text-align:left;padding:.8rem .95rem;cursor:pointer;display:flex;gap:.75rem;align-items:center;transition:.18s}
+.effect-card:hover,.effect-card.active{background:rgba(102,227,196,.13);border-color:rgba(102,227,196,.5);transform:translateY(-2px)}
+.effectIcon{width:3rem;height:3rem;border-radius:.95rem;display:grid;place-items:center;background:rgba(255,255,255,.08);font-size:1.55rem;flex:0 0 auto}
+.effect-card b{display:block;font-size:.9rem}.effect-card small{color:var(--muted);font-size:.8rem}
+
+.expLayout{display:grid;grid-template-columns:20rem 1fr 21rem;gap:1rem;min-height:0}
+.expList{padding:.9rem;display:grid;gap:.7rem;align-content:start}
+.experiment-card{border:1px solid var(--line);border-radius:1.25rem;background:rgba(255,255,255,.045);padding:.95rem;cursor:pointer;transition:.18s;min-height:6.5rem;text-align:left}
+.experiment-card.active{border-color:var(--cyan);background:rgba(94,215,255,.10);transform:translateX(.3rem)}
+.mixCode{display:flex;gap:.45rem;margin-top:.6rem}
+.miniVial{width:2.6rem;height:2.6rem;border-radius:.9rem;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.17),rgba(94,215,255,.12));border:1px solid var(--line);font-weight:900}
+.expCenter{padding:1rem;display:grid;grid-template-rows:auto 1fr;min-height:0}
+.expCenterHead{display:flex;justify-content:space-between;align-items:center;gap:.6rem}
+.expResult{min-height:0;display:grid;grid-template-columns:.9fr 1.1fr;gap:.8rem;align-items:stretch}
+.expFlower{display:grid;place-items:center;min-height:0}
+.expFlower svg{width:min(90%,27rem);height:min(92%,27.5rem)}
+.labAnim{display:flex;flex-direction:column;justify-content:center;gap:.8rem;padding:.8rem}
+.pourVials{display:flex;justify-content:center;gap:.8rem}
+.bigVial{width:5.1rem;height:7.2rem;border:2px solid rgba(255,255,255,.18);border-radius:1.1rem 1.1rem 1.75rem 1.75rem;display:grid;place-items:center;font-size:1.65rem;font-weight:900;background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(94,215,255,.14))}
+.expObs{padding:1rem;display:grid;grid-template-rows:auto 1fr auto;gap:.8rem;min-height:0}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;align-content:start;overflow:auto}
+.chip{border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--ink);padding:.7rem .8rem;border-radius:1rem;min-height:3.3rem;font-weight:800;cursor:pointer;flex:1 1 8.5rem}
+.chip.on{border-color:var(--gold);background:rgba(255,213,106,.12);color:#fff0bb}
+.chip.correct{border-color:var(--ok);background:rgba(74,222,128,.12)}
+.chip.wrong{border-color:var(--red);background:rgba(255,94,103,.10)}
+.feedback{min-height:3rem;color:var(--muted);font-weight:800}
+
+.boardLayout{display:grid;grid-template-columns:18.5rem 1fr;gap:1.1rem;min-height:0}
+.tokenBank{padding:1rem;display:flex;flex-direction:column;gap:.65rem;overflow:auto}
+.tokenBank h3,.mapBoard h3{margin:0 0 .25rem}
+.evidence-token,.glass-token{border:1px solid var(--line);border-radius:1.1rem;background:rgba(255,255,255,.075);min-height:4.2rem;padding:.65rem .85rem;font-weight:900;display:flex;align-items:center;gap:.65rem;cursor:grab;user-select:none;touch-action:none}
+body[data-ui=mobile] .evidence-token,body[data-ui=mobile] .glass-token{touch-action:manipulation}
+.evidence-token:active,.glass-token:active{cursor:grabbing}
+.tokenDot{width:2.2rem;height:2.2rem;border-radius:.7rem;display:grid;place-items:center;background:rgba(102,227,196,.15);flex:0 0 auto}
+.mapBoard{padding:1rem;display:grid;grid-template-rows:auto 1fr auto;min-height:0;gap:.5rem}
+.slotGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;min-height:0}
+.glass-slot{min-height:8.5rem;border:2px dashed rgba(255,255,255,.18);border-radius:1.5rem;background:rgba(255,255,255,.025);padding:.75rem;display:flex;flex-direction:column;gap:.5rem;transition:.18s}
+.glass-slot.over{border-color:var(--cyan);background:rgba(94,215,255,.08)}
+.slotLabel{font-size:1.6rem;font-weight:900;line-height:1}
+.slotSub{color:var(--muted);font-size:.8rem}
+.glass-slot .evidence-token{margin-top:auto;background:rgba(102,227,196,.11)}
+.glass-slot.good{border-color:rgba(74,222,128,.55);background:rgba(74,222,128,.06)}
+.glass-slot.bad{border-color:rgba(255,94,103,.48)}
+.boardFooter{display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding-top:.7rem;flex-wrap:wrap}
+.picked{outline:.2rem solid var(--gold)!important;outline-offset:.15rem;box-shadow:0 0 0 .5rem rgba(255,213,106,.18);transform:scale(1.02)}
+body.hasPick .dropzone{border-color:rgba(255,213,106,.55)}
+
+.sandboxLayout{display:grid;grid-template-rows:1fr;gap:.8rem;min-height:0}
+.tabs{display:flex;gap:.5rem}
+.tab{min-height:var(--btn);border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:1rem;padding:0 1.1rem;color:var(--muted);font-weight:900;cursor:pointer}
+.tab.active{color:#061b1f;background:var(--mint);border-color:transparent}
+.tabPane{display:none;min-height:0}.tabPane.active{display:block;height:100%}
+.sandboxGrid{height:100%;display:grid;grid-template-columns:16rem 1fr 20.5rem;gap:1rem;min-height:0}
+.rack{padding:.8rem;display:flex;flex-direction:column;gap:.5rem;overflow:auto}
+.rack .glass-token{font-size:1.1rem}
+.mixLab{padding:1rem;display:grid;grid-template-rows:auto 7rem 1fr auto;gap:.65rem;min-height:0}
+.mixSlots{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem}
+.mix-slot{border:2px dashed rgba(255,255,255,.18);border-radius:1.25rem;display:grid;place-items:center;min-width:0;color:var(--muted);padding:.5rem}
+.mix-slot.over{border-color:var(--gold);background:rgba(255,213,106,.07)}
+.mix-slot .glass-token{width:100%;min-height:4.6rem;justify-content:center}.mix-slot:has(.glass-token)>span{display:none}
+.sandboxFlower{display:grid;place-items:center;min-height:0;background:radial-gradient(circle,rgba(102,227,196,.08),transparent 55%);border-radius:1.25rem}
+.sandboxFlower svg{width:min(75%,23rem);height:min(95%,24rem)}
+.predictPanel{padding:.9rem;display:grid;grid-template-rows:auto 1fr auto;gap:.6rem;min-height:0}
+.predictPanel .chips{display:grid;grid-template-columns:1fr;overflow:auto}
+.bossGrid{height:100%;display:grid;grid-template-columns:1fr 25.5rem;gap:1rem;min-height:0}
+.bossData{padding:.9rem;display:grid;grid-template-rows:auto 1fr auto;gap:.65rem;min-height:0}
+.bossExpRow{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;min-height:0}
+.bossExp{border:1px solid var(--line);border-radius:1.25rem;padding:.65rem;display:grid;grid-template-rows:auto 1fr;min-height:0;text-align:center}
+.bossExp svg{width:100%;height:100%;min-height:11rem}
+.bossMap{padding:.85rem;display:grid;grid-template-rows:auto auto 1fr auto;gap:.5rem;min-height:0}
+.bossTokens{display:flex;flex-wrap:wrap;gap:.4rem;max-height:9.5rem;overflow:auto}
+.bossTokens .evidence-token{min-height:3.3rem;padding:.45rem .6rem;font-size:.88rem;flex:1 1 9rem}
+.bossSlots{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;min-height:0;overflow:auto}
+.bossSlots .glass-slot{min-height:5.5rem;border-radius:1.1rem;padding:.5rem}.bossSlots .slotLabel{font-size:1.25rem}.bossSlots .slotSub{display:none}.bossSlots .evidence-token{min-height:3.1rem;font-size:.8rem;padding:.3rem}
+
+/* Vision */
+#visionPanel{position:fixed;z-index:60;display:none;right:1rem;top:.5rem;width:7rem;border-radius:1rem;overflow:hidden;border:1px solid rgba(94,215,255,.4);background:#020d10;box-shadow:0 .5rem 1.5rem rgba(0,0,0,.4);cursor:pointer}
+#visionPanel.open{display:block}
+.camBox{position:relative;aspect-ratio:4/3;width:100%}
+#visionVideo,#visionCanvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#visionCanvas{pointer-events:none}
+.visionHud,.camCtl,.aiLab{display:none}
+.visionDot{position:absolute;left:.4rem;top:.4rem;width:.65rem;height:.65rem;border-radius:50%;background:var(--mint);box-shadow:0 0 .6rem var(--mint)}
+body.visionOn .progressBox{margin-right:8rem}
+#visionPanel.big{right:1rem!important;top:calc(var(--top) + .8rem)!important;width:min(24rem,40vw);cursor:default;max-height:calc(100% - var(--top) - var(--bot) - 1.6rem);overflow:auto}
+#visionPanel.big .visionHud{display:flex;position:absolute;inset:0;pointer-events:none;flex-direction:column;justify-content:space-between;padding:.5rem}
+#visionPanel.big .camCtl{display:flex;position:absolute;right:.4rem;top:2.8rem;flex-direction:column;gap:.4rem}
+#visionPanel.big .aiLab{display:grid;gap:.3rem;padding:.8rem}#visionPanel.big .visionDot{display:none}
+.visionTop,.visionBottom{display:flex;justify-content:space-between;gap:.4rem;align-items:center}
+.pill{background:rgba(1,15,18,.82);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:.3rem .6rem;font-size:.7rem;font-weight:900}.expression{font-size:1.25rem}
+.camCtl button{width:2.8rem;height:2.8rem;border-radius:.85rem;border:1px solid rgba(255,255,255,.16);background:rgba(1,15,18,.8);color:#fff;font-size:1.1rem;cursor:pointer}
+.aiRow{display:flex;justify-content:space-between;align-items:center;gap:.5rem;font-weight:800;font-size:.9rem}
+.meter{position:relative;height:.65rem;border-radius:99px;background:rgba(255,255,255,.1);margin:.2rem 0 .5rem}.meter i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--mint),var(--gold))}
+.meter u{position:absolute;top:-.25rem;width:3px;height:1.15rem;background:var(--pink);border-radius:2px;left:40%}
+.handHover{outline:.25rem solid var(--cyan);outline-offset:.2rem;filter:brightness(1.15)}
+.coach{position:fixed;left:50%;bottom:calc(var(--bot) + 1rem);transform:translateX(-50%);z-index:119;background:var(--gold);color:#352300;font-weight:900;border-radius:999px;padding:.75rem 1.5rem;font-size:1.2rem;box-shadow:var(--shadow);max-width:92vw;text-align:center}
+#codeModal{position:fixed;inset:0;z-index:150;display:grid;place-items:center;background:rgba(2,10,12,.72)}
+.codeBox{width:min(45rem,94vw);padding:1.1rem;display:grid;gap:.65rem}
+#codeArea{width:100%;height:12.5rem;background:#031317;color:#d8fff4;border:1px solid var(--line);border-radius:.9rem;padding:.75rem;font:.95rem/1.5 ui-monospace,Consolas,monospace;resize:none}
+#codeOut{margin:0;min-height:5.2rem;background:#020d10;border-radius:.9rem;padding:.75rem;color:var(--gold);white-space:pre-wrap;font:.95rem ui-monospace,Consolas,monospace}
+#handCursorLayer{position:fixed;inset:0;z-index:80;pointer-events:none}
+.handCursor{position:absolute;left:0;top:0;will-change:transform;width:2.2rem;height:2.2rem;margin:-1.1rem 0 0 -1.1rem;border:.2rem solid var(--pc,var(--cyan));border-radius:50%;box-shadow:0 0 0 .5rem color-mix(in srgb,var(--pc,var(--cyan)) 16%,transparent),0 0 1.5rem color-mix(in srgb,var(--pc,var(--cyan)) 55%,transparent);transition:width .08s,height .08s}
+.handCursor:after{content:"";position:absolute;inset:-.6rem;border-radius:50%;background:conic-gradient(var(--gold) calc(var(--dw,0)*360deg),transparent 0);-webkit-mask:radial-gradient(circle,transparent 62%,#000 64%);mask:radial-gradient(circle,transparent 62%,#000 64%)}
+.handCursor.pinching{width:1.5rem;height:1.5rem;margin:-.75rem 0 0 -.75rem;border-color:var(--gold)}
+.dragGhost{position:fixed;z-index:100;pointer-events:none;opacity:.9;transform:translate(-50%,-50%) scale(1.05);box-shadow:0 1.4rem 3rem rgba(0,0,0,.42);max-width:18rem;border:2px solid var(--ownerColor,var(--cyan))}
+.draggable.held{opacity:.3!important;outline:2px solid var(--ownerColor,var(--cyan));outline-offset:2px}
+.toast{position:fixed;left:50%;bottom:calc(var(--bot) + .9rem);transform:translate(-50%,2rem);opacity:0;z-index:120;background:#09252b;border:1px solid var(--line);border-radius:1.1rem;padding:.9rem 1.3rem;box-shadow:var(--shadow);font-weight:900;transition:.22s;max-width:min(42rem,92vw);text-align:center;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.confetti{position:fixed;width:.65rem;height:1.1rem;border-radius:4px;z-index:130;pointer-events:none;animation:fall 1.3s ease-out forwards}
+@keyframes fall{to{transform:translate(var(--dx),85vh) rotate(760deg);opacity:0}}
+.pulse{animation:pulse .5s ease}@keyframes pulse{50%{transform:scale(1.03)}}
+.softNote{font-size:.95rem;color:var(--muted);line-height:1.4}
+.engineBadge{display:inline-flex;align-items:center;padding:.35rem .6rem;border-radius:999px;border:1px solid rgba(255,213,106,.34);background:rgba(255,213,106,.09);color:#ffe9a8;font-size:.68rem;font-weight:900;letter-spacing:.08em;margin-left:.5rem;vertical-align:middle}
+.reasoningStrip{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.6rem 0}
+.reasonNode{border:1px solid var(--line);background:rgba(255,255,255,.035);border-radius:1.1rem;padding:.65rem .75rem;display:grid;gap:.45rem;transition:.18s}
+.reasonNode.good{border-color:rgba(74,222,128,.55);background:rgba(74,222,128,.07)}
+.reasonNode.bad{border-color:rgba(255,94,103,.48);background:rgba(255,94,103,.06)}
+.reasonNode b{font-size:.85rem}.reasonNode small{color:var(--muted);line-height:1.3}
+.reasonNode select{width:100%;min-height:2.8rem;border-radius:.8rem;border:1px solid var(--line);background:#09252b;color:var(--ink);padding:0 .55rem;font-weight:800;font-size:.8rem}
+.boardPulse{animation:boardPulse .45s ease}@keyframes boardPulse{50%{box-shadow:0 0 0 .45rem rgba(255,94,103,.12)}}
+#reasonModal{position:fixed;inset:0;z-index:170;display:grid;place-items:center;background:rgba(2,10,12,.78);backdrop-filter:blur(6px)}
+.reasonBox{width:min(56rem,94vw);max-height:88vh;overflow:auto;padding:1.25rem;display:grid;gap:.9rem}
+.reasonTimeline{display:grid;gap:.65rem}
+.reasonStep{display:grid;grid-template-columns:3.5rem 1fr;gap:.8rem;align-items:start;border:1px solid var(--line);border-radius:1.1rem;padding:.75rem;background:rgba(255,255,255,.035);opacity:.28;transform:translateY(.5rem);transition:.35s}
+.reasonStep.show{opacity:1;transform:none;border-color:rgba(102,227,196,.35)}
+.reasonNum{width:3rem;height:3rem;border-radius:.95rem;display:grid;place-items:center;background:rgba(102,227,196,.14);font-weight:900;color:var(--mint)}
+.reasonStep b{display:block;margin-bottom:.25rem}.reasonStep p{margin:0;color:#cfe5e1;line-height:1.45}
+.reasonActions{display:flex;justify-content:flex-end;gap:.5rem;flex-wrap:wrap}
+.codeStatus{font-size:.75rem;color:var(--muted);font-weight:800}
+.bossMatrix{display:inline-flex;gap:.4rem;flex-wrap:wrap;margin-top:.3rem}
+.bossMatrix span{padding:.25rem .45rem;border-radius:.5rem;background:rgba(94,215,255,.09);border:1px solid rgba(94,215,255,.18);font-size:.7rem;font-weight:800}
+.perfFast{color:#9fffdc}.perfSmart{color:#ffe7a0}.perfEco{color:#ffb7c7}
+
+/* Pengaturan */
+#settings{position:fixed;top:0;right:0;bottom:0;width:min(27rem,100vw);z-index:160;background:#08242a;border-left:1px solid var(--line);padding:1.1rem;overflow:auto;box-shadow:-1rem 0 3rem rgba(0,0,0,.4);display:grid;gap:1rem;align-content:start}
+body.hc #settings{background:#000}
+.setGroup{display:grid;gap:.45rem}.setGroup>label{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mint);font-weight:900}
+.seg{display:flex;flex-wrap:wrap;gap:.4rem}
+.seg button,.tog{min-height:2.9rem;border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:.85rem;padding:0 .9rem;font-weight:800;cursor:pointer}
+.tog{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;gap:.6rem;min-height:3.2rem}
+.tog small{color:var(--muted);font-weight:600;display:block}
+.seg button[aria-pressed=true],.tog[aria-pressed=true]{border-color:var(--mint);background:rgba(102,227,196,.16)}
+.tog:after{content:"OFF";font-size:.7rem;padding:.2rem .5rem;border-radius:99px;background:rgba(255,255,255,.1)}
+.tog[aria-pressed=true]:after{content:"ON";background:var(--mint);color:#052a20}
+
+/* Tablet sempit */
+@media(max-width:1050px){
+  .topbar{grid-template-columns:minmax(0,1fr) auto}.progressBox{display:none}.brand small{display:none}
+  .hero{grid-template-columns:1fr}.mysteryPanel{display:none}
+  .observeGrid{grid-template-columns:1fr}
+  .expLayout{grid-template-columns:14rem 1fr;grid-template-rows:minmax(0,1fr) auto}.expObs{grid-column:1/-1}
+  .boardLayout{grid-template-columns:15rem 1fr}
+  .sandboxGrid{grid-template-columns:13rem 1fr;grid-template-rows:minmax(0,1fr) auto}.predictPanel{grid-column:1/-1}.predictPanel .chips{grid-template-columns:repeat(auto-fit,minmax(9rem,1fr))}
+  .bossGrid{grid-template-columns:1fr 21rem}
+  .reasoningStrip{grid-template-columns:1fr}
+}
+/* Mode HP: halaman bergulir, tap-to-place sebagai cara utama */
+body[data-ui=mobile] #fullscreenBtn,body[data-ui=mobile] #soundBtn{display:none}
+body[data-ui=mobile] .topbar{padding:.4rem .6rem;gap:.4rem;grid-template-columns:minmax(0,1fr) auto}
+body[data-ui=mobile] .logo{width:2.4rem;height:2.4rem;font-size:1.1rem;border-radius:.8rem}
+body[data-ui=mobile] .brand h1{font-size:1rem}
+body[data-ui=mobile] .iconBtn{min-width:2.6rem;min-height:2.6rem;font-size:1rem;border-radius:.8rem}
+body[data-ui=mobile] .top-actions{gap:.3rem}
+body[data-ui=mobile] .scene{padding:.8rem}
+body[data-ui=mobile] .scene>.hero,body[data-ui=mobile] .scene>.observeGrid,body[data-ui=mobile] .scene>.expLayout,body[data-ui=mobile] .scene>.boardLayout,body[data-ui=mobile] .scene>.sandboxLayout{flex:none;height:auto;min-height:auto}
+body[data-ui=mobile] .heroTitle{font-size:2.9rem}
+body[data-ui=mobile] .heroText{font-size:1rem}
+body[data-ui=mobile] .heroCopy{padding:1.2rem}
+body[data-ui=mobile] .heroButtons .btn{min-height:3.2rem;font-size:1rem;padding:0 1rem}
+body[data-ui=mobile] .sceneHeader{flex-direction:column;align-items:flex-start;gap:.5rem}
+body[data-ui=mobile] .sceneHeader h2{font-size:1.6rem}
+body[data-ui=mobile] .observeGrid,body[data-ui=mobile] .expLayout,body[data-ui=mobile] .boardLayout,body[data-ui=mobile] .sandboxGrid,body[data-ui=mobile] .bossGrid{grid-template-columns:1fr;grid-template-rows:none;height:auto}
+body[data-ui=mobile] .flowerStage{min-height:13rem}
+body[data-ui=mobile] .expResult{grid-template-columns:1fr}
+body[data-ui=mobile] .expFlower{min-height:15rem}
+body[data-ui=mobile] .slotGrid{grid-template-columns:repeat(2,1fr)}
+body[data-ui=mobile] .bossExpRow{grid-template-columns:1fr}
+body[data-ui=mobile] .bossExp svg{min-height:11rem}
+body[data-ui=mobile] .effectCards{grid-template-columns:1fr}
+body[data-ui=mobile] .mixLab{grid-template-rows:auto auto auto auto}
+body[data-ui=mobile] .sandboxFlower{min-height:14rem}
+body[data-ui=mobile] .tabPane.active{height:auto}
+body[data-ui=mobile] .mapBoard{grid-template-rows:auto auto auto}
+body[data-ui=mobile] .bottomNav{padding:.4rem .6rem;gap:.4rem}
+body[data-ui=mobile] .bottomNav .btn{min-height:2.8rem;padding:0 .8rem}
+body[data-ui=mobile] .step{min-width:2.4rem;height:2.7rem;padding:0}
+body[data-ui=mobile] #visionPanel:not(.big){top:calc(var(--top) + .3rem);width:5.5rem}
+body[data-ui=mobile] #visionPanel.big{width:min(20rem,88vw)}
+body[data-ui=mobile] .iconBtn#codeBtn{display:none}
+/* Mode IFP: area sentuh lebih besar */
+body[data-ui=ifp] .evidence-token,body[data-ui=ifp] .glass-token{min-height:5rem;font-size:1.1rem}
+body[data-ui=ifp] .effect-card,body[data-ui=ifp] .experiment-card{min-height:7rem}
+body[data-ui=ifp] .chip{min-height:3.8rem}
+
+/* PILAR Hub integration */
+.hubBtn{width:3.1rem;height:3.1rem;display:grid;place-items:center;border-radius:1rem;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--ink);text-decoration:none;font-weight:950;font-size:1.35rem;flex:0 0 auto}.hubBtn:hover{border-color:var(--mint);background:rgba(102,227,196,.12)}.creatorTag{font:650 .62rem/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;color:#789b98;white-space:nowrap;margin-left:auto}.topbar .brand{min-width:0}.brandMeta{display:flex;align-items:center;gap:.55rem;min-width:0}.brandMetaText{min-width:0}
+@media(max-width:920px){.creatorTag{display:none}}
+</style>
+</head>
+<body data-ui="desk">
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <a class="hubBtn ai-clickable" href="../../" title="Kembali ke PILAR Hub" aria-label="Kembali ke PILAR Hub">←</a>
+      <div class="brandMeta"><div class="logo">PT</div><div class="brandMetaText"><h1>PILAR™ · Lab Misteri Pak Taro</h1><small>v2 • IFP MULTITOUCH • VISION AI • JEJAK PENALARAN</small></div></div>
+    </div>
+    <div class="progressBox">
+      <div class="scoreRow"><span id="sceneName">Intro</span><span id="evidenceScore">Bukti 0</span></div>
+      <div class="progressLine"><div id="progressBar"></div></div>
+    </div>
+    <div class="top-actions">
+      <span class="creatorTag">by : rizalabdurrahman05@guru.smp.belajar.id</span>
+      <button class="iconBtn ai-clickable" id="hintBtn" title="Petunjuk Pak Taro" aria-label="Petunjuk Pak Taro">💡</button>
+      <button class="iconBtn ai-clickable" id="settingsBtn" title="Pengaturan tampilan" aria-label="Pengaturan tampilan">⚙</button>
+      <button class="iconBtn ai-clickable" id="codeBtn" title="Kode di balik misteri" aria-label="Kode di balik misteri">{ }</button>
+      <button class="iconBtn ai-clickable" id="visionBtn" title="Vision AI" aria-label="Vision AI">◉</button>
+      <button class="iconBtn ai-clickable" id="soundBtn" title="Suara" aria-label="Suara">♪</button>
+      <button class="iconBtn ai-clickable" id="fullscreenBtn" title="Layar penuh" aria-label="Layar penuh">⛶</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="scene active" data-scene="0" id="introScene">
+      <div class="hero">
+        <div class="heroCopy card">
+          <div class="kicker">Misi Investigasi</div>
+          <div class="heroTitle">6 gelas.<br>5 pupuk.<br><b>1 penipu.</b></div>
+          <p class="heroText">Pak Taro lupa mencatat isi setiap gelas. Temukan gelas yang hanya berisi air dengan mengamati perubahan bunga, mencari pola, lalu menguji bukti.</p>
+          <div class="heroButtons">
+            <button class="btn primary ai-clickable" id="startMission">Mulai Misi →</button>
+            <button class="btn ai-clickable" id="introVision">◉ Aktifkan Vision AI</button>
+          </div>
+          <div class="modeRow" role="group" aria-label="Pilih tampilan">
+            <span class="softNote">Tampilan:</span>
+            <button class="modeChip ai-clickable" data-ui="auto">Otomatis</button>
+            <button class="modeChip ai-clickable" data-ui="ifp">IFP Kelas</button>
+            <button class="modeChip ai-clickable" data-ui="desk">Desktop</button>
+            <button class="modeChip ai-clickable" data-ui="mobile">HP</button>
+          </div>
+          <p class="softNote" id="uiInfo" style="margin-top:.8rem"></p>
+          <p class="softNote">Sentuh selalu aktif (multitouch: beberapa murid bisa menyeret bersamaan). Vision AI opsional: telunjuk = kursor, <b>jepit</b> = pilih/seret, <b>tahan 1 detik</b> = klik, <b>telapak terbuka digeser</b> = pindah scene.</p>
+        </div>
+        <div class="mysteryPanel card">
+          <div><div class="kicker">Rak Misteri</div><h2 style="margin:0">A sampai F</h2></div>
+          <div class="vialRow">
+            <div class="vial"><span>A</span></div><div class="vial"><span>B</span></div><div class="vial"><span>C</span></div>
+            <div class="vial"><span>D</span></div><div class="vial"><span>E</span></div><div class="vial"><span>F</span></div>
+          </div>
+          <div class="mysteryFooter">Jangan tebak. Cari bukti.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" data-scene="1" id="observeScene">
+      <div class="sceneHeader">
+        <div><div class="kicker">Scene 2 • Observasi • 🧩 Pengenalan pola</div><h2>Kenali perubahan bunga</h2><p>Sentuh satu kartu. Lihat bagian bunga yang berubah.</p></div>
+        <div class="hint">Lihat → bandingkan → sebutkan apa yang berubah.</div>
+      </div>
+      <div class="observeGrid">
+        <div class="flowerCompare card">
+          <div class="flowerPane"><div class="paneTitle">Bunga awal</div><div class="flowerStage" id="baseFlower"></div></div>
+          <div class="flowerPane"><div class="paneTitle">Setelah satu efek</div><div class="flowerStage" id="demoFlower"></div></div>
+        </div>
+        <div class="effectPanel card">
+          <div><b>5 kemungkinan khasiat</b><div class="softNote">Air tidak mengubah bunga.</div></div>
+          <div class="effectCards" id="effectCards"></div>
+          <div id="effectExplain" class="feedback">Pilih kartu untuk memulai.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" data-scene="2" id="experimentScene">
+      <div class="sceneHeader">
+        <div><div class="kicker">Scene 3 • Eksperimen • 📊 Data dan dekomposisi</div><h2>Amati tiga ramuan</h2><p>Pilih percobaan, tandai perubahan yang terlihat, lalu cek pengamatan.</p></div>
+        <div class="hint">Fokus pada hasil, bukan pada tebakan isi gelas.</div>
+      </div>
+      <div class="expLayout">
+        <div class="expList card" id="expList"></div>
+        <div class="expCenter card">
+          <div class="expCenterHead"><div><b id="expTitle">Percobaan 1</b><div class="softNote" id="expMixLabel"></div></div><button class="btn ai-clickable" id="replayExp">↻ Ulang Animasi</button></div>
+          <div class="expResult">
+            <div class="labAnim"><div class="pourVials" id="pourVials"></div><div class="softNote" style="text-align:center">Ramuan dicampurkan ke tanaman…</div></div>
+            <div class="expFlower" id="expFlower"></div>
+          </div>
+        </div>
+        <div class="expObs card">
+          <div><b>Apa yang berubah?</b><div class="softNote">Pilih semua yang terlihat pada bunga hasil.</div></div>
+          <div class="chips" id="obsChips"></div>
+          <div><div id="obsFeedback" class="feedback">Belum dicek.</div><button class="btn gold ai-clickable" id="checkObs" style="width:100%">Cek Pengamatan</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" data-scene="3" id="evidenceScene">
+      <div class="sceneHeader">
+        <div><div class="kicker">Scene 4 • Papan Bukti • 🔗 Algoritma deduksi</div><h2>Pasangkan gelas dengan khasiat</h2><p>Seret, atau <b>ketuk kartu lalu ketuk gelas</b>. Satu kartu adalah AIR.</p></div>
+        <div class="hint">Yang muncul bersama di dua percobaan → cari perubahan yang sama.</div>
+      </div>
+      <div class="boardLayout">
+        <div class="tokenBank card drop-bank" id="evidenceBank">
+          <h3>Kartu Khasiat</h3><div class="softNote">Seret, ketuk-lalu-ketuk, atau pinch Vision AI.</div>
+        </div>
+        <div class="mapBoard card" id="mapBoard">
+          <div>
+            <h3>Peta Misteri A–F <span class="engineBadge">EVIDENCE ENGINE</span></h3>
+            <div class="softNote">Lengkapi 3 bukti kunci dulu, lalu susun semua kartu. Sistem memeriksa konsistensi alasan, bukan sekadar tebakan.</div>
+          </div>
+          <div>
+            <div class="reasoningStrip" id="reasoningStrip"></div>
+            <div class="slotGrid" id="evidenceSlots"></div>
+          </div>
+          <div class="boardFooter">
+            <div id="boardFeedback" class="feedback">Susun bukti kunci dan peta A–F.</div>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+              <button class="btn ai-clickable" id="clearBoard">↺ Kosongkan</button>
+              <button class="btn ai-clickable" id="replayReasoning" hidden>▶ Putar Ulang Alasan</button>
+              <button class="btn primary ai-clickable" id="checkBoard">Periksa Konsistensi</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" data-scene="4" id="sandboxScene">
+      <div class="sceneHeader">
+        <div><div class="kicker">Scene 5 • Sandbox / Boss • 🧪 Model dan uji prediksi</div><h2>Prediksi. Uji. Buktikan.</h2><p>Campur bebas atau pecahkan kasus baru dengan isi gelas yang diacak.</p></div>
+        <div class="tabs"><button class="tab active ai-clickable" data-tab="sandbox">Sandbox</button><button class="tab ai-clickable" data-tab="boss">Boss Challenge</button></div>
+      </div>
+      <div class="sandboxLayout">
+        <div class="tabPane active" id="sandboxPane">
+          <div class="sandboxGrid">
+            <div class="rack card drop-bank" id="glassRack"><b>Rak Gelas</b><div class="softNote">Maksimal 3 gelas.</div></div>
+            <div class="mixLab card">
+              <div style="display:flex;justify-content:space-between;align-items:center"><b>Meja Campur</b><button class="btn ai-clickable" id="resetMix">Reset</button></div>
+              <div class="mixSlots" id="mixSlots"></div>
+              <div class="sandboxFlower" id="sandboxFlower"></div>
+              <div id="sandboxFeedback" class="feedback">Susun campuran, buat prediksi, lalu uji.</div>
+            </div>
+            <div class="predictPanel card">
+              <div><b>Prediksimu</b><div class="softNote">Apa yang akan berubah?</div></div>
+              <div class="chips" id="predictChips"></div>
+              <button class="btn gold ai-clickable" id="testMix">UJI RAMUAN!</button>
+            </div>
+          </div>
+        </div>
+        <div class="tabPane" id="bossPane">
+          <div class="bossGrid">
+            <div class="bossData card">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:.6rem"><div><b id="bossTitle">Kasus Acak #1</b><div class="softNote">Khasiat <b>dan pola campuran</b> diacak. Jangan hafal posisi huruf.</div><div class="bossMatrix" id="bossMatrix"></div></div><button class="btn ai-clickable" id="newBoss">Kasus Baru</button></div>
+              <div class="bossExpRow" id="bossExperiments"></div>
+              <div class="hint">Temukan isi A–F hanya dari tiga hasil percobaan.</div>
+            </div>
+            <div class="bossMap card">
+              <div><b>Papan Jawaban Boss</b><div class="softNote">Isi keenam slot (seret atau ketuk-lalu-ketuk).</div></div>
+              <div class="bossTokens drop-bank" id="bossBank"></div>
+              <div class="bossSlots" id="bossSlots"></div>
+              <div style="display:flex;gap:.5rem"><button class="btn ai-clickable" id="clearBoss">↺</button><button class="btn primary ai-clickable" id="checkBoss" style="flex:1">Kunci Jawaban</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottomNav">
+    <button class="btn ai-clickable" id="prevBtn">← Kembali</button>
+    <div class="steps" id="steps">
+      <button class="step active ai-clickable" data-go="0">1 <span>Intro</span></button>
+      <button class="step ai-clickable" data-go="1">2 <span>Observasi</span></button>
+      <button class="step ai-clickable" data-go="2">3 <span>Eksperimen</span></button>
+      <button class="step ai-clickable" data-go="3">4 <span>Bukti</span></button>
+      <button class="step ai-clickable" data-go="4">5 <span>Sandbox</span></button>
+    </div>
+    <button class="btn primary ai-clickable" id="nextBtn">Lanjut →</button>
+  </nav>
+</div>
+
+<aside id="settings" role="dialog" aria-label="Pengaturan tampilan dan Vision AI" hidden>
+  <div class="aiRow"><b style="font-size:1.2rem">⚙ Pengaturan</b><button class="iconBtn ai-clickable" id="settingsClose" aria-label="Tutup">×</button></div>
+  <div class="setGroup"><label>Perangkat</label>
+    <div class="seg" data-set="ui">
+      <button class="ai-clickable" data-v="auto">Otomatis</button><button class="ai-clickable" data-v="ifp">IFP Kelas</button>
+      <button class="ai-clickable" data-v="desk">Desktop</button><button class="ai-clickable" data-v="mobile">HP</button>
+    </div>
+    <div class="softNote" id="uiInfo2"></div>
+  </div>
+  <div class="setGroup"><label>Ukuran teks & objek</label>
+    <div class="seg" data-set="text">
+      <button class="ai-clickable" data-v="0.9">Kecil</button><button class="ai-clickable" data-v="1">Normal</button>
+      <button class="ai-clickable" data-v="1.15">Besar</button><button class="ai-clickable" data-v="1.3">Sangat besar</button>
+    </div>
+  </div>
+  <div class="setGroup"><label>Aksesibilitas</label>
+    <button class="tog ai-clickable" data-set="contrast"><span>Kontras tinggi</span></button>
+    <button class="tog ai-clickable" data-set="motion"><span>Kurangi animasi</span></button>
+    <button class="tog ai-clickable" data-set="sound"><span>Suara efek</span></button>
+  </div>
+  <div class="setGroup"><label>Vision AI</label>
+    <button class="tog ai-clickable" data-set="dwell"><span>Klik dengan menahan kursor<small>Tahan telunjuk ±1 detik di tombol/kartu</small></span></button>
+    <button class="tog ai-clickable" data-set="swipe"><span>Geser telapak = pindah scene<small>Telapak terbuka, geser lebar ke kiri/kanan</small></span></button>
+    <button class="tog ai-clickable" data-set="autoHelp"><span>Tawarkan petunjuk saat alis terangkat lama<small>Hanya skor gerak otot wajah, bukan membaca perasaan. Tidak ada video disimpan.</small></span></button>
+  </div>
+</aside>
+
+<div id="visionPanel" class="ai-clickable" role="region" aria-label="Kamera Vision AI (klik untuk membuka panel)">
+  <div class="camBox">
+    <video id="visionVideo" autoplay playsinline muted></video><canvas id="visionCanvas"></canvas><span class="visionDot"></span>
+    <div class="visionHud">
+      <div class="visionTop"><span class="pill" id="visionStatus">Vision AI: belum aktif</span><span class="pill expression" id="expressionPill">🙂</span></div>
+      <div class="visionBottom"><span class="pill" id="handHint">☝️ telunjuk • 🤏 jepit</span><span class="pill" id="fpsPill">--</span></div>
+    </div>
+    <div class="camCtl"><button id="shrinkVision" class="ai-clickable" title="Perkecil" aria-label="Perkecil">⤡</button><button id="closeVision" class="ai-clickable" title="Matikan kamera" aria-label="Matikan kamera">×</button></div>
+  </div>
+  <div class="aiLab">
+    <div class="aiRow"><span>🤏 Jarak jepit (jempol↔telunjuk ÷ telapak)</span><span id="pinchVal">--</span></div>
+    <div class="meter"><i id="pinchBar"></i><u id="pinchThr"></u></div>
+    <label class="softNote">Sensitivitas jepit: <input type="range" id="pinchSens" class="ai-clickable" min="20" max="50" value="32" style="width:100%"></label>
+    <div id="exprBars"></div>
+    <div class="softNote">Model membaca 21 titik tangan dan 478 titik wajah di perangkat ini, lalu menghasilkan skor 0–1. Video tidak direkam atau diunggah.</div>
+    <div class="seg"><button class="ai-clickable" id="toggleMesh" aria-pressed="true" style="min-height:2.6rem;border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:.8rem;padding:0 .8rem;font-weight:800">◎ Garis</button><button class="ai-clickable" id="openSettings2" style="min-height:2.6rem;border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:.8rem;padding:0 .8rem;font-weight:800">⚙ Pengaturan</button></div>
+  </div>
+</div>
+<div id="coach" class="coach" hidden></div>
+<div id="codeModal" role="dialog" aria-modal="true" aria-label="Kode di balik misteri" hidden><div class="codeBox card">
+  <div class="aiRow"><b>{ } Kode di balik misteri</b><button class="iconBtn ai-clickable" id="codeClose" aria-label="Tutup">×</button></div>
+  <div class="softNote">Setiap percobaan adalah daftar gelas. Komputer menemukan gelas yang muncul di dua percobaan dengan <b>irisan himpunan</b>. Kode siswa berjalan di <b>Web Worker terisolasi</b> (timeout 600 ms, tanpa akses DOM).</div>
+  <textarea id="codeArea" spellcheck="false" aria-label="Editor kode"></textarea>
+  <div class="aiRow"><button class="btn primary ai-clickable" id="codeRun">▶ Jalankan Aman</button><span class="codeStatus" id="codeStatus">Web Worker • timeout 600 ms</span></div>
+  <pre id="codeOut" aria-live="polite"></pre></div></div>
+
+<div id="reasonModal" role="dialog" aria-modal="true" aria-label="Putar ulang jejak penalaran" hidden>
+  <div class="reasonBox card">
+    <div class="aiRow">
+      <div><b style="font-size:1.4rem">🧠 Jejak Penalaran</b><div class="softNote">Bukan hanya jawabannya—lihat jalan berpikir yang membuat jawaban itu masuk akal.</div></div>
+      <button class="iconBtn ai-clickable" id="reasonClose" aria-label="Tutup">×</button>
+    </div>
+    <div class="reasonTimeline" id="reasonTimeline"></div>
+    <div class="reasonActions">
+      <button class="btn ai-clickable" id="reasonRestart">↻ Ulangi</button>
+      <button class="btn primary ai-clickable" id="reasonDone">Selesai</button>
+    </div>
+  </div>
+</div>
+
+<div id="handCursorLayer"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+"use strict";
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const clamp = (v,a,b) => Math.min(b,Math.max(a,v));
+
+/* ===== Pengaturan & layout adaptif (IFP / Desktop / HP) ===== */
+const SKEY="taroSettings.v2";
+const settings={ui:"auto",text:1,contrast:false,motion:false,dwell:true,swipe:true,autoHelp:false,sound:true};
+try{Object.assign(settings,JSON.parse(localStorage.getItem(SKEY)||"{}"))}catch(e){}
+const saveSettings=()=>{try{localStorage.setItem(SKEY,JSON.stringify(settings))}catch(e){}};
+function detectUI(){
+  const w=innerWidth,h=innerHeight;
+  if(w<760||(h<500&&w<900))return "mobile";
+  const coarse=matchMedia("(pointer:coarse)").matches;
+  if(w>=2200||(w>=1600&&coarse&&(navigator.maxTouchPoints||0)>=5))return "ifp";
+  return "desk";
+}
+function syncSettingsUI(){
+  $$("#settings .seg[data-set]").forEach(g=>g.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(settings[g.dataset.set])===b.dataset.v)));
+  $$("#settings .tog[data-set]").forEach(b=>b.setAttribute("aria-pressed",String(!!settings[b.dataset.set])));
+  $$(".modeChip").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ui===settings.ui));
+  $("#soundBtn").textContent=settings.sound?"♪":"×♪";
+}
+function applyLayout(){
+  const ui=settings.ui==="auto"?detectUI():settings.ui;
+  document.body.dataset.ui=ui;
+  let px;
+  if(ui==="mobile")px=15*settings.text;
+  else{const k=Math.min(innerWidth/1600,innerHeight/900);px=clamp(16*k,ui==="ifp"?20:13,46)*settings.text}
+  document.documentElement.style.fontSize=px.toFixed(2)+"px";
+  document.body.classList.toggle("hc",!!settings.contrast);
+  document.body.classList.toggle("nomotion",!!settings.motion);
+  const info=`Terdeteksi: ${detectUI().toUpperCase()} • tampil: ${ui.toUpperCase()} • ${innerWidth}×${innerHeight} • ${navigator.maxTouchPoints||0} titik sentuh • ${navigator.hardwareConcurrency||"?"} thread CPU`;
+  $("#uiInfo").textContent=info;$("#uiInfo2").textContent=info;
+  syncSettingsUI();
+  window.LabTaro?.onLayout?.();
+}
+let layoutRaf=0;
+addEventListener("resize",()=>{cancelAnimationFrame(layoutRaf);layoutRaf=requestAnimationFrame(applyLayout)});
+function initSettings(){
+  $("#settingsBtn").addEventListener("click",()=>{$("#settings").hidden=!$("#settings").hidden});
+  $("#settingsClose").addEventListener("click",()=>{$("#settings").hidden=true});
+  $$("#settings .seg[data-set]").forEach(g=>g.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+    const k=g.dataset.set;settings[k]=k==="text"?Number(b.dataset.v):b.dataset.v;saveSettings();applyLayout();
+  })));
+  $$("#settings .tog[data-set]").forEach(b=>b.addEventListener("click",()=>{
+    const k=b.dataset.set;settings[k]=!settings[k];saveSettings();applyLayout();
+  }));
+  $$(".modeChip").forEach(b=>b.addEventListener("click",()=>{settings.ui=b.dataset.ui;saveSettings();applyLayout()}));
+}
+
+/* ===== Data ===== */
+const effects = [
+  {id:"double", icon:"✿", name:"Kelopak berlapis", hint:"Ada lapisan kelopak tambahan."},
+  {id:"leaf", icon:"❧", name:"Tumbuh daun", hint:"Daun muncul pada tangkai."},
+  {id:"wavy", icon:"〰", name:"Tangkai bergelombang", hint:"Tangkai tidak lagi lurus."},
+  {id:"white", icon:"◌", name:"Kelopak menjadi putih", hint:"Warna kelopak berubah putih."},
+  {id:"black", icon:"●", name:"Tengah menjadi hitam", hint:"Bagian tengah bunga menghitam."}
+];
+const allTokens = [...effects, {id:"water", icon:"💧", name:"AIR", hint:"Tidak memberi perubahan."}];
+const fixedMap = {A:"double",B:"leaf",C:"white",D:"water",E:"black",F:"wavy"};
+const experiments = [{id:1,mix:["A","B","C"]},{id:2,mix:["A","D","E"]},{id:3,mix:["C","D","F"]}];
+const keyReasoning = [
+  {id:"r12", pair:"P1 ∩ P2", glass:"A", truth:"double", prompt:"Perubahan apa yang sama pada P1 dan P2?"},
+  {id:"r13", pair:"P1 ∩ P3", glass:"C", truth:"white", prompt:"Perubahan apa yang sama pada P1 dan P3?"},
+  {id:"r23", pair:"P2 ∩ P3", glass:"D", truth:"none", prompt:"Apakah P2 dan P3 punya perubahan yang sama?"}
+];
+const state = {
+  scene:0, evidence:0, activeEffect:"double", activeExperiment:0, tab:"sandbox",
+  userObs:[new Set(),new Set(),new Set()], obsSolved:new Set(), boardSolved:false,
+  sandboxPred:new Set(), bossMap:null,bossExperiments:null,bossNo:0, seen:new Set(["double"]), bossWon:false, boardAttempts:0
+};
+const effectIdsForMix = (mix,map=fixedMap) => mix.map(g=>map[g]).filter(x=>x && x!=="water");
+
+/* ===== Suara & umpan balik ===== */
+let audioCtx=null;
+function tone(freq=520,dur=.08,type="sine",gain=.045){
+  if(!settings.sound) return;
+  try{
+    audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+    const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+    o.type=type;o.frequency.value=freq;g.gain.value=gain;o.connect(g);g.connect(audioCtx.destination);
+    o.start();g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);o.stop(audioCtx.currentTime+dur);
+  }catch(e){}
+}
+const successSound=()=>{tone(520,.08);setTimeout(()=>tone(660,.09),80);setTimeout(()=>tone(820,.12),165)};
+const badSound=()=>tone(190,.12,"triangle",.035);
+function toast(msg,ms=1900){
+  const el=$("#toast"); el.textContent=msg; el.classList.add("show"); clearTimeout(toast.t);
+  toast.t=setTimeout(()=>el.classList.remove("show"),ms);
+}
+function confetti(n=34){
+  if(settings.motion)return;
+  const colors=["#66e3c4","#5ed7ff","#ffd56a","#ff6f91","#fff"];
+  for(let i=0;i<n;i++){
+    const p=document.createElement("div");p.className="confetti";
+    p.style.left=(25+Math.random()*50)+"vw";p.style.top=(10+Math.random()*15)+"vh";
+    p.style.background=colors[i%colors.length];p.style.setProperty("--dx",(-250+Math.random()*500)+"px");
+    p.style.animationDelay=(Math.random()*.2)+"s";document.body.appendChild(p);setTimeout(()=>p.remove(),1600);
+  }
+}
+const addEvidence=(n=1)=>{state.evidence+=n;renderTop()};
+
+/* ===== Petunjuk bertingkat Pak Taro ===== */
+const hintLv={};
+function hintsFor(){
+  const s=state.scene;
+  if(s===0)return ["Tekan “Mulai Misi”. Kamu bisa memakai sentuh, mouse, atau Vision AI."];
+  if(s===1)return ["Sentuh tiap kartu khasiat, lalu bandingkan bunga awal dengan bunga hasilnya.","Ada 5 perubahan berbeda. Air tidak mengubah apa pun."];
+  if(s===2)return ["Lihat bunga hasil, lalu tandai SEMUA bagian yang berubah.","Setiap percobaan memakai 3 gelas; hasilnya gabungan efek ketiga gelas."];
+  if(s===3)return ["Mulai dari 3 bukti kunci: gelas apa yang muncul di dua percobaan sekaligus?","Gelas yang muncul di dua percobaan membawa perubahan yang tampak di kedua bunga itu.","Jika dua percobaan berbagi gelas tetapi tidak berbagi perubahan, gelas itu AIR."];
+  return state.tab==="boss"
+    ?["Cari gelas yang muncul di dua percobaan, lalu cocokkan dengan perubahan yang sama pada dua bunga.","Gelas yang efeknya tidak pernah terlihat bisa jadi AIR. Pakai sisa kartu untuk gelas yang tinggal sendirian."]
+    :["Pilih 1–3 gelas, tebak perubahannya dulu, baru tekan UJI RAMUAN."];
+}
+function showHint(auto){
+  const arr=hintsFor(),key=state.scene===4?"4"+state.tab:String(state.scene),lv=hintLv[key]||0;
+  toast((auto?"🧑‍🔬 Pak Taro melihat kamu mengernyit. ":"🧑‍🔬 Pak Taro: ")+arr[Math.min(lv,arr.length-1)],6500);
+  hintLv[key]=lv+1;tone(740,.06);
+}
+
+/* ===== Bunga ===== */
+function flowerSVG(active=[]){
+  const set=new Set(active);
+  const petal = set.has("white") ? "#f7fbfa" : "#847276";
+  const petalStroke = set.has("white") ? "#aabec1" : "#5b4a4e";
+  const center = set.has("black") ? "#171a1d" : "#f4e6c7";
+  const stemPath = set.has("wavy") ? "M250 260 C210 305 292 338 242 380 C200 415 282 444 252 500" : "M250 260 C250 340 248 420 252 500";
+  const ring=(r,scale=1,opacity=1)=>{
+    let s="";
+    for(let i=0;i<8;i++){
+      const a=i*45, rad=a*Math.PI/180, cx=250+Math.cos(rad)*r, cy=220+Math.sin(rad)*r;
+      s += `<ellipse cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" rx="${36*scale}" ry="${69*scale}" fill="${petal}" fill-opacity="${opacity}" stroke="${petalStroke}" stroke-width="4" transform="rotate(${a+90} ${cx} ${cy})"/>`;
+    } return s;
+  };
+  let petals = ring(76,1,1);
+  if(set.has("double")) petals += ring(48,.72,.98);
+  const leaves = set.has("leaf") ? `
+    <path d="M246 365 C190 320 151 344 171 385 C193 420 225 405 249 386" fill="#69c97a" stroke="#2c6a45" stroke-width="5"/>
+    <path d="M251 410 C305 365 346 390 326 429 C305 464 272 447 251 430" fill="#5fbd70" stroke="#2c6a45" stroke-width="5"/>` : "";
+  return `<svg viewBox="0 0 500 560" role="img" aria-label="Ilustrasi bunga">
+    <path d="${stemPath}" fill="none" stroke="#5aa86a" stroke-width="13" stroke-linecap="round"/>
+    ${leaves}<g>${petals}</g>
+    <circle cx="250" cy="220" r="42" fill="${center}" stroke="#5d5050" stroke-width="5"/>
+    <circle cx="237" cy="208" r="6" fill="rgba(255,255,255,.42)"/></svg>`;
+}
+
+/* ===== Jejak penalaran ===== */
+let reasonTimers=[];
+const reasonReplaySteps=()=>[
+  {title:"Bandingkan P1 dan P2",text:"Gelas yang sama adalah A. Perubahan yang sama pada kedua bunga adalah kelopak berlapis. Jadi A → kelopak berlapis."},
+  {title:"Bandingkan P1 dan P3",text:"Gelas yang sama adalah C. Perubahan yang sama adalah kelopak menjadi putih. Jadi C → kelopak putih."},
+  {title:"Bandingkan P2 dan P3",text:"Gelas yang sama adalah D, tetapi tidak ada perubahan bunga yang sama. Berarti D tidak memberi efek → AIR."},
+  {title:"Gunakan eliminasi",text:"Setelah A, C, dan D diketahui, perubahan yang tersisa dipasangkan dengan gelas yang hanya muncul pada satu percobaan: B → daun, E → tengah hitam, F → tangkai bergelombang."},
+  {title:"Uji balik",text:"Masukkan semua pasangan ke P1, P2, dan P3. Ketiganya menghasilkan bunga yang sama seperti data. Kesimpulan konsisten."}
+];
+function playReasoning(){
+  reasonTimers.forEach(clearTimeout);reasonTimers=[];
+  $("#reasonTimeline").innerHTML=reasonReplaySteps().map((x,i)=>`<div class="reasonStep" data-rstep="${i}"><div class="reasonNum">${i+1}</div><div><b>${x.title}</b><p>${x.text}</p></div></div>`).join("");
+  $("#reasonModal").hidden=false;
+  $$("#reasonTimeline .reasonStep").forEach((el,i)=>reasonTimers.push(setTimeout(()=>{el.classList.add("show");tone(470+i*45,.035)},settings.motion?0:180+i*650)));
+}
+function closeReasoning(){reasonTimers.forEach(clearTimeout);reasonTimers=[];$("#reasonModal").hidden=true}
+
+/* ===== Scene 2–3 ===== */
+function renderObserve(){
+  $("#baseFlower").innerHTML=flowerSVG([]);
+  $("#demoFlower").innerHTML=flowerSVG([state.activeEffect]);
+  $("#effectCards").innerHTML=effects.map(e=>`<button class="effect-card ai-clickable ${e.id===state.activeEffect?"active":""}" data-effect="${e.id}"><span class="effectIcon">${e.icon}</span><span><b>${e.name}</b><small>${e.hint}</small></span></button>`).join("");
+  const e=effects.find(x=>x.id===state.activeEffect);
+  $("#effectExplain").textContent=`Perhatikan: ${e.hint} (${state.seen.size}/5 khasiat dilihat)`;
+  $$("#effectCards .effect-card").forEach(btn=>btn.addEventListener("click",()=>{
+    state.activeEffect=btn.dataset.effect;state.seen.add(btn.dataset.effect);tone(620,.05);renderObserve();renderTop();
+  }));
+}
+function renderExpList(){
+  $("#expList").innerHTML=experiments.map((e,i)=>`<button class="experiment-card ai-clickable ${i===state.activeExperiment?"active":""}" data-i="${i}"><b>Percobaan ${e.id}</b><div class="mixCode">${e.mix.map(g=>`<span class="miniVial">${g}</span>`).join("")}</div></button>`).join("");
+  $$("#expList .experiment-card").forEach(b=>b.addEventListener("click",()=>{state.activeExperiment=+b.dataset.i;tone(560,.05);renderExperiment()}));
+}
+function renderObsChips(){
+  const selected=state.userObs[state.activeExperiment];
+  $("#obsChips").innerHTML=effects.map(e=>`<button class="chip ai-clickable ${selected.has(e.id)?"on":""}" data-effect="${e.id}" aria-pressed="${selected.has(e.id)}">${e.icon} ${e.name}</button>`).join("");
+  $$("#obsChips .chip").forEach(b=>b.addEventListener("click",()=>{
+    const s=state.userObs[state.activeExperiment];s.has(b.dataset.effect)?s.delete(b.dataset.effect):s.add(b.dataset.effect);
+    tone(480,.035);renderObsChips();
+  }));
+}
+function renderExperiment(){
+  renderExpList();renderObsChips();
+  const exp=experiments[state.activeExperiment], result=effectIdsForMix(exp.mix);
+  $("#expTitle").textContent=`Percobaan ${exp.id}`;
+  $("#expMixLabel").textContent=exp.mix.join(" + ");
+  $("#pourVials").innerHTML=exp.mix.map(g=>`<div class="bigVial">${g}</div>`).join("");
+  $("#expFlower").innerHTML=flowerSVG(result);
+  $("#obsFeedback").textContent="Belum dicek.";
+}
+function checkObservation(){
+  const exp=experiments[state.activeExperiment], truth=new Set(effectIdsForMix(exp.mix)), user=state.userObs[state.activeExperiment];
+  const ok=truth.size===user.size && [...truth].every(x=>user.has(x));
+  $$("#obsChips .chip").forEach(b=>{b.classList.remove("correct","wrong");if(user.has(b.dataset.effect))b.classList.add(truth.has(b.dataset.effect)?"correct":"wrong")});
+  if(ok){
+    $("#obsFeedback").textContent="Pas! Pengamatanmu cocok dengan gambar.";
+    if(!state.obsSolved.has(exp.id)){state.obsSolved.add(exp.id);addEvidence(1)}
+    successSound();confetti(12);
+  }else{
+    const missing=[...truth].filter(x=>!user.has(x)).length, extra=[...user].filter(x=>!truth.has(x)).length;
+    $("#obsFeedback").textContent=`Belum pas: ${missing} perubahan belum ditandai, ${extra} pilihan perlu dicek lagi.`;
+    badSound();
+  }
+}
+function animateExperiment(){
+  if(!settings.motion)$$(".bigVial").forEach((el,i)=>{el.animate([{transform:"translateY(0) rotate(0)"},{transform:`translateY(35px) rotate(${i%2?12:-12}deg)`},{transform:"translateY(0)"}],{duration:650,delay:i*90,easing:"ease-out"})});
+  $("#expFlower").classList.add("pulse");setTimeout(()=>$("#expFlower").classList.remove("pulse"),600);tone(700,.08);
+}
+
+/* ===== Papan bukti ===== */
+const tokenHTML=(t,kind="effect")=>`<div class="${kind==="glass"?"glass-token":"evidence-token"} draggable hand-draggable" data-kind="${kind}" data-value="${t.id||t}" tabindex="0" role="button" aria-label="${kind==="glass"?"Gelas "+(t.id||t):"Kartu "+t.name}">
+  <span class="tokenDot">${kind==="glass"?"🧪":t.icon}</span><span>${kind==="glass"?(t.id||t):t.name}</span></div>`;
+function buildReasoningStrip(){
+  const opts=[`<option value="">— pilih bukti —</option>`,...effects.map(e=>`<option value="${e.id}">${e.icon} ${e.name}</option>`),`<option value="none">∅ Tidak ada perubahan yang sama</option>`].join("");
+  $("#reasoningStrip").innerHTML=keyReasoning.map(r=>`<div class="reasonNode" data-reason="${r.id}"><b>${r.pair} → Gelas ${r.glass}</b><small>${r.prompt}</small><select class="reasonSelect" data-reason="${r.id}" aria-label="${r.prompt}">${opts}</select></div>`).join("");
+  $$(".reasonSelect").forEach(sel=>sel.addEventListener("change",()=>{sel.closest(".reasonNode").classList.remove("good","bad");tone(500,.03)}));
+}
+function reasoningOK(mark=false){
+  let ok=true;
+  keyReasoning.forEach(r=>{
+    const node=$(`.reasonNode[data-reason="${r.id}"]`),sel=node?.querySelector("select");
+    const good=sel?.value===r.truth;ok&&=good;
+    if(mark){node?.classList.toggle("good",good);node?.classList.toggle("bad",!good)}
+  });
+  return ok;
+}
+function buildEvidenceBoard(){
+  const bank=$("#evidenceBank");
+  bank.querySelectorAll(".evidence-token").forEach(x=>x.remove());
+  allTokens.forEach(t=>bank.insertAdjacentHTML("beforeend",tokenHTML(t)));
+  buildReasoningStrip();
+  $("#evidenceSlots").innerHTML="ABCDEF".split("").map(g=>`<div class="glass-slot dropzone" data-accept="effect" data-glass="${g}"><div class="slotLabel">Gelas ${g}</div><div class="slotSub">Seret / ketuk kartu ke sini</div></div>`).join("");
+  $("#replayReasoning").hidden=true;
+  state.boardAttempts=0;
+  registerDraggables();
+}
+function clearSlots(sel){
+  clearPicked();
+  $$(sel+" .draggable").forEach(t=>sourceBankFor(t).appendChild(t));
+  $$(sel+" .glass-slot").forEach(s=>s.classList.remove("good","bad"));
+}
+function checkBoard(){
+  const slots=$$("#evidenceSlots .glass-slot");let filled=0,correct=0;
+  slots.forEach(s=>{
+    s.classList.remove("good","bad");
+    const t=s.querySelector(".evidence-token");
+    if(t){filled++;if(t.dataset.value===fixedMap[s.dataset.glass])correct++}
+  });
+  if(filled<6){$("#boardFeedback").textContent=`Peta belum lengkap: ${filled}/6 slot terisi.`;badSound();return}
+  state.boardAttempts++;
+  const rOK=reasoningOK(state.boardAttempts>=2),mapOK=correct===6;
+  if(rOK&&mapOK){
+    slots.forEach(s=>s.classList.add("good"));
+    $("#boardFeedback").textContent="Konsisten! Bukti kunci dan seluruh peta saling mendukung.";
+    $("#replayReasoning").hidden=false;
+    if(!state.boardSolved){state.boardSolved=true;addEvidence(3)}
+    successSound();confetti(55);
+  }else{
+    $("#mapBoard").classList.remove("boardPulse");void $("#mapBoard").offsetWidth;$("#mapBoard").classList.add("boardPulse");
+    $("#boardFeedback").textContent=state.boardAttempts<2
+      ?"Belum konsisten. Jangan tukar kartu acak—kembali ke 3 bukti kunci di atas."
+      :"Masih ada hubungan yang bertentangan. Node merah menunjukkan bukti kunci yang perlu diperiksa; peta A–F tidak membocorkan slot mana yang salah.";
+    badSound();
+  }
+}
+
+/* ===== Sandbox & Boss ===== */
+function buildSandbox(){
+  const rack=$("#glassRack");rack.querySelectorAll(".glass-token").forEach(x=>x.remove());
+  "ABCDEF".split("").forEach(g=>rack.insertAdjacentHTML("beforeend",tokenHTML({id:g},"glass")));
+  $("#mixSlots").innerHTML=[0,1,2].map(i=>`<div class="mix-slot dropzone" data-accept="glass"><span>Slot ${i+1}</span></div>`).join("");
+  $("#sandboxFlower").innerHTML=flowerSVG([]);
+  $("#predictChips").innerHTML=effects.map(e=>`<button class="chip ai-clickable" data-effect="${e.id}">${e.icon} ${e.name}</button>`).join("");
+  state.sandboxPred.clear();
+  $$("#predictChips .chip").forEach(b=>b.addEventListener("click",()=>{
+    const e=b.dataset.effect;state.sandboxPred.has(e)?state.sandboxPred.delete(e):state.sandboxPred.add(e);b.classList.toggle("on");tone(500,.035);
+  }));
+  registerDraggables();
+}
+function resetMix(){
+  clearPicked();
+  $$("#mixSlots .glass-token").forEach(t=>$("#glassRack").appendChild(t));
+  $("#sandboxFlower").innerHTML=flowerSVG([]);state.sandboxPred.clear();$$("#predictChips .chip").forEach(b=>b.classList.remove("on","correct","wrong"));
+  $("#sandboxFeedback").textContent="Susun campuran, buat prediksi, lalu uji.";
+}
+function testMix(){
+  const mix=$$("#mixSlots .glass-token").map(t=>t.dataset.value);
+  if(!mix.length){toast("Masukkan minimal satu gelas dulu.");badSound();return}
+  const truth=new Set(effectIdsForMix(mix));
+  $("#sandboxFlower").innerHTML=flowerSVG([...truth]);
+  const ok=truth.size===state.sandboxPred.size && [...truth].every(x=>state.sandboxPred.has(x));
+  $$("#predictChips .chip").forEach(b=>{b.classList.remove("correct","wrong");if(state.sandboxPred.has(b.dataset.effect))b.classList.add(truth.has(b.dataset.effect)?"correct":"wrong")});
+  $("#sandboxFeedback").textContent=ok?`Prediksi tepat untuk ${mix.join(" + ")}!`:`Hasil ${mix.join(" + ")} sudah muncul. Bandingkan dengan prediksimu.`;
+  if(ok){successSound();confetti(18)}else tone(310,.06);
+}
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function generateBossExperiments(){
+  const signatures=shuffle(["110","100","101","011","010","001"]);
+  const letters="ABCDEF".split(""),mixes=[[],[],[]];
+  letters.forEach((g,i)=>signatures[i].split("").forEach((v,p)=>{if(v==="1")mixes[p].push(g)}));
+  return mixes.map((mix,i)=>({id:i+1,mix:shuffle(mix)}));
+}
+function newBoss(){
+  clearPicked();
+  state.bossNo++;state.bossWon=false;
+  const vals=shuffle(allTokens.map(x=>x.id));
+  state.bossMap=Object.fromEntries("ABCDEF".split("").map((g,i)=>[g,vals[i]]));
+  state.bossExperiments=generateBossExperiments();
+  $("#bossTitle").textContent=`Kasus Acak #${state.bossNo}`;
+  $("#bossMatrix").innerHTML=state.bossExperiments.map(e=>`<span>P${e.id}: ${e.mix.join(" + ")}</span>`).join("");
+  $("#bossExperiments").innerHTML=state.bossExperiments.map(e=>`<div class="bossExp"><div><b>P${e.id}</b> • ${e.mix.join(" + ")}</div><div>${flowerSVG(effectIdsForMix(e.mix,state.bossMap))}</div></div>`).join("");
+  $("#bossBank").innerHTML=allTokens.map(t=>tokenHTML(t)).join("");
+  $("#bossSlots").innerHTML="ABCDEF".split("").map(g=>`<div class="glass-slot dropzone" data-accept="effect" data-glass="${g}"><div class="slotLabel">${g}</div><div class="slotSub">?</div></div>`).join("");
+  registerDraggables();renderTop();
+}
+function checkBoss(){
+  const slots=$$("#bossSlots .glass-slot");let filled=0,correct=0;
+  slots.forEach(s=>{s.classList.remove("good","bad");const t=s.querySelector(".evidence-token");if(t){filled++;const good=t.dataset.value===state.bossMap[s.dataset.glass];correct+=good?1:0;s.classList.add(good?"good":"bad")}});
+  if(filled<6){toast(`Isi semua slot dulu (${filled}/6).`);badSound();return}
+  if(correct===6){state.bossWon=true;renderTop();toast("BOSS CLEAR! Polamu konsisten untuk kasus acak.");successSound();confetti(70)}
+  else{toast(`${correct}/6 cocok. Jangan hafal huruf — baca polanya.`);badSound()}
+}
+
+/* ===== Navigasi ===== */
+function renderTop(){
+  const names=["Intro","Observasi","Eksperimen","Papan Bukti","Sandbox / Boss"];
+  $("#sceneName").textContent=names[state.scene];
+  $("#progressBar").style.width=`${state.scene/4*100}%`;
+  $$(".scene").forEach(s=>s.classList.toggle("active",+s.dataset.scene===state.scene));
+  $$(".step").forEach(s=>s.classList.toggle("active",+s.dataset.go===state.scene));
+  $("#prevBtn").disabled=state.scene===0;
+  $("#evidenceScore").textContent=`Bukti ${state.evidence}/6`;
+  const done=[false,state.seen.size>=5,state.obsSolved.size>=3,state.boardSolved,state.bossWon];
+  $$(".step").forEach((b,i)=>b.classList.toggle("done",done[i]));
+  $("#nextBtn").classList.toggle("nudge",state.scene<4&&done[state.scene]);
+  $("#nextBtn").textContent=state.scene===4?"Ulang ↺":"Lanjut →";
+}
+function goScene(n){
+  if(n>4)n=0;if(n<0)n=0;state.scene=n;clearPicked();renderTop();
+  const sc=$$(".scene")[n];if(sc)sc.scrollTop=0;tone(590,.045);
+}
+function swipe(dir){
+  const n=state.scene+dir;
+  if(n<0||n>4){toast("Sudah di ujung perjalanan.");return}
+  goScene(n);toast(dir>0?"✋ Geser kiri → Lanjut":"✋ Geser kanan → Kembali",1200);
+}
+function initSteps(){
+  $$(".step").forEach(b=>b.addEventListener("click",()=>goScene(+b.dataset.go)));
+  $("#prevBtn").addEventListener("click",()=>goScene(state.scene-1));
+  $("#nextBtn").addEventListener("click",()=>goScene(state.scene+1));
+  $("#startMission").addEventListener("click",()=>goScene(1));
+}
+function initTabs(){
+  $$(".tab").forEach(b=>b.addEventListener("click",()=>{
+    $$(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");state.tab=b.dataset.tab;
+    $$(".tabPane").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.tab+"Pane").classList.add("active");tone(560,.04);
+  }));
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){
+  if(!$("#reasonModal").hidden)closeReasoning();if(!$("#codeModal").hidden)$("#codeModal").hidden=true;
+  if(!$("#settings").hidden)$("#settings").hidden=true;clearPicked();}});
+$("#reasonModal").addEventListener("click",e=>{if(e.target===$("#reasonModal"))closeReasoning()});
+function initButtons(){
+  $("#checkObs").addEventListener("click",checkObservation);$("#replayExp").addEventListener("click",animateExperiment);
+  $("#checkBoard").addEventListener("click",checkBoard);$("#resetMix").addEventListener("click",resetMix);$("#testMix").addEventListener("click",testMix);
+  $("#newBoss").addEventListener("click",newBoss);$("#checkBoss").addEventListener("click",checkBoss);
+  $("#clearBoard").addEventListener("click",()=>{clearSlots("#evidenceSlots");$$(".reasonNode").forEach(n=>n.classList.remove("good","bad"));$("#boardFeedback").textContent="Papan dikosongkan. Mulai dari bukti kunci."});
+  $("#clearBoss").addEventListener("click",()=>clearSlots("#bossSlots"));
+  $("#replayReasoning").addEventListener("click",playReasoning);$("#reasonRestart").addEventListener("click",playReasoning);
+  $("#reasonClose").addEventListener("click",closeReasoning);$("#reasonDone").addEventListener("click",closeReasoning);
+  $("#hintBtn").addEventListener("click",()=>showHint(false));
+  $("#fullscreenBtn").addEventListener("click",async()=>{try{document.fullscreenElement?await document.exitFullscreen():await document.documentElement.requestFullscreen()}catch(e){toast("Layar penuh diblokir browser.")}});
+  $("#soundBtn").addEventListener("click",()=>{settings.sound=!settings.sound;saveSettings();syncSettingsUI();toast(settings.sound?"Suara aktif":"Suara dimatikan")});
+}
+
+/* ===== Drag multitouch + tap-to-place (ketuk kartu → ketuk slot) ===== */
+const dragStates=new Map(),dragOwners=new WeakMap(),playerColors=["#5ed7ff","#ff6f91","#ffd56a","#8df0a9","#c8a7ff"];
+let picked=null;
+function ownerColor(key){
+  const k=String(key).toLowerCase();
+  if(k.includes("left"))return playerColors[0];
+  if(k.includes("right"))return playerColors[1];
+  return playerColors[[...k].reduce((a,c)=>a+c.charCodeAt(0),0)%playerColors.length];
+}
+function sourceBankFor(el){
+  if(el._homeBank)return el._homeBank;
+  const bank=el.closest(".drop-bank")||(el.dataset.kind==="glass"?$("#glassRack"):$("#evidenceBank"));
+  el._homeBank=bank;return bank;
+}
+function clearPicked(){picked?.classList.remove("picked");picked=null;document.body.classList.remove("hasPick")}
+function setPicked(el){
+  const same=picked===el;clearPicked();
+  if(same)return;
+  picked=el;el.classList.add("picked");document.body.classList.add("hasPick");tone(520,.03);
+  toast(`Terpilih: ${el.textContent.trim()} — ketuk slot tujuan`,1600);
+}
+function dropInto(el,zone){
+  const existing=[...zone.children].find(c=>c.classList?.contains("draggable"));
+  if(existing&&existing!==el)sourceBankFor(existing).appendChild(existing);
+  zone.appendChild(el);navigator.vibrate?.(22);tone(670,.035);
+}
+function placePicked(zone){
+  if(!picked||zone.dataset.accept!==picked.dataset.kind)return false;
+  const el=picked;clearPicked();dropInto(el,zone);return true;
+}
+function tapPick(el){
+  if(picked&&picked!==el){const z=el.closest(".dropzone");if(z&&placePicked(z))return}
+  setPicked(el);
+}
+document.addEventListener("click",e=>{
+  if(!picked||e.target.closest(".draggable"))return;
+  const z=e.target.closest(".dropzone");
+  if(z){placePicked(z);return}
+  const b=e.target.closest(".drop-bank");
+  if(b&&b===sourceBankFor(picked)){const el=picked;clearPicked();b.appendChild(el);tone(430,.03)}
+});
+function beginDrag(el,x,y,key){
+  if(!el||dragStates.has(key))return false;
+  const owner=dragOwners.get(el);
+  if(owner&&owner!==key){tone(180,.025);return false}
+  dragOwners.set(el,key);
+  const color=ownerColor(key),rect=el.getBoundingClientRect();
+  el.classList.add("held");el.style.setProperty("--ownerColor",color);
+  const ghost=el.cloneNode(true);ghost.classList.add("dragGhost");ghost.classList.remove("picked");ghost.style.width=rect.width+"px";ghost.style.height=rect.height+"px";ghost.style.setProperty("--ownerColor",color);
+  document.body.appendChild(ghost);ghost.style.left=x+"px";ghost.style.top=y+"px";
+  dragStates.set(key,{el,ghost,home:sourceBankFor(el),x,y,sx:x,sy:y,color});tone(430,.025);
+  return true;
+}
+function moveDrag(key,x,y){
+  const d=dragStates.get(key);if(!d)return;d.x=x;d.y=y;d.ghost.style.left=x+"px";d.ghost.style.top=y+"px";
+  const hit=document.elementFromPoint(x,y)?.closest(".dropzone")||null;
+  if(hit!==d.over){d.over?.classList.remove("over");hit?.classList.add("over");d.over=hit}
+}
+function endDrag(key,x,y){
+  const d=dragStates.get(key);if(!d)return false;
+  d.over?.classList.remove("over");d.ghost.remove();d.el.classList.remove("held");d.el.style.removeProperty("--ownerColor");dragOwners.delete(d.el);
+  dragStates.delete(key);
+  if(Math.hypot(x-d.sx,y-d.sy)<14){d.el._pk=performance.now();tapPick(d.el);return true}   // hampir tidak bergerak = ketukan
+  clearPicked();
+  const hit=document.elementFromPoint(x,y)?.closest(".dropzone");
+  if(hit&&hit.dataset.accept===d.el.dataset.kind)dropInto(d.el,hit);else d.home?.appendChild(d.el);
+  return true;
+}
+function cancelDrag(key){const d=dragStates.get(key);if(!d)return;d.over?.classList.remove("over");d.ghost.remove();d.el.classList.remove("held");d.el.style.removeProperty("--ownerColor");dragOwners.delete(d.el);dragStates.delete(key)}
+function registerDraggables(){
+  $$(".draggable").forEach(el=>{
+    if(el.dataset.dragReady)return;el.dataset.dragReady="1";el._homeBank=el.closest(".drop-bank");
+    el.addEventListener("pointerdown",ev=>{
+      if(ev.button!==undefined&&ev.button!==0)return;
+      const ui=document.body.dataset.ui;
+      if(ev.pointerType==="touch"){
+        if(ui==="mobile")return;                                              // HP: ketuk-lalu-ketuk, supaya halaman tetap bisa digulir
+        if(ui==="ifp"&&Math.max(ev.width||0,ev.height||0)>110)return;         // tolak telapak tangan di IFP
+      }
+      ev.preventDefault();el.setPointerCapture?.(ev.pointerId);
+      beginDrag(el,ev.clientX,ev.clientY,"p"+ev.pointerId);
+    });
+    el.addEventListener("pointermove",ev=>{if(dragStates.has("p"+ev.pointerId)){ev.preventDefault();moveDrag("p"+ev.pointerId,ev.clientX,ev.clientY)}});
+    const done=ev=>{if(dragStates.has("p"+ev.pointerId)){ev.preventDefault();endDrag("p"+ev.pointerId,ev.clientX,ev.clientY)}};
+    el.addEventListener("pointerup",done);el.addEventListener("pointercancel",done);
+    el.addEventListener("click",()=>{if(performance.now()-(el._pk||0)<500)return;tapPick(el)});   // mouse tanpa drag, jari di HP, dwell Vision AI
+    el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();tapPick(el)}});
+  });
+  $$(".dropzone").forEach(z=>{if(!z.dataset.zoneReady){z.dataset.zoneReady="1";z.tabIndex=0;z.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();placePicked(z)}})}});
+}
+
+initSettings();applyLayout();
+renderObserve();renderExperiment();buildEvidenceBoard();buildSandbox();newBoss();
+initSteps();initTabs();initButtons();renderTop();
+window.LabTaro={state,settings,experiments:experiments.map(e=>e.mix),cancelDrag,beginDrag,moveDrag,endDrag,dragStates,toast,tone,goScene,swipe,showHint,registerDraggables,ownerColor,applyLayout};
+})();
+</script>
+
+<script>
+(() => {
+"use strict";
+const MP_VERS=["1.0.1","0.10.14"];
+const HAND_MODEL="https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task";
+const FACE_MODEL="https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task";
+const $=id=>document.getElementById(id),LT=()=>window.LabTaro;
+const panel=$("visionPanel"),video=$("visionVideo"),canvas=$("visionCanvas"),ctx=canvas.getContext("2d"),statusEl=$("visionStatus"),exprEl=$("expressionPill"),fpsEl=$("fpsPill"),cursorLayer=$("handCursorLayer");
+let mp=null,hand=null,face=null,draw=null,stream=null,running=false,meshOn=true,raf=0,lastHand=0,lastFace=0,lastFps=performance.now(),infer=0,msAvg=20,dirty=false,lastHandRes=null,lastFaceRes=null,coach=3,pinchThr=.32,delegate="";
+let swipeCool=0,browSince=0,helpCool=0,lastTick=performance.now();
+const DWELL=1000,HS={},ZONE={x0:.12,x1:.88,y0:.08,y1:.8};
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),setStatus=t=>{statusEl.textContent=t};
+const remPx=()=>parseFloat(document.documentElement.style.fontSize)||16;
+const EXPR=[["smile","😊 Senyum"],["jaw","😮 Mulut terbuka"],["blink","😉 Kedip"],["brow","🤔 Alis naik"]];
+$("exprBars").innerHTML=EXPR.map(([k,l])=>`<div class="aiRow"><span>${l}</span><span id="v_${k}">0.00</span></div><div class="meter"><i id="b_${k}"></i></div>`).join("");
+$("pinchThr").style.left=pinchThr/.8*100+"%";
+const COACH=["☝️ Angkat telunjuk ke kamera","🤏 Jepit untuk memilih • tahan 1 detik untuk klik","✅ Siap! Coba seret satu kartu"];
+function setCoach(n){coach=n;const el=$("coach");if(n>2){el.hidden=true;return}el.textContent=COACH[n];el.hidden=false;
+  if(n===2)setTimeout(()=>{el.hidden=true;coach=3;panel.classList.remove("big");placePanel();LT().toast("Kamera diperkecil. Ketuk kamera untuk membuka panel Vision AI.",2600)},2400)}
+
+/* Panel kecil diletakkan tepat di kiri deretan tombol atas */
+function placePanel(){
+  if(panel.classList.contains("big")){panel.style.right="";panel.style.top="";return}
+  if(document.body.dataset.ui==="mobile"){panel.style.right=".5rem";return}
+  const a=document.querySelector(".top-actions").getBoundingClientRect();
+  panel.style.right=(innerWidth-a.left+12)+"px";panel.style.top=Math.max(4,(a.top+a.height/2)-panel.offsetHeight/2||4)+"px";
+}
+
+function scores(res){const a=res?.faceBlendshapes?.[0]?.categories||[],s=Object.fromEntries(a.map(x=>[x.categoryName,x.score]));
+  return{smile:((s.mouthSmileLeft||0)+(s.mouthSmileRight||0))/2,jaw:s.jawOpen||0,blink:Math.max(s.eyeBlinkLeft||0,s.eyeBlinkRight||0),brow:s.browInnerUp||0}}
+function expressionOf(v){if(v.smile>.42)return["😊","senyum"];if(v.jaw>.55)return["😮","mulut terbuka"];if(v.blink>.58)return["😉","kedip"];if(v.brow>.48)return["🤔","alis terangkat"];return["🙂","netral"]}
+function onFace(res){
+  const v=scores(res);EXPR.forEach(([k])=>{$("v_"+k).textContent=v[k].toFixed(2);$("b_"+k).style.width=clamp(v[k],0,1)*100+"%"});
+  const[e,l]=expressionOf(v);exprEl.textContent=e;exprEl.title="Skor ekspresi visual: "+l;
+  const now=performance.now();   // opsional: alis terangkat ≥2,5 dtk → tawarkan petunjuk (jeda 40 dtk)
+  if(LT().settings.autoHelp&&v.brow>.48&&res?.faceLandmarks?.length){if(!browSince)browSince=now;if(now-browSince>2500&&now>helpCool){helpCool=now+40000;browSince=0;LT().showHint(true)}}
+  else browSince=0;
+}
+
+function cursorEl(k){let el=document.getElementById("hc"+k);if(!el){el=document.createElement("div");el.id="hc"+k;el.className="handCursor";el.style.setProperty("--pc",LT().ownerColor(k));cursorLayer.appendChild(el)}return el}
+function interactiveAt(x,y){return document.elementFromPoint(x,y)?.closest(".hand-draggable,.dropzone,.ai-clickable,.effect-card,.experiment-card,.chip,.tab,.step,.btn,.iconBtn")}
+function release(k){const h=HS[k];if(!h)return;if(h.drag)LT().cancelDrag("h"+k);h.hover?.classList.remove("handHover");document.getElementById("hc"+k)?.remove();delete HS[k]}
+const TIPS=[[8,6],[12,10],[16,14],[20,18]];
+const isOpenPalm=lm=>TIPS.every(([t,p])=>dist(lm[t],lm[0])>dist(lm[p],lm[0])*1.12);
+function onHand(res){
+  const L=res?.landmarks||[],Hd=res?.handednesses||res?.handedness||[],seen=new Set(),now=performance.now();
+  L.slice(0,2).forEach((lm,i)=>{
+    const k=Hd[i]?.[0]?.categoryName||String(i);seen.add(k);
+    const h=HS[k]||(HS[k]={x:0,y:0,tx:0,ty:0,pinch:false,drag:false,miss:0,first:true,hover:null,ratio:1,trail:[],dwMs:0,dwT:null,dwCool:0}),tip=lm[8];
+    h.tx=clamp(((1-tip.x)-ZONE.x0)/(ZONE.x1-ZONE.x0),0,1)*innerWidth;h.ty=clamp((tip.y-ZONE.y0)/(ZONE.y1-ZONE.y0),0,1)*innerHeight;
+    if(h.first){h.x=h.tx;h.y=h.ty;h.first=false}
+    h.miss=0;h.ratio=dist(lm[4],lm[8])/(dist(lm[0],lm[9])||1);
+    if(!h.pinch&&h.ratio<pinchThr){h.pinch=true;cursorEl(k).classList.add("pinching");h.dwMs=0;
+      const t=interactiveAt(h.x,h.y);if(t?.classList.contains("hand-draggable"))h.drag=LT().beginDrag(t,h.x,h.y,"h"+k);else if(t){t.click();navigator.vibrate?.(18)}
+      if(coach===1)setCoach(2)}
+    else if(h.pinch&&h.ratio>pinchThr*1.4){h.pinch=false;cursorEl(k).classList.remove("pinching");if(h.drag){LT().endDrag("h"+k,h.x,h.y);h.drag=false}}
+    /* geser telapak terbuka = pindah scene */
+    h.trail.push([now,h.tx]);while(h.trail.length&&now-h.trail[0][0]>450)h.trail.shift();
+    if(LT().settings.swipe&&!h.pinch&&!h.drag&&now>swipeCool&&h.trail.length>3&&isOpenPalm(lm)){
+      const dx=h.tx-h.trail[0][1];
+      if(Math.abs(dx)>innerWidth*.38){swipeCool=now+1400;h.trail=[];LT().swipe(dx<0?1:-1)}
+    }
+  });
+  Object.keys(HS).forEach(k=>{if(!seen.has(k)&&++HS[k].miss>2)release(k)});
+  if(coach===0&&seen.size)setCoach(1);
+  const f=Object.values(HS)[0];if(f){$("pinchVal").textContent=f.ratio.toFixed(2);$("pinchBar").style.width=clamp(f.ratio/.8,0,1)*100+"%"}
+}
+function tickCursors(){
+  const now=performance.now(),dt=Math.min(100,now-lastTick),still=remPx()*2.5;lastTick=now;
+  for(const k in HS){
+    const h=HS[k],a=clamp(.16+Math.hypot(h.tx-h.x,h.ty-h.y)/500,.16,.7);h.x+=(h.tx-h.x)*a;h.y+=(h.ty-h.y)*a;
+    const c=cursorEl(k);c.style.transform=`translate(${h.x}px,${h.y}px)`;if(h.drag)LT().moveDrag("h"+k,h.x,h.y);
+    const t=interactiveAt(h.x,h.y);if(t!==h.hover){h.hover?.classList.remove("handHover");t?.classList.add("handHover");h.hover=t}
+    /* klik dengan menahan kursor (alternatif untuk murid yang sulit menjepit) */
+    if(LT().settings.dwell&&!h.pinch&&!h.drag&&t&&now>h.dwCool){
+      if(t===h.dwT&&Math.hypot(h.tx-h.x,h.ty-h.y)<still)h.dwMs+=dt;else{h.dwT=t;h.dwMs=0}
+      if(h.dwMs>=DWELL){h.dwMs=0;h.dwCool=now+900;t.click();navigator.vibrate?.(18)}
+    }else{h.dwMs=0;h.dwT=null}
+    c.style.setProperty("--dw",(h.dwMs/DWELL).toFixed(3));
+  }
+}
+function drawResults(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);const big=panel.classList.contains("big");
+  if(big&&meshOn)lastFaceRes?.faceLandmarks?.forEach(lm=>{const stride=msAvg>55?18:msAvg>34?12:8;draw.drawConnectors(lm,mp.FaceLandmarker.FACE_LANDMARKS_CONTOURS,{color:"#66e3c4",lineWidth:2});draw.drawLandmarks(lm.filter((_,i)=>i%stride===0),{color:"#ffd56a",radius:1.3})});
+  lastHandRes?.landmarks?.forEach(lm=>{draw.drawConnectors(lm,mp.HandLandmarker.HAND_CONNECTIONS,{color:"#5ed7ff",lineWidth:big?3:6});if(big)draw.drawLandmarks(lm,{color:"#ffd56a",radius:2.3})});
+}
+function loop(now){
+  if(!running)return;raf=requestAnimationFrame(loop);
+  if(video.readyState>=2&&!document.hidden){
+    const dragging=LT().dragStates.size>0,big=panel.classList.contains("big");
+    const handGap=clamp(msAvg*(dragging?1.25:1.7),dragging?42:52,150);
+    const faceGap=(big?clamp(msAvg*5,150,520):850)+(dragging?260:0);
+    let did=false;
+    if(hand&&now-lastHand>handGap){lastHand=now;did=true;const t0=performance.now();try{lastHandRes=hand.detectForVideo(video,now);onHand(lastHandRes)}catch(e){}msAvg=msAvg*.9+(performance.now()-t0)*.1;infer++;dirty=true}
+    if(!did&&face&&now-lastFace>faceGap){lastFace=now;try{lastFaceRes=face.detectForVideo(video,now);onFace(lastFaceRes)}catch(e){}infer++;dirty=true}
+    if(dirty){drawResults();dirty=false}
+    tickCursors();
+  }
+  if(now-lastFps>1000){
+    const mode=msAvg<30?["FAST","perfFast"]:msAvg<52?["SMART","perfSmart"]:["ECO","perfEco"];
+    fpsEl.className=`pill ${mode[1]}`;fpsEl.textContent=`${mode[0]} · ${delegate} · ${infer}/s · ${msAvg.toFixed(0)} ms`;
+    infer=0;lastFps=now;
+  }
+}
+async function loadMP(){for(const v of MP_VERS){const base=`https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${v}`;try{const m=await import(base+"/vision_bundle.mjs");return{m,fs:await m.FilesetResolver.forVisionTasks(base+"/wasm")}}catch(e){console.warn("MediaPipe",v,e)}}throw new Error("mediapipe")}
+async function createTask(C,fs,model,o){
+  try{const t=await C.createFromOptions(fs,{baseOptions:{modelAssetPath:model,delegate:"GPU"},runningMode:"VIDEO",...o});delegate="GPU";return t}
+  catch(e){const t=await C.createFromOptions(fs,{baseOptions:{modelAssetPath:model,delegate:"CPU"},runningMode:"VIDEO",...o});delegate="CPU";return t}
+}
+async function enableVision(){
+  try{if(!sessionStorage.getItem("taroVisionNotice")){LT().toast("Vision AI memproses kamera di perangkat ini. Video tidak direkam atau diunggah.",3300);sessionStorage.setItem("taroVisionNotice","1")}}catch(e){}
+  if(running){panel.classList.add("open","big");placePanel();return}
+  panel.classList.add("open","big");document.body.classList.add("visionOn");setStatus("Meminta izin kamera…");
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:640},height:{ideal:480},frameRate:{ideal:30,max:30}},audio:false});
+    video.srcObject=stream;await video.play();canvas.width=video.videoWidth||640;canvas.height=video.videoHeight||480;
+    if(!mp){setStatus("Memuat MediaPipe…");const r=await loadMP();mp=r.m;setStatus("Memuat model tangan…");
+      hand=await createTask(mp.HandLandmarker,r.fs,HAND_MODEL,{numHands:2,minHandDetectionConfidence:.55,minHandPresenceConfidence:.5,minTrackingConfidence:.5});
+      setStatus("Memuat model wajah…");try{face=await createTask(mp.FaceLandmarker,r.fs,FACE_MODEL,{numFaces:1,outputFaceBlendshapes:true,minFaceDetectionConfidence:.5,minFacePresenceConfidence:.5,minTrackingConfidence:.5})}catch(e){console.warn("Model wajah gagal:",e);face=null}
+      draw=new mp.DrawingUtils(ctx)}
+    running=true;setStatus(face?"Vision AI aktif":"Tangan aktif • wajah gagal");setCoach(0);raf=requestAnimationFrame(loop);placePanel();
+  }catch(err){
+    console.error(err);setStatus("Vision AI gagal");stopVision();
+    LT().toast(err?.name==="NotAllowedError"?"Izin kamera ditolak. Mode sentuh tetap bisa dipakai.":err?.name==="NotFoundError"?"Kamera tidak ditemukan. Mode sentuh tetap bisa dipakai.":"Vision AI tidak termuat (cek internet). Mode sentuh tetap bisa dipakai.",3600);
+  }
+}
+function stopVision(){running=false;cancelAnimationFrame(raf);Object.keys(HS).forEach(release);stream?.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null;
+  panel.classList.remove("open","big");document.body.classList.remove("visionOn");$("coach").hidden=true;coach=3;setStatus("Vision AI: belum aktif")}
+$("toggleMesh").addEventListener("click",e=>{meshOn=!meshOn;e.currentTarget.setAttribute("aria-pressed",meshOn)});
+$("pinchSens").addEventListener("input",e=>{pinchThr=e.target.value/100;$("pinchThr").style.left=pinchThr/.8*100+"%"});
+$("openSettings2").addEventListener("click",()=>{$("settings").hidden=false});
+panel.addEventListener("click",e=>{if(!panel.classList.contains("big")&&!e.target.closest("button")){panel.classList.add("big");placePanel()}});
+$("shrinkVision").addEventListener("click",()=>{panel.classList.remove("big");placePanel()});$("closeVision").addEventListener("click",stopVision);
+$("visionBtn").addEventListener("click",enableVision);$("introVision").addEventListener("click",enableVision);
+document.addEventListener("visibilitychange",()=>{if(document.hidden)Object.keys(HS).forEach(release)});
+addEventListener("beforeunload",()=>stream?.getTracks().forEach(t=>t.stop()));
+addEventListener("resize",placePanel);
+window.LabTaro.onLayout=placePanel;
+
+/* Playground kode: murid mengubah algoritma irisan himpunan */
+const STARTER=`// percobaan = [["A","B","C"],["A","D","E"],["C","D","F"]]
+const irisan = (x, y) => x.filter(g => y.includes(g));
+log("P1 ∩ P2 =", irisan(percobaan[0], percobaan[1]));
+log("P1 ∩ P3 =", irisan(percobaan[0], percobaan[2]));
+log("P2 ∩ P3 =", irisan(percobaan[1], percobaan[2]));
+// Tantangan: gelas mana yang muncul di dua percobaan? Apa efek bunganya?`;
+$("codeBtn").addEventListener("click",()=>{if(!$("codeArea").value)$("codeArea").value=STARTER;$("codeModal").hidden=false});
+$("codeClose").addEventListener("click",()=>{$("codeModal").hidden=true});
+function runStudentCode(code,experiments){
+  return new Promise(resolve=>{
+    const workerSource=`
+      self.onmessage = (e) => {
+        const {code, experiments} = e.data;
+        const out = [];
+        const safe = v => { try { return typeof v === "string" ? v : JSON.stringify(v); } catch { return String(v); } };
+        const log = (...a) => out.push(a.map(safe).join(" "));
+        try {
+          try { self.fetch=undefined; self.XMLHttpRequest=undefined; self.WebSocket=undefined; self.importScripts=undefined; } catch {}
+          const fn = new Function("log","percobaan","fetch","XMLHttpRequest","WebSocket","importScripts",
+            '"use strict";\\n' + code);
+          fn(log, Object.freeze(experiments.map(x=>Object.freeze([...x]))), undefined, undefined, undefined, undefined);
+          self.postMessage({ok:true,out});
+        } catch(err) { self.postMessage({ok:false,out:[...out,"⚠ "+(err?.message||String(err))]}); }
+      };`;
+    const url=URL.createObjectURL(new Blob([workerSource],{type:"text/javascript"}));
+    const w=new Worker(url);let done=false;
+    const finish=res=>{if(done)return;done=true;clearTimeout(timer);w.terminate();URL.revokeObjectURL(url);resolve(res)};
+    const timer=setTimeout(()=>finish({ok:false,out:["⏱ Program dihentikan setelah 600 ms. Cek kemungkinan loop tanpa akhir."]}),600);
+    w.onmessage=e=>finish(e.data);w.onerror=e=>finish({ok:false,out:["⚠ "+(e.message||"Kesalahan Worker")]});
+    w.postMessage({code,experiments});
+  });
+}
+$("codeRun").addEventListener("click",async()=>{
+  const btn=$("codeRun");btn.disabled=true;$("codeStatus").textContent="Menjalankan di Worker terisolasi…";$("codeOut").textContent="…";
+  const res=await runStudentCode($("codeArea").value,LT().experiments);
+  $("codeOut").textContent=(res.out||[]).join("\n")||"(tidak ada keluaran)";   // v1 memakai "\\n" sehingga baris tampil sebagai teks \n
+  $("codeStatus").textContent=res.ok?"Selesai • Worker ditutup otomatis":"Dihentikan aman • aplikasi utama tetap berjalan";
+  btn.disabled=false;
+});
+placePanel();
+})();
+</script>
+</body>
+</html>

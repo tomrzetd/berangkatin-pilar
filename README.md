@@ -69,3 +69,9 @@ App mandiri berada di `apps/<id>/index.html` dan didaftarkan melalui `apps/regis
 
 ### Catatan kamera
 Akses kamera browser memerlukan secure context. GitHub Pages sudah menggunakan HTTPS. Microscope tidak meminta kamera saat halaman baru dibuka; izin diminta saat pengguna menekan START.
+
+
+## App shelf update v0.5.5g
+- MBG Delivery Duel v3 — fair BFS scoring, IFP/desktop/mobile profiles, multitouch, optional MediaPipe two-hand Vision AI.
+- SoundScope Lab v3 — injected into Hub with return navigation.
+- Lab Misteri Pak Taro v2 — injected into Hub; existing multitouch + MediaPipe Vision AI preserved.

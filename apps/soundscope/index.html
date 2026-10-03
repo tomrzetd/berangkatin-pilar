@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PILAR™ · SoundScope Lab — IFP Edition v3</title>
+<style>
+:root{color-scheme:dark;--bg1:#070a1a;--bg2:#101a3a;--panel:rgba(255,255,255,.08);--line:rgba(255,255,255,.16);--text:rgba(255,255,255,.94);--muted:rgba(255,255,255,.72);--good:#38e699;--warn:#ffd042;--bad:#ff5353;--blue:#3aa0ff;--pink:#ff4d6d;--btn:3.4rem;--r:1.2rem}
+*{box-sizing:border-box}
+html{font-size:clamp(14px,.55vw + 8px,32px);height:100%}
+body{margin:0;height:100%;color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(60% 50% at 18% 18%,rgba(58,160,255,.22),transparent 60%),radial-gradient(50% 45% at 84% 20%,rgba(255,77,109,.18),transparent 55%),radial-gradient(60% 50% at 55% 88%,rgba(56,230,153,.16),transparent 60%),linear-gradient(135deg,var(--bg1),var(--bg2));background-color:#070a1a;padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);display:flex;flex-direction:column;overflow:auto;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.top{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.8rem 1rem 0;flex-wrap:wrap}
+.top b{font-size:1.25rem}.top small{display:block;color:var(--muted);font-size:.8rem;margin-top:.2rem}
+.brand{padding:.6rem 1.2rem;border-radius:99px;border:1px solid var(--line);background:radial-gradient(80% 140% at 25% 30%,rgba(255,255,255,.16),rgba(255,255,255,.05));box-shadow:inset 0 2px 0 rgba(255,255,255,.18),0 12px 30px rgba(0,0,0,.35);font-weight:800;font-size:.85rem;display:flex;gap:.6rem;align-items:center}
+.brand i{width:.6rem;height:.6rem;border-radius:50%;background:var(--blue);box-shadow:0 0 0 .35rem rgba(58,160,255,.18)}
+.app{flex:1;min-height:0;display:grid;grid-template-columns:22rem minmax(0,1fr) 24rem;gap:.8rem;padding:.8rem 1rem 1rem}
+.panel,.stage{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 18px 52px rgba(0,0,0,.45);display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.stage{background:rgba(0,0,0,.25)}
+.ph{padding:.7rem .9rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:.6rem;background:rgba(255,255,255,.05);flex-wrap:wrap}
+.ph h2{margin:0;font-size:1rem}
+.pb{padding:.8rem .9rem;overflow:auto;min-height:0;flex:1;-webkit-overflow-scrolling:touch}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem}
+button,select,input[type=text],input[type=number]{font:inherit;color:var(--text)}
+.btn{height:var(--btn);flex:1 1 7rem;padding:0 1rem;border-radius:1.1rem;border:1px solid var(--line);background:rgba(255,255,255,.1);font-weight:800;cursor:pointer;box-shadow:0 10px 22px rgba(0,0,0,.28);transition:transform .08s}
+.btn:active{transform:scale(.97)}.btn:focus-visible,.chip:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+.btn.primary{background:rgba(58,160,255,.2);border-color:rgba(58,160,255,.5)}.btn.good{background:rgba(56,230,153,.16);border-color:rgba(56,230,153,.5)}
+.btn.warn{background:rgba(255,208,66,.15);border-color:rgba(255,208,66,.5)}.btn.danger{background:rgba(255,83,83,.14);border-color:rgba(255,83,83,.5)}
+.btn.on{outline:3px solid var(--good)}
+label{display:flex;flex-direction:column;gap:.3rem;font-size:.8rem;color:var(--muted);font-weight:800;margin-bottom:.6rem}
+select,input[type=text],input[type=number]{height:var(--btn);border-radius:1.1rem;border:1px solid var(--line);background:rgba(0,0,0,.25);padding:0 .8rem;font-weight:700;min-width:0;width:100%}
+input[type=range]{width:100%;height:2rem;accent-color:var(--blue)}
+.hint{font-size:.8rem;color:var(--muted);line-height:1.45}
+.card{border-radius:1.1rem;border:1px solid var(--line);background:rgba(255,255,255,.06);padding:.8rem;margin-top:.7rem}.card>b{display:block;margin-bottom:.4rem}
+.pill{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem .8rem;border-radius:99px;border:1px solid var(--line);background:rgba(0,0,0,.22);color:var(--muted);font-size:.8rem}
+.dot{width:.65rem;height:.65rem;border-radius:50%;background:var(--warn)}.dot.good{background:var(--good)}.dot.bad{background:var(--bad)}
+.kpis{display:flex;gap:.6rem;padding:.6rem;flex-wrap:wrap;border-bottom:1px solid var(--line);background:rgba(255,255,255,.05)}
+.kpi{flex:1 1 9rem;padding:.5rem .8rem;border-radius:1rem;border:1px solid var(--line);background:rgba(0,0,0,.22)}
+.kpi small{color:var(--muted);font-weight:800;font-size:.75rem}.kpi b{display:block;font-size:1.5rem;white-space:nowrap}
+.meter{height:.45rem;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:.3rem}.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--good),var(--warn),var(--pink))}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap;padding:.5rem .6rem 0}
+.chip{height:2.6rem;padding:0 1rem;border-radius:99px;border:1px solid var(--line);background:rgba(0,0,0,.25);font-weight:800;font-size:.85rem;cursor:pointer}
+.chip[aria-pressed=true]{background:rgba(56,230,153,.2);border-color:var(--good)}
+.viz{flex:1;min-height:0;display:grid;grid-template-rows:5fr 6fr;gap:.6rem;padding:.6rem}
+.cv{position:relative;border-radius:1rem;border:1px solid var(--line);background:rgba(0,0,0,.28);overflow:hidden;min-height:10rem}
+.cv canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.cap{position:absolute;left:.7rem;top:.5rem;z-index:2;padding:.3rem .7rem;border-radius:99px;border:1px solid var(--line);background:rgba(0,0,0,.4);font-size:.75rem;font-weight:800}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}.tools .btn{flex:none;min-width:0;padding:0 .4rem}
+.big{font-size:2rem;font-weight:900;margin:.2rem 0}
+.sig{margin-top:.6rem;padding:.6rem;border:1px solid var(--line);border-radius:1rem;background:rgba(0,0,0,.2)}
+.sig .bars{height:3.2rem;display:flex;align-items:flex-end;gap:2px;margin:.4rem 0}.sig .bars i{flex:1;background:var(--blue);border-radius:4px 4px 0 0}
+.camBox{position:relative;aspect-ratio:16/9;border-radius:1rem;overflow:hidden;background:#000;border:1px solid var(--line)}
+.camBox video,.camBox canvas{position:absolute;inset:0;width:100%;height:100%;transform:scaleX(-1);object-fit:cover}.camBox canvas{image-rendering:pixelated}
+#toast{position:fixed;left:1rem;right:1rem;bottom:1rem;display:flex;flex-direction:column;align-items:flex-start;gap:.5rem;pointer-events:none;z-index:99}
+#toast div{padding:.7rem 1rem;border-radius:1rem;border:1px solid var(--line);background:rgba(0,0,0,.55);backdrop-filter:blur(10px);font-weight:800;animation:pop .4s both}
+@keyframes pop{from{transform:translateY(12px);opacity:0}}
+@media(max-width:1100px){body{overflow:auto}.app{grid-template-columns:1fr}.stage{order:-1;height:88vh;min-height:30rem}.panel{overflow:visible}}
+@media(min-width:1101px){body{overflow:hidden}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* PILAR Hub integration */
+.pilar-top-left{display:flex;align-items:center;gap:.7rem;min-width:0}.hubBtn{display:inline-grid;place-items:center;width:2.8rem;height:2.8rem;border-radius:.85rem;border:1px solid var(--line);background:rgba(0,0,0,.28);color:var(--text);text-decoration:none;font-weight:900;flex:0 0 auto}.hubBtn:hover{border-color:var(--blue);background:rgba(58,160,255,.14)}.pilar-title{min-width:0}.pilar-title b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.creatorTag{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.68rem;color:var(--muted)}
+</style></head>
+<body>
+<div class="top">
+  <div class="pilar-top-left"><a class="hubBtn" href="../../" title="Kembali ke PILAR Hub" aria-label="Kembali ke PILAR Hub">←</a><div class="pilar-title"><b>PILAR™ · 🎧 SoundScope Lab — IPA SMP (IFP)</b><small>Waveform • Spektrum log-frekuensi • Puncak & harmonik • Frequency Detective • Sound Signature • Kamera AI</small></div></div>
+  <div class="brand"><i></i><span id="brand">…</span></div>
+</div>
+<div class="app">
+  <section class="panel" aria-label="Kontrol">
+    <div class="ph"><h2>🎛️ Kontrol</h2><span class="pill"><span class="dot" id="mDot"></span><span id="mTxt">Mic belum aktif</span></span></div>
+    <div class="pb">
+      <div class="row"><button class="btn good" id="bStart">🎤 Mulai Mic</button><button class="btn danger" id="bStop">Stop</button></div>
+      <label>Mikrofon (IFP internal / eksternal)<select id="selMic"></select></label>
+      <div class="card"><b>🧰 Tools</b>
+        <div class="tools"><button class="btn primary on" data-tool="lab">🧪 Lab</button><button class="btn primary" data-tool="det">🕵️ Detective</button><button class="btn primary" data-tool="sig">🧬 Signature</button><button class="btn primary" data-tool="cam">📷 Kamera AI</button></div>
+      </div>
+      <div class="card"><b>🎚️ Tampilan</b>
+        <label>Gain mic <input type="range" id="slGain" min="0" max="3" step=".01" value="1"></label>
+        <label>Kehalusan (smoothing) <input type="range" id="slSm" min="0" max=".95" step=".01" value=".7"></label>
+        <label>Zoom waktu gelombang (ms) <input type="range" id="slZoom" min="4" max="60" step="1" value="20"></label>
+        <label>dB terendah <input type="range" id="slMin" min="-140" max="-60" step="1" value="-110"></label>
+        <label>dB tertinggi <input type="range" id="slMax" min="-60" max="0" step="1" value="-20"></label>
+        <div class="row"><button class="btn" id="bReset">Reset</button><button class="btn warn" id="bFull">⛶ Layar penuh</button></div>
+      </div>
+      <div class="card"><b>🎹 Generator nada</b>
+        <label>Jenis gelombang <select id="selWave"><option value="sine">Sinus (murni, 1 puncak)</option><option value="triangle">Segitiga</option><option value="square">Persegi (banyak harmonik)</option><option value="sawtooth">Gigi gergaji (harmonik terkaya)</option></select></label>
+        <div class="hint">👆 Sentuh / geser pada <b>spektrum</b> untuk membunyikan nada. Lihat puncak harmonik muncul di kelipatan frekuensi dasar.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage">
+    <div class="kpis">
+      <div class="kpi"><small>Frekuensi dominan</small><b id="kHz">—</b></div>
+      <div class="kpi"><small>Nada terdekat</small><b id="kNote">—</b></div>
+      <div class="kpi"><small>Keras (RMS) <span id="kEmo"></span></small><b id="kRms">—</b><div class="meter"><i id="kBar"></i></div></div>
+    </div>
+    <div class="chips" role="group" aria-label="Opsi tampilan">
+      <button class="chip" data-opt="lab" aria-pressed="true">🏷️ Label puncak</button>
+      <button class="chip" data-opt="harm" aria-pressed="true">〰️ Harmonik</button>
+      <button class="chip" data-opt="hold" aria-pressed="true">📌 Peak-hold</button>
+      <button class="chip" id="bFreeze" aria-pressed="false">⏸ Bekukan</button>
+    </div>
+    <div class="viz">
+      <div class="cv"><div class="cap">🌊 Waveform • stabil (trigger) • amplitudo vs waktu</div><canvas id="cvW"></canvas></div>
+      <div class="cv"><div class="cap">📊 Spektrum • skala log 20 Hz–20 kHz • dB</div><canvas id="cvS"></canvas></div>
+    </div>
+  </section>
+
+  <section class="panel" aria-label="Tool aktif">
+    <div class="ph"><h2 id="tTitle">🧪 Lab</h2></div>
+    <div class="pb">
+      <div id="tp-lab"><div class="card"><b>🎯 Misi Lab</b><div class="hint">1) Bersenandung → lihat <b>puncak</b> + nama nada.<br>2) Pelan vs keras → bandingkan <b>RMS</b>.<br>3) Ucapkan "iii" vs "uuu" → pola puncak (formant) berubah.<br>4) Ganti gelombang persegi → muncul harmonik ganjil.<br><br><b>Baca grafik:</b> waveform = tekanan udara vs waktu; spektrum = komposisi frekuensi; garis putus-putus = kelipatan frekuensi dasar (harmonik).</div></div></div>
+
+      <div id="tp-det" hidden>
+        <div class="card"><b>🎯 Target</b><div class="big" id="dTarget">—</div>
+          <div class="meter" style="height:1rem"><i id="dProg"></i></div>
+          <div class="hint" style="margin-top:.4rem">Tahan nada di dalam pita kuning ±<span id="dTol"></span> Hz selama 0,7 detik.</div>
+          <div class="row" style="margin-top:.6rem"><button class="btn good" id="dNew">🎲 Target baru</button><button class="btn" id="dHear">🔊 Dengar</button><button class="btn primary" id="dRun">▶ Mulai</button></div></div>
+        <div class="card"><b>🏁 Skor</b>
+          <div class="row"><button class="btn primary on" id="tB">Tim Biru</button><button class="btn danger" id="tR">Tim Merah</button></div>
+          <div class="row"><span class="pill">🔵 <b id="sB">0</b></span><span class="pill">🔴 <b id="sR">0</b></span><span class="pill">🔥 <b id="sK">0</b></span><span class="pill" id="sLv">⭐ Lv 1</span></div></div>
+      </div>
+
+      <div id="tp-sig" hidden>
+        <div class="card"><b>🧠 Konsep</b><div class="hint">Pola puncak spektrum berbeda karena sumber getar & resonansi berbeda. Sidik suara = 32 pita log-frekuensi (100 Hz–8 kHz), dibandingkan dengan korelasi.</div></div>
+        <div class="card"><b>🎙️ Rekam</b><label>Nama profil<input type="text" id="sName" placeholder="mis. Siswa A / Seruling"></label>
+          <div class="row"><button class="btn good" id="sRec">Rekam 2 dtk</button><button class="btn primary" id="sCmp">Bandingkan</button></div></div>
+        <div class="card"><b>📚 Profil</b><div id="sList" class="hint">Belum ada profil.</div></div>
+      </div>
+
+      <div id="tp-cam" hidden>
+        <div class="card"><b>📷 Theremin Kamera (AI di perangkat)</b>
+          <div class="hint">Gerakkan tangan di depan kamera. Kiri↔kanan = <b>nada</b> (Hz), atas↔bawah = <b>keras</b>. Deteksi gerak dilakukan lokal; video tidak direkam & tidak dikirim.</div>
+          <div class="camBox" style="margin:.6rem 0"><video id="vid" playsinline muted></video><canvas id="ov" width="64" height="36"></canvas></div>
+          <div class="row"><button class="btn good" id="cStart">Aktifkan kamera</button><button class="btn danger" id="cStop">Matikan</button></div>
+          <div class="row"><button class="chip" id="cSnap" aria-pressed="false">🎼 Kunci ke nada</button><span class="pill" id="cInfo">Kamera mati</span></div></div>
+      </div>
+    </div>
+  </section>
+</div>
+<div id="toast" aria-live="polite"></div>
+
+<script>
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id),clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),lerp=(a,b,t)=>a+(b-a)*t,sleep=ms=>new Promise(r=>setTimeout(r,ms));
+try{$("brand").textContent=atob("YnkgOiByaXphbGFiZHVycmFobWFuMDVAZ3VydS5zbXAuYmVsYWphci5pZA==")}catch{$("brand").textContent="by :"}
+function toast(t,k){const n=document.createElement("div");n.textContent=t;n.style.borderColor={good:"#38e699",warn:"#ffd042",bad:"#ff5353"}[k]||"#3aa0ff";const box=$("toast");box.appendChild(n);while(box.children.length>3)box.firstChild.remove();setTimeout(()=>n.remove(),2200)}
+const store={get(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+
+const FFT=8192,S={ctx:null,an:null,mix:null,gain:null,mic:null,src:null,osc:null,og:null,micOn:false,tone:false};
+let td=new Float32Array(FFT),fd=new Float32Array(FFT/2).fill(-140),disp=new Float32Array(FFT/2).fill(-140),hold=new Float32Array(FFT/2).fill(-140);
+let VMIN=-110,VMAX=-20,tool="lab",frozen=false,U=1,ptr=null;
+const opt={lab:true,harm:true,hold:true};
+const cvW=$("cvW"),cvS=$("cvS"),cw=cvW.getContext("2d"),cs=cvS.getContext("2d");
+const rem=()=>parseFloat(getComputedStyle(document.documentElement).fontSize)||16;
+function fit(){const d=devicePixelRatio||1;[cvW,cvS].forEach(c=>{const r=c.getBoundingClientRect();c.width=Math.max(10,Math.round(r.width*d));c.height=Math.max(10,Math.round(r.height*d))});U=d*rem()/16}
+const ro=new ResizeObserver(fit);ro.observe(cvW);ro.observe(cvS);
+
+/* ---------- Audio ---------- */
+function ensure(){
+  if(S.ctx){if(S.ctx.state==="suspended")S.ctx.resume();return}
+  S.ctx=new(window.AudioContext||window.webkitAudioContext)();
+  S.an=S.ctx.createAnalyser();S.an.fftSize=FFT;
+  S.mix=S.ctx.createGain();S.gain=S.ctx.createGain();S.gain.gain.value=+$("slGain").value;
+  S.gain.connect(S.mix);S.mix.connect(S.an);
+}
+async function scan(){
+  try{const all=await navigator.mediaDevices.enumerateDevices(),m=all.filter(d=>d.kind==="audioinput"),sel=$("selMic"),cur=sel.value;
+    sel.innerHTML="";m.forEach((d,i)=>{const o=document.createElement("option");o.value=d.deviceId;o.textContent=d.label||`Mikrofon ${i+1}`;sel.appendChild(o)});if(cur)sel.value=cur}catch{}
+}
+async function startMic(){
+  try{
+    stopMic(true);ensure();
+    $("mTxt").textContent="Meminta izin…";
+    const id=$("selMic").value;
+    S.mic=await navigator.mediaDevices.getUserMedia({audio:{deviceId:id?{exact:id}:undefined,echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+    S.src=S.ctx.createMediaStreamSource(S.mic);S.src.connect(S.gain);S.micOn=true;
+    $("mDot").className="dot good";$("mTxt").textContent="Mic aktif";toast("Mic aktif! Coba tepuk / bersenandung.","good");
+    await scan();
+  }catch(e){$("mDot").className="dot bad";$("mTxt").textContent="Gagal akses mic";toast("Gagal akses mic. Cek izin browser.","bad")}
+}
+function stopMic(silent){
+  if(S.mic){S.mic.getTracks().forEach(t=>t.stop());S.mic=null}
+  if(S.src){try{S.src.disconnect()}catch{}S.src=null}
+  S.micOn=false;$("mDot").className="dot";$("mTxt").textContent="Mic belum aktif";if(!silent)toast("Mic dihentikan.","warn");
+}
+function tone(f,v){
+  ensure();
+  if(!S.osc){S.osc=S.ctx.createOscillator();S.og=S.ctx.createGain();S.og.gain.value=0;S.osc.connect(S.og);S.og.connect(S.mix);S.og.connect(S.ctx.destination);S.osc.start()}
+  const t=S.ctx.currentTime;S.osc.type=$("selWave").value;S.osc.frequency.setTargetAtTime(f,t,.03);S.og.gain.setTargetAtTime(v,t,.05);S.tone=v>.001;
+}
+
+/* ---------- Analisis ---------- */
+const NN=["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
+function note(f){const m=69+12*Math.log2(f/440),r=Math.round(m);return{n:NN[(r%12+12)%12]+(Math.floor(r/12)-1),c:Math.round((m-r)*100)}}
+function snapHz(f){return 440*Math.pow(2,Math.round(12*Math.log2(f/440))/12)}
+function findPeaks(){
+  const bw=(S.ctx?S.ctx.sampleRate:48000)/FFT,n=disp.length,lo=Math.ceil(20/bw)+3,hi=Math.min(n-5,Math.floor(20000/bw)),thr=VMIN+(VMAX-VMIN)*.3,c=[];
+  for(let i=lo;i<hi;i++){const v=disp[i];if(v<thr)continue;let ok=true;for(let k=1;k<=3;k++)if(disp[i-k]>v||disp[i+k]>=v){ok=false;break}
+    if(!ok)continue;const a=disp[i-1],g=disp[i+1],den=a-2*v+g||-1e-6,d=clamp(.5*(a-g)/den,-.5,.5);c.push({f:(i+d)*bw,db:v-.25*(a-g)*d})}
+  c.sort((a,b)=>b.db-a.db);const out=[];
+  for(const p of c){if(out.every(q=>Math.abs(Math.log2(p.f/q.f))>.12))out.push(p);if(out.length>=5)break}
+  return out;
+}
+function rms(){let s=0;const n=2048,o=td.length-n;for(let i=0;i<n;i++)s+=td[o+i]*td[o+i];return Math.sqrt(s/n)}
+
+/* ---------- Gambar ---------- */
+function grid(c,L,T,w,h){c.strokeStyle="rgba(255,255,255,.09)";c.lineWidth=U;c.beginPath();for(let i=0;i<=10;i++){const x=L+w*i/10;c.moveTo(x,T);c.lineTo(x,T+h)}for(let j=0;j<=4;j++){const y=T+h*j/4;c.moveTo(L,y);c.lineTo(L+w,y)}c.stroke()}
+function pill(c,t,x,y,col,L,R){c.font=`700 ${12*U}px system-ui`;const w=c.measureText(t).width+14*U,h=22*U;x=clamp(x-w/2,L,R-w);c.fillStyle="rgba(0,0,0,.65)";c.strokeStyle=col;c.lineWidth=U;c.beginPath();c.roundRect(x,y-h/2,w,h,h/2);c.fill();c.stroke();c.fillStyle=col;c.textAlign="left";c.textBaseline="middle";c.fillText(t,x+7*U,y)}
+function smoothPath(c,p){c.moveTo(p[0][0],p[0][1]);for(let i=1;i<p.length-1;i++)c.quadraticCurveTo(p[i][0],p[i][1],(p[i][0]+p[i+1][0])/2,(p[i][1]+p[i+1][1])/2);c.lineTo(p[p.length-1][0],p[p.length-1][1])}
+
+function drawWave(zoomMs){
+  const c=cw,W=cvW.width,H=cvW.height,L=58*U,R=14*U,T=34*U,B=36*U,w=W-L-R,h=H-T-B,sr=S.ctx?S.ctx.sampleRate:48000;
+  c.clearRect(0,0,W,H);grid(c,L,T,w,h);
+  const win=Math.round(sr*zoomMs/1000);let st=0;
+  for(let i=8;i<td.length-win-1;i++){if(td[i-1]<0&&td[i]>=0&&td[i-4]<0){st=i;break}}
+  let pk=0;for(let i=0;i<win;i++)pk=Math.max(pk,Math.abs(td[st+i]));
+  drawWave.sc=lerp(drawWave.sc||1,1/clamp(pk*1.25,.05,1),.1);const sc=drawWave.sc,yc=T+h/2;
+  c.fillStyle="rgba(255,255,255,.65)";c.font=`${11*U}px system-ui`;c.textAlign="right";c.textBaseline="middle";
+  [1,.5,0,-.5,-1].forEach(v=>{c.fillText((v>0?"+":"")+(v/sc).toFixed(2),L-6*U,yc-v*h/2)});
+  c.strokeStyle="rgba(255,208,66,.3)";c.lineWidth=2*U;c.beginPath();c.moveTo(L,yc);c.lineTo(L+w,yc);c.stroke();
+  const pts=[],step=Math.max(1,Math.floor(win/(w/(2*U))));
+  for(let i=0;i<win;i+=step)pts.push([L+w*i/win,clamp(yc-td[st+i]*sc*h/2,T,T+h)]);
+  if(pts.length>2){const g=c.createLinearGradient(L,0,L+w,0);g.addColorStop(0,"#3aa0ff");g.addColorStop(1,"#38e699");
+    c.strokeStyle=g;c.lineWidth=3.5*U;c.lineJoin="round";c.shadowColor="rgba(58,160,255,.5)";c.shadowBlur=14*U;c.beginPath();smoothPath(c,pts);c.stroke();c.shadowBlur=0}
+  c.fillStyle="rgba(255,255,255,.65)";c.textAlign="center";c.textBaseline="top";
+  for(let i=0;i<=5;i++)c.fillText((zoomMs*i/5).toFixed(zoomMs<10?1:0),L+w*i/5,T+h+6*U);
+  c.textAlign="left";c.fillText("Waktu (ms)  •  tinggi = tekanan udara relatif (skala otomatis)",L,T+h+20*U);
+}
+
+function drawSpec(pk,dom){
+  const c=cs,W=cvS.width,H=cvS.height,L=62*U,R=14*U,T=34*U,B=40*U,w=W-L-R,h=H-T-B,bw=(S.ctx?S.ctx.sampleRate:48000)/FFT,lg=Math.log(1000);
+  const fx=f=>L+w*Math.log(f/20)/lg,fi=x=>20*Math.exp((x-L)/w*lg),dy=d=>T+h*(1-clamp((d-VMIN)/(VMAX-VMIN),0,1));
+  c.clearRect(0,0,W,H);
+  c.font=`${11*U}px system-ui`;c.textBaseline="middle";c.textAlign="right";c.strokeStyle="rgba(255,255,255,.09)";c.lineWidth=U;c.fillStyle="rgba(255,255,255,.6)";
+  for(let k=0;k<=5;k++){const d=VMIN+(VMAX-VMIN)*k/5,y=dy(d);c.beginPath();c.moveTo(L,y);c.lineTo(L+w,y);c.stroke();c.fillText(Math.round(d)+" dB",L-6*U,y)}
+  c.textAlign="center";c.textBaseline="top";
+  [20,50,100,200,500,1000,2000,5000,10000,20000].forEach(f=>{const x=fx(f);c.beginPath();c.moveTo(x,T);c.lineTo(x,T+h);c.stroke();c.fillText(f>=1000?f/1000+"k":f,x,T+h+6*U)});
+  c.textAlign="left";c.fillText("Frekuensi (Hz) — skala logaritmik: tiap oktaf sama lebar",L,T+h+22*U);
+  if(tool==="det"){const lo=fx(Math.max(20,det.hz-det.tol)),hi=fx(det.hz+det.tol);c.fillStyle="rgba(255,208,66,.2)";c.fillRect(lo,T,hi-lo,h);c.strokeStyle="#ffd042";c.setLineDash([6*U,6*U]);c.lineWidth=2*U;c.beginPath();c.moveTo(fx(det.hz),T);c.lineTo(fx(det.hz),T+h);c.stroke();c.setLineDash([]);pill(c,`🎯 ${det.hz} Hz`,fx(det.hz),T+12*U,"#ffd042",L,L+w)}
+  const col=arr=>{const p=[];for(let x=0;x<=w;x+=2*U){const b0=fi(L+x)/bw,b1=fi(L+x+2*U)/bw;let v;if(b1-b0<1){const b=(b0+b1)/2,i=Math.floor(b),t=b-i;v=arr[i]*(1-t)+arr[i+1]*t}else{v=-200;for(let i=Math.floor(b0);i<=Math.ceil(b1)&&i<arr.length;i++)v=Math.max(v,arr[i])}p.push([L+x,dy(v)])}return p};
+  const g=c.createLinearGradient(0,T,0,T+h);g.addColorStop(0,"#ff4d6d");g.addColorStop(.35,"#ffd042");g.addColorStop(.7,"#38e699");g.addColorStop(1,"#3aa0ff");
+  const p=col(disp);
+  c.beginPath();smoothPath(c,p);c.lineTo(L+w,T+h);c.lineTo(L,T+h);c.closePath();c.globalAlpha=.32;c.fillStyle=g;c.fill();c.globalAlpha=1;
+  if(opt.hold){c.beginPath();smoothPath(c,col(hold));c.strokeStyle="rgba(255,255,255,.5)";c.lineWidth=1.5*U;c.stroke()}
+  c.beginPath();smoothPath(c,p);c.strokeStyle=g;c.lineWidth=3*U;c.lineJoin="round";c.shadowColor="rgba(56,230,153,.5)";c.shadowBlur=12*U;c.stroke();c.shadowBlur=0;
+  if(opt.harm&&dom){c.setLineDash([4*U,6*U]);c.lineWidth=1.5*U;c.strokeStyle="rgba(255,255,255,.4)";
+    for(let k=1;k<=8;k++){const f=dom.f*k;if(f>19000)break;const x=fx(f);c.beginPath();c.moveTo(x,T);c.lineTo(x,T+h);c.stroke();c.fillStyle="rgba(255,255,255,.8)";c.textAlign="center";c.textBaseline="top";c.fillText(k===1?"f₀":k+"×",x,T+2*U)}c.setLineDash([])}
+  pk.forEach((q,i)=>{const x=fx(q.f),y=dy(q.db);c.fillStyle=i?"#fff":"#ffd042";c.beginPath();c.arc(x,y,(i?4:7)*U,0,7);c.fill();
+    if(opt.lab&&i<4){const ny=clamp(y-(20+(i%2)*24)*U,T+30*U,T+h);pill(c,`${Math.round(q.f)} Hz · ${note(q.f).n}`,x,ny,i?"#fff":"#ffd042",L,L+w)}});
+  if(ptr){const x=fx(ptr.f);c.strokeStyle="#ff4d6d";c.lineWidth=3*U;c.beginPath();c.moveTo(x,T);c.lineTo(x,T+h);c.stroke();pill(c,`🎹 ${Math.round(ptr.f)} Hz · ${note(ptr.f).n}`,x,T+h-16*U,"#ff4d6d",L,L+w)}
+  if(!S.micOn&&!S.tone){c.fillStyle="rgba(255,255,255,.85)";c.font=`800 ${18*U}px system-ui`;c.textAlign="center";c.textBaseline="middle";c.fillText("🎤 Tekan Mulai Mic — atau sentuh area ini untuk membunyikan nada",L+w/2,T+h/2)}
+}
+function plotFromX(e){const r=cvS.getBoundingClientRect(),x=(e.clientX-r.left)*(cvS.width/r.width),L=62*U,w=cvS.width-L-14*U;return clamp(20*Math.pow(1000,(x-L)/w),20,12000)}
+cvS.addEventListener("pointerdown",e=>{cvS.setPointerCapture(e.pointerId);ptr={id:e.pointerId,f:plotFromX(e)};tone(ptr.f,.2)});
+cvS.addEventListener("pointermove",e=>{if(ptr&&ptr.id===e.pointerId){ptr.f=plotFromX(e);tone(ptr.f,.2)}});
+const up=e=>{if(ptr&&ptr.id===e.pointerId){ptr=null;tone(220,0)}};cvS.addEventListener("pointerup",up);cvS.addEventListener("pointercancel",up);
+
+/* ---------- Detective ---------- */
+const det={on:false,hz:440,tol:15,t:0,team:"Biru",sB:0,sR:0,streak:0,xp:0,last:0};
+const TG=[196,220,247,262,294,330,349,392,440,494,523,587,659,698,784,880];
+function newTarget(){det.hz=Math.random()<.25?Math.round(120+Math.random()*900):TG[Math.floor(Math.random()*TG.length)];det.tol=Math.max(10,Math.round(det.hz*.035));det.t=0;detRender()}
+function detRender(){$("dTarget").textContent=`${det.hz} Hz · ${note(det.hz).n}`;$("dTol").textContent=det.tol;$("sB").textContent=det.sB;$("sR").textContent=det.sR;$("sK").textContent=det.streak;$("sLv").textContent="⭐ Lv "+(Math.floor(det.xp/100)+1);$("dRun").textContent=det.on?"⏹ Stop":"▶ Mulai";$("tB").classList.toggle("on",det.team==="Biru");$("tR").classList.toggle("on",det.team==="Merah")}
+function updDet(hz,r,dt){
+  if(!det.on)return;
+  if(!hz||r<.01){det.t=Math.max(0,det.t-dt*2)}
+  else{const d=Math.abs(hz-det.hz);if(d<=det.tol){det.t+=dt;if(det.t>=700){const pts=Math.round(10+40*(1-d/det.tol));det.team==="Biru"?det.sB+=pts:det.sR+=pts;det.streak++;det.xp+=pts;toast(`✅ PAS! +${pts} poin Tim ${det.team} 🎉`,"good");newTarget()}}else det.t=Math.max(0,det.t-dt*2)}
+  $("dProg").style.width=clamp(det.t/7,0,100)+"%";
+}
+
+/* ---------- Signature (korelasi pita log) ---------- */
+const sig={list:store.get("ss_sig3",[]),busy:false};
+async function capVec(ms){
+  const N=32,acc=new Float32Array(N),bw=S.ctx.sampleRate/FFT;let n=0;const t0=performance.now();
+  while(performance.now()-t0<ms){for(let i=0;i<N;i++){const f0=100*Math.pow(80,i/N),f1=100*Math.pow(80,(i+1)/N);let m=-140;for(let b=Math.floor(f0/bw);b<=Math.ceil(f1/bw);b++)m=Math.max(m,disp[b]);acc[i]+=m}n++;await sleep(33)}
+  const v=Array.from(acc,x=>x/Math.max(1,n)),mean=v.reduce((a,b)=>a+b,0)/N;return v.map(x=>x-mean);
+}
+function corr(a,b){let d=0,x=0,y=0;for(let i=0;i<a.length;i++){d+=a[i]*b[i];x+=a[i]*a[i];y+=b[i]*b[i]}return d/(Math.sqrt(x*y)||1)}
+function sigRender(scores){
+  const el=$("sList");if(!sig.list.length){el.textContent="Belum ada profil.";return}el.innerHTML="";
+  (scores||sig.list.map(p=>({...p}))).forEach(p=>{
+    const d=document.createElement("div");d.className="sig";const mn=Math.min(...p.vec),mx=Math.max(...p.vec)||1,rg=(mx-mn)||1;
+    d.innerHTML=`<b></b> <span class="hint"></span><div class="bars">${p.vec.map(v=>`<i style="height:${6+94*(v-mn)/rg}%"></i>`).join("")}</div><button class="btn danger" style="height:2.6rem;width:100%">Hapus</button>`;
+    d.querySelector("b").textContent=p.name;d.querySelector("span").textContent=typeof p.sim==="number"?`Kemiripan ${Math.round(Math.max(0,p.sim)*100)}%`:"";
+    if(typeof p.sim==="number")d.querySelectorAll(".bars i").forEach(i=>i.style.background=`rgba(56,230,153,${.3+.7*Math.max(0,p.sim)})`);
+    d.querySelector("button").onclick=()=>{sig.list=sig.list.filter(x=>x.id!==p.id);store.set("ss_sig3",sig.list);sigRender()};
+    el.appendChild(d)});
+}
+async function sigDo(kind){
+  if(!S.micOn){toast("Nyalakan mic dulu.","warn");return}
+  if(sig.busy)return;const name=$("sName").value.trim();
+  if(kind==="rec"&&!name){toast("Isi nama profil dulu.","warn");return}
+  if(kind==="cmp"&&!sig.list.length){toast("Rekam profil dulu.","warn");return}
+  sig.busy=true;toast("Merekam 2 detik… ucapkan kata yang sama!");
+  const v=await capVec(2000);sig.busy=false;
+  if(kind==="rec"){sig.list.unshift({id:Date.now().toString(36)+Math.random().toString(16).slice(2,6),name,vec:v});sig.list=sig.list.slice(0,12);store.set("ss_sig3",sig.list);toast("Profil tersimpan!","good");sigRender()}
+  else{const sc=sig.list.map(p=>({...p,sim:corr(v,p.vec)})).sort((a,b)=>b.sim-a.sim);toast(`Paling mirip: ${sc[0].name} (${Math.round(Math.max(0,sc[0].sim)*100)}%)`,"good");sigRender(sc)}
+}
+
+/* ---------- Kamera AI (deteksi gerak on-device → theremin) ---------- */
+const cam={on:false,prev:null,x:.5,y:.5,seen:0,snap:false,n:0};
+const vid=$("vid"),ov=$("ov"),ox=ov.getContext("2d"),tmp=document.createElement("canvas");tmp.width=64;tmp.height=36;const tx=tmp.getContext("2d",{willReadFrequently:true});
+async function camStart(){
+  try{ensure();vid.srcObject=await navigator.mediaDevices.getUserMedia({video:{width:640,height:360,facingMode:"user"}});await vid.play();cam.on=true;cam.prev=null;$("cInfo").textContent="Kamera aktif — lambaikan tangan";toast("Kamera aktif 📷","good")}
+  catch{toast("Kamera tidak bisa diakses.","bad")}
+}
+function camStop(){if(vid.srcObject){vid.srcObject.getTracks().forEach(t=>t.stop());vid.srcObject=null}cam.on=false;ox.clearRect(0,0,64,36);tone(220,0);$("cInfo").textContent="Kamera mati"}
+function camStep(now){
+  if(!cam.on||vid.readyState<2)return;
+  tx.drawImage(vid,0,0,64,36);const d=tx.getImageData(0,0,64,36).data,cur=new Float32Array(2304);let m=0,sx=0,sy=0;ox.clearRect(0,0,64,36);ox.fillStyle="rgba(255,77,109,.55)";
+  for(let i=0;i<2304;i++){const g=d[i*4]*.3+d[i*4+1]*.59+d[i*4+2]*.11;cur[i]=g;if(cam.prev&&Math.abs(g-cam.prev[i])>26){m++;const x=i%64,y=(i/64)|0;sx+=x;sy+=y;ox.fillRect(x,y,1,1)}}
+  cam.prev=cur;
+  if(m>8){const mx=1-sx/m/64,my=sy/m/36;cam.x=lerp(cam.x,mx,.35);cam.y=lerp(cam.y,my,.35);cam.seen=now;
+    ox.fillStyle="#ffd042";ox.beginPath();ox.arc((1-cam.x)*64,cam.y*36,2.5,0,7);ox.fill()}
+  if(tool==="cam"){
+    if(now-cam.seen<450){let f=130.81*Math.pow(2,3.5*cam.x);if(cam.snap)f=snapHz(f);tone(f,.04+.22*(1-cam.y));$("cInfo").textContent=`🎶 ${Math.round(f)} Hz · ${note(f).n}`}
+    else{tone(220,0);$("cInfo").textContent="Menunggu gerakan tangan…"}}
+}
+
+/* ---------- Loop utama ---------- */
+let last=performance.now(),fc=0,hzS=0,rmsS=0;
+function frame(now){
+  requestAnimationFrame(frame);const dt=now-last;last=now;fc++;
+  VMAX=+$("slMax").value;VMIN=Math.min(+$("slMin").value,VMAX-20);
+  if(S.an&&!frozen){S.an.smoothingTimeConstant=+$("slSm").value;S.an.getFloatTimeDomainData(td);S.an.getFloatFrequencyData(fd);
+    for(let i=0;i<fd.length;i++){const v=Math.max(fd[i],-140);disp[i]=lerp(disp[i],v,v>disp[i]?.6:.14);hold[i]=Math.max(disp[i],hold[i]-.25)}}
+  if(fc%2===0)camStep(now);
+  const pk=findPeaks(),r=rms(),act=r>.004&&pk.length&&pk[0].db>VMIN+(VMAX-VMIN)*.35,dom=act?pk[0]:null;
+  hzS=dom?(hzS?lerp(hzS,dom.f,.25):dom.f):0;rmsS=lerp(rmsS,r,.15);
+  if(fc%4===0){
+    const db=20*Math.log10(rmsS+1e-6);
+    $("kHz").textContent=hzS?`${Math.round(hzS)} Hz`:"—";
+    if(hzS){const n=note(hzS);$("kNote").textContent=`${n.n} ${n.c>=0?"+":""}${n.c}¢`}else $("kNote").textContent="—";
+    $("kRms").textContent=`${(rmsS*100).toFixed(1)}%`;$("kBar").style.width=clamp((db+60)/60*100,0,100)+"%";
+    $("kEmo").textContent=db>-12?"📢":db>-24?"😮":db>-40?"🙂":"🤫";
+  }
+  updDet(hzS,rmsS,dt);
+  drawWave(+$("slZoom").value);drawSpec(pk,dom);
+}
+
+/* ---------- Tools & UI ---------- */
+const TT={lab:"🧪 Lab",det:"🕵️ Frequency Detective",sig:"🧬 Sound Signature",cam:"📷 Kamera AI"};
+function setTool(t){
+  tool=t;["lab","det","sig","cam"].forEach(k=>$("tp-"+k).hidden=k!==t);$("tTitle").textContent=TT[t];
+  document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("on",b.dataset.tool===t));
+  if(t!=="cam")tone(220,0);if(t==="det")detRender();if(t==="sig")sigRender();
+}
+document.querySelectorAll("[data-tool]").forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
+document.querySelectorAll("[data-opt]").forEach(b=>b.onclick=()=>{const k=b.dataset.opt;opt[k]=!opt[k];b.setAttribute("aria-pressed",opt[k])});
+$("bFreeze").onclick=e=>{frozen=!frozen;e.currentTarget.setAttribute("aria-pressed",frozen);e.currentTarget.textContent=frozen?"▶ Lanjutkan":"⏸ Bekukan"};
+$("bStart").onclick=startMic;$("bStop").onclick=()=>stopMic();
+$("selMic").onchange=()=>{if(S.micOn)startMic()};
+$("slGain").oninput=e=>{if(S.gain)S.gain.gain.value=+e.target.value};
+$("bReset").onclick=()=>{[["slGain",1],["slSm",.7],["slZoom",20],["slMin",-110],["slMax",-20]].forEach(([i,v])=>$(i).value=v);if(S.gain)S.gain.gain.value=1;toast("Pengaturan di-reset.","warn")};
+$("bFull").onclick=async()=>{try{document.fullscreenElement?await document.exitFullscreen():await document.documentElement.requestFullscreen()}catch{toast("Layar penuh tidak didukung.","bad")}};
+$("dNew").onclick=()=>{newTarget();toast("Target baru!","good")};
+$("dHear").onclick=()=>{tone(det.hz,.2);setTimeout(()=>tone(det.hz,0),1200)};
+$("dRun").onclick=()=>{if(!S.micOn){toast("Nyalakan mic dulu.","warn");return}det.on=!det.on;det.t=0;detRender()};
+$("tB").onclick=()=>{det.team="Biru";detRender()};$("tR").onclick=()=>{det.team="Merah";detRender()};
+$("sRec").onclick=()=>sigDo("rec");$("sCmp").onclick=()=>sigDo("cmp");
+$("cStart").onclick=camStart;$("cStop").onclick=camStop;
+$("cSnap").onclick=e=>{cam.snap=!cam.snap;e.currentTarget.setAttribute("aria-pressed",cam.snap)};
+$("selWave").onchange=()=>{if(S.osc)S.osc.type=$("selWave").value};
+
+if(!navigator.mediaDevices?.getUserMedia)toast("Browser tidak mendukung mikrofon.","bad");else scan();
+setTool("lab");requestAnimationFrame(frame);
+})();
+</script>
+</body></html>

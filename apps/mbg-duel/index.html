@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111d">
+<title>PILAR™ · Misi Gizi MBG Delivery Duel v3</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#050b13;--bg2:#081522;--panel:#0b1725e8;--panel2:#0f2032;--line:#28435e;
+  --text:#edf7ff;--muted:#8fa8bd;--cyan:#5ee9ff;--lime:#c9ff42;--yellow:#ffd166;
+  --blue:#49a6ff;--red:#ff6575;--green:#65eca4;--orange:#ff9d57;--bad:#ff697c;
+  --cell:clamp(38px,3.15vw,66px);--radius:18px;--btn:44px;
+}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:16px/1.45 Inter,Segoe UI,system-ui,sans-serif}
+body{background:radial-gradient(80% 60% at 50% -15%,rgba(94,233,255,.12),transparent 60%),linear-gradient(145deg,#050a12,#071522 58%,#04080d);overflow-x:hidden}
+button,select{font:inherit;color:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}button:focus-visible,select:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+button:disabled{opacity:.45;cursor:not-allowed}.hidden,[hidden]{display:none!important}
+
+/* ===== PILAR shell ===== */
+.topbar{position:sticky;top:0;z-index:40;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid #19334c;background:rgba(4,10,17,.92);backdrop-filter:blur(14px)}
+.brandline{display:flex;align-items:center;gap:10px;min-width:0}.homeBtn{width:42px;height:42px;border-radius:12px;border:1px solid #2d4965;background:#0b1928;font-size:22px}.pilarMark{display:flex;align-items:flex-end;gap:2px;height:28px}.pilarMark i{display:block;width:5px;border-radius:5px 5px 1px 1px;background:linear-gradient(var(--lime),var(--cyan))}.pilarMark i:nth-child(1){height:14px}.pilarMark i:nth-child(2){height:22px}.pilarMark i:nth-child(3){height:28px}.pilarMark i:nth-child(4){height:19px}.pilarMark i:nth-child(5){height:25px}
+.brandtext{min-width:0}.brandtext strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:17px;letter-spacing:.03em}.brandtext small{display:block;color:var(--muted);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.creator{font:650 9px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;color:#728ba2;white-space:nowrap}.topActions{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.pill{display:flex;gap:7px;align-items:center;padding:7px 10px;border:1px solid #28445f;background:#091827;border-radius:999px;font-size:11px;color:#a9bfd2}.pill b{color:#eef7ff;font-variant-numeric:tabular-nums}.pill .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(101,236,164,.5)}
+.iconBtn,.actionBtn{min-height:var(--btn);border-radius:12px;border:1px solid #31516f;background:#102238;padding:0 12px;font-weight:850}.actionBtn.primary{background:linear-gradient(135deg,#1b789e,#31c4df);color:#04131b;border-color:#5ee9ff}.actionBtn.warn{background:#2e2811;border-color:#786326;color:#ffe9a5}.actionBtn.danger{background:#32151c;border-color:#74404a;color:#ffd3d8}.iconBtn{min-width:var(--btn);padding:0}
+
+.controlStrip{max-width:2200px;margin:10px auto 0;padding:0 14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}.missionCard{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 12px;border:1px solid #24425d;border-radius:15px;background:rgba(8,21,34,.86)}.missionCard strong{font-size:13px}.missionCard span{font-size:11px;color:var(--muted)}.modeControls{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.seg{display:flex;gap:4px;padding:4px;border:1px solid #28445f;border-radius:13px;background:#07131f}.seg button{min-height:34px;border:0;border-radius:9px;background:transparent;padding:0 9px;font-size:10px;font-weight:900;color:#90a8bd}.seg button[aria-pressed=true]{background:#15304a;color:#eaf8ff;box-shadow:inset 0 0 0 1px #3d7198}
+
+.main{max-width:2200px;margin:0 auto;padding:10px 14px 18px}.gridWrap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}.teamCard{border:1px solid #27435d;border-radius:20px;background:linear-gradient(160deg,rgba(13,29,46,.96),rgba(7,18,29,.97));box-shadow:0 22px 60px rgba(0,0,0,.34);overflow:hidden;min-width:0}.teamCard.blue{--team:var(--blue)}.teamCard.red{--team:var(--red)}.teamTop{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #1d354d;background:linear-gradient(90deg,color-mix(in srgb,var(--team) 11%,transparent),transparent)}.teamTitle{display:flex;align-items:center;gap:10px}.badgeTeam{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--team);color:#06111d;font-weight:950;box-shadow:0 0 24px color-mix(in srgb,var(--team) 30%,transparent)}.teamTitle h2{margin:0;font-size:16px}.teamTitle small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.scoreBig{text-align:right}.scoreBig b{display:block;font-size:25px;color:var(--team);line-height:1}.scoreBig small{font-size:9px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:9px 10px}.stat{padding:8px 9px;border:1px solid #203b55;border-radius:11px;background:#081522;min-width:0}.stat span{display:block;color:#7891a7;text-transform:uppercase;letter-spacing:.06em;font-size:8px;font-weight:850}.stat b{display:block;margin-top:2px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.energyTrack{height:5px;margin-top:5px;border-radius:99px;background:#1a2b3e;overflow:hidden}.energyTrack i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--green),var(--yellow));transition:width .2s}
+.boardRow{padding:0 10px 10px;display:grid;gap:8px}.grid{display:grid;grid-template-columns:repeat(10,var(--cell));grid-template-rows:repeat(10,var(--cell));gap:3px;justify-content:center;align-content:center;padding:8px;border:1px solid #29435c;border-radius:16px;background:linear-gradient(#06101a,#081828);touch-action:none;user-select:none;overflow:hidden}.cell{position:relative;width:100%;height:100%;display:grid;place-items:center;border-radius:8px;background:#102439;border:1px solid rgba(255,255,255,.035);font-size:clamp(12px,1.15vw,18px);font-weight:950;transition:background .08s,transform .08s,box-shadow .08s}.cell::after{content:"";position:absolute;inset:3px;border-radius:5px;border:1px solid transparent}.cell.kitchen{background:linear-gradient(145deg,#167f55,#6cef9c);color:#04120d}.cell.school{background:linear-gradient(145deg,#d88718,#ffd166);color:#241703}.cell.obstacle{background:linear-gradient(145deg,#344b61,#1d2c3b);color:#9bb0c2}.cell.pathLeft{background:color-mix(in srgb,var(--blue) 72%,#102439);box-shadow:inset 0 0 0 2px rgba(73,166,255,.45)}.cell.pathRight{background:color-mix(in srgb,var(--red) 72%,#102439);box-shadow:inset 0 0 0 2px rgba(255,101,117,.45)}.cell.pathTip::after{border-color:var(--yellow);box-shadow:0 0 12px rgba(255,209,102,.5)}.cell.visionHover::after{border-color:var(--cyan);box-shadow:0 0 16px rgba(94,233,255,.65)}.cell.badFlash{animation:badFlash .25s ease}@keyframes badFlash{50%{background:#612432;transform:scale(.94)}}
+.msg{min-height:44px;display:flex;align-items:center;justify-content:center;padding:8px 10px;text-align:center;border:1px solid #223e58;border-radius:11px;background:#081522;color:#9fb5c8;font-size:11px;font-weight:750}.msg.good{border-color:#2f7254;color:#aff7ce;background:#0a241a}.msg.bad{border-color:#774351;color:#ffb4bd;background:#281017}
+.mobileTabs{display:none;gap:7px;margin-bottom:8px}.mobileTabs button{flex:1;min-height:42px;border:1px solid #31516f;border-radius:11px;background:#0d1f31;font-weight:900}.mobileTabs button[aria-pressed=true]{background:#173751;border-color:#5ee9ff}
+
+/* ===== Vision AI ===== */
+.visionPanel{position:fixed;right:12px;top:72px;width:min(330px,34vw);z-index:70;border:1px solid #2f5c76;border-radius:18px;background:#041019;box-shadow:0 22px 60px rgba(0,0,0,.5);overflow:hidden;display:none}.visionPanel.open{display:block}.visionHead{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;border-bottom:1px solid #1f4259}.visionHead b{font-size:11px}.visionHead span{font-size:9px;color:var(--muted)}.visionCam{position:relative;aspect-ratio:16/9;background:#000}.visionCam video,.visionCam canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}.visionCam canvas{pointer-events:none}.visionGuide{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 49.7%,rgba(255,255,255,.28) 50%,transparent 50.3%)}.visionGuide::before,.visionGuide::after{position:absolute;top:8px;padding:3px 6px;border-radius:99px;background:rgba(0,0,0,.6);font-size:8px;font-weight:900}.visionGuide::before{content:"TIM BIRU";left:8px;color:#9ed2ff}.visionGuide::after{content:"TIM MERAH";right:8px;color:#ffadb7}.visionBody{padding:9px 10px;display:grid;gap:7px}.visionStatus{font-size:10px;color:#a9bfd2}.visionPerf{display:flex;justify-content:space-between;gap:6px;font-size:9px;color:#708ca4}.visionHelp{font-size:9px;color:#8ea6bb;line-height:1.45}.visionActions{display:flex;gap:6px}.visionActions button{min-height:34px;flex:1;border:1px solid #31516f;border-radius:9px;background:#102238;font-size:9px;font-weight:900}.visionActions .primary{background:#17445a;border-color:#4ba8c7}.visionCursorLayer{position:fixed;inset:0;z-index:90;pointer-events:none}.visionCursor{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border:3px solid var(--vc);border-radius:50%;box-shadow:0 0 0 8px color-mix(in srgb,var(--vc) 16%,transparent),0 0 22px color-mix(in srgb,var(--vc) 60%,transparent);display:grid;place-items:center;font-size:8px;font-weight:950;background:rgba(4,12,18,.55);transition:width .08s,height .08s;margin-top:-17px;will-change:transform}.visionCursor.pinching{width:24px;height:24px;margin:-12px 0 0 -12px;border-color:var(--yellow)}.visionCursor.blue{--vc:var(--blue)}.visionCursor.red{--vc:var(--red)}
+
+/* ===== Modal ===== */
+.backdrop{position:fixed;inset:0;z-index:100;display:none;place-items:center;padding:16px;background:rgba(0,0,0,.76);backdrop-filter:blur(8px)}.backdrop.show{display:grid}.modal{width:min(760px,96vw);border:1px solid #31516f;border-radius:22px;overflow:hidden;background:#071522;box-shadow:0 30px 90px rgba(0,0,0,.55)}.modalTop{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid #29445d;background:linear-gradient(90deg,rgba(73,166,255,.18),rgba(255,101,117,.18))}.modalTop h2{margin:0;font-size:18px}.modalBody{padding:14px 16px}.summary{color:#a8bdcf;font-size:12px;margin-bottom:10px}.resultTable{width:100%;border-collapse:collapse;font-size:12px}.resultTable th,.resultTable td{padding:9px;border-bottom:1px solid #1d354d;text-align:left}.resultTable th{font-size:9px;color:#7f98ad;text-transform:uppercase;letter-spacing:.07em}.modalFoot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:12px 16px}.creatorFoot{font:600 9px ui-monospace,SFMono-Regular,Consolas,monospace;color:#627b92}
+
+/* ===== UI profiles ===== */
+body[data-ui="ifp"]{--btn:54px;--cell:clamp(56px,3.45vw,84px)}body[data-ui="ifp"] .topbar{padding:12px 18px}body[data-ui="ifp"] .brandtext strong{font-size:21px}body[data-ui="ifp"] .teamTitle h2{font-size:20px}body[data-ui="ifp"] .stat b{font-size:17px}body[data-ui="ifp"] .msg{font-size:13px;min-height:50px}body[data-ui="ifp"] .actionBtn{font-size:14px}
+body[data-ui="desktop"]{--cell:clamp(38px,3.15vw,66px)}
+body[data-ui="mobile"]{--cell:min(8.2vw,40px)}body[data-ui="mobile"] .topbar{grid-template-columns:1fr auto;padding:7px 8px}body[data-ui="mobile"] .creator{display:none}body[data-ui="mobile"] .topActions{grid-column:1/-1;justify-content:flex-start;overflow:auto;flex-wrap:nowrap;padding-bottom:2px}body[data-ui="mobile"] .controlStrip{grid-template-columns:1fr;padding:0 8px}body[data-ui="mobile"] .modeControls{justify-content:flex-start}body[data-ui="mobile"] .main{padding:8px}body[data-ui="mobile"] .gridWrap{grid-template-columns:1fr}body[data-ui="mobile"] .mobileTabs{display:flex}body[data-ui="mobile"] .teamCard.mobileOff{display:none}body[data-ui="mobile"] .stats{grid-template-columns:repeat(3,1fr)}body[data-ui="mobile"] .stat:nth-child(4),body[data-ui="mobile"] .stat:nth-child(5){display:none}body[data-ui="mobile"] .visionPanel{width:min(94vw,350px);right:3vw;top:auto;bottom:10px}body[data-ui="mobile"] .visionGuide::before{content:"AREA KONTROL"}body[data-ui="mobile"] .visionGuide::after{display:none}
+@media(max-width:1180px){body:not([data-ui="ifp"]) .gridWrap{grid-template-columns:1fr}.creator{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body data-ui="desktop">
+<header class="topbar">
+  <div class="brandline">
+    <button class="homeBtn" id="homeBtn" title="Kembali ke PILAR Hub" aria-label="Kembali ke PILAR Hub">←</button>
+    <span class="pilarMark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+    <div class="brandtext"><strong>PILAR™ · Misi Gizi: MBG Delivery Duel</strong><small>Algoritma rute · strategi · multitouch duel · Vision AI hand tracking · v3.0</small></div>
+  </div>
+  <div class="creator">by : rizalabdurrahman05@guru.smp.belajar.id</div>
+  <div class="topActions">
+    <span class="pill"><span class="dot"></span><span id="status">SIAP</span></span>
+    <span class="pill">⏱ <b id="timer">02:00</b></span>
+    <button class="actionBtn primary" id="startBtn">▶ Mulai</button>
+    <button class="actionBtn" id="resetBtn">↺ Reset</button>
+    <button class="actionBtn" id="newMapBtn">🗺 Map Baru</button>
+    <button class="iconBtn" id="soundBtn" title="Suara" aria-label="Suara">♪</button>
+    <button class="iconBtn" id="fullBtn" title="Layar penuh" aria-label="Layar penuh">⛶</button>
+  </div>
+</header>
+
+<section class="controlStrip">
+  <div class="missionCard">
+    <strong>🎯 Misi:</strong><span>Antarkan MBG dari <b>D</b>apur ke <b>S</b>ekolah dengan rute efisien. Kedua tim memakai peta dan jumlah porsi yang sama.</span>
+    <span class="pill">Par rute <b id="parRoute">—</b></span><span class="pill">Rintangan <b id="obsCount">15</b></span><span class="pill">Porsi <b id="matchLoad">250</b></span>
+  </div>
+  <div class="modeControls">
+    <div class="seg" id="uiSeg" aria-label="Mode tampilan"><button data-ui="auto" aria-pressed="true">AUTO</button><button data-ui="ifp">IFP 2K+</button><button data-ui="desktop">DESKTOP</button><button data-ui="mobile">MOBILE</button></div>
+    <div class="seg" aria-label="Mode interaksi"><button id="touchMode" aria-pressed="true">☝ TOUCH</button><button id="visionMode">✋ VISION AI</button></div>
+  </div>
+</section>
+
+<main class="main">
+  <div class="mobileTabs" id="mobileTabs"><button data-side="left" aria-pressed="true">🔵 Tim Biru</button><button data-side="right">🔴 Tim Merah</button></div>
+  <div class="gridWrap">
+    <section class="teamCard blue" id="cardLeft">
+      <div class="teamTop"><div class="teamTitle"><div class="badgeTeam">B</div><div><h2>Tim Biru</h2><small>Duel rute · sisi kiri IFP / kamera</small></div></div><div class="scoreBig"><b id="scoreLeft">0</b><small>SKOR</small></div></div>
+      <div class="stats">
+        <div class="stat"><span>Porsi</span><b id="studentsLeft">250</b></div>
+        <div class="stat"><span>Energi</span><b id="energyLeft">100%</b><div class="energyTrack"><i id="energyBarLeft"></i></div></div>
+        <div class="stat"><span>Langkah</span><b id="stepsLeft">0</b></div>
+        <div class="stat"><span>Efisiensi</span><b id="effLeft">—</b></div>
+        <div class="stat"><span>Bonus waktu</span><b id="timeBonusLeft">0</b></div>
+      </div>
+      <div class="boardRow"><div class="grid" id="gridLeft" aria-label="Grid Tim Biru"></div><div class="msg" id="msgLeft">Tekan <b>Mulai</b>, lalu tarik jalur dari D ke S.</div></div>
+    </section>
+
+    <section class="teamCard red" id="cardRight">
+      <div class="teamTop"><div class="teamTitle"><div class="badgeTeam">M</div><div><h2>Tim Merah</h2><small>Duel rute · sisi kanan IFP / kamera</small></div></div><div class="scoreBig"><b id="scoreRight">0</b><small>SKOR</small></div></div>
+      <div class="stats">
+        <div class="stat"><span>Porsi</span><b id="studentsRight">250</b></div>
+        <div class="stat"><span>Energi</span><b id="energyRight">100%</b><div class="energyTrack"><i id="energyBarRight"></i></div></div>
+        <div class="stat"><span>Langkah</span><b id="stepsRight">0</b></div>
+        <div class="stat"><span>Efisiensi</span><b id="effRight">—</b></div>
+        <div class="stat"><span>Bonus waktu</span><b id="timeBonusRight">0</b></div>
+      </div>
+      <div class="boardRow"><div class="grid" id="gridRight" aria-label="Grid Tim Merah"></div><div class="msg" id="msgRight">Tekan <b>Mulai</b>, lalu tarik jalur dari D ke S.</div></div>
+    </section>
+  </div>
+</main>
+
+<aside class="visionPanel" id="visionPanel" aria-label="Vision AI dua tangan">
+  <div class="visionHead"><div><b>✋ PILAR Vision Duel</b><br><span>MediaPipe Hand Landmarker · lokal di browser</span></div><button class="iconBtn" id="visionClose" style="min-width:34px;min-height:34px">×</button></div>
+  <div class="visionCam"><video id="visionVideo" autoplay playsinline muted></video><canvas id="visionCanvas"></canvas><div class="visionGuide"></div></div>
+  <div class="visionBody">
+    <div class="visionStatus" id="visionStatus">Vision AI belum aktif.</div>
+    <div class="visionPerf"><span id="visionPerf">—</span><span id="visionAccel">—</span></div>
+    <div class="visionHelp">IFP/Desktop: pemain berdiri kiri/kanan kamera. <b>Telunjuk</b> = kursor, <b>jepit ibu jari + telunjuk</b> = mulai/menarik rute. Mobile: tangan mengontrol tim yang dipilih.</div>
+    <div class="visionActions"><button class="primary" id="visionStart">Aktifkan kamera</button><button id="visionStop">Matikan</button></div>
+  </div>
+</aside>
+<div class="visionCursorLayer" id="visionCursorLayer"></div>
+
+<div class="backdrop" id="winnerBackdrop" role="dialog" aria-modal="true" aria-labelledby="winnerTitle">
+  <div class="modal">
+    <div class="modalTop"><h2 id="winnerTitle">🏆 Hasil Duel</h2><button class="iconBtn" id="closeWinnerBtn">×</button></div>
+    <div class="modalBody"><div class="summary" id="winnerSummary"></div><table class="resultTable" id="winnerTable"></table></div>
+    <div class="modalFoot"><span class="creatorFoot">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span><div><button class="actionBtn primary" id="playAgainBtn">Main Lagi</button> <button class="actionBtn" id="newMatchBtn">Pertandingan Baru</button></div></div>
+  </div>
+</div>
+
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id), clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), key=(x,y)=>`${x},${y}`;
+const GRID=10,START={x:0,y:0},GOAL={x:9,y:9},TOTAL_TIME=120;let OBSTACLES=15;
+const DIRS=[[1,0],[-1,0],[0,1],[0,-1]];
+const ui={mode:'auto',resolved:'desktop',mobileSide:'left'};
+let mapObstacles=new Set(),parRoute=18,matchLoad=250,gameRunning=false,timer=TOTAL_TIME,timerId=null,soundOn=true,audioCtx=null;
+
+function makeTeam(side){return{side,gridEl:$(side==='left'?'gridLeft':'gridRight'),msgEl:$(side==='left'?'msgLeft':'msgRight'),scoreEl:$(side==='left'?'scoreLeft':'scoreRight'),studentsEl:$(side==='left'?'studentsLeft':'studentsRight'),energyEl:$(side==='left'?'energyLeft':'energyRight'),energyBarEl:$(side==='left'?'energyBarLeft':'energyBarRight'),stepsEl:$(side==='left'?'stepsLeft':'stepsRight'),effEl:$(side==='left'?'effLeft':'effRight'),timeBonusEl:$(side==='left'?'timeBonusLeft':'timeBonusRight'),cells:[],path:[],dragging:false,pointerId:null,students:250,energy:100,steps:0,score:0,timeBonus:0,finished:false,lastClient:null}}
+const TEAM={left:makeTeam('left'),right:makeTeam('right')};
+
+function beep(freq=440,dur=.06,type='sine',gain=.045){if(!soundOn)return;try{if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(gain,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+dur);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur+.01)}catch(_){}}
+const sfxBad=()=>{beep(170,.08,'square');setTimeout(()=>beep(125,.1,'square'),70)},sfxGood=()=>{beep(650,.06,'triangle',.06);setTimeout(()=>beep(880,.08,'triangle',.06),70)},sfxStart=()=>{beep(440,.05);setTimeout(()=>beep(660,.06),65)};
+function fmtTime(sec){return String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0')}
+function setStatus(t){$('status').textContent=t.toUpperCase()}
+function setMsg(t,html,kind=''){t.msgEl.classList.remove('good','bad');if(kind)t.msgEl.classList.add(kind);t.msgEl.innerHTML=html}
+
+function shortestDistance(from,to,obstacles){const q=[[from.x,from.y,0]],seen=new Set([key(from.x,from.y)]);let qi=0;while(qi<q.length){const [x,y,d]=q[qi++];if(x===to.x&&y===to.y)return d;for(const[dx,dy]of DIRS){const nx=x+dx,ny=y+dy,k=key(nx,ny);if(nx<0||ny<0||nx>=GRID||ny>=GRID||obstacles.has(k)||seen.has(k))continue;seen.add(k);q.push([nx,ny,d+1])}}return Infinity}
+function generateSolvableObstacles(){const forbidden=new Set([key(START.x,START.y),key(GOAL.x,GOAL.y)]);for(let attempt=0;attempt<500;attempt++){const obs=new Set();while(obs.size<OBSTACLES){const x=(Math.random()*GRID)|0,y=(Math.random()*GRID)|0,k=key(x,y);if(!forbidden.has(k))obs.add(k)}const d=shortestDistance(START,GOAL,obs);if(Number.isFinite(d)&&d>=18&&d<=30)return{obs,d}}return{obs:new Set(),d:18}}
+
+function efficiency(t){if(!t.steps)return'—';const extra=Math.max(0,t.steps-parRoute);return Math.max(0,100-extra*7)+'%'}
+function updateStats(t){t.studentsEl.textContent=t.students;t.energyEl.textContent=t.energy+'%';t.energyBarEl.style.width=t.energy+'%';t.stepsEl.textContent=t.steps;t.effEl.textContent=efficiency(t);t.scoreEl.textContent=t.score;t.timeBonusEl.textContent=t.timeBonus}
+function setCellType(t,x,y,type,txt=''){const c=t.cells[y][x];c.type=type;c.el.className='cell '+(type||'');c.el.textContent=txt}
+function buildGrid(t){t.gridEl.innerHTML='';t.cells=Array.from({length:GRID},()=>Array(GRID));for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){const el=document.createElement('div');el.className='cell';el.dataset.x=x;el.dataset.y=y;t.gridEl.appendChild(el);t.cells[y][x]={el,type:'empty'}}setCellType(t,0,0,'kitchen','D');setCellType(t,9,9,'school','S');for(const k of mapObstacles){const[x,y]=k.split(',').map(Number);setCellType(t,x,y,'obstacle','×')}
+  t.gridEl.onpointerdown=e=>pointerDown(t,e);t.gridEl.onpointermove=e=>pointerMove(t,e);t.gridEl.onpointerup=e=>pointerUp(t,e);t.gridEl.onpointercancel=e=>pointerUp(t,e)}
+function clearPath(t){const cls=t.side==='left'?'pathLeft':'pathRight';t.gridEl.querySelectorAll('.'+cls).forEach(e=>e.classList.remove(cls));t.gridEl.querySelectorAll('.pathTip').forEach(e=>e.classList.remove('pathTip'))}
+function renderPath(t){clearPath(t);const cls=t.side==='left'?'pathLeft':'pathRight';for(const p of t.path){const c=t.cells[p.y][p.x];if(c.type==='empty')c.el.classList.add(cls)}if(t.path.length){const h=t.path[t.path.length-1];t.cells[h.y][h.x].el.classList.add('pathTip')}}
+function boardRect(t){const a=t.cells?.[0]?.[0]?.el?.getBoundingClientRect(),b=t.cells?.[GRID-1]?.[GRID-1]?.el?.getBoundingClientRect();if(!a||!b)return t.gridEl.getBoundingClientRect();return{left:a.left,top:a.top,right:b.right,bottom:b.bottom,width:b.right-a.left,height:b.bottom-a.top}}
+function cellFromClient(t,cx,cy){const hit=document.elementFromPoint(cx,cy)?.closest?.('.cell');if(hit&&hit.parentElement===t.gridEl)return{x:+hit.dataset.x,y:+hit.dataset.y};const r=boardRect(t);if(cx<r.left||cx>r.right||cy<r.top||cy>r.bottom)return null;const c0=t.cells[0][0].el.getBoundingClientRect(),c1=t.cells[0][1].el.getBoundingClientRect(),r1=t.cells[1][0].el.getBoundingClientRect();const stepX=c1.left-c0.left||c0.width,stepY=r1.top-c0.top||c0.height;return{x:clamp(Math.round((cx-(c0.left+c0.width/2))/stepX),0,GRID-1),y:clamp(Math.round((cy-(c0.top+c0.height/2))/stepY),0,GRID-1)}}
+function flashCell(t,p){const el=t.cells[p.y][p.x].el;el.classList.remove('badFlash');void el.offsetWidth;el.classList.add('badFlash')}
+function beginRoute(t,p,source='touch'){if(!gameRunning){setMsg(t,'Game belum berjalan. Tekan <b>Mulai</b>.');return false}if(t.finished||t.energy<=0)return false;if(!p||p.x!==START.x||p.y!==START.y){setMsg(t,'Mulai dari <b>D</b>apur dulu.','bad');sfxBad();return false}t.path=[{...START}];t.dragging=true;t.lastClient=null;renderPath(t);setMsg(t,source==='vision'?'🤏 Jepit dan gerakkan tangan menuju S.':'Tarik jalur menuju <b>S</b>. Backtrack diperbolehkan.');beep(440,.04);return true}
+function validStep(a,b){return Math.abs(a.x-b.x)+Math.abs(a.y-b.y)===1}
+function acceptStep(t,p){if(!t.dragging||t.finished||!gameRunning||!p)return false;let last=t.path[t.path.length-1];if(p.x===last.x&&p.y===last.y)return true;
+  if(t.path.length>=2){const prev=t.path[t.path.length-2];if(p.x===prev.x&&p.y===prev.y){t.path.pop();t.steps=Math.max(0,t.steps-1);t.energy=clamp(t.energy+1,0,100);renderPath(t);updateStats(t);return true}}
+  if(!validStep(last,p))return false;if(t.path.some(q=>q.x===p.x&&q.y===p.y))return false;const cell=t.cells[p.y][p.x];if(cell.type==='obstacle'){flashCell(t,p);setMsg(t,'⛔ Rintangan — cari jalur lain.','bad');sfxBad();return false}
+  t.path.push({...p});t.steps++;const cost=clamp(Math.round(1+t.students/300),1,3);t.energy=clamp(t.energy-cost,0,100);renderPath(t);updateStats(t);setMsg(t,'Rute diterima · lanjutkan.');if(t.energy<=0){t.dragging=false;setMsg(t,'Energi habis.','bad');finishIfNeeded();return false}if(p.x===GOAL.x&&p.y===GOAL.y)completeTeam(t);return true}
+function bridgeCells(a,b){const out=[];let x=a.x,y=a.y;const dx=b.x-a.x,dy=b.y-a.y;const n=Math.max(Math.abs(dx),Math.abs(dy));for(let i=1;i<=n;i++){const tx=Math.round(a.x+dx*i/n),ty=Math.round(a.y+dy*i/n);if(tx!==x||ty!==y){if(tx!==x){x+=Math.sign(tx-x);out.push({x,y})}if(ty!==y){y+=Math.sign(ty-y);out.push({x,y})}}}return out}
+function moveRouteTo(t,p){if(!p||!t.path.length)return;const last=t.path[t.path.length-1];if(validStep(last,p)){acceptStep(t,p);return}for(const s of bridgeCells(last,p)){if(!acceptStep(t,s))break;if(t.finished)break}}
+function endRoute(t){t.dragging=false;t.pointerId=null;t.lastClient=null}
+function palmLike(e){return ui.resolved==='ifp'&&e.pointerType==='touch'&&Math.max(e.width||0,e.height||0)>105}
+function pointerDown(t,e){if(palmLike(e))return;const p=cellFromClient(t,e.clientX,e.clientY);if(beginRoute(t,p,'touch')){t.pointerId=e.pointerId;t.lastClient={x:e.clientX,y:e.clientY};try{t.gridEl.setPointerCapture(e.pointerId)}catch(_){}}}
+function pointerMove(t,e){if(t.pointerId!==e.pointerId||!t.dragging)return;e.preventDefault();const samples=e.getCoalescedEvents?e.getCoalescedEvents():[e];for(const s of samples){moveRouteTo(t,cellFromClient(t,s.clientX,s.clientY));if(t.finished)break}}
+function pointerUp(t,e){if(t.pointerId===e.pointerId)endRoute(t)}
+
+function completeTeam(t){if(t.finished)return;t.finished=true;endRoute(t);t.timeBonus=Math.max(0,timer)*2;const extra=Math.max(0,t.steps-parRoute),effBonus=Math.max(0,180-extra*18),energyPts=t.energy*3,deliveryPts=t.students*2;t.score=Math.floor(deliveryPts+energyPts+effBonus+t.timeBonus);updateStats(t);setMsg(t,`🎉 Tiba! <b>${t.steps}</b> langkah · par ${parRoute} · skor <b>${t.score}</b>.`,'good');sfxGood();finishIfNeeded()}
+function partialScore(t){const h=t.path.length?t.path[t.path.length-1]:START;const remain=shortestDistance(h,GOAL,mapObstacles);const progress=Number.isFinite(remain)?clamp((parRoute-remain)/parRoute,0,1):0;return Math.floor(progress*500+t.energy*2-Math.max(0,t.steps-parRoute)*5)}
+function finishIfNeeded(){const L=TEAM.left,R=TEAM.right;if((L.finished||L.energy<=0)&&(R.finished||R.energy<=0)){gameRunning=false;stopTimer();setStatus('Selesai');$('startBtn').textContent='▶ Mulai';showWinner()}}
+
+function resetTeams(){for(const side of ['left','right']){const t=TEAM[side];t.path=[];t.dragging=false;t.pointerId=null;t.finished=false;t.energy=100;t.steps=0;t.score=0;t.timeBonus=0;t.students=matchLoad;setMsg(t,'Tekan <b>Mulai</b>, lalu tarik jalur dari D ke S.');updateStats(t)}}
+function setupMatch(newMap=true,newLoad=false){stopTimer();timer=TOTAL_TIME;$('timer').textContent=fmtTime(timer);$('startBtn').textContent='▶ Mulai';setStatus('Siap');gameRunning=false;if(newLoad)matchLoad=200+((Math.random()*101)|0);if(newMap||!mapObstacles.size){const g=generateSolvableObstacles();mapObstacles=g.obs;parRoute=g.d}$('obsCount').textContent=mapObstacles.size;$('parRoute').textContent=parRoute+' langkah';$('matchLoad').textContent=matchLoad;resetTeams();buildGrid(TEAM.left);buildGrid(TEAM.right)}
+function startTimer(){if(timerId)return;timerId=setInterval(()=>{timer=Math.max(0,timer-1);$('timer').textContent=fmtTime(timer);if(timer<=0){stopTimer();gameRunning=false;for(const t of [TEAM.left,TEAM.right])if(!t.finished){t.score=partialScore(t);updateStats(t);setMsg(t,`⏱ Waktu habis · skor parsial <b>${t.score}</b>.`,'bad')}showWinner()}},1000)}
+function stopTimer(){if(timerId){clearInterval(timerId);timerId=null}}
+function toggleStart(){if(!gameRunning){gameRunning=true;setStatus('Main');$('startBtn').textContent='⏸ Pause';startTimer();sfxStart();for(const t of [TEAM.left,TEAM.right])if(!t.finished)setMsg(t,'Mulai dari D dan cari rute paling efisien.')}else{gameRunning=false;setStatus('Pause');$('startBtn').textContent='▶ Lanjut';stopTimer();beep(280,.05)}}
+function resetRound(){stopTimer();timer=TOTAL_TIME;$('timer').textContent=fmtTime(timer);gameRunning=false;setStatus('Siap');$('startBtn').textContent='▶ Mulai';resetTeams();buildGrid(TEAM.left);buildGrid(TEAM.right)}
+function showWinner(){const L=TEAM.left,R=TEAM.right;if(!L.finished&&L.score===0)L.score=partialScore(L);if(!R.finished&&R.score===0)R.score=partialScore(R);updateStats(L);updateStats(R);const win=L.score===R.score?'SERI':L.score>R.score?'Tim Biru':'Tim Merah';$('winnerSummary').innerHTML=`<b>${win}</b> · peta sama · porsi sama (${matchLoad}) · par rute ${parRoute} langkah · sisa waktu ${fmtTime(timer)}.`;$('winnerTable').innerHTML=`<thead><tr><th>Tim</th><th>Skor</th><th>Langkah</th><th>Efisiensi</th><th>Energi</th><th>Bonus waktu</th></tr></thead><tbody><tr><td style="color:var(--blue)"><b>Tim Biru</b></td><td><b>${L.score}</b></td><td>${L.steps}</td><td>${efficiency(L)}</td><td>${L.energy}%</td><td>${L.timeBonus}</td></tr><tr><td style="color:var(--red)"><b>Tim Merah</b></td><td><b>${R.score}</b></td><td>${R.steps}</td><td>${efficiency(R)}</td><td>${R.energy}%</td><td>${R.timeBonus}</td></tr></tbody>`;$('winnerBackdrop').classList.add('show')}
+
+/* ===== UI profile ===== */
+function inferUI(){const w=innerWidth,h=innerHeight,coarse=matchMedia('(pointer:coarse)').matches,tp=navigator.maxTouchPoints||0;if(w<760||h<520&&w<900)return'mobile';if(w>=1900&&coarse&&tp>=2)return'ifp';return'desktop'}
+function applyUI(mode=ui.mode){ui.mode=mode;ui.resolved=mode==='auto'?inferUI():mode;document.body.dataset.ui=ui.resolved;document.querySelectorAll('#uiSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ui===ui.mode));applyMobileSide();try{localStorage.setItem('pilar-mbg-ui',ui.mode)}catch(_){}}
+function applyMobileSide(){if(ui.resolved!=='mobile'){for(const id of ['cardLeft','cardRight'])$(id).classList.remove('mobileOff');return}$('cardLeft').classList.toggle('mobileOff',ui.mobileSide!=='left');$('cardRight').classList.toggle('mobileOff',ui.mobileSide!=='right');document.querySelectorAll('#mobileTabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.side===ui.mobileSide))}
+
+/* ===== Vision AI Hand Landmarker ===== */
+const HAND_MODEL='https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task';
+const MP_VERS=['0.10.14','0.10.12'];
+const V={mp:null,fileset:null,task:null,draw:null,stream:null,running:false,raf:0,lastInfer:0,msAvg:25,infer:0,lastFps:performance.now(),delegate:'',states:{left:null,right:null},lastRes:null};
+const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+async function loadMP(){for(const v of MP_VERS){const base=`https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${v}`;try{const m=await import(base+'/vision_bundle.mjs');return{m,fs:await m.FilesetResolver.forVisionTasks(base+'/wasm')}}catch(e){console.warn('MediaPipe',v,e)}}throw new Error('MediaPipe Tasks tidak dapat dimuat')}
+async function createHandTask(){if(V.task)return;const r=await loadMP();V.mp=r.m;V.fileset=r.fs;const opts={runningMode:'VIDEO',numHands:2,minHandDetectionConfidence:.55,minHandPresenceConfidence:.5,minTrackingConfidence:.5};try{V.task=await r.m.HandLandmarker.createFromOptions(r.fs,{baseOptions:{modelAssetPath:HAND_MODEL,delegate:'GPU'},...opts});V.delegate='GPU'}catch(e){V.task=await r.m.HandLandmarker.createFromOptions(r.fs,{baseOptions:{modelAssetPath:HAND_MODEL,delegate:'CPU'},...opts});V.delegate='CPU'}V.draw=new r.m.DrawingUtils($('visionCanvas').getContext('2d'))}
+function cursor(side){let el=$('vc-'+side);if(!el){el=document.createElement('div');el.id='vc-'+side;el.className='visionCursor '+(side==='left'?'blue':'red');el.textContent=side==='left'?'B':'M';$('visionCursorLayer').appendChild(el)}return el}
+function clearHover(t){t.gridEl.querySelectorAll('.visionHover').forEach(e=>e.classList.remove('visionHover'))}
+function visionRelease(side){const st=V.states[side];if(st?.pinching&&TEAM[side].dragging)endRoute(TEAM[side]);if(st?.cursor)st.cursor.classList.remove('pinching');clearHover(TEAM[side]);if(st?.cursor)st.cursor.remove();V.states[side]=null}
+function mappedPoint(side,nx,ny){const t=TEAM[side],r=boardRect(t);return{x:r.left+clamp(nx,0,1)*r.width,y:r.top+clamp(ny,0,1)*r.height}}
+function processHand(side,lm,nx,ny){const t=TEAM[side],p=mappedPoint(side,nx,ny),st=V.states[side]||(V.states[side]={x:p.x,y:p.y,pinching:false,lastSeen:performance.now(),cursor:cursor(side)});st.lastSeen=performance.now();st.x+=(p.x-st.x)*.42;st.y+=(p.y-st.y)*.42;st.cursor.style.transform=`translate(${st.x}px,${st.y}px)`;clearHover(t);const cp=cellFromClient(t,st.x,st.y);if(cp)t.cells[cp.y][cp.x].el.classList.add('visionHover');const palm=Math.max(dist(lm[5],lm[17]),.001),ratio=dist(lm[4],lm[8])/palm,pinchNow=st.pinching?ratio<.55:ratio<.42;if(pinchNow&&!st.pinching){st.pinching=true;st.cursor.classList.add('pinching');beginRoute(t,cp,'vision')}else if(pinchNow&&st.pinching){if(t.dragging)moveRouteTo(t,cp)}else if(!pinchNow&&st.pinching){st.pinching=false;st.cursor.classList.remove('pinching');if(t.dragging)endRoute(t)}}
+function onHands(res){const hands=(res?.landmarks||[]).map(lm=>({lm,visualX:1-lm[8].x,visualY:lm[8].y}));const assigned={};if(ui.resolved==='mobile'){if(hands[0])assigned[ui.mobileSide]=hands[0]}else{for(const h of hands){const side=h.visualX<.5?'left':'right';if(!assigned[side])assigned[side]=h}}for(const side of ['left','right']){const h=assigned[side];if(h){const nx=ui.resolved==='mobile'?h.visualX:(side==='left'?h.visualX/.5:(h.visualX-.5)/.5);const ny=clamp((h.visualY-.05)/.86,0,1);processHand(side,h.lm,nx,ny)}else if(V.states[side]&&performance.now()-V.states[side].lastSeen>450)visionRelease(side)}}
+function drawVision(res){const c=$('visionCanvas'),ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);if(!V.draw||!res?.landmarks)return;for(const lm of res.landmarks){V.draw.drawConnectors(lm,V.mp.HandLandmarker.HAND_CONNECTIONS,{color:'#5ee9ff',lineWidth:3});V.draw.drawLandmarks(lm,{color:'#ffd166',radius:2})}}
+function visionLoop(now){if(!V.running)return;V.raf=requestAnimationFrame(visionLoop);const video=$('visionVideo');if(video.readyState<2||document.hidden)return;const gap=clamp(V.msAvg*1.55,ui.resolved==='ifp'?34:45,120);if(now-V.lastInfer<gap)return;V.lastInfer=now;const t0=performance.now();try{V.lastRes=V.task.detectForVideo(video,now);onHands(V.lastRes);drawVision(V.lastRes)}catch(e){console.warn(e)}V.msAvg=V.msAvg*.9+(performance.now()-t0)*.1;V.infer++;if(now-V.lastFps>1000){$('visionPerf').textContent=`${V.infer} infer/s · ${V.msAvg.toFixed(0)} ms · ${V.delegate}`;$('visionAccel').textContent=navigator.gpu?'WebGPU tersedia':'WebGL/WASM';V.infer=0;V.lastFps=now}}
+async function startVision(){if(V.running){$('visionPanel').classList.add('open');return}$('visionPanel').classList.add('open');$('visionStatus').textContent='Meminta izin kamera…';try{const profile=ui.resolved==='ifp'?{width:{ideal:960},height:{ideal:540},frameRate:{ideal:30,max:30}}:ui.resolved==='mobile'?{width:{ideal:480},height:{ideal:360},frameRate:{ideal:20,max:24}}:{width:{ideal:640},height:{ideal:480},frameRate:{ideal:24,max:30}};V.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',...profile},audio:false});const video=$('visionVideo');video.srcObject=V.stream;await video.play();const c=$('visionCanvas');c.width=video.videoWidth||640;c.height=video.videoHeight||480;$('visionStatus').textContent='Memuat Hand Landmarker…';await createHandTask();V.running=true;$('visionStatus').innerHTML='<b>Vision AI aktif.</b> Jepit untuk menggambar rute. Frame diproses lokal; video tidak direkam/diunggah.';$('visionMode').setAttribute('aria-pressed','true');$('touchMode').setAttribute('aria-pressed','false');V.raf=requestAnimationFrame(visionLoop)}catch(e){console.error(e);const msg=e?.name==='NotAllowedError'?'Izin kamera ditolak. Touch tetap aktif.':e?.name==='NotFoundError'?'Kamera tidak ditemukan. Touch tetap aktif.':'Vision AI gagal dimuat. Touch tetap aktif.';stopVision(false,false);$('visionStatus').textContent=msg}}
+function stopVision(hide=true,setMsg=true){V.running=false;cancelAnimationFrame(V.raf);for(const side of ['left','right'])visionRelease(side);V.stream?.getTracks().forEach(t=>t.stop());V.stream=null;$('visionVideo').srcObject=null;$('visionCanvas').getContext('2d').clearRect(0,0,$('visionCanvas').width,$('visionCanvas').height);$('visionMode').setAttribute('aria-pressed','false');$('touchMode').setAttribute('aria-pressed','true');if(setMsg)$('visionStatus').textContent='Vision AI dimatikan. Touch/mouse tetap aktif.';if(hide)$('visionPanel').classList.remove('open')}
+
+/* ===== Bind ===== */
+$('homeBtn').onclick=()=>location.href='../../';$('startBtn').onclick=toggleStart;$('resetBtn').onclick=resetRound;$('newMapBtn').onclick=()=>setupMatch(true,false);$('soundBtn').onclick=()=>{soundOn=!soundOn;$('soundBtn').textContent=soundOn?'♪':'×♪';beep(soundOn?660:220)};$('fullBtn').onclick=async()=>{try{document.fullscreenElement?await document.exitFullscreen():await document.documentElement.requestFullscreen()}catch(_){}};
+$('touchMode').onclick=()=>stopVision();$('visionMode').onclick=startVision;$('visionStart').onclick=startVision;$('visionStop').onclick=()=>stopVision(false);$('visionClose').onclick=()=>$('visionPanel').classList.remove('open');
+document.querySelectorAll('#uiSeg button').forEach(b=>b.onclick=()=>applyUI(b.dataset.ui));document.querySelectorAll('#mobileTabs button').forEach(b=>b.onclick=()=>{ui.mobileSide=b.dataset.side;applyMobileSide()});
+$('closeWinnerBtn').onclick=()=>$('winnerBackdrop').classList.remove('show');$('playAgainBtn').onclick=()=>{$('winnerBackdrop').classList.remove('show');resetRound()};$('newMatchBtn').onclick=()=>{$('winnerBackdrop').classList.remove('show');setupMatch(true,true)};
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat){e.preventDefault();toggleStart()}if(e.key.toLowerCase()==='r')resetRound();if(e.key.toLowerCase()==='m')setupMatch(true,false);if(e.key.toLowerCase()==='v')startVision()});
+window.addEventListener('resize',()=>{if(ui.mode==='auto')applyUI('auto')});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&gameRunning){gameRunning=false;stopTimer();setStatus('Pause');$('startBtn').textContent='▶ Lanjut'}});
+try{ui.mode=localStorage.getItem('pilar-mbg-ui')||'auto'}catch(_){}applyUI(ui.mode);setupMatch(true,true);
+})();
+</script>
+</body></html>

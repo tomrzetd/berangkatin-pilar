@@ -62,3 +62,6 @@
 
 /* v0.5.5f · Hub card overflow fix */
 @media(max-width:680px){.pilar-library{grid-template-columns:1fr}.pilar-library-title{align-items:center}.pilar-app-card{grid-template-columns:34px minmax(0,1fr) max-content}}
+
+/* v0.5.5g · hub shelf scales beyond 6 apps */
+@media(min-width:761px){.boot-main{max-height:calc(92vh - 78px);overflow:hidden}.boot-copy,.boot-actions{overflow:auto;scrollbar-width:thin;scrollbar-color:#29415f transparent}.boot-copy{justify-content:flex-start;padding-top:32px}.boot-actions{justify-content:flex-start;padding-top:32px}.pilar-library{align-content:start}}
