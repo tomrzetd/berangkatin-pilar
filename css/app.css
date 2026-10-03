@@ -132,3 +132,123 @@
     scrollbar-gutter:auto;
   }
 }
+
+
+/* v0.5.5l · PILAR Hub dynamic App Inspector */
+.boot-actions [hidden]{display:none!important}
+.app-inspector-card{
+  position:relative;
+  overflow:hidden;
+  margin:0 0 18px;
+  padding:18px;
+  border:1px solid #284763;
+  border-radius:19px;
+  background:
+    radial-gradient(circle at 12% 15%,rgba(94,233,255,.10),transparent 34%),
+    linear-gradient(145deg,#0b1b2b,#07111d);
+  box-shadow:inset 0 1px rgba(255,255,255,.025);
+}
+.app-inspector-card::after{
+  content:"";
+  position:absolute;
+  width:150px;height:150px;
+  right:-72px;bottom:-88px;
+  border:1px solid rgba(201,255,66,.16);
+  border-radius:50%;
+  box-shadow:0 0 55px rgba(94,233,255,.07);
+  pointer-events:none;
+}
+.app-inspector-hero{
+  position:relative;z-index:1;
+  display:grid;
+  grid-template-columns:76px minmax(0,1fr);
+  gap:15px;
+  align-items:center;
+}
+.app-inspector-icon{
+  width:76px;height:76px;
+  display:grid;place-items:center;
+  border:1px solid #2d506c;
+  border-radius:18px;
+  background:linear-gradient(145deg,#112a40,#091725);
+  font-size:36px;
+  box-shadow:inset 0 0 28px rgba(94,233,255,.04);
+}
+.app-inspector-copy{min-width:0}
+.app-inspector-category{
+  display:block;
+  margin-bottom:4px;
+  color:#5ee9ff;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.13em;
+}
+.app-inspector-copy h2{
+  margin:0;
+  font-size:clamp(21px,2.2vw,30px);
+  line-height:1.05;
+  letter-spacing:-.025em;
+}
+.app-inspector-copy p{
+  margin:7px 0 0;
+  color:#9eb2c5;
+  font-size:12px;
+  line-height:1.45;
+}
+.app-inspector-meta{
+  position:relative;z-index:1;
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+.app-inspector-meta span{
+  padding:5px 8px;
+  border:1px solid #294761;
+  border-radius:999px;
+  color:#9eb4c8;
+  background:#071421;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.05em;
+}
+.app-inspector-meta span:last-child{
+  color:#c9ff42;
+  border-color:#466236;
+}
+.launch-title{margin-top:2px}
+.inspector-note{
+  min-height:31px;
+  padding:1px 2px 0;
+}
+.app-open-mode{margin-bottom:10px}
+.pilar-app-card{
+  transition:border-color .16s ease,background .16s ease,transform .16s ease;
+}
+.pilar-app-card.current{
+  border-color:#5d7d38;
+  background:linear-gradient(90deg,rgba(201,255,66,.09),rgba(94,233,255,.025),#071321);
+  box-shadow:inset 3px 0 0 rgba(201,255,66,.55);
+}
+.pilar-app-card.current em{
+  color:#07111d;
+  background:#c9ff42;
+  border-color:#c9ff42;
+}
+.pilar-app-card.coming.current em{
+  color:#ffd98a;
+  background:#2c2411;
+  border-color:#6d5424;
+}
+.pilar-app-card.coming{opacity:.62}
+.pilar-app-card.coming:hover{opacity:.82}
+@media(max-width:1000px) and (min-width:761px){
+  .app-inspector-hero{grid-template-columns:58px minmax(0,1fr);gap:11px}
+  .app-inspector-icon{width:58px;height:58px;border-radius:14px;font-size:28px}
+  .app-inspector-card{padding:14px}
+}
+@media(max-width:760px){
+  .app-inspector-card{margin-bottom:14px}
+  .app-inspector-hero{grid-template-columns:62px minmax(0,1fr)}
+  .app-inspector-icon{width:62px;height:62px;font-size:30px}
+}
