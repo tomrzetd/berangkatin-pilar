@@ -61,7 +61,7 @@ function setButton(state,label){
 }
 async function auth(){
   const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-  db=createClient(CFG.SUPABASE_URL,CFG.SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  db=createClient(CFG.SUPABASE_URL,CFG.SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'pilar-pulse-visitor-auth'}});
   let s=(await db.auth.getSession()).data.session;
   if(!s){const r=await db.auth.signInAnonymously();if(r.error)throw r.error;s=r.data.session}
   user=s.user;
