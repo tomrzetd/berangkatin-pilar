@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3 — IFP Vision</title>
+<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3.1 — IFP Vision</title>
 <meta name="description" content="Rubik 3x3 interaktif dengan diagram orbit lingkaran, Vision AI (gestur tangan, pindai kubus asli) untuk IFP, desktop, dan HP.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23182429'/%3E%3Ccircle cx='25' cy='24' r='17' fill='none' stroke='%237be4c5' stroke-width='3'/%3E%3Ccircle cx='39' cy='24' r='17' fill='none' stroke='%23f7ca54' stroke-width='3'/%3E%3Ccircle cx='32' cy='39' r='17' fill='none' stroke='%23ff6f68' stroke-width='3'/%3E%3C/svg%3E">
 <style>
@@ -157,14 +157,16 @@ body[data-ui=mobile] #visionPanel:not(.big){top:3.6rem;width:5.5rem}
 body[data-ui=mobile] #visionPanel.big{width:min(20rem,88vw);top:3.6rem!important}
 body[data-ui=mobile] .net{grid-template-columns:repeat(4,3.2rem);grid-template-rows:repeat(3,3.2rem)}
 
-/* ===== v3: watermark + efek panah/angin ===== */
-.wm{position:absolute;right:.7rem;bottom:.6rem;z-index:7;pointer-events:none;user-select:none;-webkit-user-select:none;filter:drop-shadow(0 .2rem .7rem rgba(0,0,0,.5))}
-.wm.up{bottom:2.9rem}
-#scanModal>.wm{right:1rem;bottom:.8rem;z-index:160}
+
+/* v3.1 · scene clean + transient 3D rotation guidance */
+.creatorTop{max-width:min(42rem,72vw);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body[data-ui=mobile] .creatorTop{font-size:.62rem;max-width:74vw}
+.cubePane::after{content:"Panah + partikel muncul hanya saat layer berputar";position:absolute;left:.7rem;bottom:.55rem;z-index:5;color:rgba(237,246,244,.45);font-size:.62rem;pointer-events:none}
+body[data-ui=mobile] .cubePane::after{font-size:.56rem;left:.55rem;bottom:.4rem}
 </style></head>
 <body data-ui="desk"><div class="app">
 <header>
-  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
+  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.1 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
   <div class="live" id="live" role="status" aria-live="polite">Menyiapkan solver</div>
   <div class="actions">
     <a class="iconBtn pilarHub" href="../../" title="Kembali ke PILAR Hub" aria-label="PILAR Hub">←</a>
@@ -466,14 +468,14 @@ function setCameraView(face){
 function layerInfo(m){
   var f=m.charAt(0),axis=(f==='U'||f==='D')?'y':(f==='R'||f==='L')?'x':'z',layer=(f==='U'||f==='R'||f==='F')?1:-1;
   var sign=(f==='U'||f==='R'||f==='F')?-1:1;if(m.indexOf("'")>-1)sign*=-1;var turns=m.indexOf('2')>-1?2:1;
-  return{axis:axis,layer:layer,target:sign*turns*Math.PI/2};
+  return{axis:axis,layer:layer,target:sign*turns*Math.PI/2,face:f};
 }
 function startLayerTurn(m,dur,done){
   if(!scene3||turnTween||settings.motion)return false;
   var inf=layerInfo(m),pivot=new THREE.Group();scene3.add(pivot);
   cubies.filter(function(o){return Math.round(o.position[inf.axis])===inf.layer}).forEach(function(o){pivot.attach(o)});
   controls3.enabled=false;
-  turnTween={pivot:pivot,axis:inf.axis,target:inf.target,start:performance.now(),ms:dur*1000,done:done};try{turnTween.fx=fxMake(inf)}catch(e){}
+  turnTween={pivot:pivot,axis:inf.axis,target:inf.target,start:performance.now(),ms:dur*1000,done:done};try{turnTween.fx=fxMake(inf,m)}catch(e){}
   turnTween.timer=setTimeout(completeTween,dur*1000+500);   // cadangan bila tab tersembunyi (rAF berhenti)
   return true;
 }
@@ -804,91 +806,79 @@ setTimeout(function(){try{if(window.Cube){state('Menyiapkan mesin solver (bebera
 
 /* ===== v3: panah arah putar + partikel angin (Three.js) ===== */
 var FX_R=2.3;
-function fxMake(inf){
-  var sgn=inf.target>=0?1:-1,outer=new THREE.Group(),inner=new THREE.Group(),arcLen=Math.PI*0.62,i,j;
+function fxMake(inf,move){
+  var sgn=inf.target>=0?1:-1,outer=new THREE.Group(),inner=new THREE.Group(),arcLen=Math.PI*.72,i,k;
   if(inf.axis==='x')outer.rotation.y=Math.PI/2;else if(inf.axis==='y')outer.rotation.x=-Math.PI/2;
-  outer.position[inf.axis]=inf.layer*1.0;outer.add(inner);
+
+  /* FX plane diletakkan sedikit DI LUAR face aktif supaya tidak menimpa stiker/kubus. */
+  outer.position[inf.axis]=inf.layer*1.58;outer.add(inner);
+
+  var face=(move||inf.face||'U').charAt(0),hex=COL[face]||'#72e3c2',col=new THREE.Color(hex);
   var mats=[],geos=[];
   [0,Math.PI].forEach(function(off){
-    var pts=[];for(i=0;i<=28;i++){var th=off+sgn*arcLen*i/28;pts.push(new THREE.Vector3(Math.cos(th)*FX_R,Math.sin(th)*FX_R,0))}
-    var tg=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),40,0.05,8,false),tm=new THREE.MeshBasicMaterial({color:0xffd166,transparent:true,opacity:0,depthTest:false});
+    var pts=[];
+    for(i=0;i<=34;i++){
+      var th=off+sgn*arcLen*i/34;
+      pts.push(new THREE.Vector3(Math.cos(th)*FX_R,Math.sin(th)*FX_R,0));
+    }
+    var tg=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),48,.045,8,false),
+        tm=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0,depthTest:false,blending:THREE.AdditiveBlending});
     var tube=new THREE.Mesh(tg,tm);tube.renderOrder=20;inner.add(tube);
-    var te=off+sgn*arcLen,cg=new THREE.ConeGeometry(0.17,0.4,16),cm=new THREE.MeshBasicMaterial({color:0xfff1b8,transparent:true,opacity:0,depthTest:false});
+
+    var te=off+sgn*arcLen,
+        cg=new THREE.ConeGeometry(.18,.46,18),
+        cm=new THREE.MeshBasicMaterial({color:col.clone().lerp(new THREE.Color(0xffffff),.48),transparent:true,opacity:0,depthTest:false,blending:THREE.AdditiveBlending});
     var cone=new THREE.Mesh(cg,cm),tx=-Math.sin(te)*sgn,ty=Math.cos(te)*sgn;
-    cone.position.set(Math.cos(te)*FX_R,Math.sin(te)*FX_R,0);cone.rotation.z=Math.atan2(ty,tx)-Math.PI/2;cone.renderOrder=21;inner.add(cone);
+    cone.position.set(Math.cos(te)*FX_R,Math.sin(te)*FX_R,0);
+    cone.rotation.z=Math.atan2(ty,tx)-Math.PI/2;cone.renderOrder=21;inner.add(cone);
     mats.push(tm,cm);geos.push(tg,cg);
   });
-  /* partikel angin: 80 kepala x 6 titik ekor, warna memudar (additive) */
-  var N=80,T=6,P=new Float32Array(N*T*3),C=new Float32Array(N*T*3),seed=[];
-  for(i=0;i<N;i++)seed.push({a:Math.random()*Math.PI*2,r:1.75+Math.random()*1.0,z:(Math.random()-.5)*1.7,v:.7+Math.random()*1.1,w:Math.random()*6.28});
-  var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('color',new THREE.BufferAttribute(C,3));
-  var pm=new THREE.PointsMaterial({size:0.085,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:true});
+
+  /* Partikel mengikuti arah rotasi; jumlah adaptif: mobile ringan, IFP lebih kaya. */
+  var ui=document.body.dataset.ui,N=ui==='mobile'?34:ui==='ifp'?88:58,T=ui==='mobile'?4:6,
+      P=new Float32Array(N*T*3),C=new Float32Array(N*T*3),seed=[];
+  for(i=0;i<N;i++)seed.push({
+    a:Math.random()*Math.PI*2,
+    r:1.72+Math.random()*.92,
+    z:(Math.random()-.5)*1.35,
+    v:.72+Math.random()*1.15,
+    w:Math.random()*Math.PI*2
+  });
+  var g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(P,3));
+  g.setAttribute('color',new THREE.BufferAttribute(C,3));
+  var pm=new THREE.PointsMaterial({
+    size:ui==='mobile'?.072:.085,vertexColors:true,transparent:true,
+    blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:true
+  });
   var pts3=new THREE.Points(g,pm);pts3.renderOrder=22;pts3.frustumCulled=false;outer.add(pts3);
   scene3.add(outer);
-  return{outer:outer,inner:inner,mats:mats,geos:geos,g:g,pm:pm,P:P,C:C,seed:seed,N:N,T:T,sgn:sgn,t0:performance.now()};
+  return{outer:outer,inner:inner,mats:mats,geos:geos,g:g,pm:pm,P:P,C:C,seed:seed,N:N,T:T,sgn:sgn,t0:performance.now(),pc:col};
 }
 function fxUpdate(tw,q,t){
-  var f=tw.fx,env=Math.min(1,q*7)*(1-Math.pow(Math.max(0,(q-.82)/.18),2)),el=(t-f.t0)/1000,i,k,n=0;
-  f.inner.rotation.z=tw.pivot.rotation[tw.axis];             /* panah ikut berputar bersama layer */
-  var pulse=.78+.22*Math.sin(el*10);
+  var f=tw.fx,env=Math.min(1,q*7)*(1-Math.pow(Math.max(0,(q-.84)/.16),2)),
+      elapsed=(t-f.t0)/1000,i,k,n=0;
+  f.inner.rotation.z=tw.pivot.rotation[tw.axis];
+  var pulse=.74+.26*Math.sin(elapsed*12);
   f.mats.forEach(function(m){m.opacity=env*pulse});
+
   for(i=0;i<f.N;i++){
     var s=f.seed[i],lead=tw.pivot.rotation[tw.axis];
     for(k=0;k<f.T;k++){
-      var th=s.a+f.sgn*(el*s.v*3.2)+lead*.6-f.sgn*k*.075,r=s.r+Math.sin(el*3+s.w+k*.2)*.09+k*.012*(s.r-1.7),z=s.z+Math.sin(el*4.5+s.w)*.16,fade=(1-k/f.T)*env;
+      var th=s.a+f.sgn*(elapsed*s.v*3.5)+lead*.68-f.sgn*k*.09,
+          r=s.r+Math.sin(elapsed*3.3+s.w+k*.25)*.075+k*.014,
+          z=s.z+Math.sin(elapsed*4.7+s.w)*.13,
+          fade=(1-k/f.T)*env;
       f.P[n]=Math.cos(th)*r;f.P[n+1]=Math.sin(th)*r;f.P[n+2]=z;
-      f.C[n]=.45*fade;f.C[n+1]=.95*fade;f.C[n+2]=.85*fade+.12*fade*k;n+=3;
+      f.C[n]=Math.min(1,(f.pc.r+.28)*fade);
+      f.C[n+1]=Math.min(1,(f.pc.g+.28)*fade);
+      f.C[n+2]=Math.min(1,(f.pc.b+.28)*fade);
+      n+=3;
     }
   }
   f.g.attributes.position.needsUpdate=true;f.g.attributes.color.needsUpdate=true;
 }
 function fxDispose(f){scene3.remove(f.outer);f.geos.forEach(function(x){x.dispose()});f.mats.forEach(function(x){x.dispose()});f.g.dispose();f.pm.dispose()}
-
-/* ===== v3: PILAR Creator ID watermark (canvas-rendered attribution) ===== */
-(function(){
-  var D=['OLo5RIEo','qmMfzTuh','fQvTKKJx','E8A08yw+','xi+xbFDS','N7M3HMQ2','onMf03Sq','fQ=='].join(''),K=[90,195,25,126,161];
-  var txt=(function(){var b=atob(D),o='';for(var i=0;i<b.length;i++)o+=String.fromCharCode(b.charCodeAt(i)^K[i%5]);return o})();
-  var list=[],mk=document.createElement.bind(document);
-  function spark(c,x,y,r,rot){c.save();c.translate(x,y);c.rotate(rot);c.beginPath();c.moveTo(0,-r);c.quadraticCurveTo(0,0,r,0);c.quadraticCurveTo(0,0,0,r);c.quadraticCurveTo(0,0,-r,0);c.quadraticCurveTo(0,0,0,-r);c.closePath();c.fill();c.restore()}
-  function mount(host,cls){
-    var cv=mk('canvas');cv.className='wm '+(cls||'');cv.setAttribute('aria-hidden','true');cv.setAttribute('role','presentation');
-    if(getComputedStyle(host).position==='static')host.style.position='relative';
-    host.appendChild(cv);var rec={cv:cv,host:host,cls:cls||'',w:0,h:0,s:0};list.push(rec);return rec;
-  }
-  function draw(rec,t){
-    var cv=rec.cv,ui=document.body.dataset.ui,sc=ui==='ifp'?1.3:ui==='mobile'?.88:1,dpr=Math.min(window.devicePixelRatio||1,2),c=cv.getContext('2d');
-    c.font='600 '+(12.5*sc)+'px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace';
-    var tw=c.measureText(txt).width,W=Math.ceil(tw+(46*sc)),H=Math.ceil(30*sc);
-    if(rec.w!==W||rec.h!==H||rec.s!==dpr){rec.w=W;rec.h=H;rec.s=dpr;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px'}
-    c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,W,H);
-    var ph=(t/1000)%4,sh=((t/2600)%1)*(W+90)-45,r=H/2;
-    /* kapsul kaca */
-    c.beginPath();c.moveTo(r,.5);c.arcTo(W-.5,.5,W-.5,H-.5,r-.5);c.arcTo(W-.5,H-.5,.5,H-.5,r-.5);c.arcTo(.5,H-.5,.5,.5,r-.5);c.arcTo(.5,.5,W-.5,.5,r-.5);c.closePath();
-    c.fillStyle='rgba(8,16,20,.66)';c.fill();
-    var bg=c.createLinearGradient(0,0,W,0);bg.addColorStop(0,'rgba(114,227,194,.75)');bg.addColorStop(.5,'rgba(150,130,255,.75)');bg.addColorStop(1,'rgba(255,120,170,.75)');
-    c.strokeStyle=bg;c.lineWidth=1;c.stroke();
-    /* bintang SynthID berdenyut + percikan */
-    var sg=c.createLinearGradient(0,0,r*2,H);sg.addColorStop(0,'#72e3c2');sg.addColorStop(.55,'#9a8cff');sg.addColorStop(1,'#ff78aa');
-    c.fillStyle=sg;spark(c,r+1*sc,r,(5.6+Math.sin(ph*1.57)*.9)*sc,Math.sin(ph*1.57)*.25);
-    c.globalAlpha=.55+.45*Math.sin(ph*3.14);spark(c,r+8*sc,r-7*sc,2.1*sc,0);spark(c,r-6*sc,r+7*sc,1.6*sc,0);c.globalAlpha=1;
-    /* teks gradien dengan kilau menyapu */
-    var tx=r*2+4*sc,tg=c.createLinearGradient(tx+sh-40,0,tx+sh+40,0);
-    tg.addColorStop(0,'#c9f7e8');tg.addColorStop(.5,'#ffffff');tg.addColorStop(1,'#d8cfff');
-    c.fillStyle='#d6eee8';c.textBaseline='middle';c.fillText(txt,tx,r+.5);
-    c.save();c.globalAlpha=.95;c.fillStyle=tg;c.globalCompositeOperation='source-over';
-    c.beginPath();c.rect(tx+sh-34,0,68,H);c.clip();c.fillText(txt,tx,r+.5);c.restore();
-  }
-  function ensure(){
-    var spots=[['.cubePane','up'],['.orbitPane',''],['#scanModal','']];
-    spots.forEach(function(s){var h=document.querySelector(s[0]);if(!h)return;
-      var has=list.some(function(r){return r.host===h&&r.cv.parentNode===h});
-      if(!has){list=list.filter(function(r){return r.host!==h});mount(h,s[1])}});
-  }
-  function frame(t){requestAnimationFrame(frame);if(document.hidden)return;list.forEach(function(r){draw(r,t)})}
-  ensure();
-  new MutationObserver(ensure).observe(document.body,{childList:true,subtree:true});
-  setInterval(ensure,2500);requestAnimationFrame(frame);
-})();
 </script>  <script src="../../pulse/config.js"></script>
   <script src="../../core/pulse.js"></script>
 </body></html>
