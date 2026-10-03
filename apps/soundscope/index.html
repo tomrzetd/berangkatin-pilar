@@ -257,12 +257,12 @@ function stopMic(silent){
   S.micOn=false;$("mDot").className="dot";$("mTxt").textContent="Mic belum aktif";if(!silent)toast("Mic dihentikan.","warn");
 }
 function tone(f,v){
-  ensure();
   const mode=$("selWave").value;
   if(mode==="off"){
     if(S.og&&S.ctx)S.og.gain.setTargetAtTime(0,S.ctx.currentTime,.025);
     S.tone=false;return;
   }
+  ensure();
   if(!S.osc){S.osc=S.ctx.createOscillator();S.og=S.ctx.createGain();S.og.gain.value=0;S.osc.connect(S.og);S.og.connect(S.mix);S.og.connect(S.ctx.destination);S.osc.start()}
   const t=S.ctx.currentTime;S.osc.type=mode;S.osc.frequency.setTargetAtTime(f,t,.03);S.og.gain.setTargetAtTime(v,t,.05);S.tone=v>.001;
 }
