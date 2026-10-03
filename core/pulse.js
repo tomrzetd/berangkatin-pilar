@@ -44,10 +44,18 @@ function injectUI(){
   #pilarPulseNotice{position:fixed;left:14px;bottom:14px;z-index:1042;max-width:min(560px,calc(100vw - 28px));padding:10px 12px;border:1px solid #294861;border-radius:13px;background:#071321f4;color:#cfe0ee;font:11px/1.45 Inter,system-ui;box-shadow:0 12px 40px #0008}#pilarPulseNotice button{margin-left:7px;min-height:28px;padding:3px 8px;border-radius:8px}
   @media(max-width:700px){#pilarPulseBtn{bottom:72px}#pilarPulseDrawer{bottom:116px}}
   `;document.head.appendChild(css);
-  const b=document.createElement('button');b.id='pilarPulseBtn';b.textContent='● PILAR Pulse';b.onclick=()=>drawer.classList.toggle('open');
-  const drawer=document.createElement('section');drawer.id='pilarPulseDrawer';drawer.innerHTML='<div class="pp-head"><div><b>Chat with Developer</b><small id="ppIdentity">menyambungkan…</small></div><div class="pp-head-actions"><button class="pp-clear" id="ppClear">Clear Chat</button><button id="ppOff">Pulse</button></div></div><div class="pp-msgs" id="ppMsgs"><div class="pp-empty">Belum ada pesan.</div></div><form class="pp-form" id="ppForm"><input id="ppInput" maxlength="1200" placeholder="Kirim pesan ke developer…" autocomplete="off"><button>Kirim</button></form>';
+  const b=document.createElement('button');b.id='pilarPulseBtn';b.textContent='● PILAR Pulse';
+  b.onclick=async()=>{
+    if(!enabled()){ await enablePulse(); return; }
+    drawer.classList.toggle('open');
+  };
+  const drawer=document.createElement('section');drawer.id='pilarPulseDrawer';drawer.innerHTML='<div class="pp-head"><div><b>Chat with Developer</b><small id="ppIdentity">menyambungkan…</small></div><div class="pp-head-actions"><button class="pp-clear" id="ppClear">Clear Chat</button><button id="ppOff">Matikan Pulse</button></div></div><div class="pp-msgs" id="ppMsgs"><div class="pp-empty">Belum ada pesan.</div></div><form class="pp-form" id="ppForm"><input id="ppInput" maxlength="1200" placeholder="Kirim pesan ke developer…" autocomplete="off"><button>Kirim</button></form>';
   document.body.append(b,drawer);
-  drawer.querySelector('#ppOff').onclick=async()=>{if(!confirm('Nonaktifkan PILAR Pulse di browser ini?'))return;await disablePulse()};
+  drawer.querySelector('#ppOff').onclick=async()=>{
+    if(!enabled()){ await enablePulse(); return; }
+    if(!confirm('Nonaktifkan PILAR Pulse di browser ini? Kamu bisa mengaktifkannya lagi kapan saja.'))return;
+    await disablePulse();
+  };
   drawer.querySelector('#ppClear').onclick=async()=>{await clearChat()};
   drawer.querySelector('#ppForm').onsubmit=async e=>{e.preventDefault();const i=drawer.querySelector('#ppInput'),txt=i.value.trim();if(!txt||!ready)return;i.value='';await sendMessage(txt)};
 }
@@ -60,6 +68,16 @@ function notice(){
 function setButton(state,label){
   const b=document.getElementById('pilarPulseBtn');if(!b)return;b.classList.remove('on','off');b.classList.add(state);b.textContent=label;
 }
+function syncPulseUI(on){
+  const off=document.getElementById('ppOff');
+  const clear=document.getElementById('ppClear');
+  const input=document.getElementById('ppInput');
+  const send=document.querySelector('#ppForm button');
+  if(off)off.textContent=on?'Matikan Pulse':'Aktifkan Pulse';
+  if(clear)clear.disabled=!on;
+  if(input){input.disabled=!on;input.placeholder=on?'Kirim pesan ke developer…':'Aktifkan Pulse untuk mengirim pesan';}
+  if(send)send.disabled=!on;
+}
 async function auth(){
   const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
   db=createClient(CFG.SUPABASE_URL,CFG.SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'pilar-pulse-visitor-auth'}});
@@ -68,6 +86,8 @@ async function auth(){
   user=s.user;
 }
 async function startSession(){
+  clearInterval(heartbeat);
+  if(channel&&db){try{db.removeChannel(channel)}catch(_){} channel=null;}
   try{sessionId=sessionStorage.getItem(SS)}catch(_){}
   if(!sessionId){sessionId=crypto.randomUUID();try{sessionStorage.setItem(SS,sessionId)}catch(_){}}
   const p=meta();
@@ -75,7 +95,7 @@ async function startSession(){
   if(r.error)throw r.error;
   r=await db.from('pilar_sessions').upsert({id:sessionId,user_id:user.id,last_seen:new Date().toISOString(),current_app:appId,page_path:location.pathname},{onConflict:'id'});
   if(r.error)throw r.error;
-  ready=true;setButton('on','● PILAR Pulse');
+  ready=true;setEnabled(true);setButton('on','● PILAR Pulse');syncPulseUI(true);
   const id=document.getElementById('ppIdentity');if(id)id.textContent=publicId(user.id)+' · '+appId;
   await track('page_view',{title:document.title});
   await loadMessages();subscribe();
@@ -119,19 +139,41 @@ function subscribe(){
   channel=db.channel('pulse-'+user.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'pilar_messages',filter:'visitor_id=eq.'+user.id},()=>loadMessages()).subscribe();
 }
 async function disablePulse(){
-  setEnabled(false);ready=false;clearInterval(heartbeat);if(channel&&db)db.removeChannel(channel);
-  if(db&&user)await db.from('pilar_profiles').update({pulse_enabled:false,last_seen:new Date().toISOString()}).eq('user_id',user.id);
-  if(db)await db.auth.signOut();
-  setButton('off','○ Pulse off');
-  const id=document.getElementById('ppIdentity');if(id)id.textContent='Dinonaktifkan di browser ini';
+  setEnabled(false);ready=false;clearInterval(heartbeat);heartbeat=null;
+  if(channel&&db){try{db.removeChannel(channel)}catch(_){} channel=null;}
+  if(db&&user){
+    try{await db.from('pilar_profiles').update({pulse_enabled:false,last_seen:new Date().toISOString()}).eq('user_id',user.id)}catch(_){}
+  }
+  // Jangan sign-out: anonymous session dipertahankan agar ID PILAR tetap sama saat diaktifkan lagi.
+  setButton('off','○ Aktifkan Pulse');syncPulseUI(false);
+  const id=document.getElementById('ppIdentity');if(id)id.textContent='Pulse nonaktif · klik Aktifkan Pulse';
+  const drawer=document.getElementById('pilarPulseDrawer');if(drawer)drawer.classList.add('open');
+}
+async function enablePulse(){
+  if(ready){syncPulseUI(true);return}
+  setEnabled(true);setButton('on','◌ Menghubungkan…');syncPulseUI(false);
+  const id=document.getElementById('ppIdentity');if(id)id.textContent='Menghubungkan PILAR Pulse…';
+  try{
+    if(!db||!user)await auth();
+    await startSession();
+    const drawer=document.getElementById('pilarPulseDrawer');if(drawer)drawer.classList.add('open');
+  }catch(err){
+    console.warn('[PILAR Pulse enable]',err);
+    setEnabled(false);ready=false;setButton('off','○ Aktifkan Pulse');syncPulseUI(false);
+    const el=document.getElementById('ppIdentity');if(el)el.textContent='Gagal terhubung · klik Aktifkan Pulse untuk mencoba lagi';
+  }
 }
 async function setApp(id){if(!id||id===appId)return;appId=id;if(ready){await ping();await track('app_open')};const el=document.getElementById('ppIdentity');if(el&&user)el.textContent=publicId(user.id)+' · '+appId}
-global.PILAR_PULSE={track,setApp,get publicId(){return user?publicId(user.id):null}};
+global.PILAR_PULSE={track,setApp,enable:enablePulse,disable:disablePulse,get enabled(){return enabled()},get publicId(){return user?publicId(user.id):null}};
 document.addEventListener('pilar:ready',()=>setApp('lorentz'));
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)ping()});
 global.addEventListener('pagehide',()=>{clearInterval(heartbeat)});
 injectUI();
-if(!enabled()){setButton('off','○ Pulse off');return}
+if(!enabled()){
+  setButton('off','○ Aktifkan Pulse');syncPulseUI(false);
+  const id=document.getElementById('ppIdentity');if(id)id.textContent='Pulse nonaktif · klik Aktifkan Pulse';
+  return
+}
 notice();
 auth().then(startSession).catch(err=>{console.warn('[PILAR Pulse]',err);setButton('off','○ Pulse setup');const id=document.getElementById('ppIdentity');if(id)id.textContent='Backend belum siap / Anonymous Auth belum aktif'});
 })(window);
