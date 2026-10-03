@@ -14,3 +14,38 @@
 
 /* Pulse visitor detail view state fix */
 .empty[hidden],.chat-shell[hidden]{display:none!important}
+
+/* Pulse chat layout fix · compact bubbles + visible composer */
+.workspace{
+  height:calc(100dvh - 190px);
+  min-height:480px;
+}
+.chat-shell{min-height:0}
+.messages{min-width:0;min-height:0}
+.messages>.msg{
+  display:block;
+  flex:0 0 auto;
+  width:fit-content;
+  min-width:72px;
+  max-width:min(72%,760px);
+  white-space:pre-wrap;
+  word-break:normal;
+  overflow-wrap:anywhere;
+  line-height:1.45;
+}
+.messages>.msg.visitor{align-self:flex-start}
+.messages>.msg.developer{align-self:flex-end}
+.messages>.msg time{
+  width:auto;
+  white-space:nowrap;
+}
+.composer{
+  position:relative;
+  z-index:2;
+  background:#091423;
+}
+.composer input{min-width:0}
+@media(max-width:900px){
+  .workspace{height:auto;min-height:0}
+  .messages>.msg{max-width:88%}
+}
