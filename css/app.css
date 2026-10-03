@@ -65,3 +65,70 @@
 
 /* v0.5.5g · hub shelf scales beyond 6 apps */
 @media(min-width:761px){.boot-main{max-height:calc(92vh - 78px);overflow:hidden}.boot-copy,.boot-actions{overflow:auto;scrollbar-width:thin;scrollbar-color:#29415f transparent}.boot-copy{justify-content:flex-start;padding-top:32px}.boot-actions{justify-content:flex-start;padding-top:32px}.pilar-library{align-content:start}}
+
+/* v0.5.5h · Hub layout: footer is a real grid row, never overlays device readiness */
+.boot-card{
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto;
+  height:min(760px,92vh);
+  min-height:0;
+}
+.boot-main{
+  min-height:0!important;
+  max-height:none!important;
+  overflow:hidden!important;
+}
+.boot-copy,.boot-actions{
+  min-height:0;
+  overflow:auto;
+  scrollbar-width:thin;
+  scrollbar-color:#29415f transparent;
+  scrollbar-gutter:stable;
+}
+.boot-copy{
+  justify-content:flex-start;
+  padding-top:32px;
+  padding-bottom:24px;
+}
+.boot-actions{
+  justify-content:flex-start;
+  padding-top:32px;
+  padding-bottom:24px;
+}
+.boot-device{
+  margin-top:22px;
+  padding-bottom:4px;
+}
+.boot-caps{
+  padding-bottom:2px;
+}
+.boot-foot{
+  position:relative!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  min-height:38px;
+  align-items:center;
+  flex-wrap:wrap;
+  flex:0 0 auto;
+}
+@media(max-height:700px) and (min-width:761px){
+  .boot-card{height:94vh}
+  .boot-copy,.boot-actions{padding-top:22px;padding-bottom:18px}
+  .pilar-library-wrap{margin-top:14px}
+  .boot-device{margin-top:16px}
+}
+@media(max-width:760px){
+  .pilar-boot{overflow:auto}
+  .boot-card{
+    height:auto;
+    min-height:96vh;
+    grid-template-rows:auto auto auto;
+    overflow:visible;
+  }
+  .boot-main{overflow:visible!important}
+  .boot-copy,.boot-actions{
+    overflow:visible;
+    scrollbar-gutter:auto;
+  }
+}
