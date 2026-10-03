@@ -4,16 +4,64 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#08111d">
-  <title>PILAR Lorentz v0.5.4 · U Magnet Fix</title>
+  <title>PILAR™ Lorentz v0.5.5 · Universal Boot + Realistic Rig</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="css/app.css">
 </head>
-<body>
-  <main class="app-shell">
+<body class="boot-lock">
+  <section class="pilar-boot" id="pilarBoot" aria-label="PILAR Launch Experience" aria-live="polite">
+    <div class="boot-grid" aria-hidden="true"></div>
+    <div class="boot-scan" aria-hidden="true"></div>
+    <div class="boot-card">
+      <header class="boot-head">
+        <div class="boot-brand">
+          <span class="boot-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+          <div><strong>PILAR<sup>™</sup></strong><small>EXPLORATION · COMPUTATION · ENGINEERING</small></div>
+        </div>
+        <div class="boot-app-meta"><b>Gaya Lorentz</b><span>Simulasi STEM · v0.5.5</span></div>
+      </header>
+
+      <div class="boot-main">
+        <section class="boot-copy">
+          <div class="boot-kicker">PILAR UNIVERSAL BOOT SHELL</div>
+          <h1>Lihat. Penasaran.<br><span>Buktikan.</span></h1>
+          <p>Masuk ke ruang eksplorasi dengan renderer 3D, interaksi sentuh/mouse, dan Vision AI yang benar-benar opsional.</p>
+          <div class="boot-philosophy" id="bootPhilosophy" aria-label="Alur eksplorasi">
+            <span>LIHAT</span><span>TEBAK</span><span>COBA</span><span>AHA</span><span>BUKTIKAN</span><span>REKAYASA</span>
+          </div>
+          <div class="boot-device">
+            <span class="boot-device-title">Kesiapan perangkat</span>
+            <div class="boot-caps" id="bootCaps"></div>
+          </div>
+        </section>
+
+        <aside class="boot-actions">
+          <div class="boot-mode-title">Pilih cara berinteraksi</div>
+          <button class="boot-mode recommended" id="bootQuick">
+            <span class="boot-mode-icon">⚡</span><span><strong>Masuk Cepat</strong><small>Mouse · touch · multitouch IFP. Tanpa kamera dan tanpa modul Vision AI.</small></span><em>CEPAT</em>
+          </button>
+          <button class="boot-mode" id="bootVision">
+            <span class="boot-mode-icon">✋</span><span><strong>Vision AI</strong><small>Memuat adapter Vision hanya setelah dipilih. Kamera diproses lokal di perangkat.</small></span><em>BETA</em>
+          </button>
+          <p class="boot-privacy">Kamera tidak pernah diminta pada mode Masuk Cepat. Jika Vision AI gagal, simulasi tetap dapat dilanjutkan dengan mouse/touch.</p>
+
+          <div class="boot-progress" id="bootProgress" hidden>
+            <div class="boot-progress-top"><b id="bootStepTitle">MENYIAPKAN PILAR</b><span id="bootPercent">0%</span></div>
+            <div class="boot-bar"><i id="bootBar"></i></div>
+            <div class="boot-step-list" id="bootStepList"></div>
+            <div class="boot-message" id="bootMessage">Menunggu pilihan mode…</div>
+          </div>
+        </aside>
+      </div>
+      <footer class="boot-foot"><span>PILAR™ Runtime v0.5.5</span><span id="bootRuntime">checking…</span></footer>
+    </div>
+  </section>
+
+  <main class="app-shell" id="appShell" aria-hidden="true">
     <header class="topbar">
       <div class="brand-wrap">
         <strong class="brand">PILAR</strong>
-        <span class="lab-name">Lorentz · U Magnet Fix v0.5.4</span>
+        <span class="lab-name">Lorentz · Realistic Rig v0.5.5</span>
       </div>
       <div class="top-actions">
         <span class="status-pill" id="engineStatus">3D menyiapkan…</span>
@@ -216,7 +264,6 @@
   <script src="labs/lorentz/missions.js"></script>
   <script src="labs/lorentz/engineering.js"></script>
   <script src="input/pointer.js"></script>
-  <script src="input/vision-adapter.js"></script>
   <script src="render/three-engine.js"></script>
   <script src="app.js"></script>
 </body>

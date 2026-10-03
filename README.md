@@ -1,6 +1,15 @@
-# PILAR Lorentz v0.5.4 — U Magnet Conductive Path Fix
+# PILAR Lorentz v0.5.5 — Universal Boot + Realistic Laboratory Rig
 
 PILAR memakai alur **Lihat → Tebak → Coba → AHA → Buktikan → Rekayasa**. Seri ini berfokus pada eksplorasi gaya Lorentz tingkat SMP dan jembatannya menuju rekayasa aktuator.
+
+
+## Perubahan v0.5.5
+- **PILAR Universal Boot Shell**: intro/loader baru untuk keluarga simulasi, game, dan tools dengan capability probe, progress subsistem, serta jalur **Masuk Cepat** dan **Vision AI**.
+- **Vision AI benar-benar opsional**: `input/vision-adapter.js` tidak lagi dimuat dari HTML maupun precache PWA. Adapter baru diambil secara dinamis setelah pengguna memilih Vision AI.
+- **Rig Lorentz realistis**: statif baja, clamp, eyelet, kawat aktif tembaga, tali penggantung non-konduktif, terminal, knife switch, holder baterai, magnet U/C dengan yoke melengkung, pedestal, dan material procedural.
+- **Jalur listrik terpisah dari tali**: kabel fleksibel merah/hitam mengikuti jalur konduktif tersendiri; visualisasi arus tidak pernah menggunakan tali penggantung.
+- **Cable management**: kabel supply dirutekan di sisi luar magnet dan sepanjang meja memakai clip sehingga tidak tertimpa/menembus magnet, statif, atau komponen lain.
+- Cache PWA dinaikkan ke `pilar-lorentz-v055`.
 
 ## Perubahan v0.5.4
 - **Rig fix**: geometri magnet dan batas mekanik ayunan diselaraskan agar kawat aktif bergerak di **celah magnet**, bukan menembus badan kutub.

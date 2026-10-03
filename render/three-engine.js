@@ -78,70 +78,102 @@
       const fill=new THREE.PointLight(0x86cfff,.42,18);fill.position.set(-4,3,4);scene.add(fill);
       const warm=new THREE.PointLight(0xffc58e,.28,14);warm.position.set(4,1.5,3);scene.add(warm);
 
-      // ---------- environment ----------
+      // ---------- v0.5.5 realistic laboratory rig ----------
+      function roundedBoxGeometry(w,h,d,r=.08){
+        const rr=Math.min(r,w*.22,h*.22),sh=new THREE.Shape();
+        sh.moveTo(-w/2+rr,-h/2);sh.lineTo(w/2-rr,-h/2);sh.quadraticCurveTo(w/2,-h/2,w/2,-h/2+rr);
+        sh.lineTo(w/2,h/2-rr);sh.quadraticCurveTo(w/2,h/2,w/2-rr,h/2);sh.lineTo(-w/2+rr,h/2);
+        sh.quadraticCurveTo(-w/2,h/2,-w/2,h/2-rr);sh.lineTo(-w/2,-h/2+rr);sh.quadraticCurveTo(-w/2,-h/2,-w/2+rr,-h/2);
+        const g=new THREE.ExtrudeGeometry(sh,{depth:d,steps:1,bevelEnabled:true,bevelSegments:2,bevelSize:Math.min(.025,rr*.25),bevelThickness:Math.min(.025,d*.08),curveSegments:6});g.center();return g;
+      }
+      const addRounded=(w,h,d,r,m,x,y,z,parent=scene)=>add(roundedBoxGeometry(w,h,d,r),m,x,y,z,parent);
+      function terminalPost(x,y,z,color=0xc9a45a,parent=scene){
+        const brass=MAT('brushed',color,{seed:141+Math.round((x+z)*13),rx:1,ry:2,bump:.01,roughness:.28,metalness:.86});
+        add(new THREE.CylinderGeometry(.075,.085,.19,20),brass,x,y,z,parent);
+        add(new THREE.CylinderGeometry(.12,.12,.055,20),plastic,x,y-.12,z,parent);
+        const nut=add(new THREE.CylinderGeometry(.095,.095,.055,6),brass,x,y+.11,z,parent);nut.rotation.x=Math.PI/2;
+        return new THREE.Vector3(x,y+.12,z);
+      }
+
+      // table + neutral backdrop
       add(new THREE.BoxGeometry(17,.30,9),wood,0,-2.15,.5);
       const wall=add(new THREE.PlaneGeometry(40,18),MAT('paint',0x293b4d,{seed:71,rx:8,ry:3,bump:.006,roughness:.94,metalness:0}),0,5,-6);wall.castShadow=false;
-      add(new THREE.CylinderGeometry(.085,.085,4.7,22),steel,-2.4,.15,0);
-      add(new THREE.BoxGeometry(1.8,.12,1.7),darkSteel,-2.4,-1.98,0);
-      add(new THREE.BoxGeometry(2.45,.11,.12),oak,-1.18,1.6,0);
-      add(new THREE.BoxGeometry(.13,.11,1.55),oak,0,1.6,0);
 
-      // ---------- U / horseshoe magnet with proper support touching the table ----------
+      // rigid retort stand: weighted foot, steel column, boom, crossbar, clamps
+      addRounded(1.95,.12,1.72,.10,darkSteel,-2.38,-1.96,0);
+      add(new THREE.CylinderGeometry(.095,.095,4.25,24),steel,-2.38,.12,0);
+      const boom=addRounded(2.62,.12,.15,.035,steel,-1.12,1.58,0);boom.castShadow=true;
+      const crossbar=addRounded(.16,.12,1.78,.035,steel,.10,1.58,0);crossbar.castShadow=true;
+      addRounded(.34,.28,.34,.06,darkSteel,-2.34,1.58,0);
+      addRounded(.31,.24,.31,.055,darkSteel,.10,1.58,0);
+      add(new THREE.CylinderGeometry(.055,.055,.30,18),steel,.10,1.43,-.69).rotation.x=Math.PI/2;
+      add(new THREE.CylinderGeometry(.055,.055,.30,18),steel,.10,1.43,.69).rotation.x=Math.PI/2;
+      // small eyelets make the non-conductive hanging strings visually explicit
+      const eyeMat=MAT('brushed',0xb4bdc7,{seed:151,rx:1,ry:2,bump:.008,roughness:.28,metalness:.9});
+      for(const z of [-.62,.62]){const ring=new THREE.Mesh(new THREE.TorusGeometry(.075,.016,10,22),eyeMat);ring.position.set(.10,1.39,z);ring.rotation.y=Math.PI/2;ring.castShadow=true;scene.add(ring);shadowables.push(ring)}
+
+      // C/U magnet: rounded painted pole arms + curved steel yoke + stable pedestal
       const magnetGroup=new THREE.Group();scene.add(magnetGroup);
-      const armW=3.26,armH=.46,armD=1.00;
-      const armX=-.20,yokeX=1.46,yokeW=.52,yokeH=2.20,yokeD=1.04;
-      const yokeMat=MAT('brushed',0x5b6570,{seed:43,rx:1,ry:2,bump:.018,roughness:.42,metalness:.72});
-      const supportMat=MAT('brushed',0x47505b,{seed:45,rx:1,ry:2,bump:.016,roughness:.46,metalness:.68});
-      add(new THREE.BoxGeometry(armW,armH,armD),magnetN,armX,-1.15,0,magnetGroup);
-      add(new THREE.BoxGeometry(armW,armH,armD),magnetS,armX,.58,0,magnetGroup);
-      add(new THREE.BoxGeometry(yokeW,yokeH,yokeD),yokeMat,yokeX,-.285,0,magnetGroup);
-      // support pedestal so the U magnet no longer floats
-      add(new THREE.BoxGeometry(.44,.66,.78),supportMat,yokeX,-1.68,0,magnetGroup);
-      add(new THREE.BoxGeometry(.92,.08,1.18),supportMat,yokeX,-1.96,0,magnetGroup);
-      // Slight pole caps so the active faces feel like real pole pieces
-      const poleCapW=.22,poleCapH=.50,poleCapD=1.04,poleCapX=armX-(armW/2)+(poleCapW/2)-.01;
-      add(new THREE.BoxGeometry(poleCapW,poleCapH,poleCapD),magnetN,poleCapX,-1.15,0,magnetGroup);
-      add(new THREE.BoxGeometry(poleCapW,poleCapH,poleCapD),magnetS,poleCapX,.58,0,magnetGroup);
-      const nL=sprite('N','#fff',.64,magnetGroup);nL.position.set(-.14,-1.15,.72);
-      const sL=sprite('S','#fff',.64,magnetGroup);sL.position.set(-.14,.58,.72);
+      const yokeMat=MAT('brushed',0x59646f,{seed:43,rx:1,ry:2,bump:.018,roughness:.40,metalness:.74});
+      const supportMat=MAT('brushed',0x454e58,{seed:45,rx:1,ry:2,bump:.016,roughness:.46,metalness:.70});
+      addRounded(2.68,.50,1.04,.12,magnetN,-.44,-1.15,0,magnetGroup);
+      addRounded(2.68,.50,1.04,.12,magnetS,-.44,.58,0,magnetGroup);
+      const curvedYoke=add(new THREE.TorusGeometry(.865,.25,18,48,Math.PI),yokeMat,.90,-.285,0,magnetGroup);curvedYoke.rotation.z=-Math.PI/2;curvedYoke.scale.z=2.0;
+      addRounded(.68,.58,.90,.12,supportMat,.98,-1.66,0,magnetGroup);
+      addRounded(1.28,.09,1.40,.08,supportMat,.98,-1.95,0,magnetGroup);
+      addRounded(3.55,.075,1.55,.06,darkSteel,-.34,-1.965,0,magnetGroup);
+      // brighter pole shoes make the active gap obvious
+      addRounded(.27,.52,1.08,.07,magnetN,-1.79,-1.15,0,magnetGroup);
+      addRounded(.27,.52,1.08,.07,magnetS,-1.79,.58,0,magnetGroup);
+      const nL=sprite('N','#fff',.58,magnetGroup);nL.position.set(-1.60,-1.15,.59);
+      const sL=sprite('S','#fff',.58,magnetGroup);sL.position.set(-1.60,.58,.59);
 
-      // ---------- active conductor + realistic ropes ----------
-      const rod=add(new THREE.CylinderGeometry(.06,.06,1.25,28),copper,0,-.6,0);rod.rotation.x=Math.PI/2;
+      // active copper conductor. Strings suspend it mechanically; current uses separate insulated leads.
+      const rod=add(new THREE.CylinderGeometry(.058,.058,1.28,32),copper,0,-.60,0);rod.rotation.x=Math.PI/2;
       const unitY=new THREE.Vector3(0,1,0);
       function dynamicSegment(radius,mat,segments=12){const m=new THREE.Mesh(new THREE.CylinderGeometry(radius,radius,1,segments),mat);m.castShadow=true;m.receiveShadow=true;scene.add(m);shadowables.push(m);return m}
       function between(mesh,a,b){const d=b.clone().sub(a),len=d.length();if(len<1e-5){mesh.visible=false;return}mesh.visible=true;mesh.position.copy(a).add(b).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(unitY,d.clone().normalize());mesh.scale.set(1,len,1)}
-      const rope1=dynamicSegment(.014,ropeMat,10),rope2=dynamicSegment(.014,ropeMat,10);
+      const rope1=dynamicSegment(.013,ropeMat,10),rope2=dynamicSegment(.013,ropeMat,10);
+      const endCollar1=add(new THREE.CylinderGeometry(.085,.085,.09,20),steel,0,-.60,-.66);endCollar1.rotation.x=Math.PI/2;
+      const endCollar2=add(new THREE.CylinderGeometry(.085,.085,.09,20),steel,0,-.60,.66);endCollar2.rotation.x=Math.PI/2;
 
-      // ---------- reclaimed 18650 + holder ----------
-      const batteryGroup=new THREE.Group();batteryGroup.position.set(2.42,-1.48,1.45);scene.add(batteryGroup);
+      // reclaimed 18650 + more believable holder on the right-side service area
+      const batteryGroup=new THREE.Group();batteryGroup.position.set(2.55,-1.49,1.52);scene.add(batteryGroup);
       function batterySleeve(){
         const cv=document.createElement('canvas');cv.width=512;cv.height=256;const g=cv.getContext('2d'),R=rng(991);
-        g.fillStyle='#2b72b4';g.fillRect(0,0,512,256);
-        const grad=g.createLinearGradient(0,0,0,256);grad.addColorStop(0,'rgba(255,255,255,.10)');grad.addColorStop(.48,'rgba(0,0,0,.03)');grad.addColorStop(1,'rgba(0,0,0,.18)');g.fillStyle=grad;g.fillRect(0,0,512,256);
-        g.fillStyle='rgba(235,244,252,.88)';g.font='700 25px sans-serif';g.textAlign='center';g.fillText('RECLAIMED 18650 · 3.7 V',256,82);g.font='600 17px sans-serif';g.fillText('LAB CELL · educational rig',256,112);
-        g.globalAlpha=.58;g.font='600 12px monospace';g.fillText((P.ownership&&P.ownership.tag())||'PILAR-LTZ',256,143);g.globalAlpha=1;
-        for(let i=0;i<46;i++){g.globalAlpha=.08+R()*.18;g.strokeStyle=R()>.5?'#e8eef5':'#0d3154';g.lineWidth=.5+R()*1.4;const x=R()*500,y=R()*245;g.beginPath();g.moveTo(x,y);g.lineTo(x+8+R()*48,y+R()*7-3.5);g.stroke()}
-        for(let i=0;i<18;i++){g.globalAlpha=.12;g.fillStyle='#d8e1ea';g.fillRect(R()*500,R()*245,2+R()*9,1+R()*3)}
-        g.globalAlpha=1;const t=new THREE.CanvasTexture(cv);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(1,1);t.encoding=THREE.sRGBEncoding;t.anisotropy=Math.min(8,rd.capabilities.getMaxAnisotropy());return t;
+        g.fillStyle='#2b72b4';g.fillRect(0,0,512,256);const grad=g.createLinearGradient(0,0,0,256);grad.addColorStop(0,'rgba(255,255,255,.10)');grad.addColorStop(.48,'rgba(0,0,0,.03)');grad.addColorStop(1,'rgba(0,0,0,.18)');g.fillStyle=grad;g.fillRect(0,0,512,256);
+        g.fillStyle='rgba(235,244,252,.88)';g.font='700 25px sans-serif';g.textAlign='center';g.fillText('RECLAIMED 18650 · 3.7 V',256,82);g.font='600 17px sans-serif';g.fillText('LAB CELL · educational rig',256,112);g.globalAlpha=.58;g.font='600 12px monospace';g.fillText((P.ownership&&P.ownership.tag())||'PILAR-LTZ',256,143);g.globalAlpha=1;
+        for(let i=0;i<46;i++){g.globalAlpha=.08+R()*.18;g.strokeStyle=R()>.5?'#e8eef5':'#0d3154';g.lineWidth=.5+R()*1.4;const x=R()*500,y=R()*245;g.beginPath();g.moveTo(x,y);g.lineTo(x+8+R()*48,y+R()*7-3.5);g.stroke()}g.globalAlpha=1;
+        const t=new THREE.CanvasTexture(cv);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.encoding=THREE.sRGBEncoding;t.anisotropy=Math.min(8,rd.capabilities.getMaxAnisotropy());return t;
       }
-      const battBump=tex('paint',0x808080,997,1,1,true);
-      const battSide=new THREE.MeshStandardMaterial({color:0xffffff,map:batterySleeve(),bumpMap:battBump,bumpScale:.018,roughness:.48,metalness:.08});battSide.userData.baseBump=.018;mats.push(battSide);
-      const battCap=steel;
-      const cell=new THREE.Mesh(new THREE.CylinderGeometry(.25,.25,1.5,36),[battSide,battCap,battCap]);cell.rotation.z=Math.PI/2;cell.castShadow=true;cell.receiveShadow=true;batteryGroup.add(cell);shadowables.push(cell);
+      const battBump=tex('paint',0x808080,997,1,1,true);const battSide=new THREE.MeshStandardMaterial({color:0xffffff,map:batterySleeve(),bumpMap:battBump,bumpScale:.018,roughness:.48,metalness:.08});battSide.userData.baseBump=.018;mats.push(battSide);
+      const battCap=steel;const cell=new THREE.Mesh(new THREE.CylinderGeometry(.25,.25,1.5,36),[battSide,battCap,battCap]);cell.rotation.z=Math.PI/2;cell.castShadow=true;cell.receiveShadow=true;batteryGroup.add(cell);shadowables.push(cell);
       const nub=add(new THREE.CylinderGeometry(.09,.09,.07,24),steel,.785,0,0,batteryGroup);nub.rotation.z=Math.PI/2;
-      const oldNickel=add(new THREE.BoxGeometry(.28,.018,.08),steel,.46,.27,0,batteryGroup);oldNickel.rotation.z=.05;
       const plus=sprite('+','#ffaaa9',.34,batteryGroup);plus.position.set(.82,.40,0);const minus=sprite('−','#dbe6f0',.34,batteryGroup);minus.position.set(-.78,.40,0);
-      add(new THREE.BoxGeometry(2.1,.28,.72),plastic,2.42,-1.72,1.45);
-      add(new THREE.BoxGeometry(.12,.46,.78),plastic,1.52,-1.52,1.45);
-      add(new THREE.BoxGeometry(.12,.46,.78),plastic,3.32,-1.52,1.45);
-      const swBase=add(new THREE.BoxGeometry(.78,.18,.52),plastic,1.68,-1.72,.55);
-      const swLever=add(new THREE.BoxGeometry(.64,.08,.12),steel,1.68,-1.52,.55);swLever.geometry.translate(-.26,0,0);swLever.rotation.z=-.65;
-      add(new THREE.CylinderGeometry(.08,.08,.14,18),steel,1.42,-1.50,.55).rotation.x=Math.PI/2;
+      addRounded(2.08,.25,.78,.09,plastic,2.55,-1.76,1.52);addRounded(.12,.48,.82,.045,plastic,1.65,-1.53,1.52);addRounded(.12,.48,.82,.045,plastic,3.45,-1.53,1.52);
 
-      // ---------- cable system with real material + shadows ----------
-      function cableChain(count,mat,r=.026){const a=[];for(let i=0;i<count;i++)a.push(dynamicSegment(r,mat,10));return a}
-      const redCable=cableChain(3,rubberRed,.03),blackCable=cableChain(3,rubberBlack,.03);
+      // knife switch: isolated base, brass terminals, pivot and insulated handle
+      const switchX=1.90,switchZ=.58;
+      addRounded(.94,.16,.62,.09,plastic,switchX,-1.76,switchZ);
+      const swIn=terminalPost(1.60,-1.53,switchZ,0xc79c4b),swOut=terminalPost(2.20,-1.53,switchZ,0xc79c4b);
+      const swLever=add(new THREE.BoxGeometry(.66,.065,.095),steel,1.86,-1.42,switchZ);swLever.geometry.translate(-.25,0,0);swLever.rotation.z=-.65;
+      addRounded(.18,.13,.15,.05,plastic,2.08,-1.25,switchZ);
+      const swLabel=sprite('SAKELAR','#dfeaf5',.48);swLabel.position.set(switchX,-1.73,1.01);
+
+      // cable system: every visible current path is insulated conductor, never the hanging strings.
+      function cableChain(count,mat,r=.025){const a=[];for(let i=0;i<count;i++)a.push(dynamicSegment(r,mat,12));return a}
       function updateCable(chain,points){for(let i=0;i<chain.length;i++)between(chain[i],points[i],points[i+1])}
+      const redFlex=cableChain(4,rubberRed,.021),blackFlex=cableChain(4,rubberBlack,.021);
+      const redSupply=cableChain(6,rubberRed,.028),redBattery=cableChain(3,rubberRed,.028),blackSupply=cableChain(6,rubberBlack,.028);
+      const redTop=new THREE.Vector3(.23,1.39,-.82),blackTop=new THREE.Vector3(.23,1.39,.82);
+      terminalPost(redTop.x,redTop.y,redTop.z,0xc79c4b);terminalPost(blackTop.x,blackTop.y,blackTop.z,0xc79c4b);
+      const tPos=new THREE.Vector3(3.37,-1.49,1.52),tNeg=new THREE.Vector3(1.73,-1.49,1.52);
+      const redFixed=[redTop,new THREE.Vector3(1.72,1.39,-.82),new THREE.Vector3(1.78,.55,-.92),new THREE.Vector3(1.78,-1.86,-.92),new THREE.Vector3(1.45,-1.86,-.22),new THREE.Vector3(1.48,-1.62,.32),swIn];
+      const redToBattery=[swOut,new THREE.Vector3(2.62,-1.86,.78),new THREE.Vector3(3.18,-1.67,1.20),tPos];
+      const blackFixed=[blackTop,new THREE.Vector3(2.02,1.39,.82),new THREE.Vector3(2.04,.35,1.00),new THREE.Vector3(2.04,-1.86,1.00),new THREE.Vector3(1.86,-1.86,1.35),new THREE.Vector3(1.78,-1.66,1.47),tNeg];
+      updateCable(redSupply,redFixed);updateCable(redBattery,redToBattery);updateCable(blackSupply,blackFixed);
+      // table clips keep the long supply cables visibly ordered and above the work surface
+      for(const [x,z] of [[1.76,-.92],[1.78,.98],[2.62,.78],[1.84,1.34]])addRounded(.16,.055,.10,.025,darkSteel,x,-1.93,z);
 
       // ---------- field / vectors ----------
       const fieldG=new THREE.Group();scene.add(fieldG);
@@ -193,17 +225,17 @@
           // Physical rendering scale: 0.22 m pendulum -> 2.2 scene units. Physics limits alpha to safe magnet clearance.
           const x=d.x*10,y=Hr-Lr*Math.cos(d.alpha);
           rod.position.set(x,y,0);
-          const an1=new THREE.Vector3(0,Hr,-.62),an2=new THREE.Vector3(0,Hr,.62),a1=new THREE.Vector3(x,y,-.62),a2=new THREE.Vector3(x,y,.62);
+          const an1=new THREE.Vector3(.10,Hr,-.62),an2=new THREE.Vector3(.10,Hr,.62),a1=new THREE.Vector3(x,y,-.64),a2=new THREE.Vector3(x,y,.64);
           between(rope1,an1,a1);between(rope2,an2,a2);
+          endCollar1.position.copy(a1);endCollar2.position.copy(a2);
+
+          // Flexible insulated leads run beside (not through) the non-conductive suspension strings.
+          const redFlexPath=[a1,new THREE.Vector3(x-.04,y+.24,-.73),new THREE.Vector3(x*.62+.08,.12,-.79),new THREE.Vector3(.18,.88,-.82),redTop];
+          const blackFlexPath=[a2,new THREE.Vector3(x+.04,y+.24,.73),new THREE.Vector3(x*.62+.08,.12,.79),new THREE.Vector3(.18,.88,.82),blackTop];
+          updateCable(redFlex,redFlexPath);updateCable(blackFlex,blackFlexPath);
 
           batteryGroup.rotation.y=c.batteryRotation;
           swLever.rotation.z=c.on?-.08:-.65;
-
-          const tPos=new THREE.Vector3(3.24,-1.50,1.45),tNeg=new THREE.Vector3(1.60,-1.50,1.45),sw=new THREE.Vector3(1.68,-1.50,.55);
-          const p1=[tPos,sw,new THREE.Vector3(.75,.75,-.62),an1,a1];
-          const p2=[a2,an2,new THREE.Vector3(.72,.60,.86),tNeg];
-          updateCable(redCable,[tPos,sw,new THREE.Vector3(.75,.75,-.62),a1]);
-          updateCable(blackCable,[a2,new THREE.Vector3(.72,.60,.86),new THREE.Vector3(1.30,-.95,1.25),tNeg]);
 
           fieldG.visible=state.reveal.field;bLabel.visible=state.reveal.field;
           iArrow.visible=iLabel.visible=state.reveal.current&&Math.abs(c.currentActual)>.03;
@@ -215,12 +247,16 @@
           currG.visible=state.reveal.current&&c.on&&Math.abs(c.currentActual)>.03;
           if(currG.visible){
             const flowSpeed=Math.max(.05,Number(state.ui.flowSpeed)||.55);api.phase=(api.phase+dt*.13*flowSpeed*Math.max(.42,Math.min(1.6,Math.abs(c.currentActual))))%1;const sign=Math.sign(c.currentActual)||1;
-            // Current must stay on conductive parts only: holder terminal -> switch -> red wire -> conductor -> black wire -> holder terminal -> inside cell.
-            const redMid=new THREE.Vector3(.75,.75,-.62);
-            const blackMid1=new THREE.Vector3(.72,.60,.86);
-            const blackMid2=new THREE.Vector3(1.30,-.95,1.25);
-            const battIn1=new THREE.Vector3(2.02,-1.50,1.45),battIn2=new THREE.Vector3(2.42,-1.50,1.45),battIn3=new THREE.Vector3(2.82,-1.50,1.45);
-            const path=[tPos,sw,redMid,a1,a2,blackMid1,blackMid2,tNeg,battIn1,battIn2,battIn3,tPos];
+            // Current animation follows only conductive components. The beige hanging strings never belong to this path.
+            const battIn1=new THREE.Vector3(2.02,-1.49,1.52),battIn2=new THREE.Vector3(2.55,-1.49,1.52),battIn3=new THREE.Vector3(3.05,-1.49,1.52);
+            const path=[
+              tPos,new THREE.Vector3(3.18,-1.67,1.20),new THREE.Vector3(2.62,-1.86,.78),swOut,swIn,
+              new THREE.Vector3(1.48,-1.62,.32),new THREE.Vector3(1.45,-1.86,-.22),new THREE.Vector3(1.78,-1.86,-.92),new THREE.Vector3(1.78,.55,-.92),new THREE.Vector3(1.72,1.39,-.82),redTop,
+              new THREE.Vector3(.18,.88,-.82),new THREE.Vector3(x*.62+.08,.12,-.79),new THREE.Vector3(x-.04,y+.24,-.73),a1,a2,
+              new THREE.Vector3(x+.04,y+.24,.73),new THREE.Vector3(x*.62+.08,.12,.79),new THREE.Vector3(.18,.88,.82),blackTop,
+              new THREE.Vector3(2.02,1.39,.82),new THREE.Vector3(2.04,.35,1.00),new THREE.Vector3(2.04,-1.86,1.00),new THREE.Vector3(1.86,-1.86,1.35),new THREE.Vector3(1.78,-1.66,1.47),tNeg,
+              battIn1,battIn2,battIn3,tPos
+            ];
             const place=(q,base,arrow=false)=>{const u=((base+api.phase*sign)%1+1)%1;q.position.copy(pathSample(path,u));if(arrow){const tang=tangentSample(path,u,sign);q.quaternion.setFromUnitVectors(unitY,tang)}};
             currPts.forEach(q=>place(q,q.userData.base,false));currChevron.forEach(q=>place(q,q.userData.base,true));
           }
