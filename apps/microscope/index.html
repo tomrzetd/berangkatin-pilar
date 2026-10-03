@@ -2216,7 +2216,7 @@
       };
       $('ipBtn').onclick=async()=>{
         const url=$('ipUrl').value.trim();if(!url)return;
-        if(location.protocol==='https:'&&/^http:///i.test(url)){
+        if(location.protocol==='https:'&&url.toLowerCase().startsWith('http://')){
           return M.showNotification('Browser HTTPS memblok HTTP IP Cam. Gunakan USB camera atau jalankan PILAR dari host lokal HTTP.','error');
         }
         M.stopCamera();M.showLoading(true);
