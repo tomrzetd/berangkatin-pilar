@@ -58,7 +58,7 @@
     const item=apps.find(x=>x.id===id)||apps[0];
     if(!item)return;
     selectedAppId=item.id;
-    $('#pilarLibrary .pilar-app-card').forEach(card=>{
+    $$('#pilarLibrary .pilar-app-card').forEach(card=>{
       const selected=card.dataset.appId===item.id;
       card.classList.toggle('current',selected);
       card.setAttribute('aria-pressed',selected?'true':'false');
