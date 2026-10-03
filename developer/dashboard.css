@@ -11,3 +11,6 @@
 
 /* Pulse auth view state fix */
 .login[hidden],.console[hidden]{display:none!important}
+
+/* Pulse visitor detail view state fix */
+.empty[hidden],.chat-shell[hidden]{display:none!important}
