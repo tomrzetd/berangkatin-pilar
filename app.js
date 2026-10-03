@@ -96,6 +96,7 @@
     bootEl.removeAttribute('aria-hidden');
     $('#appShell').setAttribute('aria-hidden','true');
     document.body.classList.add('boot-lock');
+    try{window.PILAR_PULSE?.setApp?.('hub')}catch(_){}
     selectApp('lorentz',{track:false,focus:false});
   }
   function loadScript(src){return new Promise((resolve,reject)=>{const old=document.querySelector(`script[data-dynamic="${src}"]`);if(old)return resolve();const s=document.createElement('script');s.src=src;s.dataset.dynamic=src;s.onload=resolve;s.onerror=()=>reject(new Error('Gagal memuat '+src));document.body.appendChild(s)})}
@@ -256,7 +257,9 @@
         }
       }else await sleep(100);
       setBootStep(5,steps.length,steps[5][0],steps[5][1]);await sleep(160);setBootStep(steps.length,steps.length,'READY',mode==='vision'?'Vision AI siap. Memasuki simulasi…':'Mode cepat siap. Memasuki simulasi…');
-      sessionStorage.setItem('pilar-input-mode',mode);$('#appShell').setAttribute('aria-hidden','false');startLoop();await sleep(230);$('#pilarBoot').classList.add('is-leaving');$('#pilarBoot').setAttribute('aria-hidden','true');document.body.classList.remove('boot-lock');
+      sessionStorage.setItem('pilar-input-mode',mode);
+      try{await window.PILAR_PULSE?.setApp?.('lorentz')}catch(_){}
+      $('#appShell').setAttribute('aria-hidden','false');startLoop();await sleep(230);$('#pilarBoot').classList.add('is-leaving');$('#pilarBoot').setAttribute('aria-hidden','true');document.body.classList.remove('boot-lock');
     }catch(e){console.error(e);$('#bootStepTitle').textContent='BOOT TERTAHAN';$('#bootMessage').textContent=e.message||'Terjadi kesalahan saat menyiapkan PILAR.';quick.disabled=vision.disabled=false;$('#engineStatus').textContent='Boot membutuhkan perhatian';}
   }
 
