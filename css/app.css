@@ -252,3 +252,13 @@
   .app-inspector-hero{grid-template-columns:62px minmax(0,1fr)}
   .app-inspector-icon{width:62px;height:62px;font-size:30px}
 }
+
+/* Pulse identity in Lorentz runtime header */
+.runtime-pulse-id{
+  margin-left:8px;padding:4px 8px;border:1px solid #2b4a65;border-radius:999px;
+  color:#88a4ba;background:#081726;font:800 9px/1 ui-monospace,SFMono-Regular,Consolas,monospace;
+  white-space:nowrap;max-width:190px;overflow:hidden;text-overflow:ellipsis
+}
+.runtime-pulse-id[data-state="on"]{color:#9eecc0;border-color:#35644a;background:#0a2119}
+.runtime-pulse-id[data-state="off"]{color:#8796a5;border-color:#394653;background:#111820}
+@media(max-width:900px){.runtime-pulse-id{display:none}}
