@@ -15,14 +15,18 @@
     $('#bootRuntime').textContent=(checks.WebGL()?'WebGL siap':'WebGL tidak tersedia')+' · '+(navigator.onLine?'online':'offline');
   }
   const inspectorNotes={
-    lorentz:'Masuk Cepat tidak meminta kamera. Vision AI hanya dimuat setelah dipilih.',
-    microscope:'Kamera hanya diminta setelah START dipilih di dalam Microscope Lab.',
-    'rubik-orbit':'3D, solver, dan Vision AI tersedia di dalam app. Pilih mode interaksi setelah app dibuka.',
-    'mbg-duel':'Touch, multitouch IFP, dan Vision AI dipilih di dalam MBG Delivery Duel.',
-    soundscope:'Mikrofon atau kamera hanya diminta ketika tool terkait diaktifkan di dalam SoundScope.',
-    'pak-taro':'Eksperimen, pola, dan Vision AI tersedia di dalam app. Kamera tetap berdasarkan izin pengguna.',
-    pressure:'Sedang disiapkan. Kartu dapat dipilih untuk melihat status, tetapi belum dapat diluncurkan.'
+    lorentz:'Simulasi Lorentz mendukung mouse, touch, multitouch IFP, dan Vision Challenge sebagai pintu masuk opsional.',
+    microscope:'Microscope Lab tetap meminta izin kamera hanya saat fitur kamera dipakai. Vision Challenge di Hub hanya menjadi pintu masuk ceria.',
+    'rubik-orbit':'Rubik Orbit punya 3D, solver, dan Vision AI internal. Vision Challenge di Hub menjadi gerbang pembuka yang terpisah.',
+    'mbg-duel':'MBG Duel mendukung touch, multitouch IFP, dan Vision AI. Dua pintu masuk tetap tersedia dari Hub.',
+    soundscope:'SoundScope baru meminta mikrofon/kamera saat fitur terkait dipakai. Vision Challenge tidak menyalakan audio.',
+    'pak-taro':'Pak Taro punya eksperimen, pola, dan Vision AI internal. Gerbang Vision di Hub tetap opsional.',
+    pressure:'Sedang disiapkan. Dua pintu masuk akan otomatis aktif saat app berstatus ready.'
   };
+  function selectedApp(){
+    const apps=window.PILAR_APP_REGISTRY||[];
+    return apps.find(x=>x.id===selectedAppId)||apps[0]||null;
+  }
   function renderInspector(item){
     if(!item)return;
     $('#selectedAppIcon').textContent=item.icon||'✦';
@@ -31,27 +35,16 @@
     $('#selectedAppSubtitle').textContent=item.subtitle||'';
     $('#selectedAppVersion').textContent='v'+(item.version||'—');
     $('#selectedAppStatus').textContent=item.status==='ready'?'SIAP':'SEGERA';
-    $('#selectedAppNote').textContent=inspectorNotes[item.id]||'Pilih app, lalu gunakan tombol peluncur yang tersedia.';
-    const isLorentz=item.id==='lorentz';
-    $('#lorentzLaunchModes').hidden=!isLorentz;
-    const open=$('#bootOpenApp');
-    open.hidden=isLorentz;
-    $('#launchPrompt').textContent=isLorentz?'Pilih cara masuk':item.status==='ready'?'Siap diluncurkan':'Dalam pengembangan';
-    if(!isLorentz){
-      $('#bootOpenIcon').textContent=item.icon||'✦';
-      $('#bootOpenTitle').textContent=item.status==='ready'?'Buka '+item.title:'Segera hadir';
-      $('#bootOpenDesc').textContent=item.status==='ready'
-        ? (item.category||'PILAR App')+' · v'+item.version
-        : 'App ini belum tersedia pada build PILAR saat ini.';
-      $('#bootOpenBadge').textContent=item.status==='ready'?'BUKA':'SEGERA';
-      open.disabled=item.status!=='ready';
-      open.onclick=async()=>{
-        if(item.status!=='ready')return;
-        try{await window.PILAR_PULSE?.track?.('hub_app_launch',{app_id:item.id})}catch(_){}
-        location.href=item.url;
-      };
-    }
-    if(!isLorentz)$('#bootProgress').hidden=true;
+    $('#launchPrompt').textContent=item.status==='ready'?'Pilih cara masuk':'Dalam pengembangan';
+    $('#bootQuickTitle').textContent=item.id==='lorentz'?'Masuk Cepat':'Buka '+item.title;
+    $('#bootQuickDesc').textContent=item.id==='lorentz'
+      ? 'Mouse · touch · multitouch IFP. Tanpa kamera dan tanpa modul Vision AI.'
+      : (item.category||'PILAR App')+' · v'+item.version+' · langsung masuk tanpa challenge kamera.';
+    $('#bootVisionDesc').textContent='Tantangan berganti: pose serius → senyum atau puzzle pinch dengan tangan.';
+    $('#selectedAppNote').textContent=inspectorNotes[item.id]||'Dua pintu tersedia: langsung masuk atau selesaikan Vision Challenge.';
+    const ready=item.status==='ready';
+    $('#bootQuick').disabled=!ready;
+    $('#bootVision').disabled=!ready;
   }
   function selectApp(id,{track=true,focus=false}={}){
     const apps=window.PILAR_APP_REGISTRY||[];
@@ -68,10 +61,7 @@
     });
     renderInspector(item);
     if(track){try{window.PILAR_PULSE?.track?.('hub_app_select',{app_id:item.id})}catch(_){}}
-    if(focus){
-      const target=item.id==='lorentz'?$('#bootQuick'):$('#bootOpenApp');
-      target?.focus();
-    }
+    if(focus)$('#bootQuick')?.focus();
   }
   function renderLibrary(){
     const box=$('#pilarLibrary'); if(!box)return;
@@ -91,9 +81,11 @@
   }
   function resetBootUI(){
     $('#bootProgress').hidden=true;
-    $('#bootQuick').disabled=false;$('#bootVision').disabled=false;
+    const item=selectedApp();
+    $('#bootQuick').disabled=!item||item.status!=='ready';
+    $('#bootVision').disabled=!item||item.status!=='ready';
     $('#bootBar').style.width='0%';$('#bootPercent').textContent='0%';
-    $('#bootStepTitle').textContent='MENYIAPKAN PILAR';$('#bootMessage').textContent='Pilih mode untuk masuk ke Gaya Lorentz.';
+    $('#bootStepTitle').textContent='MENYIAPKAN PILAR';$('#bootMessage').textContent='Pilih salah satu pintu masuk.';
     $('#bootStepList').innerHTML='';
     $$('#bootPhilosophy span').forEach(el=>el.className='');
   }
@@ -112,13 +104,44 @@
     [...$('#bootStepList').children].forEach((el,n)=>el.className=n<i?'done':n===i?'on':'');
     const philosophy=$$('#bootPhilosophy span');philosophy.forEach((el,n)=>el.className=n<i?'done':n===i?'on':'');
   }
-  async function requestVision(){
+  async function requestVision(item=selectedApp()){
     if(!checks.Kamera())throw new Error('Kamera tidak tersedia pada browser/perangkat ini.');
     await loadScript('input/vision-adapter.js');
     if(!P.vision||typeof P.vision.launchGate!=='function')throw new Error('Adapter Vision gagal dimuat.');
-    const result=await P.vision.launchGate();
+    const result=await P.vision.launchGate({
+      challenge:'auto',
+      appId:item?.id||'pilar',
+      appTitle:item?.title||'PILAR'
+    });
     if(P.vision)P.vision.setEnabled(!!result.enabled);
     return result;
+  }
+  async function launchSelected(mode){
+    const item=selectedApp();
+    if(!item||item.status!=='ready')return;
+    if(item.id==='lorentz')return boot(mode==='vision'?'vision':'standard');
+    if(mode==='standard'){
+      try{await window.PILAR_PULSE?.track?.('hub_app_launch',{app_id:item.id,entry:'quick'})}catch(_){}
+      location.href=item.url;
+      return;
+    }
+    $('#bootQuick').disabled=true;$('#bootVision').disabled=true;
+    $('#selectedAppNote').textContent='Vision Challenge sedang disiapkan… kamera hanya dipakai untuk challenge ini.';
+    try{
+      const vr=await requestVision(item);
+      if(vr&&vr.enabled){
+        try{await window.PILAR_PULSE?.track?.('hub_app_launch',{app_id:item.id,entry:'vision',challenge:vr.challenge||vr.via})}catch(_){}
+        const sep=item.url.includes('?')?'&':'?';
+        location.href=item.url+sep+'pilarEntry=vision';
+      }else{
+        $('#selectedAppNote').textContent='Challenge belum diselesaikan. Pilih Vision Challenge lagi atau gunakan Masuk Cepat.';
+        $('#bootQuick').disabled=false;$('#bootVision').disabled=false;
+      }
+    }catch(e){
+      console.error(e);
+      $('#selectedAppNote').textContent=(e?.message||'Vision Challenge gagal dimuat')+' Gunakan Masuk Cepat bila perlu.';
+      $('#bootQuick').disabled=false;$('#bootVision').disabled=false;
+    }
   }
 
   function toast(a,b=''){const el=$('#toast');el.innerHTML='<b>'+a+'</b>'+(b?'<br><small>'+b+'</small>':'');el.classList.add('show');clearTimeout(toast.id);toast.id=setTimeout(()=>el.classList.remove('show'),2600)}
@@ -214,17 +237,23 @@
       setBootStep(4,steps.length,steps[4][0],steps[4][1]);
       if(mode==='vision'){
         try{
-          const vr=await requestVision();
+          const vr=await requestVision(selectedApp());
           if(vr&&vr.enabled){
             $('#bootMessage').textContent='Smile recognition berhasil. Vision gate terbuka dan simulasi siap dimasuki.';
             $('#engineStatus').textContent='Masuk via Vision AI';
           }else{
-            mode='standard';
-            $('#bootMessage').textContent='Vision gate dilewati. Simulasi dilanjutkan dengan mouse/touch.';
+            $('#bootMessage').textContent='Vision Challenge belum selesai. Pilih lagi atau gunakan Masuk Cepat.';
             if(P.vision)P.vision.setEnabled(false);
+            quick.disabled=vision.disabled=false;
+            return;
           }
         }
-        catch(e){$('#bootMessage').textContent=(e&&e.message?e.message:'Vision AI tidak aktif')+' Melanjutkan otomatis tanpa Vision AI.';mode='standard';if(P.vision)P.vision.setEnabled(false);await sleep(700)}
+        catch(e){
+          $('#bootMessage').textContent=(e&&e.message?e.message:'Vision Challenge tidak aktif')+' Gunakan Masuk Cepat bila perlu.';
+          if(P.vision)P.vision.setEnabled(false);
+          quick.disabled=vision.disabled=false;
+          return;
+        }
       }else await sleep(100);
       setBootStep(5,steps.length,steps[5][0],steps[5][1]);await sleep(160);setBootStep(steps.length,steps.length,'READY',mode==='vision'?'Vision AI siap. Memasuki simulasi…':'Mode cepat siap. Memasuki simulasi…');
       sessionStorage.setItem('pilar-input-mode',mode);$('#appShell').setAttribute('aria-hidden','false');startLoop();await sleep(230);$('#pilarBoot').classList.add('is-leaving');$('#pilarBoot').setAttribute('aria-hidden','true');document.body.classList.remove('boot-lock');
@@ -233,7 +262,7 @@
 
   drawBootCaps();
   renderLibrary();
-  $('#bootQuick').onclick=()=>boot('standard');
-  $('#bootVision').onclick=()=>boot('vision');
+  $('#bootQuick').onclick=()=>launchSelected('standard');
+  $('#bootVision').onclick=()=>launchSelected('vision');
   if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('service-worker.js').catch(()=>{});
 })();
