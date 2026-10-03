@@ -133,10 +133,15 @@ for update to authenticated
 using (public.pilar_is_admin())
 with check (public.pilar_is_admin());
 
+drop policy if exists "pulse messages delete" on public.pilar_messages;
+create policy "pulse messages delete" on public.pilar_messages
+for delete to authenticated
+using (auth.uid() = visitor_id or public.pilar_is_admin());
+
 grant select, insert, update on public.pilar_profiles to authenticated;
 grant select, insert, update on public.pilar_sessions to authenticated;
 grant select, insert on public.pilar_events to authenticated;
-grant select, insert, update on public.pilar_messages to authenticated;
+grant select, insert, update, delete on public.pilar_messages to authenticated;
 grant usage, select on all sequences in schema public to authenticated;
 
 -- Realtime for developer dashboard + user chat.
