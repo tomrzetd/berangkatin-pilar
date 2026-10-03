@@ -1,0 +1,2044 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PILAR™ Microscope Lab v0.6 — IFP/MPI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light: #f8fafc;
+            --border-radius: 12px;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dark-mode {
+            --primary: #818cf8;
+            --primary-dark: #6366f1;
+            --dark: #f8fafc;
+            --light: #0f172a;
+            --gray: #94a3b8;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: var(--transition);
+            min-height: 100vh;
+        }
+
+        .dark-mode body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--dark);
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Branding Specific Style */
+        .branding-pill {
+            display: inline-block;
+            margin-left: 15px;
+            padding: 4px 15px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.9);
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(0,0,0,0.05));
+            border: 1px solid rgba(255,255,255,0.4);
+            border-radius: 50px;
+            /* Pillow Emboss Effect */
+            box-shadow: 
+                inset 2px 2px 5px rgba(255,255,255,0.1),
+                inset -2px -2px 5px rgba(0,0,0,0.2),
+                2px 2px 5px rgba(0,0,0,0.1);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            letter-spacing: 0.5px;
+            vertical-align: middle;
+            font-family: monospace;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 20px;
+            transition: var(--transition);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .logo-text-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, #fff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .user-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-dark);
+        }
+
+        .btn-primary:hover {
+            background: #f1f5f9;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        /* Camera Selector */
+        .camera-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .camera-select {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            color: var(--dark);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .dark-mode .camera-select {
+            background: #334155;
+            border-color: #475569;
+            color: var(--dark);
+        }
+
+        .camera-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+            min-height: calc(100vh - 140px);
+        }
+
+        /* Camera View */
+        .camera-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dark-mode .camera-section,
+        .dark-mode .controls-panel,
+        .dark-mode .gallery-section {
+            background: #1e293b;
+            color: var(--dark);
+        }
+
+        .camera-header {
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .dark-mode .camera-header {
+            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+        }
+
+        .camera-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .camera-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.connected {
+            background: #10b981;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.9); }
+        }
+
+        .camera-view {
+            position: relative;
+            background: 
+                linear-gradient(45deg, #64748b 25%, transparent 25%),
+                linear-gradient(-45deg, #64748b 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #64748b 75%),
+                linear-gradient(-45deg, transparent 75%, #64748b 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            min-height: 600px;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            cursor: default;
+        }
+        
+        .camera-view.measuring {
+            cursor: crosshair;
+        }
+
+        #videoElement {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            display: none;
+            transform-origin: center center;
+            transition: transform 0.1s linear; /* Faster transition for zoom */
+            pointer-events: none; /* Let clicks pass to overlay */
+        }
+
+        /* Overlay Elements */
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+
+        /* Grid Overlay */
+        .overlay-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: none;
+            background: transparent;
+        }
+
+        .overlay-grid.active {
+            display: block;
+        }
+
+        .grid-line {
+            position: absolute;
+            background: rgba(0, 255, 0, 0.3);
+        }
+
+        .grid-line.vertical {
+            width: 1px;
+            height: 100%;
+        }
+
+        .grid-line.horizontal {
+            width: 100%;
+            height: 1px;
+        }
+
+        /* Crosshair Overlay */
+        .overlay-crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            pointer-events: none;
+            display: none;
+        }
+
+        .overlay-crosshair.active {
+            display: block;
+        }
+
+        .crosshair-vertical,
+        .crosshair-horizontal {
+            position: absolute;
+            background: rgba(255, 0, 0, 0.8);
+        }
+
+        .crosshair-vertical {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .crosshair-horizontal {
+            width: 100%;
+            height: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .crosshair-circle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 2px solid rgba(255, 0, 0, 0.8);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Dynamic Ruler System */
+        .ruler-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: all; /* Important for interaction */
+            display: none;
+        }
+        
+        .ruler-container.active {
+            display: block;
+        }
+
+        .ruler-line {
+            position: absolute;
+            background: rgba(0, 255, 255, 0.9);
+            height: 2px;
+            transform-origin: 0 0;
+            pointer-events: none;
+            box-shadow: 0 0 4px rgba(0,0,0,0.8);
+        }
+
+        .ruler-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: rgba(0, 255, 255, 0.9);
+            border: 2px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: move;
+            z-index: 20;
+            box-shadow: 0 0 4px rgba(0,0,0,0.5);
+            transition: transform 0.1s;
+        }
+        
+        .ruler-dot:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            background: #fff;
+        }
+
+        .ruler-text-label {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.85);
+            color: #00ffff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            white-space: nowrap;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 15;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            transform: translate(-50%, -100%);
+        }
+
+        /* Calibration Overlay */
+        .overlay-calibration-ruler {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 200px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 4px;
+            display: none;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .overlay-calibration-ruler.active {
+            display: block;
+        }
+
+        .ruler-scale {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            border-right: 1px solid rgba(255, 255, 255, 0.8);
+            color: white;
+            font-size: 10px;
+            text-align: center;
+            padding-top: 5px;
+        }
+
+        .ruler-total-label {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2px 6px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        .placeholder-text {
+            text-align: center;
+            color: var(--gray);
+            padding: 40px;
+        }
+
+        .placeholder-text i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .placeholder-text p {
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        .no-camera {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            z-index: 5;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .panel-section {
+            margin-bottom: 25px;
+        }
+
+        .panel-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Camera Controls */
+        .camera-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .control-btn {
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .dark-mode .control-btn {
+            background: #334155;
+            border-color: #475569;
+            color: var(--dark);
+        }
+
+        .control-btn:hover {
+            border-color: var(--primary);
+            background: #f1f5f9;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dark-mode .control-btn:hover {
+            background: #475569;
+        }
+
+        .control-btn.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .control-btn i {
+            font-size: 1.5rem;
+        }
+
+        .control-btn.capture {
+            grid-column: span 3;
+            background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .control-btn.capture:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+        }
+
+        /* Zoom Controls */
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .zoom-value {
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .zoom-slider {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            background: #e2e8f0;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .dark-mode .zoom-slider {
+            background: #475569;
+        }
+
+        .zoom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Tools Section */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .tool-item {
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .dark-mode .tool-item {
+            border-color: #475569;
+            background: #334155;
+        }
+
+        .tool-item:hover {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+
+        .dark-mode .tool-item:hover {
+            background: #475569;
+        }
+
+        .tool-item.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .tool-item i {
+            font-size: 1.2rem;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        /* Filter Controls */
+        .filter-group {
+            margin-bottom: 15px;
+        }
+
+        .filter-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .filter-slider {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            background: linear-gradient(90deg, #e2e8f0 0%, var(--primary) 100%);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .dark-mode .filter-slider {
+            background: linear-gradient(90deg, #475569 0%, var(--primary) 100%);
+        }
+
+        .filter-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .filter-value {
+            text-align: right;
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .reset-filters {
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+            transition: var(--transition);
+        }
+
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .gallery-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .gallery-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .gallery-grid::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .dark-mode .gallery-grid::-webkit-scrollbar-track {
+            background: #334155;
+        }
+
+        .gallery-grid::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        }
+
+        .dark-mode .gallery-item {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+            z-index: 10;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px;
+            font-size: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .gallery-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .gallery-item-delete,
+        .gallery-item-download {
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .gallery-item-download {
+            background: rgba(16, 185, 129, 0.9);
+        }
+
+        .gallery-item:hover .gallery-item-delete,
+        .gallery-item:hover .gallery-item-download {
+            opacity: 1;
+        }
+
+        .gallery-item-delete:hover,
+        .gallery-item-download:hover {
+            transform: scale(1.1);
+        }
+
+        .empty-gallery {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+            grid-column: span 2;
+        }
+
+        .empty-gallery i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        .empty-gallery p {
+            font-size: 0.95rem;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            border-left: 4px solid var(--primary);
+            max-width: 350px;
+        }
+
+        .dark-mode .toast {
+            background: #1e293b;
+            color: var(--dark);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left-color: var(--secondary);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+
+        .toast i {
+            font-size: 1.5rem;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            cursor: default;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(99, 102, 241, 0.3);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Disabled State */
+        button:disabled,
+        button:disabled:hover {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-section {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .user-controls {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .camera-controls {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .control-btn.capture {
+                grid-column: span 2;
+            }
+
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 15px;
+            }
+
+            .camera-controls {
+                grid-template-columns: 1fr;
+            }
+
+            .control-btn.capture {
+                grid-column: span 1;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .empty-gallery {
+                grid-column: span 1;
+            }
+        }
+
+
+        /* ===== PILAR Framework integration · Microscope Lab v0.6 ===== */
+        .pilar-version{font-size:.68rem;vertical-align:top;opacity:.82;font-weight:700}.pilar-home-btn{text-decoration:none}.camera-meta{font:700 .72rem/1 ui-monospace,SFMono-Regular,Consolas,monospace;padding:.32rem .5rem;border:1px solid rgba(255,255,255,.25);border-radius:999px;opacity:.9;white-space:nowrap}.branding-pill:before{content:"PILAR Creator ID · ";opacity:.72}
+        .pilar-flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) minmax(170px,.85fr);gap:8px;margin:0 0 18px;padding:9px;border:1px solid rgba(99,102,241,.22);border-radius:14px;background:rgba(255,255,255,.7);box-shadow:var(--shadow-sm);backdrop-filter:blur(8px)}
+        .dark-mode .pilar-flow{background:rgba(15,23,42,.72)}.pilar-flow button{border:1px solid #dbe3ee;background:rgba(255,255,255,.76);border-radius:11px;min-height:54px;padding:6px 8px;display:grid;grid-template-columns:25px 1fr;grid-template-rows:auto auto;text-align:left;gap:0 7px;color:var(--dark);cursor:pointer;transition:var(--transition)}.dark-mode .pilar-flow button{background:#253247;border-color:#405168}.pilar-flow button b{grid-row:1/3;width:25px;height:25px;border-radius:50%;display:grid;place-items:center;align-self:center;background:#e8edff;color:var(--primary-dark);font-size:.78rem}.pilar-flow button span{font-size:.76rem;font-weight:900;letter-spacing:.07em;align-self:end}.pilar-flow button small{font-size:.68rem;color:var(--gray);align-self:start}.pilar-flow button.active{border-color:#5ee9ff;background:linear-gradient(135deg,rgba(94,233,255,.15),rgba(201,255,66,.1));box-shadow:0 0 0 2px rgba(94,233,255,.08)}.pilar-flow button.active b{background:#5ee9ff;color:#041019}.pilar-flow-status{display:flex;flex-direction:column;justify-content:center;align-items:flex-end;padding:5px 8px;min-width:0}.pilar-flow-status span{font-size:.73rem;color:var(--gray);text-align:right}.pilar-flow-status strong{font-size:.8rem;color:var(--secondary);margin-top:3px}
+        .camera-controls{grid-template-columns:repeat(4,1fr)}.control-btn.capture{grid-column:span 4}.ruler-container{touch-action:none}.camera-view.measuring{touch-action:none}.pilar-app-footer{max-width:1600px;margin:12px auto 20px;padding:0 20px;display:flex;justify-content:space-between;gap:12px;color:var(--gray);font:600 .72rem/1.3 ui-monospace,SFMono-Regular,Consolas,monospace}.pilar-app-footer span:last-child{text-align:right}.pilar-unsupported{color:var(--danger)!important}
+        @media(max-width:1100px){.pilar-flow{grid-template-columns:repeat(5,minmax(110px,1fr));overflow-x:auto}.pilar-flow-status{display:none}}@media(max-width:768px){.camera-controls{grid-template-columns:repeat(2,1fr)}.control-btn.capture{grid-column:span 2}.pilar-app-footer{flex-direction:column}.pilar-app-footer span:last-child{text-align:left}.camera-meta{display:none}}
+
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-microscope"></i>
+                <div class="logo-text-group">
+                    <div>PILAR™ Microscope Lab <small class="pilar-version">v0.6</small></div>
+                    <div class="tagline">IFP / MPI · Observasi · Kalibrasi · Pengukuran · Bukti</div>
+                </div>
+                <div class="branding-pill" id="brandingPill"></div>
+            </div>
+            <div class="user-controls">
+                <a class="btn btn-outline pilar-home-btn" id="pilarHomeBtn" href="../../" title="Kembali ke PILAR Hub"><i class="fas fa-arrow-left"></i> PILAR Hub</a>
+                <button class="btn btn-outline" id="themeToggle">
+                    <i class="fas fa-moon"></i> Dark Mode
+                </button>
+                <button class="btn btn-primary" id="helpBtn">
+                    <i class="fas fa-question-circle"></i> Bantuan
+                </button>
+            </div>
+        </header>
+
+        <nav class="pilar-flow" aria-label="Alur eksplorasi PILAR">
+            <button data-phase="lihat" class="active"><b>1</b><span>LIHAT</span><small>kamera</small></button>
+            <button data-phase="fokus"><b>2</b><span>FOKUS</span><small>zoom & filter</small></button>
+            <button data-phase="ukur"><b>3</b><span>UKUR</span><small>kalibrasi</small></button>
+            <button data-phase="buktikan"><b>4</b><span>BUKTIKAN</span><small>capture</small></button>
+            <button data-phase="dokumentasi"><b>5</b><span>DOKUMENTASIKAN</span><small>galeri</small></button>
+            <div class="pilar-flow-status"><span id="pilarPhaseStatus">Siap mengamati</span><strong id="evidenceCount">0 bukti</strong></div>
+        </nav>
+
+        <div class="main-content">
+            <div class="camera-section">
+                <div class="camera-header">
+                    <div class="camera-title">
+                        <i class="fas fa-video"></i>
+                        <span id="cameraStatusText">Mendeteksi kamera...</span>
+                    </div>
+                    <div class="camera-status">
+                        <div class="status-indicator" id="statusIndicator"></div>
+                        <span id="statusText">Tidak Terhubung</span>
+                        <span class="camera-meta" id="cameraMeta">—</span>
+                    </div>
+                </div>
+                
+                <div class="camera-selector" style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0;">
+                    <select id="cameraSelect" class="camera-select" disabled>
+                        <option value="">Pilih kamera...</option>
+                    </select>
+                    <button class="btn btn-accent" id="refreshCamerasBtn" style="padding: 8px 12px;">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                
+                <div class="camera-view" id="cameraViewContainer">
+                    <div class="overlay-container">
+                        <div class="overlay-grid" id="overlayGrid"></div>
+                        
+                        <div class="overlay-crosshair" id="overlayCrosshair">
+                            <div class="crosshair-vertical"></div>
+                            <div class="crosshair-horizontal"></div>
+                            <div class="crosshair-circle"></div>
+                        </div>
+                        
+                        <div class="ruler-container" id="rulerContainer"></div>
+
+                        <div class="overlay-calibration-ruler" id="overlayCalibrationRuler">
+                            <div class="ruler-total-label" id="rulerTotalLabel">0 μm</div>
+                        </div>
+                    </div>
+                    
+                    <div class="loading-spinner" id="loadingSpinner">
+                        <div class="spinner"></div>
+                    </div>
+                    
+                    <video id="videoElement" autoplay playsinline></video>
+                    
+                    <div class="no-camera" id="noCameraPlaceholder">
+                        <i class="fas fa-video-slash"></i>
+                        <p><strong>Belum ada kamera terdeteksi</strong></p>
+                        <p style="margin-top: 10px; font-size: 0.95rem;">
+                            Tekan tombol <strong>SCAN</strong> untuk mencari perangkat
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="controls-panel">
+                    <div class="panel-section">
+                        <div class="panel-title">
+                            <i class="fas fa-sliders-h"></i>
+                            Kontrol Kamera
+                        </div>
+                        <div class="camera-controls">
+                            <button class="control-btn" id="scanBtn">
+                                <i class="fas fa-sync-alt"></i>
+                                <span>SCAN</span>
+                            </button>
+                            <button class="control-btn" id="startBtn" disabled>
+                                <i class="fas fa-play"></i>
+                                <span>START</span>
+                            </button>
+                            <button class="control-btn" id="freezeBtn" disabled>
+                                <i class="fas fa-snowflake"></i>
+                                <span>FREEZE</span>
+                            </button>
+                            <button class="control-btn" id="stopBtn" disabled>
+                                <i class="fas fa-stop"></i>
+                                <span>STOP</span>
+                            </button>
+                            <button class="control-btn capture" id="captureBtn" disabled>
+                                <i class="fas fa-camera"></i>
+                                <span>📸 AMBIL GAMBAR</span>
+                            </button>
+                        </div>
+
+                        <div class="zoom-controls">
+                            <button class="control-btn" style="padding: 10px; width: 40px;" id="zoomOut" disabled>
+                                <i class="fas fa-search-minus"></i>
+                            </button>
+                            <input type="range" min="1" max="5" step="0.1" value="1" class="zoom-slider" id="zoomSlider" disabled>
+                            <div class="zoom-value" id="zoomValue">1.0x</div>
+                            <button class="control-btn" style="padding: 10px; width: 40px;" id="zoomIn" disabled>
+                                <i class="fas fa-search-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="panel-section">
+                        <div class="panel-title">
+                            <i class="fas fa-tools"></i>
+                            Tools & Overlay
+                        </div>
+                        <div class="tools-grid">
+                            <div class="tool-item" data-tool="grid">
+                                <i class="fas fa-th"></i>
+                                <span>Grid</span>
+                            </div>
+                            <div class="tool-item" data-tool="crosshair">
+                                <i class="fas fa-plus"></i>
+                                <span>Crosshair</span>
+                            </div>
+                            <div class="tool-item" data-tool="ruler">
+                                <i class="fas fa-ruler"></i>
+                                <span>Penggaris</span>
+                            </div>
+                            <div class="tool-item" data-tool="fullscreen">
+                                <i class="fas fa-expand"></i>
+                                <span>Fullscreen</span>
+                            </div>
+                            <div class="tool-item" data-tool="reset">
+                                <i class="fas fa-redo"></i>
+                                <span>Reset View</span>
+                            </div>
+                            <div class="tool-item" data-tool="calibrate">
+                                <i class="fas fa-balance-scale"></i>
+                                <span>Kalibrasi</span>
+                            </div>
+                            <div class="tool-item" id="clearRulerBtn" style="grid-column: span 2; justify-content: center; color: var(--danger); border-color: var(--danger);">
+                                <i class="fas fa-eraser"></i>
+                                <span>Hapus Penggaris</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-section">
+                        <div class="panel-title">
+                            <i class="fas fa-sliders-h"></i>
+                            Filter Gambar
+                        </div>
+                        <div class="filter-group">
+                            <div class="filter-label">
+                                <span>Kecerahan</span>
+                                <span id="brightnessValue">100%</span>
+                            </div>
+                            <input type="range" min="0" max="200" value="100" class="filter-slider" id="brightnessSlider" disabled>
+                        </div>
+                        <div class="filter-group">
+                            <div class="filter-label">
+                                <span>Kontras</span>
+                                <span id="contrastValue">100%</span>
+                            </div>
+                            <input type="range" min="0" max="200" value="100" class="filter-slider" id="contrastSlider" disabled>
+                        </div>
+                        <div class="filter-group">
+                            <div class="filter-label">
+                                <span>Saturasi</span>
+                                <span id="saturationValue">100%</span>
+                            </div>
+                            <input type="range" min="0" max="200" value="100" class="filter-slider" id="saturationSlider" disabled>
+                        </div>
+                        <button class="btn btn-accent reset-filters" id="resetFiltersBtn" disabled>
+                            <i class="fas fa-undo"></i> Reset Filter
+                        </button>
+                    </div>
+                </div>
+
+                <div class="gallery-section" style="margin-top: 20px;">
+                    <div class="gallery-header">
+                        <div class="panel-title" style="margin-bottom: 0; border-bottom: none;">
+                            <i class="fas fa-images"></i>
+                            Galeri Hasil
+                        </div>
+                        <div class="gallery-actions">
+                            <button class="btn btn-success btn-sm" id="downloadAllBtn" style="padding: 8px 12px; font-size: 0.85rem;" disabled>
+                                <i class="fas fa-download"></i> Unduh Semua
+                            </button>
+                            <button class="btn btn-danger btn-sm" id="clearGalleryBtn" style="padding: 8px 12px; font-size: 0.85rem;" disabled>
+                                <i class="fas fa-trash"></i> Hapus Semua
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-grid" id="galleryGrid">
+                        <div class="empty-gallery" id="emptyGallery">
+                            <i class="fas fa-images"></i>
+                            <p>Belum ada gambar.<br>Tekan tombol kamera untuk mulai!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="pilar-app-footer"><span>PILAR™ Microscope Lab · v0.6</span><span>PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span></footer>
+
+    <div class="modal" id="imageModal">
+        <img id="modalImage" src="" alt="Preview">
+    </div>
+
+    <div class="modal" id="calibrationModal">
+        <div style="background: white; padding: 30px; border-radius: 10px; max-width: 500px; width: 90%; cursor: default;">
+            <h2 style="margin-bottom: 20px; color: var(--dark);">Kalibrasi Penggaris</h2>
+            <p style="margin-bottom: 15px; color: var(--gray);">
+                1. Klik "Mulai Kalibrasi".<br>
+                2. Gambar garis pada objek yang panjangnya diketahui.<br>
+                3. Masukkan panjang sebenarnya di sini.<br>
+                <b>Kalibrasi berlaku untuk sesi dan set-up optik saat ini.</b> Kalibrasikan ulang setelah mengganti objektif/perbesaran optik atau kamera.
+            </p>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark);">
+                    Panjang Objek (μm)
+                </label>
+                <input type="number" id="calibrationLength" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem;" placeholder="Contoh: 100" min="1">
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="btn btn-outline" id="cancelCalibration" style="color: var(--dark); border-color: var(--gray);">
+                    Batal
+                </button>
+                <button class="btn btn-primary" id="saveCalibration">
+                    Simpan Kalibrasi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Notifikasi</span>
+    </div>
+
+    <script>
+        // PILAR storage: IndexedDB avoids localStorage quota failures with full-resolution microscopy captures.
+        class PILARMicroscopeStore {
+            constructor(){ this.dbp=null; this.name='PILAR_Microscope_v1'; this.store='captures'; }
+            open(){
+                if(this.dbp) return this.dbp;
+                this.dbp=new Promise((resolve,reject)=>{
+                    if(!('indexedDB' in window)) return reject(new Error('IndexedDB tidak tersedia'));
+                    const req=indexedDB.open(this.name,1);
+                    req.onupgradeneeded=()=>{ const db=req.result; if(!db.objectStoreNames.contains(this.store)) db.createObjectStore(this.store,{keyPath:'id'}); };
+                    req.onsuccess=()=>resolve(req.result); req.onerror=()=>reject(req.error||new Error('Gagal membuka galeri'));
+                });
+                return this.dbp;
+            }
+            async tx(mode,fn){ const db=await this.open(); return new Promise((resolve,reject)=>{ const tx=db.transaction(this.store,mode),st=tx.objectStore(this.store); let out; try{out=fn(st)}catch(e){reject(e);return} tx.oncomplete=()=>resolve(out); tx.onerror=()=>reject(tx.error); tx.onabort=()=>reject(tx.error||new Error('Transaksi dibatalkan')); }); }
+            async getAll(){ const db=await this.open(); return new Promise((resolve,reject)=>{const req=db.transaction(this.store,'readonly').objectStore(this.store).getAll();req.onsuccess=()=>resolve((req.result||[]).sort((a,b)=>b.id-a.id));req.onerror=()=>reject(req.error)}); }
+            put(rec){ return this.tx('readwrite',st=>st.put(rec)); }
+            delete(id){ return this.tx('readwrite',st=>st.delete(id)); }
+            clear(){ return this.tx('readwrite',st=>st.clear()); }
+        }
+
+        // Core Logic - PILAR Microscope Lab
+        class IFPMicroscope {
+            constructor() {
+                // DOM Elements
+                this.videoElement = document.getElementById('videoElement');
+                this.cameraViewContainer = document.getElementById('cameraViewContainer');
+                this.noCameraPlaceholder = document.getElementById('noCameraPlaceholder');
+                this.statusIndicator = document.getElementById('statusIndicator');
+                this.statusText = document.getElementById('statusText');
+                this.cameraStatusText = document.getElementById('cameraStatusText');
+                this.galleryGrid = document.getElementById('galleryGrid');
+                this.emptyGallery = document.getElementById('emptyGallery');
+                this.loadingSpinner = document.getElementById('loadingSpinner');
+                this.cameraSelect = document.getElementById('cameraSelect');
+                
+                // Overlays
+                this.overlayGrid = document.getElementById('overlayGrid');
+                this.overlayCrosshair = document.getElementById('overlayCrosshair');
+                
+                // Ruler Specific
+                this.rulerContainer = document.getElementById('rulerContainer');
+                this.overlayCalibrationRuler = document.getElementById('overlayCalibrationRuler');
+                this.rulerTotalLabel = document.getElementById('rulerTotalLabel');
+                this.clearRulerBtn = document.getElementById('clearRulerBtn');
+                
+                // Modals
+                this.imageModal = document.getElementById('imageModal');
+                this.modalImage = document.getElementById('modalImage');
+                this.calibrationModal = document.getElementById('calibrationModal');
+                this.calibrationLengthInput = document.getElementById('calibrationLength');
+                this.saveCalibrationBtn = document.getElementById('saveCalibration');
+                this.cancelCalibrationBtn = document.getElementById('cancelCalibration');
+                
+                // State Variables
+                this.stream = null;
+                this.isStreaming = false;
+                this.capturedImages = [];
+                this.imageStore = new PILARMicroscopeStore();
+                this.galleryObjectUrls = new Set();
+                this.zoomLevel = 1.0;
+                this.filters = { brightness: 100, contrast: 100, saturation: 100 };
+                this.activeTools = new Set();
+                this.availableCameras = [];
+                this.selectedCameraId = null;
+                
+                // Ruler & Measurement State
+                this.isMeasuring = false; // Mode active
+                this.currentMeasurement = null; // Temp storage during drawing
+                this.measurements = []; // Array of {id, x1, y1, x2, y2}
+                this.draggingDot = null; // { measurementId, pointIndex: 1 or 2 }
+                this.pixelScale = null; // μm per SOURCE pixel; session-specific to avoid stale optical calibration
+                this.calibrationMode = false;
+                this.isFrozen = false;
+                this.phase = 'lihat';
+                
+                // Branding
+                this.brandingString = atob("YnkgOiByaXphbGFiZHVycmFobWFuMDVAZ3VydS5zbXAuYmVsYWphci5pZA==");
+                
+                this.MAX_GALLERY_ITEMS = 30;
+                
+                this.initBranding();
+                this.initEventListeners();
+                this.initGalleryStorage();
+                this.restorePreferences();
+                this.updateScaleDisplay();
+                this.showNotification('Aplikasi IFP Microscope Pro siap digunakan!', 'success');
+                this.autoScanCameras();
+            }
+
+            initBranding() {
+                const pill = document.getElementById('brandingPill');
+                if (pill) pill.textContent = this.brandingString;
+                document.getElementById('evidenceCount').textContent = '0 bukti';
+            }
+
+            async initGalleryStorage() {
+                try{
+                    let rows=await this.imageStore.getAll();
+                    if(!rows.length){
+                        // Best-effort migration of legacy localStorage gallery.
+                        try{
+                            const legacy=JSON.parse(localStorage.getItem('microscopeImages')||'[]').slice(0,12);
+                            for(const item of legacy){if(!item.data)continue;const blob=await (await fetch(item.data)).blob();const rec={id:item.id||Date.now()+Math.random(),blob,timestamp:item.timestamp||'',zoom:item.zoom||'1.0',filename:item.filename||`PILAR_Microscope_${item.id||Date.now()}.png`};await this.imageStore.put(rec)}
+                            if(legacy.length)localStorage.removeItem('microscopeImages'); rows=await this.imageStore.getAll();
+                        }catch(_){ }
+                    }
+                    this.capturedImages=rows.slice(0,this.MAX_GALLERY_ITEMS); await this.loadGallery();
+                }catch(err){ console.warn('IndexedDB gallery unavailable',err); this.capturedImages=[]; await this.loadGallery(); this.showNotification('Galeri persisten tidak tersedia; capture tetap dapat diunduh.','error'); }
+            }
+
+            releaseGalleryUrls() { this.galleryObjectUrls.forEach(url=>URL.revokeObjectURL(url)); this.galleryObjectUrls.clear(); }
+
+            restorePreferences() {
+                const theme=localStorage.getItem('pilarMicroscopeTheme'); if(theme==='dark')document.body.classList.add('dark-mode');
+                const isDark=document.body.classList.contains('dark-mode');document.getElementById('themeToggle').innerHTML=isDark?'<i class="fas fa-sun"></i> Light Mode':'<i class="fas fa-moon"></i> Dark Mode';
+            }
+
+            markPhase(phase,message,activate=true) {
+                this.phase=phase; if(activate)document.querySelectorAll('.pilar-flow button[data-phase]').forEach(b=>b.classList.toggle('active',b.dataset.phase===phase));
+                if(message)document.getElementById('pilarPhaseStatus').textContent=message;
+            }
+
+            goPhase(phase) {
+                const map={lihat:'#cameraViewContainer',fokus:'#zoomSlider',ukur:'.tool-item[data-tool="ruler"]',buktikan:'#captureBtn',dokumentasi:'#galleryGrid'};
+                this.markPhase(phase,{lihat:'Amati objek dan pilih kamera',fokus:'Atur fokus digital / citra',ukur:'Kalibrasi lalu ukur',buktikan:'Simpan frame sebagai bukti',dokumentasi:'Tinjau dan unduh bukti'}[phase]);
+                const el=document.querySelector(map[phase]);el?.scrollIntoView({behavior:'smooth',block:'center'});if(el?.focus)el.focus({preventScroll:true});
+            }
+
+            initEventListeners() {
+                // Camera controls
+                document.getElementById('scanBtn').addEventListener('click', () => this.scanCameras());
+                document.getElementById('startBtn').addEventListener('click', () => this.startCamera());
+                document.getElementById('stopBtn').addEventListener('click', () => this.stopCamera());
+                document.getElementById('freezeBtn').addEventListener('click', () => this.toggleFreeze());
+                document.getElementById('captureBtn').addEventListener('click', () => this.captureImage());
+                document.getElementById('refreshCamerasBtn').addEventListener('click', () => this.scanCameras());
+                
+                this.cameraSelect.addEventListener('change', (e) => {
+                    this.selectedCameraId = e.target.value;
+                    if (this.isStreaming) {
+                        this.stopCamera();
+                        setTimeout(() => this.startCamera(), 500);
+                    }
+                });
+                
+                // Zoom
+                document.getElementById('zoomIn').addEventListener('click', () => this.adjustZoom(0.2));
+                document.getElementById('zoomOut').addEventListener('click', () => this.adjustZoom(-0.2));
+                document.getElementById('zoomSlider').addEventListener('input', (e) => {
+                    this.zoomLevel = parseFloat(e.target.value);
+                    this.markPhase('fokus', 'Perbesaran digital diubah');
+                    this.updateZoomDisplay();
+                    this.applyTransformations();
+                });
+                
+                // Filters
+                ['brightness', 'contrast', 'saturation'].forEach(filter => {
+                    document.getElementById(`${filter}Slider`).addEventListener('input', (e) => {
+                        this.filters[filter] = parseInt(e.target.value);
+                        this.markPhase('fokus', 'Filter citra disesuaikan');
+                        document.getElementById(`${filter}Value`).textContent = `${this.filters[filter]}%`;
+                        this.applyFilters();
+                    });
+                });
+                document.getElementById('resetFiltersBtn').addEventListener('click', () => this.resetFilters());
+                
+                // Gallery
+                document.getElementById('clearGalleryBtn').addEventListener('click', () => this.clearGallery());
+                document.getElementById('downloadAllBtn').addEventListener('click', () => this.downloadAllImages());
+                
+                // Tools
+                document.querySelectorAll('.tool-item').forEach(item => {
+                    if (item.id === 'clearRulerBtn') return; // Handled separately
+                    item.addEventListener('click', (e) => {
+                        const tool = item.dataset.tool;
+                        this.handleTool(tool, item);
+                    });
+                });
+
+                // Clear Ruler
+                this.clearRulerBtn.addEventListener('click', () => {
+                    this.measurements = [];
+                    this.currentMeasurement = null;
+                    this.renderRulers();
+                    this.showNotification('Semua penggaris dihapus', 'success');
+                });
+                
+                // Mouse/Interaction Events for Rulers
+                this.rulerContainer.addEventListener('pointerdown', (e) => this.handleMouseDown(e));
+                window.addEventListener('pointermove', (e) => this.handleMouseMove(e), {passive:false});
+                window.addEventListener('pointerup', (e) => this.handleMouseUp(e));
+                window.addEventListener('pointercancel', (e) => this.handleMouseUp(e));
+                
+                // Theme & Help
+                document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
+                document.getElementById('helpBtn').addEventListener('click', () => this.showHelp());
+                
+                // Modals
+                this.imageModal.addEventListener('click', () => this.imageModal.classList.remove('show'));
+                this.calibrationModal.addEventListener('click', (e) => {
+                    if (e.target === this.calibrationModal) this.closeCalibration();
+                });
+                this.saveCalibrationBtn.addEventListener('click', () => this.saveCalibration());
+                this.cancelCalibrationBtn.addEventListener('click', () => this.closeCalibration());
+                
+                window.addEventListener('resize', () => this.updateOverlays());
+                navigator.mediaDevices?.addEventListener?.('devicechange', () => this.scanCameras(true));
+                window.addEventListener('beforeunload', () => { this.stopCamera(true); this.releaseGalleryUrls(); });
+                document.querySelectorAll('.pilar-flow button[data-phase]').forEach(btn=>btn.addEventListener('click',()=>this.goPhase(btn.dataset.phase)));
+                
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        if (this.calibrationMode) this.closeCalibration();
+                        if (this.currentMeasurement) {
+                            this.currentMeasurement = null;
+                            this.renderRulers();
+                        }
+                    }
+                    if (e.key === ' ' && !e.target.matches('input, textarea')) {
+                        e.preventDefault();
+                        this.captureImage();
+                    }
+                });
+            }
+
+            // --- RULER & INTERACTION SYSTEM ---
+
+            getRelativeCoordinates(event) {
+                const rect = this.cameraViewContainer.getBoundingClientRect();
+                return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+            }
+
+            pointIsOnVideo(x,y) {
+                if (!this.isStreaming || !this.videoElement.videoWidth) return false;
+                const cr=this.cameraViewContainer.getBoundingClientRect(), vr=this.videoElement.getBoundingClientRect();
+                const left=vr.left-cr.left, top=vr.top-cr.top;
+                return x>=Math.max(0,left) && x<=Math.min(cr.width,left+vr.width) && y>=Math.max(0,top) && y<=Math.min(cr.height,top+vr.height);
+            }
+
+            containerToSource(x,y) {
+                const cr=this.cameraViewContainer.getBoundingClientRect(), vr=this.videoElement.getBoundingClientRect();
+                const localLeft=vr.left-cr.left, localTop=vr.top-cr.top;
+                const nx=(x-localLeft)/Math.max(vr.width,1), ny=(y-localTop)/Math.max(vr.height,1);
+                return {
+                    x:Math.max(0,Math.min(this.videoElement.videoWidth,nx*this.videoElement.videoWidth)),
+                    y:Math.max(0,Math.min(this.videoElement.videoHeight,ny*this.videoElement.videoHeight))
+                };
+            }
+
+            measurementSourceLength(m) {
+                const a=this.containerToSource(m.x1,m.y1), b=this.containerToSource(m.x2,m.y2);
+                return Math.hypot(b.x-a.x,b.y-a.y);
+            }
+
+            handleMouseDown(e) {
+                if (!(this.isMeasuring || this.calibrationMode || e.target.classList.contains('ruler-dot'))) return;
+                e.preventDefault();
+                if (e.target.classList.contains('ruler-dot')) {
+                    const dotId = e.target.dataset.id;
+                    const pointIndex = parseInt(e.target.dataset.point);
+                    this.draggingDot = { id: parseFloat(dotId), point: pointIndex, pointerId:e.pointerId };
+                    try{ this.rulerContainer.setPointerCapture(e.pointerId); }catch(_){ }
+                    e.stopPropagation();
+                    return;
+                }
+                const coords = this.getRelativeCoordinates(e);
+                if (!this.pointIsOnVideo(coords.x,coords.y)) return;
+                this.currentMeasurement = { id:Date.now(), x1:coords.x, y1:coords.y, x2:coords.x, y2:coords.y, pointerId:e.pointerId };
+                try{ this.rulerContainer.setPointerCapture(e.pointerId); }catch(_){ }
+                this.markPhase('ukur', this.calibrationMode?'Menentukan garis kalibrasi':'Mengukur objek');
+                this.renderRulers();
+            }
+
+            handleMouseMove(e) {
+                if (!this.draggingDot && !this.currentMeasurement) return;
+                e.preventDefault();
+                const coords = this.getRelativeCoordinates(e);
+                if (this.draggingDot) {
+                    const mIndex = this.measurements.findIndex(m => m.id === this.draggingDot.id);
+                    if (mIndex !== -1 && this.pointIsOnVideo(coords.x,coords.y)) {
+                        const m=this.measurements[mIndex];
+                        if (this.draggingDot.point === 1) { m.x1=coords.x; m.y1=coords.y; }
+                        else { m.x2=coords.x; m.y2=coords.y; }
+                        this.renderRulers();
+                    }
+                } else if (this.currentMeasurement && this.pointIsOnVideo(coords.x,coords.y)) {
+                    this.currentMeasurement.x2=coords.x; this.currentMeasurement.y2=coords.y; this.renderRulers();
+                }
+            }
+
+            handleMouseUp(e) {
+                if (this.draggingDot) {
+                    this.draggingDot = null;
+                } else if (this.currentMeasurement) {
+                    const dist = this.measurementSourceLength(this.currentMeasurement);
+                    if (dist > 4) {
+                        delete this.currentMeasurement.pointerId;
+                        this.measurements.push(this.currentMeasurement);
+                        if (this.calibrationMode) {
+                            if (this.measurements.length > 1) this.measurements.shift();
+                            this.calibrationModal.classList.add('show');
+                        }
+                    }
+                    this.currentMeasurement = null;
+                    this.renderRulers();
+                }
+                try{ if(e.pointerId!=null) this.rulerContainer.releasePointerCapture(e.pointerId); }catch(_){ }
+            }
+
+            renderRulers() {
+                // Clear container
+                this.rulerContainer.innerHTML = '';
+                
+                const allMeasurements = [...this.measurements];
+                if (this.currentMeasurement) allMeasurements.push(this.currentMeasurement);
+
+                allMeasurements.forEach(m => {
+                    this.drawRulerElement(m);
+                });
+            }
+
+            drawRulerElement(m) {
+                const dx=m.x2-m.x1, dy=m.y2-m.y1;
+                const lengthScreen=Math.hypot(dx,dy), angle=Math.atan2(dy,dx)*180/Math.PI;
+                const lengthSource=this.measurementSourceLength(m);
+                const realLength=this.pixelScale ? lengthSource*this.pixelScale : null;
+                const line=document.createElement('div');
+                line.className='ruler-line'; line.style.left=`${m.x1}px`; line.style.top=`${m.y1}px`; line.style.width=`${lengthScreen}px`; line.style.transform=`rotate(${angle}deg)`;
+                this.rulerContainer.appendChild(line);
+                const createDot=(x,y,idx)=>{const dot=document.createElement('div');dot.className='ruler-dot';dot.style.left=`${x}px`;dot.style.top=`${y}px`;dot.dataset.id=m.id;dot.dataset.point=idx;return dot};
+                this.rulerContainer.appendChild(createDot(m.x1,m.y1,1)); this.rulerContainer.appendChild(createDot(m.x2,m.y2,2));
+                const label=document.createElement('div');label.className='ruler-text-label';label.style.left=`${(m.x1+m.x2)/2}px`;label.style.top=`${(m.y1+m.y2)/2}px`;
+                label.textContent=this.pixelScale?`${lengthSource.toFixed(0)} px · ${realLength.toFixed(1)} μm`:`${lengthSource.toFixed(0)} source px · belum dikalibrasi`;
+                this.rulerContainer.appendChild(label);
+            }
+
+            async autoScanCameras() {
+                if (!navigator.mediaDevices?.enumerateDevices) {
+                    this.updateCameraStatus(false,'Browser tidak mendukung kamera'); return;
+                }
+                if (!window.isSecureContext && location.hostname!=='localhost') {
+                    document.getElementById('cameraMeta').textContent='HTTPS diperlukan';
+                    document.getElementById('cameraMeta').classList.add('pilar-unsupported');
+                    this.updateCameraStatus(false,'Buka lewat HTTPS / GitHub Pages');
+                    return;
+                }
+                try { await this.scanCameras(true); }
+                catch (e) { console.warn(e); }
+            }
+
+            async scanCameras(quiet=false) {
+                if (!navigator.mediaDevices?.enumerateDevices) return;
+                if(!quiet) this.showLoading(true);
+                try {
+                    const devices=await navigator.mediaDevices.enumerateDevices();
+                    const videoDevices=devices.filter(device=>device.kind==='videoinput');
+                    this.availableCameras=videoDevices;
+                    const previous=this.selectedCameraId;
+                    this.cameraSelect.replaceChildren(new Option('Pilih kamera…',''));
+                    videoDevices.forEach((device,index)=>this.cameraSelect.appendChild(new Option(device.label||`Kamera ${index+1}`,device.deviceId)));
+                    if(videoDevices.length){
+                        this.cameraSelect.disabled=false;
+                        const exists=videoDevices.some(d=>d.deviceId===previous);
+                        this.selectedCameraId=exists?previous:videoDevices[0].deviceId;
+                        this.cameraSelect.value=this.selectedCameraId;
+                        this.updateCameraStatus(this.isStreaming,this.isStreaming?'Aktif':'Siap');
+                        this.enableControls(this.isStreaming);
+                        document.getElementById('startBtn').disabled=false;
+                        if(!quiet && !videoDevices.some(d=>d.label)) this.showNotification('Kamera ditemukan. Nama perangkat tampil setelah izin kamera diberikan.','success');
+                    } else {
+                        this.selectedCameraId=null; this.cameraSelect.disabled=true; this.updateCameraStatus(false,'Kamera belum terdeteksi'); this.enableControls(false);
+                    }
+                } catch(err){ if(!quiet)this.showNotification('Scan kamera: '+err.message,'error'); }
+                finally { if(!quiet)this.showLoading(false); }
+            }
+
+            async startCamera() {
+                if (this.isStreaming) return;
+                if (!navigator.mediaDevices?.getUserMedia) return this.showNotification('Browser tidak mendukung kamera','error');
+                try {
+                    this.showLoading(true);
+                    const video={width:{ideal:1920},height:{ideal:1080},frameRate:{ideal:30,max:60}};
+                    if(this.selectedCameraId) video.deviceId={exact:this.selectedCameraId}; else video.facingMode={ideal:'environment'};
+                    this.stream=await navigator.mediaDevices.getUserMedia({video,audio:false});
+                    this.videoElement.srcObject=this.stream; this.videoElement.style.display='block'; this.noCameraPlaceholder.style.display='none';
+                    await new Promise(resolve=>{if(this.videoElement.readyState>=2)resolve();else this.videoElement.onloadedmetadata=()=>resolve()});
+                    await this.videoElement.play();
+                    this.isStreaming=true; this.isFrozen=false; this.pixelScale=null; this.overlayCalibrationRuler.classList.remove('active');
+                    const track=this.stream.getVideoTracks()[0];
+                    if(track){ track.onended=()=>this.stopCamera(); const set=track.getSettings?.()||{}; document.getElementById('cameraMeta').textContent=`${set.width||this.videoElement.videoWidth}×${set.height||this.videoElement.videoHeight}${set.frameRate?' · '+Math.round(set.frameRate)+'fps':''}`; }
+                    this.updateCameraStatus(true,'Aktif'); this.enableControls(true); this.applyTransformations(); this.updateScaleDisplay(); this.markPhase('lihat','Objek siap diamati');
+                    await this.scanCameras(true);
+                    this.showNotification('Kamera aktif · gunakan Freeze untuk pengukuran stabil','success');
+                } catch(err){
+                    const msg=err?.name==='NotAllowedError'?'Izin kamera ditolak. Aktifkan izin kamera pada browser.':err?.name==='NotFoundError'?'Kamera tidak ditemukan.':`Gagal akses kamera: ${err?.message||'unknown error'}`;
+                    this.showNotification(msg,'error'); this.updateCameraStatus(false,'Gagal akses');
+                } finally { this.showLoading(false); }
+            }
+
+            stopCamera(silent=false) {
+                if (this.stream) this.stream.getTracks().forEach(t=>t.stop());
+                this.videoElement.pause(); this.videoElement.srcObject=null; this.videoElement.style.display='none'; this.noCameraPlaceholder.style.display='flex';
+                this.isStreaming=false; this.isFrozen=false; this.stream=null;
+                this.updateCameraStatus(false,this.availableCameras.length?'Siap':'Tidak Terhubung'); this.enableControls(false);
+                document.getElementById('startBtn').disabled=this.availableCameras.length===0;
+                const f=document.getElementById('freezeBtn'); f.disabled=true; f.classList.remove('active'); f.querySelector('span').textContent='FREEZE';
+                document.getElementById('cameraMeta').textContent='—';
+                if(!silent)this.showNotification('Kamera dihentikan','success');
+            }
+
+            toggleFreeze() {
+                if(!this.isStreaming) return;
+                const btn=document.getElementById('freezeBtn'); this.isFrozen=!this.isFrozen;
+                if(this.isFrozen){ this.videoElement.pause(); btn.classList.add('active'); btn.querySelector('span').textContent='LANJUT'; this.markPhase('ukur','Frame dibekukan untuk observasi presisi'); }
+                else { this.videoElement.play(); btn.classList.remove('active'); btn.querySelector('span').textContent='FREEZE'; this.markPhase('lihat','Video live dilanjutkan'); }
+            }
+
+            async captureImage() {
+                if (!this.isStreaming) return;
+                const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+                const vidWidth=this.videoElement.videoWidth,vidHeight=this.videoElement.videoHeight;
+                if(!vidWidth||!vidHeight)return this.showNotification('Frame kamera belum siap','error');
+                canvas.width=vidWidth;canvas.height=vidHeight;
+                ctx.filter=this.getFilterString();
+                const zoom=this.zoomLevel,zoomedWidth=vidWidth/zoom,zoomedHeight=vidHeight/zoom,sx=(vidWidth-zoomedWidth)/2,sy=(vidHeight-zoomedHeight)/2;
+                ctx.drawImage(this.videoElement,sx,sy,zoomedWidth,zoomedHeight,0,0,vidWidth,vidHeight);ctx.filter='none';
+
+                // Burn-in overlay yang aktif agar bukti sama dengan yang dilihat siswa.
+                if(this.activeTools.has('grid')){
+                    ctx.save();ctx.strokeStyle='rgba(94,233,255,.26)';ctx.lineWidth=Math.max(1,vidWidth/1600);const step=Math.max(70,Math.round(vidWidth/12));
+                    for(let x=step;x<vidWidth;x+=step){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,vidHeight);ctx.stroke()}
+                    for(let y=step;y<vidHeight;y+=step){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(vidWidth,y);ctx.stroke()}ctx.restore();
+                }
+                if(this.activeTools.has('crosshair')){
+                    ctx.save();ctx.strokeStyle='rgba(255,75,75,.9)';ctx.lineWidth=Math.max(2,vidWidth/900);const cx=vidWidth/2,cy=vidHeight/2,r=Math.max(14,vidWidth/70);ctx.beginPath();ctx.moveTo(cx-r*1.7,cy);ctx.lineTo(cx+r*1.7,cy);ctx.moveTo(cx,cy-r*1.7);ctx.lineTo(cx,cy+r*1.7);ctx.stroke();ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();ctx.restore();
+                }
+
+                if(this.measurements.length){
+                    this.measurements.forEach(m=>{
+                        const sa=this.containerToSource(m.x1,m.y1),sb=this.containerToSource(m.x2,m.y2),map=p=>({x:(p.x-sx)/zoomedWidth*vidWidth,y:(p.y-sy)/zoomedHeight*vidHeight});
+                        const a=map(sa),b=map(sb),sourceLen=Math.hypot(sb.x-sa.x,sb.y-sa.y);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle='rgba(0,255,255,1)';ctx.lineWidth=Math.max(2,4*(vidWidth/1000));ctx.stroke();
+                        const rr=Math.max(4,6*(vidWidth/1000));ctx.fillStyle='rgba(0,255,255,1)';for(const q of [a,b]){ctx.beginPath();ctx.arc(q.x,q.y,rr,0,Math.PI*2);ctx.fill()}
+                        const text=this.pixelScale?`${(sourceLen*this.pixelScale).toFixed(1)} μm`:`${sourceLen.toFixed(0)} source px`;ctx.font=`bold ${Math.max(16,24*(vidWidth/1000))}px Arial`;ctx.fillStyle='white';ctx.strokeStyle='black';ctx.lineWidth=3;ctx.textAlign='center';const tx=(a.x+b.x)/2,ty=(a.y+b.y)/2-20;ctx.strokeText(text,tx,ty);ctx.fillText(text,tx,ty);
+                    });
+                }
+
+                if(this.pixelScale){
+                    const barPx=Math.max(110,Math.min(vidWidth*.28,vidWidth*.18)),um=barPx*(this.pixelScale/zoom),x=40,y=vidHeight-54;ctx.save();ctx.strokeStyle='white';ctx.fillStyle='white';ctx.lineWidth=Math.max(3,vidWidth/650);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+barPx,y);ctx.moveTo(x,y-9);ctx.lineTo(x,y+9);ctx.moveTo(x+barPx,y-9);ctx.lineTo(x+barPx,y+9);ctx.stroke();ctx.font=`bold ${Math.max(14,18*(vidWidth/1000))}px Arial`;ctx.textAlign='left';ctx.fillText(`≈ ${um.toFixed(um>=100?0:1)} μm`,x,y-16);ctx.restore();
+                }
+
+                const stamp=new Date().toLocaleString('id-ID');ctx.font=`italic ${Math.max(14,20*(vidWidth/1000))}px monospace`;ctx.fillStyle='rgba(255,255,255,.74)';ctx.textAlign='right';ctx.fillText('PILAR Creator ID · '+this.brandingString,vidWidth-30,40);ctx.font=`600 ${Math.max(12,15*(vidWidth/1000))}px monospace`;ctx.fillStyle='rgba(255,255,255,.68)';ctx.fillText(`${stamp} · zoom ${zoom.toFixed(1)}×`,vidWidth-30,vidHeight-28);
+                ctx.textAlign='left';ctx.font=`bold ${Math.max(14,18*(vidWidth/1000))}px sans-serif`;ctx.fillStyle='rgba(94,233,255,.85)';ctx.fillText('PILAR™ Microscope Lab',30,40);
+                const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)return this.showNotification('Gagal membuat file gambar','error');
+                const now=Date.now(),imageObj={id:now,blob,timestamp:stamp,zoom:this.zoomLevel.toFixed(1),calibrated:!!this.pixelScale,filename:`PILAR_Microscope_${now}.png`};
+                try{await this.imageStore.put(imageObj);this.capturedImages.unshift(imageObj);while(this.capturedImages.length>this.MAX_GALLERY_ITEMS){const old=this.capturedImages.pop();await this.imageStore.delete(old.id)}await this.loadGallery();this.markPhase('buktikan','Capture tersimpan sebagai bukti');this.showNotification('Bukti gambar tersimpan di galeri perangkat','success');this.animateCaptureButton()}
+                catch(err){console.error(err);this.showNotification('Penyimpanan galeri gagal. Gambar akan diunduh langsung.','error');const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=imageObj.filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500)}
+            }
+
+            handleTool(tool, element) {
+                const isActive = element.classList.toggle('active');
+                
+                if (isActive) this.activeTools.add(tool);
+                else this.activeTools.delete(tool);
+                
+                switch(tool) {
+                    case 'grid':
+                        this.overlayGrid.classList.toggle('active', isActive);
+                        if(isActive) this.generateGrid();
+                        break;
+                    case 'crosshair':
+                        this.overlayCrosshair.classList.toggle('active', isActive);
+                        break;
+                    case 'ruler':
+                        this.markPhase('ukur','Mode pengukuran '+(isActive?'aktif':'nonaktif'));
+                        this.isMeasuring = isActive;
+                        this.rulerContainer.classList.toggle('active', isActive || this.measurements.length > 0);
+                        this.cameraViewContainer.classList.toggle('measuring', isActive);
+                        if (isActive) this.showNotification('Mode Penggaris: Tarik garis untuk mengukur', 'success');
+                        break;
+                    case 'fullscreen':
+                        this.toggleFullscreen();
+                        break;
+                    case 'reset':
+                        this.resetView();
+                        break;
+                    case 'calibrate':
+                        this.markPhase('ukur','Kalibrasi skala mikroskop');
+                        if (isActive) {
+                            this.startCalibration();
+                        } else {
+                            this.closeCalibration();
+                        }
+                        break;
+                }
+            }
+
+            startCalibration() {
+                if(!this.isStreaming){document.querySelector('.tool-item[data-tool="calibrate"]')?.classList.remove('active');this.activeTools.delete('calibrate');this.showNotification('Aktifkan kamera sebelum kalibrasi','error');return;}
+                this.markPhase('ukur','Tarik garis pada objek acuan');
+                this.calibrationMode = true;
+                this.measurements = []; // Clear current for calibration
+                this.renderRulers();
+                this.rulerContainer.classList.add('active');
+                this.cameraViewContainer.classList.add('measuring');
+                this.showNotification('Mode Kalibrasi: Gambar 1 garis pada objek', 'success');
+            }
+
+            saveCalibration() {
+                if (this.measurements.length === 0 || !this.calibrationLengthInput.value) return;
+                const m=this.measurements[0], distSource=this.measurementSourceLength(m), realLen=parseFloat(this.calibrationLengthInput.value);
+                if(!Number.isFinite(realLen)||realLen<=0||distSource<=0) return this.showNotification('Nilai kalibrasi tidak valid','error');
+                this.pixelScale=realLen/distSource;
+                this.showNotification(`Kalibrasi sesi: ${this.pixelScale.toFixed(4)} μm/source-px`,'success'); this.closeCalibration(); this.overlayCalibrationRuler.classList.add('active'); this.updateScaleDisplay(); this.markPhase('ukur','Kalibrasi tersimpan');
+            }
+
+            closeCalibration() {
+                this.calibrationMode = false;
+                this.calibrationModal.classList.remove('show');
+                document.querySelector('.tool-item[data-tool="calibrate"]').classList.remove('active');
+                this.activeTools.delete('calibrate');
+                // Don't clear measurements, user might want to see them, 
+                // but usually calibration line is discarded or converted. 
+                // Let's clear to avoid confusion.
+                this.measurements = [];
+                this.renderRulers();
+                this.cameraViewContainer.classList.remove('measuring');
+            }
+
+            updateScaleDisplay() {
+                if(!this.pixelScale||!this.isStreaming){ this.overlayCalibrationRuler.classList.remove('active'); this.rulerTotalLabel.textContent=this.pixelScale?'Kalibrasi siap':'Belum dikalibrasi'; return; }
+                const cr=this.cameraViewContainer.getBoundingClientRect(); const x1=cr.width*.5-100,x2=cr.width*.5+100,y=cr.height*.5;
+                const a=this.containerToSource(x1,y),b=this.containerToSource(x2,y),microns=Math.hypot(b.x-a.x,b.y-a.y)*this.pixelScale;
+                this.rulerTotalLabel.textContent=`≈ ${microns.toFixed(microns>=100?0:1)} μm / 200 px layar`; this.overlayCalibrationRuler.classList.add('active');
+            }
+
+            generateGrid() {
+                this.overlayGrid.replaceChildren();
+                if(!this.isStreaming)return;
+                const cr=this.cameraViewContainer.getBoundingClientRect(),vr=this.videoElement.getBoundingClientRect();
+                const left=Math.max(0,vr.left-cr.left),top=Math.max(0,vr.top-cr.top),right=Math.min(cr.width,vr.right-cr.left),bottom=Math.min(cr.height,vr.bottom-cr.top);
+                const width=Math.max(0,right-left),height=Math.max(0,bottom-top),gridSize=Math.max(40,Math.min(70,Math.round(width/14)));
+                for(let x=left;x<=right;x+=gridSize){const line=document.createElement('div');line.className='grid-line vertical';line.style.left=`${x}px`;line.style.top=`${top}px`;line.style.height=`${height}px`;this.overlayGrid.appendChild(line)}
+                for(let y=top;y<=bottom;y+=gridSize){const line=document.createElement('div');line.className='grid-line horizontal';line.style.left=`${left}px`;line.style.top=`${y}px`;line.style.width=`${width}px`;this.overlayGrid.appendChild(line)}
+            }
+
+            resetView() {
+                this.zoomLevel = 1.0;
+                document.getElementById('zoomSlider').value = 1;
+                this.updateZoomDisplay();
+                this.resetFilters();
+                this.applyTransformations();
+                this.measurements = [];
+                this.renderRulers();
+                document.querySelectorAll('.tool-item.active').forEach(i => i.classList.remove('active'));
+                this.activeTools.clear();
+                this.updateScaleDisplay();
+                this.markPhase('lihat','Tampilan direset');
+                this.showNotification('Tampilan direset', 'success');
+            }
+
+            // --- HELPERS ---
+
+            adjustZoom(delta) {
+                if(!this.isStreaming) return;
+                this.zoomLevel=Math.max(1,Math.min(5,+(this.zoomLevel+delta).toFixed(1)));
+                document.getElementById('zoomSlider').value=this.zoomLevel;
+                this.updateZoomDisplay();
+                this.applyTransformations();
+                this.markPhase('fokus','Perbesaran digital '+this.zoomLevel.toFixed(1)+'×');
+            }
+
+            getFilterString() {
+                return `brightness(${this.filters.brightness}%) contrast(${this.filters.contrast}%) saturate(${this.filters.saturation}%)`;
+            }
+
+            applyFilters() {
+                this.videoElement.style.filter = this.getFilterString();
+            }
+
+            updateZoomDisplay() {
+                document.getElementById('zoomValue').textContent = `${this.zoomLevel.toFixed(1)}x`;
+            }
+
+            applyTransformations() {
+                this.videoElement.style.transform=`scale(${this.zoomLevel})`;
+                requestAnimationFrame(()=>{this.renderRulers();this.updateScaleDisplay()});
+            }
+
+            updateOverlays() {
+                if(this.activeTools.has('grid')) this.generateGrid();
+                this.renderRulers(); this.updateScaleDisplay();
+            }
+
+            async loadGallery() {
+                this.releaseGalleryUrls();
+                if(!this.capturedImages.length){this.emptyGallery.style.display='block';document.getElementById('clearGalleryBtn').disabled=true;document.getElementById('downloadAllBtn').disabled=true;this.galleryGrid.replaceChildren(this.emptyGallery);document.getElementById('evidenceCount').textContent='0 bukti';return}
+                this.emptyGallery.style.display='none';this.galleryGrid.replaceChildren();document.getElementById('clearGalleryBtn').disabled=false;document.getElementById('downloadAllBtn').disabled=false;
+                this.capturedImages.forEach(img=>{
+                    const div=document.createElement('div');div.className='gallery-item';
+                    const url=img.blob?URL.createObjectURL(img.blob):img.data; if(img.blob)this.galleryObjectUrls.add(url);
+                    const image=document.createElement('img');image.src=url;image.alt=`Bukti mikroskop ${img.timestamp||''}`;image.loading='lazy';div.appendChild(image);
+                    const overlay=document.createElement('div');overlay.className='gallery-item-overlay';const stamp=document.createElement('span');stamp.textContent=(img.timestamp||'').split(' ')[1]||img.timestamp||'';const actions=document.createElement('div');actions.className='gallery-item-actions';
+                    const dl=document.createElement('button');dl.className='dl';dl.innerHTML='<i class="fas fa-download"></i>';dl.setAttribute('aria-label','Unduh gambar');const del=document.createElement('button');del.className='del';del.innerHTML='<i class="fas fa-times"></i>';del.setAttribute('aria-label','Hapus gambar');actions.append(dl,del);overlay.append(stamp,actions);div.appendChild(overlay);
+                    dl.onclick=e=>{e.stopPropagation();this.downloadImage(img)};del.onclick=e=>{e.stopPropagation();this.deleteImage(img.id)};div.onclick=()=>{this.modalImage.src=url;this.imageModal.classList.add('show')};this.galleryGrid.appendChild(div);
+                });
+                document.getElementById('evidenceCount').textContent=`${this.capturedImages.length} bukti`; this.markPhase('dokumentasi','Galeri bukti diperbarui',false);
+            }
+
+            downloadImage(img) {
+                const link=document.createElement('a');const url=img.blob?URL.createObjectURL(img.blob):img.data;link.href=url;link.download=img.filename||`PILAR_Microscope_${img.id}.png`;link.click();if(img.blob)setTimeout(()=>URL.revokeObjectURL(url),1500);
+            }
+
+            async deleteImage(id) {
+                this.capturedImages=this.capturedImages.filter(i=>i.id!==id);try{await this.imageStore.delete(id)}catch(e){console.warn(e)}await this.loadGallery();
+            }
+
+            async clearGallery() {
+                if(confirm('Hapus semua bukti gambar dari perangkat ini?')){this.capturedImages=[];try{await this.imageStore.clear()}catch(e){console.warn(e)}localStorage.removeItem('microscopeImages');await this.loadGallery();this.showNotification('Galeri bukti dikosongkan','success')}
+            }
+
+            downloadAllImages() {
+                this.capturedImages.forEach((img,i)=>setTimeout(()=>this.downloadImage(img),i*250));
+            }
+
+            toggleFullscreen() {
+                if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+                else document.exitFullscreen();
+            }
+
+            toggleTheme() {
+                document.body.classList.toggle('dark-mode');const isDark=document.body.classList.contains('dark-mode');localStorage.setItem('pilarMicroscopeTheme',isDark?'dark':'light');document.getElementById('themeToggle').innerHTML=isDark?'<i class="fas fa-sun"></i> Light Mode':'<i class="fas fa-moon"></i> Dark Mode';
+            }
+
+            showNotification(msg, type) {
+                const t = document.getElementById('toast');
+                document.getElementById('toastMessage').textContent = msg;
+                t.className = `toast ${type} show`;
+                setTimeout(() => t.classList.remove('show'), 3000);
+            }
+
+            updateCameraStatus(connected, text='Tidak Terhubung') {
+                this.statusIndicator.className = connected ? 'status-indicator connected' : 'status-indicator';
+                this.statusText.textContent = text;
+                this.cameraStatusText.textContent = connected ? 'Kamera Aktif' : 'Mendeteksi...';
+            }
+
+            enableControls(enable) {
+                const ids=['captureBtn','freezeBtn','zoomIn','zoomOut','zoomSlider','brightnessSlider','contrastSlider','saturationSlider','resetFiltersBtn'];ids.forEach(id=>document.getElementById(id).disabled=!enable);document.getElementById('stopBtn').disabled=!this.isStreaming;document.getElementById('startBtn').disabled=this.isStreaming||this.availableCameras.length===0;
+            }
+
+            showLoading(show) {
+                this.loadingSpinner.classList.toggle('active', show);
+            }
+            
+            animateCaptureButton() {
+                const btn = document.getElementById('captureBtn');
+                btn.style.transform = 'scale(0.9)';
+                setTimeout(() => btn.style.transform = 'scale(1)', 150);
+            }
+
+            resetFilters() {
+                this.filters = { brightness: 100, contrast: 100, saturation: 100 };
+                ['brightness', 'contrast', 'saturation'].forEach(f => {
+                    document.getElementById(`${f}Slider`).value = 100;
+                    document.getElementById(`${f}Value`).textContent = '100%';
+                });
+                this.applyFilters();
+            }
+
+            showHelp() {
+                alert('PILAR Microscope Lab\n\n1. SCAN memilih kamera; START meminta izin kamera.\n2. FREEZE menghentikan frame agar pengukuran di IFP lebih stabil.\n3. FOKUS: gunakan zoom dan filter sebagai penyesuaian citra digital.\n4. UKUR: kalibrasikan menggunakan objek dengan panjang nyata yang diketahui, lalu tarik penggaris. Kalibrasi berlaku untuk sesi/set-up optik saat ini.\n5. BUKTIKAN: Capture menyimpan frame + hasil ukur + Creator ID ke galeri perangkat (IndexedDB).\n6. Tombol PILAR Hub mengembalikan ke launcher utama.\n\nCatatan: kamera browser memerlukan HTTPS (GitHub Pages sudah HTTPS).');
+            }
+
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!navigator.mediaDevices) alert('Browser tidak mendukung akses kamera. Gunakan Chrome/Edge terbaru melalui HTTPS.');
+            window.microscope = new IFPMicroscope();
+        });
+    </script>
+</body>
+</html>

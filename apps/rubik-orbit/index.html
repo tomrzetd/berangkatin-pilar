@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3 — IFP Vision</title>
+<meta name="description" content="Rubik 3x3 interaktif dengan diagram orbit lingkaran, Vision AI (gestur tangan, pindai kubus asli) untuk IFP, desktop, dan HP.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23182429'/%3E%3Ccircle cx='25' cy='24' r='17' fill='none' stroke='%237be4c5' stroke-width='3'/%3E%3Ccircle cx='39' cy='24' r='17' fill='none' stroke='%23f7ca54' stroke-width='3'/%3E%3Ccircle cx='32' cy='39' r='17' fill='none' stroke='%23ff6f68' stroke-width='3'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#0f191d;--panel:#18272c;--line:#385059;--text:#edf6f4;--muted:#9fb3b8;--mint:#72e3c2;--yellow:#f5cc59;--red:#ff716b;--blue:#62a9ff;--btn:3rem}
+body[data-ui=ifp]{--btn:3.8rem}body[data-ui=mobile]{--btn:2.8rem}
+body.hc{--text:#fff;--muted:#e3f1ef;--line:rgba(255,255,255,.5);--bg:#000}
+*{box-sizing:border-box}html{color-scheme:dark;font-size:16px}
+html,body{height:100%;overflow:hidden}
+html.stack,html.stack body{height:auto;min-height:100%;overflow:auto}
+body{margin:0;color:var(--text);font:1rem/1.42 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;background:radial-gradient(circle at 50% -18%,#2c464d 0,#152329 38%,#0c1518 100%)}
+body.hc{background:#000}
+button,input{font:inherit}button{color:inherit}
+body.nomotion *{animation:none!important;transition:none!important}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+:focus-visible{outline:.2rem solid var(--yellow);outline-offset:.15rem}
+[hidden]{display:none!important}
+.app{height:100%;display:grid;grid-template-rows:auto 1fr;gap:.7rem;padding:.8rem}
+html.stack .app{height:auto}
+header{display:flex;justify-content:space-between;align-items:center;gap:.9rem}
+.brand{display:flex;align-items:center;gap:.7rem;min-width:0}
+.mark{width:2.7rem;height:2.7rem;position:relative;flex:0 0 auto}.mark i{position:absolute;width:1.7rem;height:1.7rem;border:2px solid;border-radius:50%}.mark i:nth-child(1){left:0;top:0;color:var(--mint)}.mark i:nth-child(2){right:0;top:0;color:var(--yellow)}.mark i:nth-child(3){left:.5rem;bottom:0;color:var(--red)}
+h1{font-size:1.5rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sub{color:var(--muted);font-size:.8rem}
+.live{font-size:.8rem;padding:.45rem .7rem;border:1px solid #42616a;background:#132126;border-radius:999px;max-width:26rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.live:before{content:"";display:inline-block;width:.5rem;height:.5rem;border-radius:50%;background:var(--mint);margin-right:.45rem;box-shadow:0 0 0 .25rem rgba(114,227,194,.12)}
+.actions{display:flex;gap:.5rem}
+.iconBtn{min-width:var(--btn);min-height:var(--btn);border:1px solid #3b555e;background:#22363d;border-radius:.9rem;cursor:pointer;font-size:1.25rem;display:grid;place-items:center;padding:0}
+.iconBtn:hover{border-color:#76dec2;background:#294149}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 27rem;gap:.8rem;min-height:0}
+.card{background:linear-gradient(145deg,rgba(31,49,55,.97),rgba(21,35,40,.98));border:1px solid #334b53;border-radius:1.3rem;box-shadow:0 1.2rem 3.4rem rgba(0,0,0,.25)}
+body.hc .card{background:#031418}
+.stage{display:grid;grid-template-columns:1.05fr 1fr;min-height:0;overflow:hidden;position:relative;background:linear-gradient(#1b2a2f,#101b1f)}
+.stage:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:1.6rem 1.6rem;pointer-events:none}
+.cubePane,.orbitPane{position:relative;min-height:0;z-index:1}
+.orbitPane{border-left:1px solid rgba(255,255,255,.07)}
+.orbitPane svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.stage-title{position:absolute;left:1rem;top:.8rem;z-index:3;color:#9fb3b8;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+.axis-legend{position:absolute;right:.8rem;top:.7rem;z-index:2;display:flex;gap:.4rem}.axis-legend span{font-size:.72rem;background:#102025;border:1px solid #354d55;border-radius:999px;padding:.25rem .5rem}.axis-legend i{display:inline-block;width:.5rem;height:.5rem;border-radius:50%;margin-right:.25rem}
+.cubePane{background:radial-gradient(circle at 50% 52%,rgba(114,227,194,.09),transparent 46%)}
+#cube3d{position:absolute;inset:0;touch-action:none;cursor:grab}#cube3d:active{cursor:grabbing}#cube3d canvas{display:block;width:100%;height:100%;outline:none}
+.cube-tip{position:absolute;left:50%;bottom:.6rem;transform:translateX(-50%);z-index:2;color:#a9bcc0;font-size:.74rem;background:rgba(10,18,21,.76);border:1px solid #344c54;border-radius:999px;padding:.35rem .7rem;white-space:nowrap;pointer-events:none;max-width:94%;overflow:hidden;text-overflow:ellipsis}
+.cube-tools{position:absolute;left:.7rem;top:.6rem;z-index:5;display:flex;gap:.3rem;flex-wrap:wrap;max-width:calc(100% - 1.4rem)}
+.view-btn{border:1px solid #3c565f;background:rgba(13,25,29,.86);color:#d9e6e4;border-radius:.6rem;padding:0 .65rem;min-height:calc(var(--btn) * .72);min-width:calc(var(--btn) * .72);font-size:.78rem;cursor:pointer;backdrop-filter:blur(5px)}
+.view-btn:hover{border-color:var(--mint);background:#243b41}
+.view-btn.reset-view{color:#0c211b;background:var(--mint);border-color:var(--mint);font-weight:850}
+.view-btn[aria-pressed=true]{border-color:var(--yellow);background:rgba(245,204,89,.18);color:#ffe9a3}
+.nextBadge{position:absolute;right:.7rem;top:.6rem;z-index:5;max-width:min(17rem,46%);background:rgba(245,204,89,.95);color:#211a04;border-radius:.9rem;padding:.55rem .8rem;box-shadow:0 .5rem 1.4rem rgba(0,0,0,.3)}
+.nextBadge b{display:block;font-size:1.6rem;line-height:1}.nextBadge small{display:block;font-size:.76rem;font-weight:700;margin-top:.2rem}
+.move-float{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%) scale(.8);z-index:4;background:var(--yellow);color:#1c1705;font-weight:900;font-size:1.6rem;padding:.55rem .95rem;border-radius:.8rem;opacity:0;pointer-events:none}
+.move-float.show{animation:pop .58s ease}@keyframes pop{20%,70%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.12)}}
+.side{padding:1rem;display:grid;gap:.9rem;align-content:start;overflow:auto;min-height:0}
+.head{display:flex;justify-content:space-between;gap:.6rem;align-items:flex-start}.head h2{font-size:1.05rem;margin:0}
+.hint{color:var(--muted);font-size:.82rem;margin-top:.2rem}
+.badge{font-size:.78rem;border:1px solid #3e5962;background:#102025;border-radius:999px;padding:.35rem .6rem;white-space:nowrap}
+.section{border-top:1px solid #31484f;padding-top:.75rem}.section:first-child{border:0;padding-top:0}
+.section-title{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:#a9bdc1;margin-bottom:.5rem}
+.buttons{display:flex;flex-wrap:wrap;gap:.45rem}
+.btn{border:1px solid #3b555e;background:#22363d;border-radius:.7rem;padding:0 .85rem;min-height:var(--btn);cursor:pointer}
+.btn:hover{border-color:#76dec2;background:#294149}
+.btn.primary{background:var(--mint);border-color:var(--mint);color:#08221a;font-weight:850}
+.btn.warn{background:#492c2e;border-color:#764145}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.move-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:.4rem}
+.move{border:1px solid #39525a;background:#122126;border-radius:.6rem;min-height:var(--btn);cursor:pointer;font-weight:800}
+.move:hover{background:#294149}.move.axis0:hover{border-color:#72e3c2}.move.axis1:hover{border-color:#f5cc59}.move.axis2:hover{border-color:#ff716b}
+.solution{min-height:3rem;display:flex;flex-wrap:wrap;gap:.3rem;background:#101c20;border:1px solid #30484f;border-radius:.7rem;padding:.5rem;max-height:9rem;overflow:auto}
+.step{padding:.3rem .5rem;border-radius:.5rem;background:#293d43;font-size:.82rem}.step.done{opacity:.34}.step.current{background:var(--yellow);color:#211a04}
+.explain{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem}
+.fact{background:#101c20;border:1px solid #30474e;border-radius:.7rem;padding:.55rem}.fact b{display:block;font-size:.92rem}.fact span{font-size:.7rem;color:#9fb3b7}
+.notice{font-size:.82rem;min-height:1.2em;color:#aec1c4}
+.seg{display:flex;flex-wrap:wrap;gap:.35rem}
+.seg button,.tog{min-height:calc(var(--btn) * .9);border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:.75rem;padding:0 .8rem;font-weight:800;cursor:pointer}
+.seg button[aria-pressed=true],.tog[aria-pressed=true]{border-color:var(--mint);background:rgba(114,227,194,.16)}
+.tog{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;gap:.6rem}
+.tog small{display:block;color:var(--muted);font-weight:600;font-size:.74rem}
+.tog:after{content:"OFF";font-size:.68rem;padding:.2rem .45rem;border-radius:99px;background:rgba(255,255,255,.1)}
+.tog[aria-pressed=true]:after{content:"ON";background:var(--mint);color:#052a20}
+.gestures{display:grid;gap:.3rem;font-size:.82rem;color:#c7d8d6}.gestures div{background:#101c20;border:1px solid #30474e;border-radius:.6rem;padding:.4rem .6rem}
+details{border-top:1px solid #31484f;padding-top:.7rem}summary{cursor:pointer;color:#bdd0d2;min-height:2rem;display:flex;align-items:center}
+.editor-body{margin-top:.7rem}
+.net{display:grid;grid-template-columns:repeat(4,4rem);grid-template-rows:repeat(3,4rem);gap:.3rem;justify-content:center;margin:1.4rem 0}
+.facebox{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:3px;background:#0b1214;border:1px solid #344d54;border-radius:.45rem;position:relative}
+.facebox label{position:absolute;top:-1rem;left:.1rem;font-size:.62rem;color:#a8b9bd}
+.sticker{border:1px solid rgba(255,255,255,.2);border-radius:3px;cursor:pointer;min-width:.8rem;padding:0}
+.sticker.center{cursor:not-allowed;outline:1px solid #fff;outline-offset:-3px}
+.palette{display:flex;gap:.5rem;justify-content:center}.paint{width:2.4rem;height:2.4rem;border-radius:.65rem;border:2px solid transparent;cursor:pointer}.paint.active{border-color:#fff;box-shadow:0 0 0 .2rem rgba(114,227,194,.25)}
+
+
+/* PILAR Hub integration */
+.creatorTop{margin-top:.2rem;color:#8fb0b5;font:600 .68rem/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.pilarHub{text-decoration:none;font-weight:950;background:#102d32;border-color:#72e3c2;color:#b9ffea}.pilarHub:hover{background:#174047}.brand h1{letter-spacing:-.015em}
+
+/* Pengaturan */
+#settings{position:fixed;top:0;right:0;bottom:0;width:min(27rem,100vw);z-index:160;background:#08242a;border-left:1px solid var(--line);padding:1rem;overflow:auto;box-shadow:-1rem 0 3rem rgba(0,0,0,.4);display:grid;gap:.9rem;align-content:start}
+body.hc #settings{background:#000}
+.setGroup{display:grid;gap:.4rem}.setGroup>label{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mint);font-weight:900}
+.aiRow{display:flex;justify-content:space-between;align-items:center;gap:.5rem;font-weight:800;font-size:.9rem}
+
+/* Vision */
+#visionPanel{position:fixed;z-index:60;display:none;right:1rem;top:.5rem;width:7rem;border-radius:1rem;overflow:hidden;border:1px solid rgba(98,169,255,.5);background:#020d10;box-shadow:0 .5rem 1.5rem rgba(0,0,0,.4);cursor:pointer}
+#visionPanel.open{display:block}
+.camBox{position:relative;aspect-ratio:4/3;width:100%}
+#visionVideo,#visionCanvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#visionCanvas{pointer-events:none}
+.visionHud,.camCtl,.aiLab{display:none}
+.visionDot{position:absolute;left:.4rem;top:.4rem;width:.65rem;height:.65rem;border-radius:50%;background:var(--mint);box-shadow:0 0 .6rem var(--mint)}
+#visionPanel.big{right:1rem!important;top:5rem!important;width:min(24rem,42vw);cursor:default;max-height:calc(100% - 6rem);overflow:auto}
+#visionPanel.big .visionHud{display:flex;position:absolute;inset:0;pointer-events:none;flex-direction:column;justify-content:space-between;padding:.5rem}
+#visionPanel.big .camCtl{display:flex;position:absolute;right:.4rem;top:2.8rem;flex-direction:column;gap:.4rem}
+#visionPanel.big .aiLab{display:grid;gap:.3rem;padding:.8rem}#visionPanel.big .visionDot{display:none}
+.visionTop,.visionBottom{display:flex;justify-content:space-between;gap:.4rem;align-items:center}
+.pill{background:rgba(1,15,18,.82);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:.3rem .6rem;font-size:.7rem;font-weight:900}.expression{font-size:1.25rem}
+.camCtl button{width:2.8rem;height:2.8rem;border-radius:.85rem;border:1px solid rgba(255,255,255,.16);background:rgba(1,15,18,.8);color:#fff;font-size:1.1rem;cursor:pointer}
+.meter{position:relative;height:.65rem;border-radius:99px;background:rgba(255,255,255,.1);margin:.2rem 0 .5rem}.meter i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--mint),var(--yellow))}
+.meter u{position:absolute;top:-.25rem;width:3px;height:1.15rem;background:#ff6f91;border-radius:2px;left:40%}
+.perfFast{color:#9fffdc}.perfSmart{color:#ffe7a0}.perfEco{color:#ffb7c7}
+.handHover{outline:.25rem solid #62a9ff!important;outline-offset:.15rem;filter:brightness(1.15)}
+#handCursorLayer{position:fixed;inset:0;z-index:200;pointer-events:none}
+.handCursor{position:absolute;left:0;top:0;will-change:transform;width:2.2rem;height:2.2rem;margin:-1.1rem 0 0 -1.1rem;border:.2rem solid var(--pc,#62a9ff);border-radius:50%;box-shadow:0 0 0 .5rem color-mix(in srgb,var(--pc,#62a9ff) 16%,transparent),0 0 1.5rem color-mix(in srgb,var(--pc,#62a9ff) 55%,transparent);transition:width .08s,height .08s}
+.handCursor:after{content:"";position:absolute;inset:-.6rem;border-radius:50%;background:conic-gradient(var(--yellow) calc(var(--dw,0)*360deg),transparent 0);-webkit-mask:radial-gradient(circle,transparent 62%,#000 64%);mask:radial-gradient(circle,transparent 62%,#000 64%)}
+.handCursor.pinching{width:1.5rem;height:1.5rem;margin:-.75rem 0 0 -.75rem;border-color:var(--yellow)}
+.coach{position:fixed;left:50%;bottom:1.4rem;transform:translateX(-50%);z-index:119;background:var(--yellow);color:#352300;font-weight:900;border-radius:999px;padding:.75rem 1.5rem;font-size:1.15rem;box-shadow:0 .5rem 1.5rem rgba(0,0,0,.4);max-width:92vw;text-align:center}
+.toast{position:fixed;left:50%;bottom:1.4rem;transform:translate(-50%,2rem);opacity:0;z-index:210;background:#09252b;border:1px solid var(--line);border-radius:1rem;padding:.8rem 1.2rem;box-shadow:0 .5rem 1.5rem rgba(0,0,0,.4);font-weight:800;transition:.22s;max-width:min(40rem,92vw);text-align:center;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* Pindai kubus asli */
+.modal{position:fixed;inset:0;z-index:150;display:grid;place-items:center;background:rgba(2,10,12,.82)}
+.scanBox{width:min(62rem,96vw);max-height:94vh;overflow:auto;padding:1rem;display:grid;gap:.8rem}
+.scanGrid{display:grid;grid-template-columns:1.2fr 1fr;gap:1rem}
+html.stack .scanGrid{grid-template-columns:1fr}
+.camWrap{position:relative;width:100%;aspect-ratio:4/3;background:#000;border-radius:1rem;overflow:hidden}
+#scanVideo{width:100%;height:100%;object-fit:contain;display:block}
+.guide{position:absolute;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:2%;padding:2%;border:.2rem solid var(--mint);border-radius:.6rem;box-shadow:0 0 0 999px rgba(0,0,0,.35)}
+.guide i{border:2px dashed rgba(255,255,255,.75);border-radius:.4rem}
+.scanInfo{display:grid;gap:.6rem;align-content:start}.scanInfo h3{margin:0;font-size:1.3rem}.scanInfo p{margin:0;color:#c7d8d6}
+.dots{display:flex;gap:.4rem}.dots span{width:2.2rem;height:2.2rem;border-radius:.6rem;display:grid;place-items:center;font-weight:900;background:#101c20;border:1px solid #30474e;color:var(--muted)}
+.dots span.on{border-color:var(--yellow);color:var(--yellow)}.dots span.ok{background:var(--mint);color:#08221a;border-color:var(--mint)}
+.preview{display:grid;grid-template-columns:repeat(3,2.6rem);gap:.25rem}.preview i{width:2.6rem;height:2.6rem;border-radius:.4rem;border:1px solid rgba(255,255,255,.25);display:block}
+
+/* Susunan bertumpuk (HP / layar sempit) */
+html.stack .layout{grid-template-columns:1fr}
+html.stack .stage{grid-template-columns:1fr;grid-template-rows:28rem 24rem}
+html.stack .orbitPane{border-left:0;border-top:1px solid rgba(255,255,255,.07)}
+html.stack .side{overflow:visible}
+body[data-ui=mobile] .stage{grid-template-rows:23rem 20rem}
+body[data-ui=mobile] .app{padding:.5rem}
+body[data-ui=mobile] h1{font-size:1.05rem}body[data-ui=mobile] .sub{display:none}
+body[data-ui=mobile] .live{display:none}
+body[data-ui=mobile] #fsBtn,body[data-ui=mobile] #soundBtn{display:none}
+body[data-ui=mobile] .iconBtn{font-size:1rem}
+body[data-ui=mobile] .nextBadge b{font-size:1.2rem}
+body[data-ui=mobile] .cube-tip{display:none}
+body[data-ui=mobile] #visionPanel:not(.big){top:3.6rem;width:5.5rem}
+body[data-ui=mobile] #visionPanel.big{width:min(20rem,88vw);top:3.6rem!important}
+body[data-ui=mobile] .net{grid-template-columns:repeat(4,3.2rem);grid-template-rows:repeat(3,3.2rem)}
+
+/* ===== v3: watermark + efek panah/angin ===== */
+.wm{position:absolute;right:.7rem;bottom:.6rem;z-index:7;pointer-events:none;user-select:none;-webkit-user-select:none;filter:drop-shadow(0 .2rem .7rem rgba(0,0,0,.5))}
+.wm.up{bottom:2.9rem}
+#scanModal>.wm{right:1rem;bottom:.8rem;z-index:160}
+</style></head>
+<body data-ui="desk"><div class="app">
+<header>
+  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
+  <div class="live" id="live" role="status" aria-live="polite">Menyiapkan solver</div>
+  <div class="actions">
+    <a class="iconBtn pilarHub" href="../../" title="Kembali ke PILAR Hub" aria-label="PILAR Hub">←</a>
+    <button class="iconBtn ai-clickable" id="hintBtn" title="Petunjuk" aria-label="Petunjuk">💡</button>
+    <button class="iconBtn ai-clickable" id="scanBtn" title="Pindai Rubik asli dengan kamera" aria-label="Pindai Rubik asli">📷</button>
+    <button class="iconBtn ai-clickable" id="visionBtn" title="Vision AI: kontrol dengan gestur tangan" aria-label="Vision AI">◉</button>
+    <button class="iconBtn ai-clickable" id="settingsBtn" title="Pengaturan" aria-label="Pengaturan">⚙</button>
+    <button class="iconBtn ai-clickable" id="soundBtn" title="Suara" aria-label="Suara">♪</button>
+    <button class="iconBtn ai-clickable" id="fsBtn" title="Layar penuh" aria-label="Layar penuh">⛶</button>
+  </div>
+</header>
+<div class="layout">
+<main class="card stage">
+  <section class="cubePane">
+    <div id="cube3d" aria-label="Rubik tiga dimensi interaktif"></div>
+    <div class="cube-tools" aria-label="Sudut pandang kubus">
+      <button class="view-btn reset-view" id="resetView">↻ Reset U–R–F</button>
+      <button class="view-btn" data-view3="U">U</button><button class="view-btn" data-view3="R">R</button><button class="view-btn" data-view3="F">F</button><button class="view-btn" data-view3="D">D</button><button class="view-btn" data-view3="L">L</button><button class="view-btn" data-view3="B">B</button>
+      <button class="view-btn" id="dirBtn" aria-pressed="false" title="Arah putaran saat mengetuk bidang kubus">↻ Searah</button>
+    </div>
+    <div class="nextBadge" id="nextBadge" hidden></div>
+    <span class="cube-tip">Seret 360° • cubit/scroll untuk zoom • ketuk bidang untuk memutar layer</span>
+    <div class="move-float" id="moveFloat">R</div>
+  </section>
+  <section class="orbitPane">
+    <span class="stage-title">Diagram orbit warna</span>
+    <div class="axis-legend"><span><i style="background:#72e3c2"></i>U/D</span><span><i style="background:#f5cc59"></i>F/B</span><span><i style="background:#ff716b"></i>R/L</span></div>
+    <svg id="orbit" viewBox="0 0 760 540" aria-label="Tiga lingkaran orbit Rubik"></svg>
+  </section>
+</main>
+<aside class="card side">
+  <section class="section"><div class="head"><div><h2>Kontrol Rubik 3×3</h2><div class="hint">Kubus dan diagram bergerak bersama pada setiap langkah.</div></div><span class="badge" id="counter">0 gerakan</span></div></section>
+  <section class="section"><div class="section-title">Aksi utama</div><div class="buttons"><button class="btn primary ai-clickable" id="solve">Cari solusi</button><button class="btn ai-clickable" id="scramble">Acak 22×</button><button class="btn ai-clickable" id="undo">Undo</button><button class="btn warn ai-clickable" id="reset">Reset</button><button class="btn ai-clickable" id="scanBtn2">📷 Pindai kubus asli</button></div></section>
+  <section class="section"><div class="section-title">Putar 90° / 180°</div><div id="moves" class="move-grid"></div><div class="hint">Tanda ' berarti berlawanan arah jarum jam. Pintasan keyboard: U R F D L B (Shift = ').</div></section>
+  <section class="section"><div class="section-title">Solusi bertahap</div><div id="solution" class="solution"><span class="hint">Belum ada solusi.</span></div><div class="buttons" style="margin-top:.5rem"><button class="btn ai-clickable" id="prev">← Ulangi</button><button class="btn ai-clickable" id="next">Berikutnya</button><button class="btn ai-clickable" id="play">▶ Otomatis</button></div>
+    <div class="section-title" style="margin-top:.7rem">Kecepatan animasi</div>
+    <div class="seg" data-set="speed"><button class="ai-clickable" data-v="0.6">🐢 Pelan</button><button class="ai-clickable" data-v="1">Normal</button><button class="ai-clickable" data-v="1.7">⚡ Cepat</button></div></section>
+  <section class="section"><div class="section-title">Matematika gerak</div><div class="explain"><div class="fact"><b id="axisText">—</b><span>sumbu aktif</span></div><div class="fact"><b id="angleText">—</b><span>sudut rotasi</span></div><div class="fact"><b id="cycleText">—</b><span>siklus permutasi</span></div></div><div class="notice" id="notice">Pilih sebuah gerakan untuk melihat lintasan warnanya.</div></section>
+  <section class="section"><div class="section-title">Kontrol gestur (Vision AI)</div><div class="gestures">
+    <div>☝️ Telunjuk = kursor &nbsp;•&nbsp; 🤏 Jepit = klik</div>
+    <div>🤏 Jepit lalu seret di kubus = putar kubus</div>
+    <div>🤏 Jepit singkat di bidang kubus = putar layer</div>
+    <div>🤏🤏 Dua tangan renggang/rapat = zoom</div>
+    <div>✋ Geser telapak ke kiri = Berikutnya, kanan = Ulangi</div>
+    <div>☝️ Tahan 1 detik = klik (tanpa jepit)</div></div>
+    <div class="buttons" style="margin-top:.5rem"><button class="btn ai-clickable" id="visionBtn2">◉ Aktifkan Vision AI</button></div></section>
+  <details><summary>Masukkan warna Rubik asli (manual)</summary><div class="editor-body"><div class="hint">Pilih kuas, lalu sentuh petak. Titik tengah menjadi acuan warna sisi. Atau gunakan 📷 Pindai.</div><div id="net" class="net"></div><div id="palette" class="palette"></div><div id="validation" class="notice" style="margin-top:.6rem"></div></div></details>
+</aside></div></div>
+
+<aside id="settings" role="dialog" aria-label="Pengaturan tampilan dan Vision AI" hidden>
+  <div class="aiRow"><b style="font-size:1.2rem">⚙ Pengaturan</b><button class="iconBtn ai-clickable" id="settingsClose" aria-label="Tutup">×</button></div>
+  <div class="setGroup"><label>Perangkat</label>
+    <div class="seg" data-set="ui"><button class="ai-clickable" data-v="auto">Otomatis</button><button class="ai-clickable" data-v="ifp">IFP Kelas</button><button class="ai-clickable" data-v="desk">Desktop</button><button class="ai-clickable" data-v="mobile">HP</button></div>
+    <div class="hint" id="uiInfo"></div></div>
+  <div class="setGroup"><label>Ukuran teks & objek</label>
+    <div class="seg" data-set="text"><button class="ai-clickable" data-v="0.9">Kecil</button><button class="ai-clickable" data-v="1">Normal</button><button class="ai-clickable" data-v="1.15">Besar</button><button class="ai-clickable" data-v="1.3">Sangat besar</button></div></div>
+  <div class="setGroup"><label>Aksesibilitas</label>
+    <button class="tog ai-clickable" data-set="contrast"><span>Kontras tinggi</span></button>
+    <button class="tog ai-clickable" data-set="motion"><span>Kurangi animasi (kubus bergerak instan)</span></button>
+    <button class="tog ai-clickable" data-set="sound"><span>Suara efek</span></button></div>
+  <div class="setGroup"><label>Vision AI</label>
+    <button class="tog ai-clickable" data-set="dwell"><span>Klik dengan menahan kursor<small>Tahan telunjuk ±1 detik pada tombol</small></span></button>
+    <button class="tog ai-clickable" data-set="swipe"><span>Geser telapak = langkah solusi<small>Telapak terbuka, geser lebar ke kiri/kanan</small></span></button>
+    <button class="tog ai-clickable" data-set="autoHelp"><span>Tawarkan penjelasan saat alis terangkat lama<small>Hanya skor gerak otot wajah, bukan membaca perasaan. Video tidak direkam.</small></span></button></div>
+</aside>
+
+<div id="visionPanel" class="ai-clickable" role="region" aria-label="Kamera Vision AI (ketuk untuk membuka panel)">
+  <div class="camBox">
+    <video id="visionVideo" autoplay playsinline muted></video><canvas id="visionCanvas"></canvas><span class="visionDot"></span>
+    <div class="visionHud">
+      <div class="visionTop"><span class="pill" id="visionStatus">Vision AI: belum aktif</span><span class="pill expression" id="expressionPill">🙂</span></div>
+      <div class="visionBottom"><span class="pill">☝️ kursor • 🤏 jepit</span><span class="pill" id="fpsPill">--</span></div>
+    </div>
+    <div class="camCtl"><button id="shrinkVision" class="ai-clickable" title="Perkecil" aria-label="Perkecil">⤡</button><button id="closeVision" class="ai-clickable" title="Matikan kamera" aria-label="Matikan kamera">×</button></div>
+  </div>
+  <div class="aiLab">
+    <div class="aiRow"><span>🤏 Jarak jepit (jempol↔telunjuk ÷ telapak)</span><span id="pinchVal">--</span></div>
+    <div class="meter"><i id="pinchBar"></i><u id="pinchThr"></u></div>
+    <label class="hint">Sensitivitas jepit: <input type="range" id="pinchSens" class="ai-clickable" min="20" max="50" value="32" style="width:100%"></label>
+    <div id="exprBars"></div>
+    <div class="hint">Model membaca 21 titik tangan dan 478 titik wajah di perangkat ini; video tidak direkam atau diunggah.</div>
+    <div class="seg"><button class="ai-clickable" id="toggleMesh" aria-pressed="true">◎ Garis</button><button class="ai-clickable" id="openSettings2">⚙ Pengaturan</button></div>
+  </div>
+</div>
+
+<div id="scanModal" class="modal" role="dialog" aria-modal="true" aria-label="Pindai Rubik asli" hidden>
+  <div class="scanBox card">
+    <div class="aiRow"><b style="font-size:1.2rem">📷 Pindai Rubik asli</b><button class="iconBtn ai-clickable" id="scanClose" aria-label="Tutup">×</button></div>
+    <div class="scanGrid">
+      <div class="camWrap" id="camWrap"><video id="scanVideo" autoplay playsinline muted></video><div class="guide" id="scanGuide"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="scanInfo">
+        <div class="dots" id="scanDots"></div>
+        <h3 id="scanTitle"></h3><p id="scanText"></p>
+        <div class="preview" id="scanPreview"></div>
+        <div class="buttons"><button class="btn primary ai-clickable" id="scanShot">📸 Ambil sisi ini</button><button class="btn ai-clickable" id="scanBack">← Sisi sebelumnya</button></div>
+        <div class="notice" id="scanNote">Cahaya merata, hindari pantulan/silau. Penuhi kotak panduan dengan 9 stiker.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="coach" class="coach" hidden></div>
+<div id="handCursorLayer"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/cubejs@1.3.2/lib/cube.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cubejs@1.3.2/lib/solve.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+'use strict';
+var F=['U','R','F','D','L','B'],COL={U:'#f2f1ed',R:'#e84a3b',F:'#18b957',D:'#f2ce18',L:'#f17824',B:'#2878c9'};
+var SOLVED='UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB';
+var facelets=SOLVED.split('');
+var cube=null,ready=false,busy=false,queue=[],history=[],solution=[],step=0,paint='F',playTimer=null,prime=false;
+var circles=[{x:380,y:150,r:165,c:'#72e3c2'},{x:275,y:320,r:165,c:'#f5cc59'},{x:485,y:320,r:165,c:'#ff716b'}];
+var nodes={U:{x:215,y:166},R:{x:545,y:166},F:{x:380,y:193},L:{x:321,y:304},B:{x:439,y:304},D:{x:380,y:447}};
+var FN={U:'atas',D:'bawah',F:'depan',B:'belakang',R:'kanan',L:'kiri'};
+function el(id){return document.getElementById(id)}
+function $$(s){return Array.prototype.slice.call(document.querySelectorAll(s))}
+function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
+function state(t,bad){el('live').textContent=t;el('live').style.color=bad?'#ffaaa6':''}
+
+/* ===== Pengaturan & layout adaptif ===== */
+var SKEY='rubikSettings.v2';
+var settings={ui:'auto',text:1,contrast:false,motion:false,sound:true,dwell:true,swipe:true,autoHelp:false,speed:1};
+try{Object.assign(settings,JSON.parse(localStorage.getItem(SKEY)||'{}'))}catch(e){}
+function saveSettings(){try{localStorage.setItem(SKEY,JSON.stringify(settings))}catch(e){}}
+function detectUI(){
+  var w=innerWidth,h=innerHeight;
+  if(w<760||(h<500&&w<900))return 'mobile';
+  var coarse=matchMedia('(pointer:coarse)').matches;
+  if(w>=2200||(w>=1600&&coarse&&(navigator.maxTouchPoints||0)>=5))return 'ifp';
+  return 'desk';
+}
+function syncSettingsUI(){
+  $$('.seg[data-set]').forEach(function(g){g.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed',String(settings[g.dataset.set])===b.dataset.v)})});
+  $$('.tog[data-set]').forEach(function(b){b.setAttribute('aria-pressed',String(!!settings[b.dataset.set]))});
+  el('soundBtn').textContent=settings.sound?'♪':'×♪';
+}
+function applyLayout(){
+  var ui=settings.ui==='auto'?detectUI():settings.ui;
+  document.body.dataset.ui=ui;
+  document.documentElement.classList.toggle('stack',ui==='mobile'||innerWidth<1150);
+  var px;
+  if(ui==='mobile')px=15*settings.text;
+  else{var k=Math.min(innerWidth/1600,innerHeight/900);px=clamp(16*k,ui==='ifp'?20:13,46)*settings.text}
+  document.documentElement.style.fontSize=px.toFixed(2)+'px';
+  document.body.classList.toggle('hc',!!settings.contrast);
+  document.body.classList.toggle('nomotion',!!settings.motion);
+  el('uiInfo').textContent='Terdeteksi: '+detectUI().toUpperCase()+' • tampil: '+ui.toUpperCase()+' • '+innerWidth+'×'+innerHeight+' • '+(navigator.maxTouchPoints||0)+' titik sentuh • '+(navigator.hardwareConcurrency||'?')+' thread CPU';
+  syncSettingsUI();
+  if(window.RubikVision&&window.RubikVision.onLayout)window.RubikVision.onLayout();
+  if(typeof size3==='function')size3();
+}
+var layoutRaf=0;addEventListener('resize',function(){cancelAnimationFrame(layoutRaf);layoutRaf=requestAnimationFrame(applyLayout)});
+function initSettings(){
+  el('settingsBtn').onclick=function(){el('settings').hidden=!el('settings').hidden};
+  el('settingsClose').onclick=function(){el('settings').hidden=true};
+  $$('.seg[data-set]').forEach(function(g){g.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){
+    var k=g.dataset.set;settings[k]=(k==='ui')?b.dataset.v:Number(b.dataset.v);saveSettings();applyLayout()})})});
+  $$('.tog[data-set]').forEach(function(b){b.addEventListener('click',function(){var k=b.dataset.set;settings[k]=!settings[k];saveSettings();applyLayout()})});
+}
+
+/* ===== Suara & toast ===== */
+var audioCtx=null;
+function tone(f,d,type,g){
+  if(!settings.sound)return;
+  try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();var o=audioCtx.createOscillator(),gn=audioCtx.createGain();o.type=type||'sine';o.frequency.value=f;gn.gain.value=g||.04;o.connect(gn);gn.connect(audioCtx.destination);o.start();gn.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.stop(audioCtx.currentTime+d)}catch(e){}
+}
+function toast(msg,ms){var t=el('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(function(){t.classList.remove('show')},ms||2000)}
+
+/* ===== Notasi & matematika gerak ===== */
+function axisOf(m){var f=m.charAt(0);return f==='U'||f==='D'?0:f==='F'||f==='B'?1:2}
+function directionOf(m){var n=m.indexOf('2')>-1?2:1,sg=m.indexOf("'")>-1?-1:1;if(m.charAt(0)==='D'||m.charAt(0)==='B'||m.charAt(0)==='L')sg*=-1;return sg*n}
+function inverse(m){if(m.indexOf('2')>-1)return m;return m.indexOf("'")>-1?m.replace("'",""):m+"'"}
+function describe(m){var f=FN[m.charAt(0)];if(m.indexOf('2')>-1)return 'putar sisi '+f+' 180°';return 'putar sisi '+f+(m.indexOf("'")>-1?' berlawanan arah':' searah')+' jarum jam'}
+function isSolved(){for(var f=0;f<6;f++)for(var i=1;i<9;i++)if(facelets[f*9+i]!==facelets[f*9])return false;return true}
+function colorCount(){var n={U:0,R:0,F:0,D:0,L:0,B:0};facelets.forEach(function(x){if(n[x]!==undefined)n[x]++});return n}
+function validColors(){var n=colorCount();return F.every(function(f){return n[f]===9})}
+function ensureCube(){if(!ready)throw Error('Mesin solver belum termuat. Pastikan internet aktif.');if(!validColors())throw Error('Jumlah setiap warna harus tepat 9.');if(!cube)cube=Cube.fromString(facelets.join(''));return cube}
+function sync(){facelets=cube.asString().split('');render()}
+
+/* ===== Diagram orbit ===== */
+function cluster(face){
+  var p=nodes[face],start=F.indexOf(face)*9,out='<g class="cluster">';
+  for(var i=0;i<9;i++){var row=Math.floor(i/3),col=i%3,x=p.x+(col-1)*9,y=p.y+(row-1)*9;out+='<circle cx="'+x+'" cy="'+y+'" r="'+(i===4?4.4:3.8)+'" fill="'+COL[facelets[start+i]]+'" stroke="#142126" stroke-width="1.2"/>'}
+  return out+'<text x="'+(p.x+18)+'" y="'+(p.y-13)+'" fill="#aebfc2" font-size="12" font-weight="800">'+face+'</text></g>';
+}
+function orbitBase(active){
+  var out='<defs><filter id="glow"><feGaussianBlur stdDeviation="2.7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+  circles.forEach(function(c,ci){[-10,0,10].forEach(function(o,j){out+='<circle cx="'+c.x+'" cy="'+c.y+'" r="'+(c.r+o)+'" fill="none" stroke="'+c.c+'" stroke-opacity="'+(active===ci?(j===1?'.95':'.48'):(j===1?'.48':'.2'))+'" stroke-width="'+(active===ci&&j===1?'2.7':'1.2')+'" '+(active===ci?'filter="url(#glow)"':'')+'/>'})});
+  out+='<path d="M215 166 L380 193 L545 166 L439 304 L380 447 L321 304 Z" fill="none" stroke="#566c72" stroke-opacity=".28" stroke-dasharray="4 7"/>';
+  F.forEach(function(f){out+=cluster(f)});return out;
+}
+function runner(move,dur){
+  var ai=axisOf(move),c=circles[ai],turn=directionOf(move),ang=turn*90,colors=[],fi=F.indexOf(move.charAt(0))*9;
+  for(var k=0;k<9;k++)colors.push(facelets[fi+k]);for(var j=0;j<12;j++)colors.push(facelets[(fi+9+j*4)%54]);
+  var g='<g id="runner">';colors.forEach(function(co,i){var lane=(i%3-1)*10,a=(Math.floor(i/3)/7)*Math.PI*2,x=c.x+Math.cos(a)*(c.r+lane),y=c.y+Math.sin(a)*(c.r+lane);g+='<circle cx="'+x+'" cy="'+y+'" r="4.2" fill="'+COL[co]+'" stroke="#10191c" stroke-width="1.2"/>'});
+  g+='<animateTransform attributeName="transform" type="rotate" from="0 '+c.x+' '+c.y+'" to="'+ang+' '+c.x+' '+c.y+'" dur="'+dur+'s" fill="freeze" calcMode="spline" keySplines=".3 .05 .25 1" keyTimes="0;1"/></g>';
+  return g;
+}
+function drawOrbit(move,dur){
+  var svg=el('orbit'),active=move?axisOf(move):-1,out=orbitBase(active);
+  if(move&&!settings.motion)out+=runner(move,dur);
+  svg.innerHTML=out;
+}
+
+/* ===== Rubik 3D (WebGL) ===== */
+var scene3,camera3,renderer3,controls3,cubeRoot,cubies=[],turnTween=null,raycaster3,downPoint=null,GEO={},MATCACHE={};
+function bodyMaterial(){if(!MATCACHE.body)MATCACHE.body=new THREE.MeshStandardMaterial({color:'#090d0f',roughness:.5,metalness:.08});return MATCACHE.body}
+function stickerMaterial(hex){var key='s'+hex;if(!MATCACHE[key])MATCACHE[key]=new THREE.MeshBasicMaterial({color:hex,side:THREE.DoubleSide});return MATCACHE[key]}
+/* Indeks sama dengan panel: U 0–8, R 9–17, F 18–26, D 27–35, L 36–44, B 45–53. */
+function faceIndex(x,y,z,side){
+  if(side===0&&x===1)return 9+(1-y)*3+(1-z);
+  if(side===1&&x===-1)return 36+(1-y)*3+(z+1);
+  if(side===2&&y===1)return (z+1)*3+(x+1);
+  if(side===3&&y===-1)return 27+(1-z)*3+(x+1);
+  if(side===4&&z===1)return 18+(1-y)*3+(x+1);
+  if(side===5&&z===-1)return 45+(1-y)*3+(1-x);
+  return -1;
+}
+function addSticker(mesh,side,index){
+  var p=new THREE.Mesh(GEO.plane,stickerMaterial(COL[facelets[index]]));p.userData.faceletIndex=index;
+  var q=.466;if(side===0){p.position.x=q;p.rotation.y=Math.PI/2}
+  else if(side===1){p.position.x=-q;p.rotation.y=-Math.PI/2}
+  else if(side===2){p.position.y=q;p.rotation.x=-Math.PI/2}
+  else if(side===3){p.position.y=-q;p.rotation.x=Math.PI/2}
+  else if(side===4){p.position.z=q}
+  else{p.position.z=-q;p.rotation.y=Math.PI}
+  mesh.add(p);
+}
+function buildCube3(){
+  cubeRoot=new THREE.Group();scene3.add(cubeRoot);var used=[];
+  for(var x=-1;x<=1;x++)for(var y=-1;y<=1;y++)for(var z=-1;z<=1;z++){
+    var mesh=new THREE.Mesh(GEO.box,bodyMaterial());mesh.userData.home=new THREE.Vector3(x,y,z);mesh.position.set(x,y,z);
+    for(var side=0;side<6;side++){var idx=faceIndex(x,y,z,side);if(idx>=0){addSticker(mesh,side,idx);used[idx]=(used[idx]||0)+1}}
+    cubeRoot.add(mesh);cubies.push(mesh);
+  }
+  if(used.length!==54||used.some(function(n){return n!==1}))state('Pemetaan stiker 3D perlu diperiksa',true);
+}
+/* Tidak membangun ulang kubus tiap gerakan: kembalikan posisi kubus kecil lalu warnai ulang stiker. */
+function updateCube3(){
+  if(!cubeRoot)return;
+  cubies.forEach(function(m){m.position.copy(m.userData.home);m.rotation.set(0,0,0);m.quaternion.set(0,0,0,1);m.scale.set(1,1,1);
+    m.children.forEach(function(p){p.material=stickerMaterial(COL[facelets[p.userData.faceletIndex]])})});
+}
+function size3(){
+  if(!renderer3)return;var box=el('cube3d'),w=Math.max(1,box.clientWidth),h=Math.max(1,box.clientHeight);renderer3.setSize(w,h,false);camera3.aspect=w/h;camera3.updateProjectionMatrix();
+}
+function moveAtPoint(cx,cy,shift){
+  if(!renderer3||!raycaster3)return null;
+  var r=renderer3.domElement.getBoundingClientRect();if(cx<r.left||cx>r.right||cy<r.top||cy>r.bottom)return null;
+  raycaster3.setFromCamera(new THREE.Vector2((cx-r.left)/r.width*2-1,-(cy-r.top)/r.height*2+1),camera3);
+  var hit=raycaster3.intersectObjects(cubies,false)[0];if(!hit)return null;
+  var n=hit.face.normal.clone().transformDirection(hit.object.matrixWorld),
+      m=Math.abs(n.x)>.72?(n.x>0?'R':'L'):Math.abs(n.y)>.72?(n.y>0?'U':'D'):(n.z>0?'F':'B');
+  return m+((prime!==!!shift)?"'":'');
+}
+function orbitBy(dx,dy){
+  if(!camera3)return;var off=camera3.position.clone().sub(controls3.target),sph=new THREE.Spherical().setFromVector3(off);
+  sph.theta-=dx;sph.phi=clamp(sph.phi-dy,.12,Math.PI-.12);off.setFromSpherical(sph);
+  camera3.position.copy(controls3.target).add(off);camera3.lookAt(controls3.target);controls3.update();
+}
+function dolly(f){
+  if(!camera3)return;var off=camera3.position.clone().sub(controls3.target),len=clamp(off.length()*f,controls3.minDistance,controls3.maxDistance);
+  off.setLength(len);camera3.position.copy(controls3.target).add(off);controls3.update();
+}
+function init3D(){
+  if(!window.THREE||!THREE.OrbitControls){state('Model 3D gagal dimuat (diagram tetap aktif)',true);return}
+  try{
+    var box=el('cube3d');scene3=new THREE.Scene();camera3=new THREE.PerspectiveCamera(34,1,.1,100);camera3.position.set(5.2,4.2,6.2);
+    renderer3=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});renderer3.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer3.outputEncoding=THREE.sRGBEncoding;box.appendChild(renderer3.domElement);
+    GEO.box=new THREE.BoxGeometry(.92,.92,.92);GEO.plane=new THREE.PlaneGeometry(.75,.75);
+    controls3=new THREE.OrbitControls(camera3,renderer3.domElement);controls3.enableDamping=true;controls3.dampingFactor=.08;controls3.enablePan=false;controls3.minDistance=5;controls3.maxDistance=13;controls3.target.set(0,0,0);
+    scene3.add(new THREE.HemisphereLight(0xffffff,0x17252a,1.45));var key=new THREE.DirectionalLight(0xffffff,1.3);key.position.set(4,7,6);scene3.add(key);var rim=new THREE.DirectionalLight(0x66e1bf,.62);rim.position.set(-5,1,-4);scene3.add(rim);
+    raycaster3=new THREE.Raycaster();size3();buildCube3();
+    if(window.ResizeObserver)new ResizeObserver(size3).observe(box);else addEventListener('resize',size3);
+    /* tolak telapak tangan di IFP sebelum sampai ke OrbitControls */
+    box.addEventListener('pointerdown',function(e){if(document.body.dataset.ui==='ifp'&&e.pointerType==='touch'&&Math.max(e.width||0,e.height||0)>110){e.stopImmediatePropagation();e.preventDefault()}},true);
+    renderer3.domElement.addEventListener('pointerdown',function(e){downPoint={x:e.clientX,y:e.clientY}});
+    renderer3.domElement.addEventListener('pointerup',function(e){
+      if(!downPoint||busy)return;var d=Math.hypot(e.clientX-downPoint.x,e.clientY-downPoint.y);downPoint=null;if(d>6)return;
+      var m=moveAtPoint(e.clientX,e.clientY,e.shiftKey);if(m)moveAnimated(m,true);
+    });
+    (function loop(t){requestAnimationFrame(loop);
+      if(turnTween){var q=Math.min(1,(t-turnTween.start)/turnTween.ms),ease=1-Math.pow(1-q,3);turnTween.pivot.rotation[turnTween.axis]=turnTween.target*ease;if(turnTween.fx)fxUpdate(turnTween,q,t);if(q>=1)completeTween()}
+      controls3.update();renderer3.render(scene3,camera3)})(performance.now());
+  }catch(err){console.warn(err);scene3=null;renderer3=null;state('WebGL tidak tersedia — diagram orbit tetap aktif',true)}
+}
+function setCameraView(face){
+  if(!camera3||!controls3)return;
+  /* U/D dibuat sedikit miring (bukan 90° lurus) agar OrbitControls stabil: U → B di atas, D → F di atas */
+  var p={U:[0,8,.6],D:[0,-8,.6],F:[0,.15,8],B:[0,.15,-8],R:[8,.15,0],L:[-8,.15,0]};
+  var v=face&&p[face]?p[face]:[5.2,4.2,6.2];camera3.position.set(v[0],v[1],v[2]);controls3.target.set(0,0,0);camera3.lookAt(0,0,0);controls3.update();
+  state(face?'Tampilan sisi '+face:'Posisi awal: U atas, R kanan, F depan');
+}
+function layerInfo(m){
+  var f=m.charAt(0),axis=(f==='U'||f==='D')?'y':(f==='R'||f==='L')?'x':'z',layer=(f==='U'||f==='R'||f==='F')?1:-1;
+  var sign=(f==='U'||f==='R'||f==='F')?-1:1;if(m.indexOf("'")>-1)sign*=-1;var turns=m.indexOf('2')>-1?2:1;
+  return{axis:axis,layer:layer,target:sign*turns*Math.PI/2};
+}
+function startLayerTurn(m,dur,done){
+  if(!scene3||turnTween||settings.motion)return false;
+  var inf=layerInfo(m),pivot=new THREE.Group();scene3.add(pivot);
+  cubies.filter(function(o){return Math.round(o.position[inf.axis])===inf.layer}).forEach(function(o){pivot.attach(o)});
+  controls3.enabled=false;
+  turnTween={pivot:pivot,axis:inf.axis,target:inf.target,start:performance.now(),ms:dur*1000,done:done};try{turnTween.fx=fxMake(inf)}catch(e){}
+  turnTween.timer=setTimeout(completeTween,dur*1000+500);   // cadangan bila tab tersembunyi (rAF berhenti)
+  return true;
+}
+function completeTween(){if(!turnTween||!turnTween.done)return;var cb=turnTween.done;turnTween.done=null;cb()}
+function finishLayerTurn(){
+  if(turnTween&&turnTween.fx){fxDispose(turnTween.fx);turnTween.fx=null}if(turnTween){var p=turnTween.pivot;clearTimeout(turnTween.timer);p.children.slice().forEach(function(o){cubeRoot.add(o)});scene3.remove(p);turnTween=null}
+  if(controls3)controls3.enabled=true;
+}
+
+/* ===== Render panel ===== */
+function renderSolution(){
+  if(!solution.length){el('solution').innerHTML='<span class="hint">Belum ada solusi.</span>';el('nextBadge').hidden=true;return}
+  el('solution').innerHTML=solution.map(function(m,i){return'<span class="step '+(i<step?'done':i===step?'current':'')+'">'+(i+1)+'. '+m+'</span>'}).join('');
+  var nb=el('nextBadge');nb.hidden=false;
+  nb.innerHTML=step>=solution.length?'<b>✔ Selesai</b><small>Semua '+solution.length+' langkah dijalankan</small>':'<b>'+solution[step]+'</b><small>Langkah '+(step+1)+'/'+solution.length+' — '+describe(solution[step])+'</small>';
+}
+function render(){drawOrbit();updateCube3();renderSolution();renderEditor();el('counter').textContent=history.length+' gerakan';validate()}
+function explain(m){
+  var names=['vertikal U/D','diagonal F/B','diagonal R/L'],a=axisOf(m),n=m.indexOf('2')>-1?'180°':'90°',cy=m.indexOf('2')>-1?'2 × siklus 4':'siklus 4';
+  el('axisText').textContent=names[a];el('angleText').textContent=n;el('cycleText').textContent=cy;
+  el('notice').textContent='Gerakan '+m+': '+describe(m)+'. Memindahkan empat pita tepi pada orbit '+names[a]+'.';
+}
+function flashMove(m){var f=el('moveFloat');f.textContent=m;f.classList.remove('show');void f.offsetWidth;f.classList.add('show')}
+function moveAnimated(m,record,done){
+  if(busy){queue.push([m,record,done]);return}
+  try{ensureCube()}catch(e){state(e.message,true);toast(e.message,2600);return}
+  busy=true;explain(m);flashMove(m);tone(420+axisOf(m)*90,.05,'triangle',.03);
+  var dur=(Math.abs(directionOf(m))===2?.82:.58)/settings.speed;drawOrbit(m,dur);state('Rotasi '+m+' pada diagram dan kubus 3D');
+  function finish(){
+    try{cube.move(m);facelets=cube.asString().split('');finishLayerTurn();if(record!==false){history.push(m);solution=[];step=0}sync();state(isSolved()?'Rubik selesai!':'Gerakan '+m+' selesai')}catch(e){finishLayerTurn();state(e.message,true)}
+    busy=false;if(done)done();if(queue.length){var q=queue.shift();moveAnimated(q[0],q[1],q[2])}
+  }
+  if(!startLayerTurn(m,dur,finish))setTimeout(finish,settings.motion?0:dur*1000+80);
+}
+function scramble(){
+  try{ensureCube();stopPlay();var mods=['',"'",'2'],seq=[],last='';while(seq.length<22){var f=F[Math.floor(Math.random()*6)];if(f===last)continue;last=f;seq.push(f+mods[Math.floor(Math.random()*3)])}
+    queue=[];seq.forEach(function(m){queue.push([m,true,null])});var q=queue.shift();moveAnimated(q[0],q[1]);state('Menjalankan acakan 22 gerakan')}
+  catch(e){state(e.message,true)}
+}
+function solveCube(){
+  try{stopPlay();var c=ensureCube();state('Menghitung solusi…');setTimeout(function(){try{var s=c.solve();solution=s?s.trim().split(/\s+/):[];step=0;renderSolution();state(solution.length?'Solusi siap: '+solution.length+' langkah':'Kubus sudah selesai');if(solution.length)toast('Solusi '+solution.length+' langkah. Tekan Berikutnya atau ▶ Otomatis.',2600)}catch(e){state('Susunan warna tidak valid atau tidak mungkin.',true);toast('Susunan tidak mungkin (periksa warna / hasil pindai).',3000)}},40)}
+  catch(e){state(e.message,true)}
+}
+function next(){
+  if(busy)return;if(!solution.length){toast('Tekan “Cari solusi” dulu.');return}if(step>=solution.length)return;
+  var m=solution[step];moveAnimated(m,false,function(){step++;renderSolution()});
+}
+function prev(){if(busy||step<=0)return;step--;moveAnimated(inverse(solution[step]),false,function(){renderSolution()})}
+function stopPlay(){if(playTimer){clearInterval(playTimer);playTimer=null;el('play').textContent='▶ Otomatis'}}
+function togglePlay(){if(playTimer){stopPlay();return}if(!solution.length){toast('Tekan “Cari solusi” dulu.');return}el('play').textContent='Ⅱ Jeda';playTimer=setInterval(function(){if(step>=solution.length){stopPlay();state('Rubik selesai!')}else if(!busy)next()},Math.round(850/settings.speed))}
+function reset(){stopPlay();queue=[];cube=ready?new Cube():null;facelets=SOLVED.split('');history=[];solution=[];step=0;render();state('Rubik direset')}
+function undo(){if(!history.length||busy)return;var m=history.pop();moveAnimated(inverse(m),false)}
+function renderEditor(){
+  var pos={U:[2,1],L:[1,2],F:[2,2],R:[3,2],B:[4,2],D:[2,3]},h='';
+  F.forEach(function(f,fi){h+='<div class="facebox" style="grid-column:'+pos[f][0]+';grid-row:'+pos[f][1]+'"><label>'+f+'</label>';for(var i=0;i<9;i++){var k=fi*9+i;h+='<button class="sticker '+(i===4?'center':'')+'" data-k="'+k+'" style="background:'+COL[facelets[k]]+'" aria-label="'+f+' '+(i+1)+'"></button>'}h+='</div>'});
+  el('net').innerHTML=h;$$('.sticker:not(.center)').forEach(function(n){n.onclick=function(){facelets[+n.dataset.k]=paint;cube=null;history=[];solution=[];step=0;render()}});
+  el('palette').innerHTML=F.map(function(f){return'<button class="paint '+(paint===f?'active':'')+'" data-p="'+f+'" style="background:'+COL[f]+'" aria-label="Warna '+f+'"></button>'}).join('');
+  $$('.paint').forEach(function(n){n.onclick=function(){paint=n.dataset.p;renderEditor()}});
+}
+function validate(){var n=colorCount(),ok=validColors();el('validation').textContent=ok?'Jumlah warna tepat: masing-masing 9.':'Belum tepat — '+F.map(function(f){return f+':'+n[f]}).join(' · ');el('validation').style.color=ok?'#78e0c3':'#ffaaa6'}
+function hint(auto){
+  var msg;
+  if(solution.length&&step<solution.length)msg='Langkah '+(step+1)+': '+solution[step]+' — '+describe(solution[step])+'. Lihat lingkaran yang menyala: itu orbit sumbu putaran.';
+  else if(solution.length)msg='Semua langkah selesai. Coba Acak lagi atau pindai kubus aslimu.';
+  else if(isSolved())msg='Kubus sudah rapi. Tekan Acak, putar manual, atau pindai kubus asli dengan 📷.';
+  else msg='Tekan “Cari solusi”, lalu Berikutnya atau ▶ Otomatis untuk mengikuti langkahnya.';
+  toast((auto?'🤔 Alismu terangkat — ':'💡 ')+msg,6500);tone(740,.06);
+}
+
+/* ===== Tombol & papan ketik ===== */
+function initControls(){
+  F.forEach(function(f){['',"'",'2'].forEach(function(s){var m=f+s,b=document.createElement('button');b.className='move ai-clickable axis'+axisOf(m);b.textContent=m;b.title=describe(m);b.onclick=function(){moveAnimated(m,true)};el('moves').appendChild(b)})});
+  el('scramble').onclick=scramble;el('solve').onclick=solveCube;el('reset').onclick=reset;el('undo').onclick=undo;el('next').onclick=next;el('prev').onclick=prev;el('play').onclick=togglePlay;
+  el('resetView').onclick=function(e){e.stopPropagation();setCameraView()};
+  $$('[data-view3]').forEach(function(b){b.onclick=function(e){e.stopPropagation();setCameraView(b.dataset.view3)}});
+  el('dirBtn').onclick=function(e){e.stopPropagation();prime=!prime;this.setAttribute('aria-pressed',prime);this.textContent=prime?'↺ Berlawanan':'↻ Searah'};
+  el('hintBtn').onclick=function(){hint(false)};
+  el('soundBtn').onclick=function(){settings.sound=!settings.sound;saveSettings();syncSettingsUI();toast(settings.sound?'Suara aktif':'Suara dimatikan')};
+  el('fsBtn').onclick=function(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){toast('Layar penuh diblokir browser.')}};
+  document.addEventListener('keydown',function(e){
+    if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||e.ctrlKey||e.metaKey||e.altKey)return;
+    var k=e.key.toUpperCase();
+    if(F.indexOf(k)>-1&&e.key.length===1){moveAnimated(k+(e.shiftKey?"'":''),true);return}
+    if(e.key==='ArrowRight'){next();e.preventDefault()}else if(e.key==='ArrowLeft'){prev();e.preventDefault()}
+    else if(e.key==='Backspace'){undo();e.preventDefault()}
+    else if(e.key===' '&&e.target.tagName!=='BUTTON'){next();e.preventDefault()}
+    else if(e.key==='Escape'){el('settings').hidden=true;if(!el('scanModal').hidden)closeScan()}
+  });
+}
+
+/* ===== Kamera bersama (Vision AI + pindai) ===== */
+var stream=null,camUsers={};
+function acquireCam(who){
+  camUsers[who]=true;if(stream)return Promise.resolve(stream);
+  return navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:720},frameRate:{ideal:30,max:30}},audio:false}).then(function(s){stream=s;return s}).catch(function(e){delete camUsers[who];throw e});
+}
+function releaseCam(who){
+  delete camUsers[who];
+  if(Object.keys(camUsers).length===0&&stream){stream.getTracks().forEach(function(t){t.stop()});stream=null;el('visionVideo').srcObject=null;el('scanVideo').srcObject=null}
+}
+addEventListener('beforeunload',function(){if(stream)stream.getTracks().forEach(function(t){t.stop()})});
+
+/* ===== Pindai Rubik asli lewat kamera ===== */
+var SCAN=[
+ {f:'F',t:'Sisi DEPAN (F)',d:'Pegang kubus: sisi mana pun sebagai depan, sisi lain di ATAS. Hadapkan ke kamera.'},
+ {f:'R',t:'Sisi KANAN (R)',d:'Putar seluruh kubus 90° ke kiri: sisi kanan kini menghadap kamera, sisi atas tetap di atas.'},
+ {f:'B',t:'Sisi BELAKANG (B)',d:'Putar lagi 90° ke kiri. Sisi atas tetap di atas.'},
+ {f:'L',t:'Sisi KIRI (L)',d:'Putar lagi 90° ke kiri. Sisi atas tetap di atas.'},
+ {f:'U',t:'Sisi ATAS (U)',d:'Putar ke kiri sekali lagi (F kembali di depan), lalu miringkan bagian ATAS kubus ke arah kamera. Sisi B berada di bagian atas gambar.'},
+ {f:'D',t:'Sisi BAWAH (D)',d:'Kembali ke posisi awal (F di depan), lalu miringkan bagian BAWAH ke arah kamera. Sisi F berada di bagian atas gambar.'}];
+var scanIdx=0,scanData={},GUIDE=.6;
+function lab(rgb){
+  function f(c){c/=255;return c>.04045?Math.pow((c+.055)/1.055,2.4):c/12.92}
+  var r=f(rgb[0]),g=f(rgb[1]),b=f(rgb[2]);
+  var x=(r*.4124+g*.3576+b*.1805)/.95047,y=(r*.2126+g*.7152+b*.0722),z=(r*.0193+g*.1192+b*.9505)/1.08883;
+  function h(t){return t>.008856?Math.cbrt(t):7.787*t+16/116}
+  return[116*h(y)-16,500*(h(x)-h(y)),200*(h(y)-h(z))];
+}
+function labDist(a,b){var l=(a[0]-b[0])*.6,x=a[1]-b[1],y=a[2]-b[2];return Math.sqrt(l*l+x*x+y*y)}
+function median(a){a.sort(function(x,y){return x-y});return a[a.length>>1]}
+function sampleFace(){
+  var v=el('scanVideo'),vw=v.videoWidth,vh=v.videoHeight;if(!vw)return null;
+  var cv=document.createElement('canvas');cv.width=vw;cv.height=vh;var cx=cv.getContext('2d',{willReadFrequently:true});cx.drawImage(v,0,0,vw,vh);
+  var side=Math.min(vw,vh)*GUIDE,x0=(vw-side)/2,y0=(vh-side)/2,cell=side/3,half=Math.max(2,Math.round(cell*.18)),out=[];
+  for(var r=0;r<3;r++)for(var c=0;c<3;c++){
+    var px=Math.round(x0+(c+.5)*cell-half),py=Math.round(y0+(r+.5)*cell-half),d=cx.getImageData(px,py,half*2,half*2).data,R=[],G=[],B=[];
+    for(var i=0;i<d.length;i+=4){R.push(d[i]);G.push(d[i+1]);B.push(d[i+2])}
+    out.push([median(R),median(G),median(B)]);
+  }
+  return out;
+}
+function renderScan(){
+  var s=SCAN[scanIdx];
+  el('scanTitle').textContent=(scanIdx+1)+'/6 — '+s.t;el('scanText').textContent=s.d;
+  el('scanDots').innerHTML=SCAN.map(function(x,i){return'<span class="'+(scanData[x.f]?'ok':i===scanIdx?'on':'')+'">'+x.f+'</span>'}).join('');
+  var d=scanData[s.f];el('scanPreview').innerHTML=d?d.map(function(c){return'<i style="background:rgb('+c[0]+','+c[1]+','+c[2]+')"></i>'}).join(''):'';
+  el('scanBack').disabled=scanIdx===0;
+  el('scanShot').textContent=scanIdx===5?'📸 Ambil & selesai':'📸 Ambil sisi ini';
+}
+function placeGuide(){
+  var v=el('scanVideo'),vw=v.videoWidth||4,vh=v.videoHeight||3,w=el('camWrap');w.style.aspectRatio=vw+'/'+vh;
+  var side=Math.min(vw,vh)*GUIDE,g=el('scanGuide');g.style.width=(side/vw*100)+'%';g.style.height=(side/vh*100)+'%';g.style.left=((1-side/vw)/2*100)+'%';g.style.top=((1-side/vh)/2*100)+'%';
+}
+function openScan(){
+  stopPlay();el('scanModal').hidden=false;scanIdx=0;scanData={};renderScan();el('scanNote').textContent='Menyalakan kamera…';
+  acquireCam('scan').then(function(s){var v=el('scanVideo');v.srcObject=s;v.onloadedmetadata=placeGuide;return v.play()}).then(function(){placeGuide();el('scanNote').textContent='Cahaya merata, hindari silau. Penuhi kotak panduan dengan 9 stiker, lalu tekan Ambil.'})
+  .catch(function(err){el('scanNote').textContent=(err&&err.name==='NotAllowedError')?'Izin kamera ditolak. Gunakan editor warna manual.':'Kamera tidak tersedia. Gunakan editor warna manual.'});
+}
+function closeScan(){el('scanModal').hidden=true;releaseCam('scan')}
+function shotScan(){
+  var d=sampleFace();if(!d){toast('Kamera belum siap.');return}
+  scanData[SCAN[scanIdx].f]=d;tone(660,.06);
+  if(scanIdx<5){scanIdx++;renderScan();return}
+  renderScan();finalizeScan();
+}
+function finalizeScan(){
+  var centers={};SCAN.forEach(function(s){centers[s.f]=lab(scanData[s.f][4])});
+  var items=[],out=new Array(54);
+  SCAN.forEach(function(s){var fi=F.indexOf(s.f);for(var i=0;i<9;i++){var idx=fi*9+i;if(i===4){out[idx]=s.f;continue}
+    var L=lab(scanData[s.f][i]);F.forEach(function(c){items.push([labDist(L,centers[c]),idx,c])})}});
+  items.sort(function(a,b){return a[0]-b[0]});
+  var cap={U:8,R:8,F:8,D:8,L:8,B:8};   // kapasitas 8 per warna (+1 pusat) → hasil selalu 9 stiker per warna
+  items.forEach(function(it){if(out[it[1]]===undefined&&cap[it[2]]>0){out[it[1]]=it[2];cap[it[2]]--}});
+  facelets=out;cube=null;history=[];solution=[];step=0;queue=[];render();closeScan();
+  state('Hasil pindai dimuat — periksa di editor warna, lalu Cari solusi');
+  toast('Pindai selesai. Periksa warna di “Masukkan warna Rubik asli”, lalu tekan Cari solusi.',5000);
+}
+function initScan(){
+  el('scanBtn').onclick=openScan;el('scanBtn2').onclick=openScan;el('scanClose').onclick=closeScan;el('scanShot').onclick=shotScan;
+  el('scanBack').onclick=function(){if(scanIdx>0){scanIdx--;renderScan()}};
+}
+
+/* ===== Vision AI (MediaPipe) ===== */
+var MP_VERS=['1.0.1','0.10.14'];
+var HAND_MODEL='https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task';
+var FACE_MODEL='https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task';
+var panel=el('visionPanel'),video=el('visionVideo'),canvas=el('visionCanvas'),ctx=canvas.getContext('2d'),statusEl=el('visionStatus'),exprEl=el('expressionPill'),fpsEl=el('fpsPill'),cursorLayer=el('handCursorLayer');
+var mp=null,hand=null,face=null,draw=null,running=false,meshOn=true,raf=0,lastHand=0,lastFace=0,lastFps=performance.now(),infer=0,msAvg=20,dirty=false,lastHandRes=null,lastFaceRes=null,coach=3,pinchThr=.32,delegate='';
+var swipeCool=0,browSince=0,helpCool=0,lastTick=performance.now(),prevZoomD=0;
+var DWELL=1000,HS={},ZONE={x0:.12,x1:.88,y0:.08,y1:.8},playerColors=['#62a9ff','#ff6f91','#ffd56a','#8df0a9'];
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+function setStatus(t){statusEl.textContent=t}
+function remPx(){return parseFloat(document.documentElement.style.fontSize)||16}
+var EXPR=[['smile','😊 Senyum'],['jaw','😮 Mulut terbuka'],['blink','😉 Kedip'],['brow','🤔 Alis naik']];
+el('exprBars').innerHTML=EXPR.map(function(x){return'<div class="aiRow"><span>'+x[1]+'</span><span id="v_'+x[0]+'">0.00</span></div><div class="meter"><i id="b_'+x[0]+'"></i></div>'}).join('');
+el('pinchThr').style.left=pinchThr/.8*100+'%';
+var COACH=['☝️ Angkat telunjuk ke kamera','🤏 Jepit untuk klik • jepit lalu seret di kubus untuk memutar','✅ Siap! Coba putar kubus atau tekan Acak'];
+function setCoach(n){coach=n;var c=el('coach');if(n>2){c.hidden=true;return}c.textContent=COACH[n];c.hidden=false;
+  if(n===2)setTimeout(function(){c.hidden=true;coach=3;panel.classList.remove('big');placePanel();toast('Kamera diperkecil. Ketuk kamera untuk membuka panel Vision AI.',2600)},2400)}
+function placePanel(){
+  if(panel.classList.contains('big')){panel.style.right='';panel.style.top='';return}
+  var a=document.querySelector('.actions').getBoundingClientRect();
+  if(document.body.dataset.ui==='mobile'){panel.style.right='.5rem';panel.style.top='';return}
+  panel.style.right=(innerWidth-a.left+12)+'px';panel.style.top=Math.max(4,a.top+a.height/2-(panel.offsetHeight||70)/2)+'px';
+}
+function ownerColor(k){var s=String(k).toLowerCase();if(s.indexOf('left')>-1)return playerColors[0];if(s.indexOf('right')>-1)return playerColors[1];return playerColors[2]}
+function scores(res){var a=(res&&res.faceBlendshapes&&res.faceBlendshapes[0]&&res.faceBlendshapes[0].categories)||[],s={};a.forEach(function(x){s[x.categoryName]=x.score});
+  return{smile:((s.mouthSmileLeft||0)+(s.mouthSmileRight||0))/2,jaw:s.jawOpen||0,blink:Math.max(s.eyeBlinkLeft||0,s.eyeBlinkRight||0),brow:s.browInnerUp||0}}
+function expressionOf(v){if(v.smile>.42)return['😊','senyum'];if(v.jaw>.55)return['😮','mulut terbuka'];if(v.blink>.58)return['😉','kedip'];if(v.brow>.48)return['🤔','alis terangkat'];return['🙂','netral']}
+function onFace(res){
+  var v=scores(res);EXPR.forEach(function(x){var k=x[0];el('v_'+k).textContent=v[k].toFixed(2);el('b_'+k).style.width=clamp(v[k],0,1)*100+'%'});
+  var e=expressionOf(v);exprEl.textContent=e[0];exprEl.title='Skor ekspresi visual: '+e[1];
+  var now=performance.now();   // opsional: alis terangkat ≥2,5 dtk → penjelasan langkah (jeda 40 dtk)
+  if(settings.autoHelp&&v.brow>.48&&res.faceLandmarks&&res.faceLandmarks.length){if(!browSince)browSince=now;if(now-browSince>2500&&now>helpCool){helpCool=now+40000;browSince=0;hint(true)}}
+  else browSince=0;
+}
+function cursorEl(k){var c=document.getElementById('hc'+k);if(!c){c=document.createElement('div');c.id='hc'+k;c.className='handCursor';c.style.setProperty('--pc',ownerColor(k));cursorLayer.appendChild(c)}return c}
+function interactiveAt(x,y){var t=document.elementFromPoint(x,y);return t?t.closest('button,summary,.ai-clickable'):null}
+function inCube(x,y){var t=document.elementFromPoint(x,y);return !!(t&&t.closest('#cube3d'))}
+function release(k){var h=HS[k];if(!h)return;if(h.hover)h.hover.classList.remove('handHover');var c=document.getElementById('hc'+k);if(c)c.remove();delete HS[k]}
+var TIPS=[[8,6],[12,10],[16,14],[20,18]];
+function isOpenPalm(lm){return TIPS.every(function(p){return dist(lm[p[0]],lm[0])>dist(lm[p[1]],lm[0])*1.12})}
+function swipeAction(dir){
+  if(dir>0){if(solution.length){next();toast('✋ Geser kiri → langkah berikutnya',1100)}else toast('Tekan “Cari solusi” dulu.',1300)}
+  else{if(solution.length&&step>0){prev();toast('✋ Geser kanan → ulangi langkah',1100)}else if(history.length){undo();toast('✋ Geser kanan → undo',1100)}}
+}
+function onHand(res){
+  var L=(res&&res.landmarks)||[],Hd=(res&&(res.handednesses||res.handedness))||[],seen={},now=performance.now();
+  L.slice(0,2).forEach(function(lm,i){
+    var k=(Hd[i]&&Hd[i][0]&&Hd[i][0].categoryName)||String(i);seen[k]=1;
+    var h=HS[k]||(HS[k]={x:0,y:0,tx:0,ty:0,pinch:false,cam:null,miss:0,first:true,hover:null,ratio:1,trail:[],dwMs:0,dwT:null,dwCool:0}),tip=lm[8];
+    h.tx=clamp(((1-tip.x)-ZONE.x0)/(ZONE.x1-ZONE.x0),0,1)*innerWidth;h.ty=clamp((tip.y-ZONE.y0)/(ZONE.y1-ZONE.y0),0,1)*innerHeight;
+    if(h.first){h.x=h.tx;h.y=h.ty;h.first=false}
+    h.miss=0;h.ratio=dist(lm[4],lm[8])/(dist(lm[0],lm[9])||1);
+    if(!h.pinch&&h.ratio<pinchThr){
+      h.pinch=true;cursorEl(k).classList.add('pinching');h.dwMs=0;
+      var t=interactiveAt(h.x,h.y);
+      if(t){t.click();if(navigator.vibrate)navigator.vibrate(18)}
+      else if(inCube(h.x,h.y))h.cam={sx:h.x,sy:h.y,lx:h.x,ly:h.y,moved:false};
+      if(coach===1)setCoach(2);
+    }else if(h.pinch&&h.ratio>pinchThr*1.4){
+      h.pinch=false;cursorEl(k).classList.remove('pinching');
+      if(h.cam&&!h.cam.moved&&!busy){var m=moveAtPoint(h.x,h.y,false);if(m)moveAnimated(m,true)}   // jepit singkat = putar layer
+      h.cam=null;
+    }
+    h.trail.push([now,h.tx]);while(h.trail.length&&now-h.trail[0][0]>450)h.trail.shift();
+    if(settings.swipe&&!h.pinch&&now>swipeCool&&h.trail.length>3&&isOpenPalm(lm)){
+      var dx=h.tx-h.trail[0][1];if(Math.abs(dx)>innerWidth*.38){swipeCool=now+1400;h.trail=[];swipeAction(dx<0?1:-1)}
+    }
+  });
+  Object.keys(HS).forEach(function(k){if(!seen[k]&&++HS[k].miss>2)release(k)});
+  if(coach===0&&Object.keys(seen).length)setCoach(1);
+  var f=HS[Object.keys(HS)[0]];if(f){el('pinchVal').textContent=f.ratio.toFixed(2);el('pinchBar').style.width=clamp(f.ratio/.8,0,1)*100+'%'}
+}
+function tickCursors(){
+  var now=performance.now(),dt=Math.min(100,now-lastTick),still=remPx()*2.5,rp=remPx();lastTick=now;
+  var camHands=[];
+  Object.keys(HS).forEach(function(k){
+    var h=HS[k],a=clamp(.16+Math.hypot(h.tx-h.x,h.ty-h.y)/500,.16,.7);h.x+=(h.tx-h.x)*a;h.y+=(h.ty-h.y)*a;
+    var c=cursorEl(k);c.style.transform='translate('+h.x+'px,'+h.y+'px)';
+    var t=interactiveAt(h.x,h.y);if(t!==h.hover){if(h.hover)h.hover.classList.remove('handHover');if(t)t.classList.add('handHover');h.hover=t}
+    if(h.pinch&&h.cam)camHands.push(h);
+    if(settings.dwell&&!h.pinch&&t&&now>h.dwCool){
+      if(t===h.dwT&&Math.hypot(h.tx-h.x,h.ty-h.y)<still)h.dwMs+=dt;else{h.dwT=t;h.dwMs=0}
+      if(h.dwMs>=DWELL){h.dwMs=0;h.dwCool=now+900;t.click();if(navigator.vibrate)navigator.vibrate(18)}
+    }else{h.dwMs=0;h.dwT=null}
+    c.style.setProperty('--dw',(h.dwMs/DWELL).toFixed(3));
+  });
+  if(camHands.length>=2){   // dua tangan menjepit di kubus: renggang/rapat = zoom
+    var d=Math.hypot(camHands[0].x-camHands[1].x,camHands[0].y-camHands[1].y);
+    if(prevZoomD>0&&d>0)dolly(clamp(prevZoomD/d,.9,1.1));
+    prevZoomD=d;camHands.forEach(function(h){h.cam.moved=true;h.cam.lx=h.x;h.cam.ly=h.y});
+  }else{
+    prevZoomD=0;
+    if(camHands.length===1){var h1=camHands[0],cm=h1.cam,k=0.12/rp;
+      orbitBy((h1.x-cm.lx)*k,(h1.y-cm.ly)*k);cm.lx=h1.x;cm.ly=h1.y;   // jepit-seret = putar kamera
+      if(Math.hypot(h1.x-cm.sx,h1.y-cm.sy)>rp*1.2)cm.moved=true}
+  }
+}
+function drawResults(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);var big=panel.classList.contains('big');
+  if(big&&meshOn&&lastFaceRes&&lastFaceRes.faceLandmarks)lastFaceRes.faceLandmarks.forEach(function(lm){var stride=msAvg>55?18:msAvg>34?12:8;draw.drawConnectors(lm,mp.FaceLandmarker.FACE_LANDMARKS_CONTOURS,{color:'#72e3c2',lineWidth:2});draw.drawLandmarks(lm.filter(function(_,i){return i%stride===0}),{color:'#f5cc59',radius:1.3})});
+  if(lastHandRes&&lastHandRes.landmarks)lastHandRes.landmarks.forEach(function(lm){draw.drawConnectors(lm,mp.HandLandmarker.HAND_CONNECTIONS,{color:'#62a9ff',lineWidth:big?3:6});if(big)draw.drawLandmarks(lm,{color:'#f5cc59',radius:2.3})});
+}
+function loop(now){
+  if(!running)return;raf=requestAnimationFrame(loop);
+  if(video.readyState>=2&&!document.hidden){
+    var big=panel.classList.contains('big'),handGap=clamp(msAvg*1.7,52,150),faceGap=(big?clamp(msAvg*5,150,520):850),did=false;
+    if(hand&&now-lastHand>handGap){lastHand=now;did=true;var t0=performance.now();try{lastHandRes=hand.detectForVideo(video,now);onHand(lastHandRes)}catch(e){}msAvg=msAvg*.9+(performance.now()-t0)*.1;infer++;dirty=true}
+    if(!did&&face&&now-lastFace>faceGap){lastFace=now;try{lastFaceRes=face.detectForVideo(video,now);onFace(lastFaceRes)}catch(e){}infer++;dirty=true}
+    if(dirty){drawResults();dirty=false}
+    tickCursors();
+  }
+  if(now-lastFps>1000){
+    var mode=msAvg<30?['FAST','perfFast']:msAvg<52?['SMART','perfSmart']:['ECO','perfEco'];
+    fpsEl.className='pill '+mode[1];fpsEl.textContent=mode[0]+' · '+delegate+' · '+infer+'/s · '+msAvg.toFixed(0)+' ms';infer=0;lastFps=now;
+  }
+}
+async function loadMP(){for(var i=0;i<MP_VERS.length;i++){var base='https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@'+MP_VERS[i];try{var m=await import(base+'/vision_bundle.mjs');return{m:m,fs:await m.FilesetResolver.forVisionTasks(base+'/wasm')}}catch(e){console.warn('MediaPipe',MP_VERS[i],e)}}throw new Error('mediapipe')}
+async function createTask(C,fs,model,o){
+  try{var t=await C.createFromOptions(fs,Object.assign({baseOptions:{modelAssetPath:model,delegate:'GPU'},runningMode:'VIDEO'},o));delegate='GPU';return t}
+  catch(e){var t2=await C.createFromOptions(fs,Object.assign({baseOptions:{modelAssetPath:model,delegate:'CPU'},runningMode:'VIDEO'},o));delegate='CPU';return t2}
+}
+async function enableVision(){
+  try{if(!sessionStorage.getItem('rubikVisionNotice')){toast('Vision AI memproses kamera di perangkat ini. Video tidak direkam atau diunggah.',3300);sessionStorage.setItem('rubikVisionNotice','1')}}catch(e){}
+  if(running){panel.classList.add('open','big');placePanel();return}
+  panel.classList.add('open','big');setStatus('Meminta izin kamera…');
+  try{
+    var s=await acquireCam('vision');video.srcObject=s;await video.play();canvas.width=video.videoWidth||640;canvas.height=video.videoHeight||480;
+    if(!mp){setStatus('Memuat MediaPipe…');var r=await loadMP();mp=r.m;setStatus('Memuat model tangan…');
+      hand=await createTask(mp.HandLandmarker,r.fs,HAND_MODEL,{numHands:2,minHandDetectionConfidence:.55,minHandPresenceConfidence:.5,minTrackingConfidence:.5});
+      setStatus('Memuat model wajah…');try{face=await createTask(mp.FaceLandmarker,r.fs,FACE_MODEL,{numFaces:1,outputFaceBlendshapes:true,minFaceDetectionConfidence:.5,minFacePresenceConfidence:.5,minTrackingConfidence:.5})}catch(e){console.warn('Model wajah gagal:',e);face=null}
+      draw=new mp.DrawingUtils(ctx)}
+    running=true;setStatus(face?'Vision AI aktif':'Tangan aktif • wajah gagal');setCoach(0);raf=requestAnimationFrame(loop);placePanel();
+  }catch(err){
+    console.error(err);setStatus('Vision AI gagal');stopVision();
+    toast(err&&err.name==='NotAllowedError'?'Izin kamera ditolak. Kontrol sentuh/mouse tetap bisa dipakai.':err&&err.name==='NotFoundError'?'Kamera tidak ditemukan. Kontrol sentuh/mouse tetap bisa dipakai.':'Vision AI tidak termuat (cek internet). Kontrol sentuh/mouse tetap bisa dipakai.',3800);
+  }
+}
+function stopVision(){running=false;cancelAnimationFrame(raf);Object.keys(HS).forEach(release);video.srcObject=null;releaseCam('vision');
+  panel.classList.remove('open','big');el('coach').hidden=true;coach=3;setStatus('Vision AI: belum aktif')}
+function initVision(){
+  el('toggleMesh').onclick=function(e){meshOn=!meshOn;e.currentTarget.setAttribute('aria-pressed',meshOn)};
+  el('pinchSens').addEventListener('input',function(e){pinchThr=e.target.value/100;el('pinchThr').style.left=pinchThr/.8*100+'%'});
+  el('openSettings2').onclick=function(){el('settings').hidden=false};
+  panel.addEventListener('click',function(e){if(!panel.classList.contains('big')&&!e.target.closest('button')){panel.classList.add('big');placePanel()}});
+  el('shrinkVision').onclick=function(){panel.classList.remove('big');placePanel()};el('closeVision').onclick=stopVision;
+  el('visionBtn').onclick=enableVision;el('visionBtn2').onclick=enableVision;
+  document.addEventListener('visibilitychange',function(){if(document.hidden)Object.keys(HS).forEach(release)});
+  addEventListener('resize',placePanel);
+  window.RubikVision={onLayout:placePanel};
+}
+
+/* ===== Mulai ===== */
+initSettings();applyLayout();initControls();initScan();initVision();init3D();render();placePanel();
+setTimeout(function(){try{if(window.Cube){state('Menyiapkan mesin solver (beberapa detik)…');setTimeout(function(){try{Cube.initSolver();cube=new Cube();ready=true;sync();state('Solver siap — pilih gerakan, Acak, atau 📷 Pindai')}catch(e){state('Mesin solver gagal dimuat',true)}},60)}else state('Mesin solver gagal dimuat (cek internet)',true)}catch(e){state('Mesin solver gagal dimuat',true)}},90);
+})();
+
+/* ===== v3: panah arah putar + partikel angin (Three.js) ===== */
+var FX_R=2.3;
+function fxMake(inf){
+  var sgn=inf.target>=0?1:-1,outer=new THREE.Group(),inner=new THREE.Group(),arcLen=Math.PI*0.62,i,j;
+  if(inf.axis==='x')outer.rotation.y=Math.PI/2;else if(inf.axis==='y')outer.rotation.x=-Math.PI/2;
+  outer.position[inf.axis]=inf.layer*1.0;outer.add(inner);
+  var mats=[],geos=[];
+  [0,Math.PI].forEach(function(off){
+    var pts=[];for(i=0;i<=28;i++){var th=off+sgn*arcLen*i/28;pts.push(new THREE.Vector3(Math.cos(th)*FX_R,Math.sin(th)*FX_R,0))}
+    var tg=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),40,0.05,8,false),tm=new THREE.MeshBasicMaterial({color:0xffd166,transparent:true,opacity:0,depthTest:false});
+    var tube=new THREE.Mesh(tg,tm);tube.renderOrder=20;inner.add(tube);
+    var te=off+sgn*arcLen,cg=new THREE.ConeGeometry(0.17,0.4,16),cm=new THREE.MeshBasicMaterial({color:0xfff1b8,transparent:true,opacity:0,depthTest:false});
+    var cone=new THREE.Mesh(cg,cm),tx=-Math.sin(te)*sgn,ty=Math.cos(te)*sgn;
+    cone.position.set(Math.cos(te)*FX_R,Math.sin(te)*FX_R,0);cone.rotation.z=Math.atan2(ty,tx)-Math.PI/2;cone.renderOrder=21;inner.add(cone);
+    mats.push(tm,cm);geos.push(tg,cg);
+  });
+  /* partikel angin: 80 kepala x 6 titik ekor, warna memudar (additive) */
+  var N=80,T=6,P=new Float32Array(N*T*3),C=new Float32Array(N*T*3),seed=[];
+  for(i=0;i<N;i++)seed.push({a:Math.random()*Math.PI*2,r:1.75+Math.random()*1.0,z:(Math.random()-.5)*1.7,v:.7+Math.random()*1.1,w:Math.random()*6.28});
+  var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(P,3));g.setAttribute('color',new THREE.BufferAttribute(C,3));
+  var pm=new THREE.PointsMaterial({size:0.085,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:true});
+  var pts3=new THREE.Points(g,pm);pts3.renderOrder=22;pts3.frustumCulled=false;outer.add(pts3);
+  scene3.add(outer);
+  return{outer:outer,inner:inner,mats:mats,geos:geos,g:g,pm:pm,P:P,C:C,seed:seed,N:N,T:T,sgn:sgn,t0:performance.now()};
+}
+function fxUpdate(tw,q,t){
+  var f=tw.fx,env=Math.min(1,q*7)*(1-Math.pow(Math.max(0,(q-.82)/.18),2)),el=(t-f.t0)/1000,i,k,n=0;
+  f.inner.rotation.z=tw.pivot.rotation[tw.axis];             /* panah ikut berputar bersama layer */
+  var pulse=.78+.22*Math.sin(el*10);
+  f.mats.forEach(function(m){m.opacity=env*pulse});
+  for(i=0;i<f.N;i++){
+    var s=f.seed[i],lead=tw.pivot.rotation[tw.axis];
+    for(k=0;k<f.T;k++){
+      var th=s.a+f.sgn*(el*s.v*3.2)+lead*.6-f.sgn*k*.075,r=s.r+Math.sin(el*3+s.w+k*.2)*.09+k*.012*(s.r-1.7),z=s.z+Math.sin(el*4.5+s.w)*.16,fade=(1-k/f.T)*env;
+      f.P[n]=Math.cos(th)*r;f.P[n+1]=Math.sin(th)*r;f.P[n+2]=z;
+      f.C[n]=.45*fade;f.C[n+1]=.95*fade;f.C[n+2]=.85*fade+.12*fade*k;n+=3;
+    }
+  }
+  f.g.attributes.position.needsUpdate=true;f.g.attributes.color.needsUpdate=true;
+}
+function fxDispose(f){scene3.remove(f.outer);f.geos.forEach(function(x){x.dispose()});f.mats.forEach(function(x){x.dispose()});f.g.dispose();f.pm.dispose()}
+
+/* ===== v3: PILAR Creator ID watermark (canvas-rendered attribution) ===== */
+(function(){
+  var D=['OLo5RIEo','qmMfzTuh','fQvTKKJx','E8A08yw+','xi+xbFDS','N7M3HMQ2','onMf03Sq','fQ=='].join(''),K=[90,195,25,126,161];
+  var txt=(function(){var b=atob(D),o='';for(var i=0;i<b.length;i++)o+=String.fromCharCode(b.charCodeAt(i)^K[i%5]);return o})();
+  var list=[],mk=document.createElement.bind(document);
+  function spark(c,x,y,r,rot){c.save();c.translate(x,y);c.rotate(rot);c.beginPath();c.moveTo(0,-r);c.quadraticCurveTo(0,0,r,0);c.quadraticCurveTo(0,0,0,r);c.quadraticCurveTo(0,0,-r,0);c.quadraticCurveTo(0,0,0,-r);c.closePath();c.fill();c.restore()}
+  function mount(host,cls){
+    var cv=mk('canvas');cv.className='wm '+(cls||'');cv.setAttribute('aria-hidden','true');cv.setAttribute('role','presentation');
+    if(getComputedStyle(host).position==='static')host.style.position='relative';
+    host.appendChild(cv);var rec={cv:cv,host:host,cls:cls||'',w:0,h:0,s:0};list.push(rec);return rec;
+  }
+  function draw(rec,t){
+    var cv=rec.cv,ui=document.body.dataset.ui,sc=ui==='ifp'?1.3:ui==='mobile'?.88:1,dpr=Math.min(window.devicePixelRatio||1,2),c=cv.getContext('2d');
+    c.font='600 '+(12.5*sc)+'px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace';
+    var tw=c.measureText(txt).width,W=Math.ceil(tw+(46*sc)),H=Math.ceil(30*sc);
+    if(rec.w!==W||rec.h!==H||rec.s!==dpr){rec.w=W;rec.h=H;rec.s=dpr;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px'}
+    c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,W,H);
+    var ph=(t/1000)%4,sh=((t/2600)%1)*(W+90)-45,r=H/2;
+    /* kapsul kaca */
+    c.beginPath();c.moveTo(r,.5);c.arcTo(W-.5,.5,W-.5,H-.5,r-.5);c.arcTo(W-.5,H-.5,.5,H-.5,r-.5);c.arcTo(.5,H-.5,.5,.5,r-.5);c.arcTo(.5,.5,W-.5,.5,r-.5);c.closePath();
+    c.fillStyle='rgba(8,16,20,.66)';c.fill();
+    var bg=c.createLinearGradient(0,0,W,0);bg.addColorStop(0,'rgba(114,227,194,.75)');bg.addColorStop(.5,'rgba(150,130,255,.75)');bg.addColorStop(1,'rgba(255,120,170,.75)');
+    c.strokeStyle=bg;c.lineWidth=1;c.stroke();
+    /* bintang SynthID berdenyut + percikan */
+    var sg=c.createLinearGradient(0,0,r*2,H);sg.addColorStop(0,'#72e3c2');sg.addColorStop(.55,'#9a8cff');sg.addColorStop(1,'#ff78aa');
+    c.fillStyle=sg;spark(c,r+1*sc,r,(5.6+Math.sin(ph*1.57)*.9)*sc,Math.sin(ph*1.57)*.25);
+    c.globalAlpha=.55+.45*Math.sin(ph*3.14);spark(c,r+8*sc,r-7*sc,2.1*sc,0);spark(c,r-6*sc,r+7*sc,1.6*sc,0);c.globalAlpha=1;
+    /* teks gradien dengan kilau menyapu */
+    var tx=r*2+4*sc,tg=c.createLinearGradient(tx+sh-40,0,tx+sh+40,0);
+    tg.addColorStop(0,'#c9f7e8');tg.addColorStop(.5,'#ffffff');tg.addColorStop(1,'#d8cfff');
+    c.fillStyle='#d6eee8';c.textBaseline='middle';c.fillText(txt,tx,r+.5);
+    c.save();c.globalAlpha=.95;c.fillStyle=tg;c.globalCompositeOperation='source-over';
+    c.beginPath();c.rect(tx+sh-34,0,68,H);c.clip();c.fillText(txt,tx,r+.5);c.restore();
+  }
+  function ensure(){
+    var spots=[['.cubePane','up'],['.orbitPane',''],['#scanModal','']];
+    spots.forEach(function(s){var h=document.querySelector(s[0]);if(!h)return;
+      var has=list.some(function(r){return r.host===h&&r.cv.parentNode===h});
+      if(!has){list=list.filter(function(r){return r.host!==h});mount(h,s[1])}});
+  }
+  function frame(t){requestAnimationFrame(frame);if(document.hidden)return;list.forEach(function(r){draw(r,t)})}
+  ensure();
+  new MutationObserver(ensure).observe(document.body,{childList:true,subtree:true});
+  setInterval(ensure,2500);requestAnimationFrame(frame);
+})();
+</script></body></html>

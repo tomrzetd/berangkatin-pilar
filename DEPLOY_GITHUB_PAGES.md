@@ -18,3 +18,11 @@
 
 ## Catatan
 Three.js r128 masih dimuat dari CDN, jadi load pertama memerlukan internet. Sesudah core v0.5.4 stabil, vendor Three.js lokal bisa menjadi pekerjaan optimasi/offline berikutnya.
+
+
+## App shelf tambahan
+Bundle ini juga membawa:
+- `apps/microscope/` — PILAR Microscope Lab v0.6 (kamera memerlukan HTTPS).
+- `apps/rubik-orbit/` — PILAR Rubik Orbit Mathematics v3.
+
+Keduanya otomatis muncul sebagai kartu **BUKA** pada PILAR Hub melalui `apps/registry.js`.

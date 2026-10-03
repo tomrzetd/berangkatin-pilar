@@ -57,3 +57,15 @@ Tambahan v0.5.4: aliran arus divisualkan hanya pada bagian konduktif (terminal h
 
 ### Creator ID
 Attribution publik: `by : rizalabdurrahman05@guru.smp.belajar.id`. Ini adalah watermark/Creator ID PILAR, bukan klaim penggunaan Google SynthID.
+
+
+## PILAR Hub apps (bundle v0.5.5d)
+
+- **Gaya Lorentz v0.5.5** — simulasi utama dengan Quick/Vision boot.
+- **Microscope Lab v0.6 (IFP/MPI)** — kamera mikroskop, freeze frame, filter, kalibrasi source-pixel, pengukuran pointer/touch, capture bukti, dan galeri IndexedDB.
+- **Rubik Orbit Mathematics v3** — solver/visualisasi orbit yang dipertahankan core-nya, ditambah navigasi PILAR Hub dan Creator ID di header.
+
+App mandiri berada di `apps/<id>/index.html` dan didaftarkan melalui `apps/registry.js`. Semua app memiliki jalur kembali ke root PILAR Hub (`../../`).
+
+### Catatan kamera
+Akses kamera browser memerlukan secure context. GitHub Pages sudah menggunakan HTTPS. Microscope tidak meminta kamera saat halaman baru dibuka; izin diminta saat pengguna menekan START.

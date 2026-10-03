@@ -21,7 +21,7 @@
       const b=document.createElement('button');
       b.className='pilar-app-card '+(item.id==='lorentz'?'current ':'')+(item.status!=='ready'?'coming':'');
       b.type='button';
-      b.innerHTML=`<span class="pilar-app-icon">${item.icon||'✦'}</span><span><strong>${item.title}</strong><small>${item.category} · v${item.version}</small></span><em>${item.id==='lorentz'?'AKTIF':item.status==='ready'?'BUKA':'SEGERA'}</em>`;
+      b.innerHTML=`<span class="pilar-app-icon">${item.icon||'✦'}</span><span><strong>${item.title}</strong><small class="app-subtitle">${item.subtitle||''}</small><small>${item.category} · v${item.version}</small></span><em>${item.id==='lorentz'?'AKTIF':item.status==='ready'?'BUKA':'SEGERA'}</em>`;
       if(item.status==='ready'&&item.id!=='lorentz') b.onclick=()=>location.href=item.url;
       else if(item.id==='lorentz') b.onclick=()=>{ $('#bootQuick').focus(); };
       else b.disabled=true;
