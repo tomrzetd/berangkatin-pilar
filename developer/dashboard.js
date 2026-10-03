@@ -20,10 +20,38 @@ async function session(){
   if((u.email||'').toLowerCase()!==ADMIN){status.textContent='Akun ini bukan developer PILAR.';await db.auth.signOut();loginView.hidden=false;consoleView.hidden=true;return}
   loginView.hidden=true;consoleView.hidden=false;await refresh();subscribe();
 }
+function setLoginStatus(msg,type=''){
+  status.textContent=msg;status.className='status'+(type?' '+type:'');
+}
+function cleanAuthError(){
+  const q=new URLSearchParams(location.search);
+  const err=q.get('error_description')||q.get('error');
+  if(err){
+    const code=q.get('error_code')||'';
+    const message=code==='otp_expired'
+      ? 'Magic link sudah kedaluwarsa / pernah dipakai. Gunakan password atau minta link baru.'
+      : decodeURIComponent(String(err).replace(/\+/g,' '));
+    setLoginStatus(message,'error');
+    history.replaceState({},document.title,location.pathname);
+  }
+}
+async function passwordLogin(){
+  const email=$('#emailInput').value.trim(),password=$('#passwordInput').value;
+  if(!password){setLoginStatus('Masukkan password developer.','error');return}
+  setLoginStatus('Memeriksa akun…');
+  const r=await db.auth.signInWithPassword({email,password});
+  if(r.error){setLoginStatus('Login gagal: '+r.error.message,'error');return}
+  setLoginStatus('Login berhasil.','ok');
+  await session();
+}
+$('#passwordBtn').onclick=passwordLogin;
+$('#passwordInput').addEventListener('keydown',e=>{if(e.key==='Enter')passwordLogin()});
 $('#loginBtn').onclick=async()=>{
-  const email=$('#emailInput').value.trim();status.textContent='Mengirim…';
-  const r=await db.auth.signInWithOtp({email,options:{emailRedirectTo:location.href}});
-  status.textContent=r.error?('Gagal: '+r.error.message):'Magic link terkirim. Cek inbox/spam lalu buka link di perangkat ini.';
+  const email=$('#emailInput').value.trim();
+  const cleanRedirect=location.origin+location.pathname;
+  setLoginStatus('Mengirim magic link…');
+  const r=await db.auth.signInWithOtp({email,options:{emailRedirectTo:cleanRedirect,shouldCreateUser:false}});
+  setLoginStatus(r.error?('Gagal: '+r.error.message):'Magic link baru terkirim. Pakai email yang PALING BARU dan buka sekali saja.',r.error?'error':'ok');
 };
 $('#logoutBtn').onclick=async()=>{await db.auth.signOut();location.reload()};
 $('#refreshBtn').onclick=refresh;
@@ -78,6 +106,7 @@ function subscribe(){
   chP=db.channel('pulse-admin-profiles').on('postgres_changes',{event:'*',schema:'public',table:'pilar_profiles'},refresh).subscribe();
   chM=db.channel('pulse-admin-messages').on('postgres_changes',{event:'*',schema:'public',table:'pilar_messages'},refresh).subscribe();
 }
+cleanAuthError();
 db.auth.onAuthStateChange(()=>setTimeout(session,0));
 session();
 })();
