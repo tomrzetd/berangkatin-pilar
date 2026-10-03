@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07101b">
+  <title>PILAR Pulse — Developer Console</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="login" id="loginView">
+    <div class="login-card">
+      <div class="kicker">PILAR PULSE · DEVELOPER</div>
+      <h1>Command Center</h1>
+      <p>Login memakai email developer. Link masuk akan dikirim oleh Supabase Auth.</p>
+      <input id="emailInput" type="email" autocomplete="email" value="rizalabdurrahman05@guru.smp.belajar.id">
+      <button id="loginBtn">Kirim magic link</button>
+      <div class="status" id="loginStatus"></div>
+      <a href="../index.html">← PILAR Hub</a>
+    </div>
+  </div>
+
+  <main class="console" id="consoleView" hidden>
+    <header class="topbar">
+      <div>
+        <div class="kicker">PILAR PULSE v0.1</div>
+        <h1>Developer Console</h1>
+      </div>
+      <div class="top-actions">
+        <span class="live-dot">● LIVE</span>
+        <button id="refreshBtn">↻ Refresh</button>
+        <button id="logoutBtn">Keluar</button>
+      </div>
+    </header>
+
+    <section class="metrics">
+      <article><span>Online</span><b id="mOnline">0</b></article>
+      <article><span>Visitors</span><b id="mTotal">0</b></article>
+      <article><span>Unread</span><b id="mUnread">0</b></article>
+      <article><span>Apps aktif</span><b id="mApps">0</b></article>
+    </section>
+
+    <section class="workspace">
+      <aside class="visitors">
+        <div class="list-head">
+          <strong>Visitors</strong>
+          <input id="searchInput" placeholder="Cari ID / app / device">
+        </div>
+        <div id="visitorList" class="visitor-list"></div>
+      </aside>
+
+      <section class="detail">
+        <div class="empty" id="emptyState">
+          <div>💬</div>
+          <h2>Pilih visitor</h2>
+          <p>Lihat device, current app, last seen, dan chat realtime.</p>
+        </div>
+
+        <div class="chat-shell" id="chatShell" hidden>
+          <header class="chat-head">
+            <div>
+              <h2 id="visitorName">PILAR-XXXXXXXX</h2>
+              <p id="visitorMeta">—</p>
+            </div>
+            <span id="visitorOnline" class="state">offline</span>
+          </header>
+
+          <div class="facts" id="visitorFacts"></div>
+          <div class="messages" id="messages"></div>
+
+          <form class="composer" id="composer">
+            <input id="messageInput" maxlength="1200" placeholder="Balas sebagai developer…">
+            <button>Kirim</button>
+          </form>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="../pulse/config.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
