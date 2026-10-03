@@ -8,3 +8,6 @@
 .login-divider span{padding:0 4px}
 .status.error{color:var(--red)}
 .status.ok{color:var(--green)}
+
+/* Pulse auth view state fix */
+.login[hidden],.console[hidden]{display:none!important}
