@@ -45,3 +45,15 @@ Tambahan v0.5.3: magnet kini berbentuk U/horseshoe yang lebih masuk akal secara 
 
 
 Tambahan v0.5.4: aliran arus divisualkan hanya pada bagian konduktif (terminal holder, sakelar, kabel, kawat aktif, dan bagian dalam baterai). Arus tidak lagi melintasi tali penyangga atau melayang di udara. Magnet U mendapat pedestal dan alas yang menyentuh meja sehingga tidak tampak melayang; yoke penghubung kutub juga diperhalus agar bentuknya lebih masuk akal.
+
+
+## PILAR Hub / menambah aplikasi
+- Root `index.html` menjadi pintu masuk/Hub sekaligus host Gaya Lorentz.
+- Daftar aplikasi berada di `apps/registry.js`.
+- Aplikasi baru disimpan pada `apps/<slug>/index.html`.
+- Tombol `←` pada header Gaya Lorentz membuka kembali PILAR Hub tanpa reload WebGL.
+- Setiap aplikasi baru sebaiknya memiliki tombol kembali ke `../../index.html` dan Creator ID yang sama.
+- Petunjuk cepat tersedia di `apps/_starter/README.md`.
+
+### Creator ID
+Attribution publik: `by : rizalabdurrahman05@guru.smp.belajar.id`. Ini adalah watermark/Creator ID PILAR, bukan klaim penggunaan Google SynthID.

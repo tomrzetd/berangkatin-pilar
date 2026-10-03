@@ -13,6 +13,37 @@
     Object.entries(checks).forEach(([name,fn])=>{const ok=!!fn();const el=document.createElement('span');el.className='boot-cap '+(ok?'ok':'warn');el.textContent=(ok?'● ':'○ ')+name;box.appendChild(el)});
     $('#bootRuntime').textContent=(checks.WebGL()?'WebGL siap':'WebGL tidak tersedia')+' · '+(navigator.onLine?'online':'offline');
   }
+  function renderLibrary(){
+    const box=$('#pilarLibrary'); if(!box)return;
+    const apps=window.PILAR_APP_REGISTRY||[];
+    box.innerHTML='';
+    apps.forEach(item=>{
+      const b=document.createElement('button');
+      b.className='pilar-app-card '+(item.id==='lorentz'?'current ':'')+(item.status!=='ready'?'coming':'');
+      b.type='button';
+      b.innerHTML=`<span class="pilar-app-icon">${item.icon||'✦'}</span><span><strong>${item.title}</strong><small>${item.category} · v${item.version}</small></span><em>${item.id==='lorentz'?'AKTIF':item.status==='ready'?'BUKA':'SEGERA'}</em>`;
+      if(item.status==='ready'&&item.id!=='lorentz') b.onclick=()=>location.href=item.url;
+      else if(item.id==='lorentz') b.onclick=()=>{ $('#bootQuick').focus(); };
+      else b.disabled=true;
+      box.appendChild(b);
+    });
+  }
+  function resetBootUI(){
+    $('#bootProgress').hidden=true;
+    $('#bootQuick').disabled=false;$('#bootVision').disabled=false;
+    $('#bootBar').style.width='0%';$('#bootPercent').textContent='0%';
+    $('#bootStepTitle').textContent='MENYIAPKAN PILAR';$('#bootMessage').textContent='Pilih mode untuk masuk ke Gaya Lorentz.';
+    $('#bootStepList').innerHTML='';
+    $$('#bootPhilosophy span').forEach(el=>el.className='');
+  }
+  function showHome(){
+    const bootEl=$('#pilarBoot');
+    resetBootUI();
+    bootEl.classList.remove('is-leaving');
+    bootEl.removeAttribute('aria-hidden');
+    $('#appShell').setAttribute('aria-hidden','true');
+    document.body.classList.add('boot-lock');
+  }
   function loadScript(src){return new Promise((resolve,reject)=>{const old=document.querySelector(`script[data-dynamic="${src}"]`);if(old)return resolve();const s=document.createElement('script');s.src=src;s.dataset.dynamic=src;s.onload=resolve;s.onerror=()=>reject(new Error('Gagal memuat '+src));document.body.appendChild(s)})}
   function setBootStep(i,total,title,msg){
     const pct=Math.round((i/total)*100);$('#bootBar').style.width=pct+'%';$('#bootPercent').textContent=pct+'%';$('#bootStepTitle').textContent=title;$('#bootMessage').textContent=msg;
@@ -64,6 +95,7 @@
     $('#qualitySelect').onchange=e=>P.state.patch(s=>{s.ui.quality=e.target.value});
     $$('#phaseTabs button').forEach(b=>b.onclick=()=>{const target=b.dataset.phase,s=P.state.get();if(['aha','buktikan','rekayasa'].includes(target)&&!s.aha.unlocked)return toast('Belum terbuka','Selesaikan pola reversal dan pengaruh B terlebih dahulu.');if(['buktikan','rekayasa'].includes(target)&&!s.reveal.formula)return toast('Belum terbuka','Masuk AHA dan rumuskan temuan terlebih dahulu.');if(target==='rekayasa'&&!P.lorentzMissions.proofSuccess())return toast('Belum terbuka','Buktikan dulu: capai target α 35°–45° dan catat hasil.');go(target)});
 
+    $('#homeBtn').onclick=showHome;
     P.state.subscribe(updateUI);
     if(P.ownership)P.ownership.stamp($('#ownershipMark'));
     updateUI(P.state.get());
@@ -114,7 +146,7 @@
     $('#bootStepList').innerHTML=steps.map(()=>'<i></i>').join('');
     try{
       setBootStep(0,steps.length,steps[0][0],steps[0][1]);bindAppUI();await sleep(130);
-      setBootStep(1,steps.length,steps[1][0],steps[1][1]);if(!checks.WebGL())throw new Error('WebGL tidak tersedia. Coba browser/perangkat lain.');render=P.render3d.init($('#stage'));$('#stageBadge').textContent='3D siap · drag untuk memutar';await sleep(160);
+      setBootStep(1,steps.length,steps[1][0],steps[1][1]);if(!checks.WebGL())throw new Error('WebGL tidak tersedia. Coba browser/perangkat lain.');if(!render)render=P.render3d.init($('#stage'));$('#stageBadge').textContent='3D siap · drag untuk memutar';await sleep(160);
       setBootStep(2,steps.length,steps[2][0],steps[2][1]);await sleep(160);
       setBootStep(3,steps.length,steps[3][0],steps[3][1]);await sleep(120);
       setBootStep(4,steps.length,steps[4][0],steps[4][1]);
@@ -133,11 +165,12 @@
         catch(e){$('#bootMessage').textContent=(e&&e.message?e.message:'Vision AI tidak aktif')+' Melanjutkan otomatis tanpa Vision AI.';mode='standard';if(P.vision)P.vision.setEnabled(false);await sleep(700)}
       }else await sleep(100);
       setBootStep(5,steps.length,steps[5][0],steps[5][1]);await sleep(160);setBootStep(steps.length,steps.length,'READY',mode==='vision'?'Vision AI siap. Memasuki simulasi…':'Mode cepat siap. Memasuki simulasi…');
-      sessionStorage.setItem('pilar-input-mode',mode);$('#appShell').setAttribute('aria-hidden','false');startLoop();await sleep(230);$('#pilarBoot').classList.add('is-leaving');document.body.classList.remove('boot-lock');setTimeout(()=>$('#pilarBoot').remove(),500);
+      sessionStorage.setItem('pilar-input-mode',mode);$('#appShell').setAttribute('aria-hidden','false');startLoop();await sleep(230);$('#pilarBoot').classList.add('is-leaving');$('#pilarBoot').setAttribute('aria-hidden','true');document.body.classList.remove('boot-lock');
     }catch(e){console.error(e);$('#bootStepTitle').textContent='BOOT TERTAHAN';$('#bootMessage').textContent=e.message||'Terjadi kesalahan saat menyiapkan PILAR.';quick.disabled=vision.disabled=false;$('#engineStatus').textContent='Boot membutuhkan perhatian';}
   }
 
   drawBootCaps();
+  renderLibrary();
   $('#bootQuick').onclick=()=>boot('standard');
   $('#bootVision').onclick=()=>boot('vision');
   if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('service-worker.js').catch(()=>{});

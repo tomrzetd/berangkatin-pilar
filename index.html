@@ -18,7 +18,10 @@
           <span class="boot-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
           <div><strong>PILAR<sup>™</sup></strong><small>EXPLORATION · COMPUTATION · ENGINEERING</small></div>
         </div>
-        <div class="boot-app-meta"><b>Gaya Lorentz</b><span>Simulasi STEM · v0.5.5</span></div>
+        <div class="boot-head-right">
+          <div class="creator-id">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div>
+          <div class="boot-app-meta"><b>Gaya Lorentz</b><span>Simulasi STEM · v0.5.5</span></div>
+        </div>
       </header>
 
       <div class="boot-main">
@@ -28,6 +31,10 @@
           <p>Masuk ke ruang eksplorasi dengan renderer 3D, interaksi sentuh/mouse, dan Vision AI yang benar-benar opsional.</p>
           <div class="boot-philosophy" id="bootPhilosophy" aria-label="Alur eksplorasi">
             <span>LIHAT</span><span>TEBAK</span><span>COBA</span><span>AHA</span><span>BUKTIKAN</span><span>REKAYASA</span>
+          </div>
+          <div class="pilar-library-wrap">
+            <div class="pilar-library-title"><span>Koleksi PILAR</span><small>Pilih simulasi · game · tools</small></div>
+            <div class="pilar-library" id="pilarLibrary"></div>
           </div>
           <div class="boot-device">
             <span class="boot-device-title">Kesiapan perangkat</span>
@@ -53,16 +60,18 @@
           </div>
         </aside>
       </div>
-      <footer class="boot-foot"><span>PILAR™ Runtime v0.5.5</span><span id="bootRuntime">checking…</span></footer>
+      <footer class="boot-foot"><span>PILAR™ Runtime v0.5.5 · <b>by : rizalabdurrahman05@guru.smp.belajar.id</b></span><span id="bootRuntime">checking…</span></footer>
     </div>
   </section>
 
   <main class="app-shell" id="appShell" aria-hidden="true">
     <header class="topbar">
       <div class="brand-wrap">
+        <button class="home-btn" id="homeBtn" title="Kembali ke PILAR Hub" aria-label="Kembali ke PILAR Hub">←</button>
         <strong class="brand">PILAR</strong>
         <span class="lab-name">Lorentz · Realistic Rig v0.5.5</span>
       </div>
+      <div class="top-creator">by : rizalabdurrahman05@guru.smp.belajar.id</div>
       <div class="top-actions">
         <span class="status-pill" id="engineStatus">3D menyiapkan…</span>
         <span class="xp-pill">⚡ <b id="xp">0</b> XP</span>
@@ -254,6 +263,7 @@
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="apps/registry.js"></script>
   <script src="core/ownership.js"></script>
   <script src="core/state.js"></script>
   <script src="core/intent.js"></script>
