@@ -38,16 +38,17 @@ function injectUI(){
   #pilarPulseBtn{position:fixed;right:14px;bottom:14px;z-index:1040;border:1px solid #31506d;background:#071321eF;color:#eaf7ff;border-radius:999px;padding:9px 12px;font:800 11px/1.2 Inter,system-ui;box-shadow:0 10px 32px #0007;cursor:pointer}
   #pilarPulseBtn.on{border-color:#3c7652;color:#caffdf}#pilarPulseBtn.off{opacity:.7}
   #pilarPulseDrawer{position:fixed;right:14px;bottom:58px;z-index:1041;width:min(360px,calc(100vw - 28px));max-height:min(560px,72vh);display:none;grid-template-rows:auto 1fr auto;background:#07111df7;color:#edf7ff;border:1px solid #31506d;border-radius:18px;box-shadow:0 22px 70px #000b;overflow:hidden;font:13px/1.4 Inter,system-ui}
-  #pilarPulseDrawer.open{display:grid}.pp-head{padding:13px 14px;border-bottom:1px solid #20394f;display:flex;justify-content:space-between;gap:10px}.pp-head b{color:#7eeeff}.pp-head small{display:block;color:#839bb2;margin-top:2px}.pp-head button{min-height:30px;padding:4px 8px;border-radius:9px}
+  #pilarPulseDrawer.open{display:grid}.pp-head{padding:13px 14px;border-bottom:1px solid #20394f;display:flex;justify-content:space-between;gap:10px}.pp-head b{color:#7eeeff}.pp-head small{display:block;color:#839bb2;margin-top:2px}.pp-head button{min-height:30px;padding:4px 8px;border-radius:9px}.pp-head-actions{display:flex;gap:6px;align-items:flex-start}.pp-clear{border-color:#5b3943!important;color:#ffb7c5!important;background:#21131a!important}
   .pp-msgs{padding:12px;overflow:auto;display:flex;flex-direction:column;gap:8px;min-height:170px}.pp-empty{color:#7f96aa;text-align:center;margin:auto}.pp-msg{max-width:88%;padding:8px 10px;border-radius:12px;background:#102033;white-space:pre-wrap;word-break:break-word}.pp-msg.me{align-self:flex-end;background:#173c31}.pp-msg.dev{align-self:flex-start}.pp-msg time{display:block;font-size:9px;color:#8ba0b5;margin-top:3px}
   .pp-form{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px;border-top:1px solid #20394f}.pp-form input{min-width:0;background:#081725;color:#eef8ff;border:1px solid #2d4965;border-radius:999px;padding:9px 12px}.pp-form button{border-radius:999px;min-height:38px;padding:7px 12px}
   #pilarPulseNotice{position:fixed;left:14px;bottom:14px;z-index:1042;max-width:min(560px,calc(100vw - 28px));padding:10px 12px;border:1px solid #294861;border-radius:13px;background:#071321f4;color:#cfe0ee;font:11px/1.45 Inter,system-ui;box-shadow:0 12px 40px #0008}#pilarPulseNotice button{margin-left:7px;min-height:28px;padding:3px 8px;border-radius:8px}
   @media(max-width:700px){#pilarPulseBtn{bottom:72px}#pilarPulseDrawer{bottom:116px}}
   `;document.head.appendChild(css);
   const b=document.createElement('button');b.id='pilarPulseBtn';b.textContent='● PILAR Pulse';b.onclick=()=>drawer.classList.toggle('open');
-  const drawer=document.createElement('section');drawer.id='pilarPulseDrawer';drawer.innerHTML='<div class="pp-head"><div><b>PILAR Developer</b><small id="ppIdentity">menyambungkan…</small></div><button id="ppOff">Pulse</button></div><div class="pp-msgs" id="ppMsgs"><div class="pp-empty">Belum ada pesan.</div></div><form class="pp-form" id="ppForm"><input id="ppInput" maxlength="1200" placeholder="Kirim pesan ke developer…" autocomplete="off"><button>Kirim</button></form>';
+  const drawer=document.createElement('section');drawer.id='pilarPulseDrawer';drawer.innerHTML='<div class="pp-head"><div><b>Chat with Developer</b><small id="ppIdentity">menyambungkan…</small></div><div class="pp-head-actions"><button class="pp-clear" id="ppClear">Clear Chat</button><button id="ppOff">Pulse</button></div></div><div class="pp-msgs" id="ppMsgs"><div class="pp-empty">Belum ada pesan.</div></div><form class="pp-form" id="ppForm"><input id="ppInput" maxlength="1200" placeholder="Kirim pesan ke developer…" autocomplete="off"><button>Kirim</button></form>';
   document.body.append(b,drawer);
   drawer.querySelector('#ppOff').onclick=async()=>{if(!confirm('Nonaktifkan PILAR Pulse di browser ini?'))return;await disablePulse()};
+  drawer.querySelector('#ppClear').onclick=async()=>{await clearChat()};
   drawer.querySelector('#ppForm').onsubmit=async e=>{e.preventDefault();const i=drawer.querySelector('#ppInput'),txt=i.value.trim();if(!txt||!ready)return;i.value='';await sendMessage(txt)};
 }
 function notice(){
@@ -98,6 +99,21 @@ function renderMessages(rows){
 }
 async function loadMessages(){const r=await db.from('pilar_messages').select('id,sender,body,created_at').eq('visitor_id',user.id).order('created_at',{ascending:true}).limit(200);if(!r.error)renderMessages(r.data||[])}
 async function sendMessage(body){const r=await db.from('pilar_messages').insert({visitor_id:user.id,sender:'visitor',body});if(!r.error){await track('developer_message_sent');await loadMessages()}}
+async function clearChat(){
+  if(!ready||!db||!user)return;
+  if(!confirm('Hapus seluruh percakapan Chat with Developer untuk ID PILAR ini?'))return;
+  const btn=document.getElementById('ppClear');
+  if(btn){btn.disabled=true;btn.textContent='Clearing…'}
+  const r=await db.from('pilar_messages').delete().eq('visitor_id',user.id);
+  if(btn){btn.disabled=false;btn.textContent='Clear Chat'}
+  if(r.error){
+    console.warn('[PILAR Pulse clear chat]',r.error);
+    alert('Clear Chat belum diizinkan oleh database. Jalankan migration 002_clear_chat.sql di Supabase SQL Editor.');
+    return;
+  }
+  await track('developer_chat_cleared');
+  renderMessages([]);
+}
 function subscribe(){
   if(channel)db.removeChannel(channel);
   channel=db.channel('pulse-'+user.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'pilar_messages',filter:'visitor_id=eq.'+user.id},()=>loadMessages()).subscribe();
