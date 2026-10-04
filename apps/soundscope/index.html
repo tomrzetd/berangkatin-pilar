@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="id"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>PILAR™ · SoundScope Lab — IFP Edition v3.1</title>
+<title>PILAR™ · SoundScope Lab — IFP Edition v3.2</title>
 <style>
 :root{color-scheme:dark;--bg1:#070a1a;--bg2:#101a3a;--panel:rgba(255,255,255,.08);--line:rgba(255,255,255,.16);--text:rgba(255,255,255,.94);--muted:rgba(255,255,255,.72);--good:#38e699;--warn:#ffd042;--bad:#ff5353;--blue:#3aa0ff;--pink:#ff4d6d;--btn:3.4rem;--r:1.2rem}
 *{box-sizing:border-box}
@@ -134,7 +134,8 @@ input[type=range]{width:100%;height:2rem;accent-color:var(--blue)}
       </div>
       <div class="card"><b>🎹 Generator nada</b>
         <label>Jenis gelombang <select id="selWave"><option value="off" selected>OFF · Analisis mikrofon saja</option><option value="sine">Sinus (murni, 1 puncak)</option><option value="triangle">Segitiga</option><option value="square">Persegi (banyak harmonik)</option><option value="sawtooth">Gigi gergaji (harmonik terkaya)</option></select></label>
-        <div class="hint" id="generatorHint"><span class="generator-off">OFF</span> · spektrum hanya menganalisis suara dari mikrofon. Pilih bentuk gelombang untuk mengaktifkan generator sentuh.</div>
+        <div class="hint" id="generatorHint"><span class="generator-off">OFF</span> · spektrum hanya menganalisis suara dari mikrofon. Pilih bentuk gelombang untuk mengaktifkan PolyTouch.</div>
+        <div class="hint" id="polyReadout">PolyTouch siap · beberapa sentuhan = beberapa suara sekaligus.</div>
       </div>
     </div>
   </section>
@@ -221,7 +222,9 @@ const store={get(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch{re
 
 const FFT=8192,S={ctx:null,an:null,mix:null,gain:null,mic:null,src:null,osc:null,og:null,micOn:false,tone:false};
 let td=new Float32Array(FFT),fd=new Float32Array(FFT/2).fill(-140),disp=new Float32Array(FFT/2).fill(-140),hold=new Float32Array(FFT/2).fill(-140);
-let VMIN=-110,VMAX=-20,tool="lab",frozen=false,U=1,ptr=null;
+let VMIN=-110,VMAX=-20,tool="lab",frozen=false,U=1;
+const polyVoices=new Map(),POLY_COLORS=["#ff4d6d","#ffd042","#38e699","#3aa0ff","#b685ff","#ff8ac6","#7ee7ff","#ffa85a","#9cff6b","#ffffff"];
+const MAX_POLY_VOICES=10;
 const opt={lab:true,harm:true,hold:true};
 const cvW=$("cvW"),cvS=$("cvS"),cw=cvW.getContext("2d"),cs=cvS.getContext("2d");
 const rem=()=>parseFloat(getComputedStyle(document.documentElement).fontSize)||16;
@@ -271,6 +274,69 @@ function tone(f,v){
 const NN=["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
 function note(f){const m=69+12*Math.log2(f/440),r=Math.round(m);return{n:NN[(r%12+12)%12]+(Math.floor(r/12)-1),c:Math.round((m-r)*100)}}
 function snapHz(f){return 440*Math.pow(2,Math.round(12*Math.log2(f/440))/12)}
+function spectrumPoint(e){
+  const r=cvS.getBoundingClientRect(),sx=cvS.width/r.width,sy=cvS.height/r.height,
+        x=(e.clientX-r.left)*sx,y=(e.clientY-r.top)*sy,
+        L=62*U,R=14*U,T=34*U,B=40*U,w=cvS.width-L-R,h=cvS.height-T-B,
+        cx=clamp(x,L,L+w),cy=clamp(y,T,T+h),
+        nx=clamp((cx-L)/w,0,1),ny=clamp((cy-T)/h,0,1),
+        f=20*Math.pow(1000,nx),db=VMAX+(VMIN-VMAX)*ny;
+  return{x:cx,y:cy,f:clamp(f,20,20000),db:db};
+}
+function polyGainForDb(db,count){
+  const linear=Math.pow(10,db/20),headroom=.82/Math.sqrt(Math.max(1,count));
+  return Math.min(.22,linear*headroom);
+}
+function refreshPolyReadout(){
+  const el=$("polyReadout");if(!el)return;
+  if(!polyVoices.size){el.textContent=$("selWave").value==="off"?"PolyTouch OFF · analisis mikrofon saja.":"PolyTouch siap · beberapa sentuhan = beberapa suara sekaligus.";return}
+  const notes=[...polyVoices.values()].map(v=>note(v.f).n).slice(0,10);
+  el.textContent="PolyTouch "+polyVoices.size+" suara · "+notes.join(" + ");
+}
+function relevelPolyVoices(){
+  if(!S.ctx)return;
+  const n=Math.max(1,polyVoices.size),now=S.ctx.currentTime;
+  polyVoices.forEach(v=>{
+    const g=polyGainForDb(v.db,n);
+    v.gain.gain.cancelScheduledValues(now);
+    v.gain.gain.setTargetAtTime(g,now,.025);
+  });
+  S.tone=polyVoices.size>0;
+}
+function createPolyVoice(e){
+  const mode=$("selWave").value;
+  if(mode==="off"||polyVoices.has(e.pointerId))return;
+  if(polyVoices.size>=MAX_POLY_VOICES){toast("Maksimum "+MAX_POLY_VOICES+" suara PolyTouch.","warn");return}
+  ensure();
+  const p=spectrumPoint(e),osc=S.ctx.createOscillator(),gain=S.ctx.createGain(),idx=polyVoices.size%POLY_COLORS.length;
+  osc.type=mode;osc.frequency.value=p.f;gain.gain.value=0;
+  osc.connect(gain);gain.connect(S.mix);gain.connect(S.ctx.destination);osc.start();
+  polyVoices.set(e.pointerId,{id:e.pointerId,osc:osc,gain:gain,f:p.f,db:p.db,x:p.x,y:p.y,color:POLY_COLORS[idx]});
+  relevelPolyVoices();refreshPolyReadout();
+}
+function updatePolyVoice(e){
+  const v=polyVoices.get(e.pointerId);if(!v||!S.ctx)return;
+  const p=spectrumPoint(e),now=S.ctx.currentTime;
+  v.f=p.f;v.db=p.db;v.x=p.x;v.y=p.y;
+  v.osc.frequency.cancelScheduledValues(now);
+  v.osc.frequency.setTargetAtTime(v.f,now,.018);
+  relevelPolyVoices();refreshPolyReadout();
+}
+function releasePolyVoice(id){
+  const v=polyVoices.get(id);if(!v||!S.ctx)return;
+  const now=S.ctx.currentTime;
+  try{
+    v.gain.gain.cancelScheduledValues(now);
+    v.gain.gain.setTargetAtTime(.0001,now,.025);
+    v.osc.stop(now+.10);
+    setTimeout(()=>{try{v.osc.disconnect();v.gain.disconnect()}catch{}},180);
+  }catch{}
+  polyVoices.delete(id);relevelPolyVoices();refreshPolyReadout();
+}
+function releaseAllPoly(){
+  [...polyVoices.keys()].forEach(releasePolyVoice);
+}
+
 function findPeaks(){
   const bw=(S.ctx?S.ctx.sampleRate:48000)/FFT,n=disp.length,lo=Math.ceil(20/bw)+3,hi=Math.min(n-5,Math.floor(20000/bw)),thr=VMIN+(VMAX-VMIN)*.3,c=[];
   for(let i=lo;i<hi;i++){const v=disp[i];if(v<thr)continue;let ok=true;for(let k=1;k<=3;k++)if(disp[i-k]>v||disp[i+k]>=v){ok=false;break}
@@ -392,13 +458,30 @@ function drawSpec(pk,dom){
     for(let k=1;k<=8;k++){const f=dom.f*k;if(f>19000)break;const x=fx(f);c.beginPath();c.moveTo(x,T);c.lineTo(x,T+h);c.stroke();c.fillStyle="rgba(255,255,255,.8)";c.textAlign="center";c.textBaseline="top";c.fillText(k===1?"f₀":k+"×",x,T+2*U)}c.setLineDash([])}
   pk.forEach((q,i)=>{const x=fx(q.f),y=dy(q.db);c.fillStyle=i?"#fff":"#ffd042";c.beginPath();c.arc(x,y,(i?4:7)*U,0,7);c.fill();
     if(opt.lab&&i<4){const ny=clamp(y-(20+(i%2)*24)*U,T+30*U,T+h);pill(c,`${Math.round(q.f)} Hz · ${note(q.f).n}`,x,ny,i?"#fff":"#ffd042",L,L+w)}});
-  if(ptr){const x=fx(ptr.f);c.strokeStyle="#ff4d6d";c.lineWidth=3*U;c.beginPath();c.moveTo(x,T);c.lineTo(x,T+h);c.stroke();pill(c,`🎹 ${Math.round(ptr.f)} Hz · ${note(ptr.f).n}`,x,T+h-16*U,"#ff4d6d",L,L+w)}
+  if(polyVoices.size){
+    let vi=0;
+    polyVoices.forEach(v=>{
+      const x=fx(v.f),y=dy(v.db),col=v.color;
+      c.save();c.strokeStyle=col;c.fillStyle=col;c.lineWidth=2.2*U;c.globalAlpha=.92;
+      c.beginPath();c.moveTo(x,T);c.lineTo(x,T+h);c.stroke();
+      c.beginPath();c.arc(x,y,7.5*U,0,Math.PI*2);c.fill();
+      c.globalAlpha=1;
+      if(vi<6)pill(c,`${note(v.f).n} · ${Math.round(v.f)}Hz · ${Math.round(v.db)}dB`,x,clamp(y-18*U,T+18*U,T+h-18*U),col,L,L+w);
+      c.restore();vi++;
+    });
+  }
   if(!S.micOn&&!S.tone){c.fillStyle="rgba(255,255,255,.85)";c.font=`800 ${18*U}px system-ui`;c.textAlign="center";c.textBaseline="middle";c.fillText($("selWave").value==="off"?"🎤 Tekan Mulai Mic — Generator OFF / mode analisis":"🎤 Tekan Mulai Mic — atau sentuh area ini untuk membunyikan nada",L+w/2,T+h/2)}
 }
-function plotFromX(e){const r=cvS.getBoundingClientRect(),x=(e.clientX-r.left)*(cvS.width/r.width),L=62*U,w=cvS.width-L-14*U;return clamp(20*Math.pow(1000,(x-L)/w),20,12000)}
-cvS.addEventListener("pointerdown",e=>{cvS.setPointerCapture(e.pointerId);ptr={id:e.pointerId,f:plotFromX(e)};tone(ptr.f,.2)});
-cvS.addEventListener("pointermove",e=>{if(ptr&&ptr.id===e.pointerId){ptr.f=plotFromX(e);tone(ptr.f,.2)}});
-const up=e=>{if(ptr&&ptr.id===e.pointerId){ptr=null;tone(220,0)}};cvS.addEventListener("pointerup",up);cvS.addEventListener("pointercancel",up);
+cvS.addEventListener("pointerdown",e=>{
+  if($("selWave").value==="off")return;
+  if(e.pointerType==="mouse"&&e.button!==0)return;
+  e.preventDefault();cvS.setPointerCapture?.(e.pointerId);createPolyVoice(e);
+});
+cvS.addEventListener("pointermove",e=>{
+  if(polyVoices.has(e.pointerId)){e.preventDefault();updatePolyVoice(e)}
+});
+const polyUp=e=>{if(polyVoices.has(e.pointerId)){e.preventDefault();releasePolyVoice(e.pointerId)}};
+cvS.addEventListener("pointerup",polyUp);cvS.addEventListener("pointercancel",polyUp);cvS.addEventListener("lostpointercapture",polyUp);
 
 /* ---------- Detective ---------- */
 const det={on:false,hz:440,tol:15,t:0,team:"Biru",sB:0,sR:0,streak:0,xp:0,last:0};
@@ -514,11 +597,15 @@ function syncGeneratorUI(){
   const mode=$("selWave").value,h=$("generatorHint");
   if(mode==="off"){
     tone(220,0);
-    h.innerHTML='<span class="generator-off">OFF</span> · spektrum hanya menganalisis suara dari mikrofon. Pilih bentuk gelombang untuk mengaktifkan generator sentuh.';
+    releaseAllPoly();cvS.style.touchAction="pan-y";
+    h.innerHTML='<span class="generator-off">OFF</span> · spektrum hanya menganalisis suara dari mikrofon. Pilih bentuk gelombang untuk mengaktifkan PolyTouch.';
   }else{
-    h.innerHTML='👆 Sentuh / geser pada <b>spektrum</b> untuk membunyikan nada '+mode+'. Lihat puncak harmonik pada kelipatan frekuensi dasar.';
+    cvS.style.touchAction="none";
+    h.innerHTML='🖐️ <b>PolyTouch aktif.</b> X = frekuensi log 20 Hz–20 kHz, Y = level dB. Beberapa jari menghasilkan beberapa oscillator sekaligus ('+mode+').';
     if(S.osc)S.osc.type=mode;
+    polyVoices.forEach(v=>v.osc.type=mode);
   }
+  refreshPolyReadout();
 }
 $("selWave").onchange=()=>{syncGeneratorUI()};
 document.querySelectorAll("#tStrings [data-string]").forEach(b=>b.onclick=()=>{tunerMode=b.dataset.string;tunerSmooth=0;syncTunerButtons()});

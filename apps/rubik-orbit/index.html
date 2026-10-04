@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3.1 — IFP Vision</title>
+<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3.2 — IFP Vision</title>
 <meta name="description" content="Rubik 3x3 interaktif dengan diagram orbit lingkaran, Vision AI (gestur tangan, pindai kubus asli) untuk IFP, desktop, dan HP.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23182429'/%3E%3Ccircle cx='25' cy='24' r='17' fill='none' stroke='%237be4c5' stroke-width='3'/%3E%3Ccircle cx='39' cy='24' r='17' fill='none' stroke='%23f7ca54' stroke-width='3'/%3E%3Ccircle cx='32' cy='39' r='17' fill='none' stroke='%23ff6f68' stroke-width='3'/%3E%3C/svg%3E">
 <style>
@@ -161,12 +161,12 @@ body[data-ui=mobile] .net{grid-template-columns:repeat(4,3.2rem);grid-template-r
 /* v3.1 · scene clean + transient 3D rotation guidance */
 .creatorTop{max-width:min(42rem,72vw);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 body[data-ui=mobile] .creatorTop{font-size:.62rem;max-width:74vw}
-.cubePane::after{content:"Panah + partikel muncul hanya saat layer berputar";position:absolute;left:.7rem;bottom:.55rem;z-index:5;color:rgba(237,246,244,.45);font-size:.62rem;pointer-events:none}
+.cubePane::after{content:"Gerak kubus ↔ orbit warna tersinkron";position:absolute;left:.7rem;bottom:.55rem;z-index:5;color:rgba(237,246,244,.45);font-size:.62rem;pointer-events:none}
 body[data-ui=mobile] .cubePane::after{font-size:.56rem;left:.55rem;bottom:.4rem}
 </style></head>
 <body data-ui="desk"><div class="app">
 <header>
-  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.1 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
+  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.2 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
   <div class="live" id="live" role="status" aria-live="polite">Menyiapkan solver</div>
   <div class="actions">
     <a class="iconBtn pilarHub" href="../../" title="Kembali ke PILAR Hub" aria-label="PILAR Hub">←</a>
@@ -363,6 +363,41 @@ function orbitBase(active){
   out+='<path d="M215 166 L380 193 L545 166 L439 304 L380 447 L321 304 Z" fill="none" stroke="#566c72" stroke-opacity=".28" stroke-dasharray="4 7"/>';
   F.forEach(function(f){out+=cluster(f)});return out;
 }
+function orbitName(ai){return ['U/D','F/B','R/L'][ai]||'—'}
+function orbitPoint(c,r,deg){
+  var a=deg*Math.PI/180;
+  return{x:c.x+Math.cos(a)*r,y:c.y+Math.sin(a)*r};
+}
+function orbitGuide(move,dur){
+  var ai=axisOf(move),c=circles[ai],face=move.charAt(0),col=COL[face]||c.c,
+      turn=directionOf(move),doubleTurn=Math.abs(turn)===2,sweep=turn>0?1:0,
+      span=doubleTurn?252:148,r=c.r+22,start=sweep?-118:28,end=sweep?start+span:start-span,
+      p1=orbitPoint(c,r,start),p2=orbitPoint(c,r,end),large=span>180?1:0,
+      orbit=orbitName(ai),dir=move.indexOf("'")>-1?'↺':'↻',angle=doubleTurn?'180°':'90°',
+      label=move+' · orbit '+orbit+' · '+dir+' '+angle,
+      path='M '+p1.x.toFixed(1)+' '+p1.y.toFixed(1)+' A '+r+' '+r+' 0 '+large+' '+sweep+' '+p2.x.toFixed(1)+' '+p2.y.toFixed(1),
+      out='';
+
+  out+='<defs><marker id="orbitArrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L12,6 L0,12 z" fill="'+col+'"/></marker></defs>';
+  out+='<circle cx="'+c.x+'" cy="'+c.y+'" r="'+c.r+'" fill="none" stroke="'+col+'" stroke-opacity=".20" stroke-width="13" filter="url(#glow)"/>';
+  out+='<path d="'+path+'" fill="none" stroke="'+col+'" stroke-width="8" stroke-linecap="round" stroke-opacity=".98" marker-end="url(#orbitArrow)" filter="url(#glow)">';
+  if(!settings.motion)out+='<animate attributeName="stroke-dasharray" values="1 16;14 8;1 16" dur="'+Math.max(.45,dur*.9)+'s" repeatCount="indefinite"/>';
+  out+='</path>';
+
+  /* Partikel kecil di jalur orbit; jelas tetapi tidak menutup node warna. */
+  var dots=document.body.dataset.ui==='mobile'?8:12;
+  for(var i=0;i<dots;i++){
+    var t=(i+1)/(dots+1),a=sweep?start+span*t:start-span*t,p=orbitPoint(c,r,a),delay=(i/dots)*Math.max(.5,dur);
+    out+='<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+(i%3===0?4.2:3)+'" fill="'+col+'" opacity=".68">';
+    if(!settings.motion)out+='<animate attributeName="opacity" values=".15;1;.15" dur="'+Math.max(.45,dur)+'s" begin="'+delay.toFixed(2)+'s" repeatCount="indefinite"/>';
+    out+='</circle>';
+  }
+
+  /* Label tetap di atas diagram supaya siswa langsung tahu orbit dan arah. */
+  out+='<g aria-hidden="true"><rect x="252" y="42" width="256" height="42" rx="18" fill="#071417" fill-opacity=".92" stroke="'+col+'" stroke-width="1.6"/>';
+  out+='<text x="380" y="68" text-anchor="middle" fill="#f3fbf9" font-size="15" font-weight="900">'+label+'</text></g>';
+  return out;
+}
 function runner(move,dur){
   var ai=axisOf(move),c=circles[ai],turn=directionOf(move),ang=turn*90,colors=[],fi=F.indexOf(move.charAt(0))*9;
   for(var k=0;k<9;k++)colors.push(facelets[fi+k]);for(var j=0;j<12;j++)colors.push(facelets[(fi+9+j*4)%54]);
@@ -372,6 +407,7 @@ function runner(move,dur){
 }
 function drawOrbit(move,dur){
   var svg=el('orbit'),active=move?axisOf(move):-1,out=orbitBase(active);
+  if(move)out+=orbitGuide(move,dur||.58);
   if(move&&!settings.motion)out+=runner(move,dur);
   svg.innerHTML=out;
 }
