@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3.2.2 — IFP Vision</title>
+<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3.2.3 — IFP Vision</title>
 <meta name="description" content="Rubik 3x3 interaktif dengan diagram orbit lingkaran, Vision AI (gestur tangan, pindai kubus asli) untuk IFP, desktop, dan HP.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23182429'/%3E%3Ccircle cx='25' cy='24' r='17' fill='none' stroke='%237be4c5' stroke-width='3'/%3E%3Ccircle cx='39' cy='24' r='17' fill='none' stroke='%23f7ca54' stroke-width='3'/%3E%3Ccircle cx='32' cy='39' r='17' fill='none' stroke='%23ff6f68' stroke-width='3'/%3E%3C/svg%3E">
 <style>
@@ -166,7 +166,7 @@ body[data-ui=mobile] .cubePane::after{font-size:.56rem;left:.55rem;bottom:.4rem}
 </style></head>
 <body data-ui="desk"><div class="app">
 <header>
-  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.2.2 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
+  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.2.3 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
   <div class="live" id="live" role="status" aria-live="polite">Menyiapkan solver</div>
   <div class="actions">
     <a class="iconBtn pilarHub" href="../../" title="Kembali ke PILAR Hub" aria-label="PILAR Hub">←</a>
@@ -834,83 +834,168 @@ function initVision(){
 }
 
 /* v3.2.2 FX scope fix: blok ini harus DI DALAM IIFE karena memakai scene3 privat. */
-/* ===== v3: panah arah putar + partikel angin (Three.js) ===== */
-var FX_R=1.92;
+/* ===== v3.2.3: polished 3D arrow + particle wind ===== */
+var FX_R=1.72;
+
 function fxMake(inf,move){
-  var sgn=inf.target>=0?1:-1,outer=new THREE.Group(),inner=new THREE.Group(),arcLen=Math.PI*.72,i,k;
-  if(inf.axis==='x')outer.rotation.y=Math.PI/2;else if(inf.axis==='y')outer.rotation.x=-Math.PI/2;
+  var sgn=inf.target>=0?1:-1,
+      outer=new THREE.Group(),
+      inner=new THREE.Group(),
+      face=(move||inf.face||'U').charAt(0),
+      hex=COL[face]||'#72e3c2',
+      col=new THREE.Color(hex),
+      ui=document.body.dataset.ui||'desk',
+      arcs=[
+        {off:-.10, len:Math.PI*.57, alpha:.82, tube:.050, coneR:.125, coneH:.31},
+        {off:Math.PI+.16, len:Math.PI*.30, alpha:.34, tube:.032, coneR:.085, coneH:.22}
+      ],
+      mats=[],geos=[],weights=[],i,k;
 
-  /* FX plane diletakkan sedikit DI LUAR face aktif supaya tidak menimpa stiker/kubus. */
-  outer.position[inf.axis]=inf.layer*1.66;outer.add(inner);
+  if(inf.axis==='x')outer.rotation.y=Math.PI/2;
+  else if(inf.axis==='y')outer.rotation.x=-Math.PI/2;
 
-  var face=(move||inf.face||'U').charAt(0),
-      hex=inf.axis==='y'?'#72e3c2':inf.axis==='z'?'#f5cc59':'#ff716b',
-      col=new THREE.Color(hex);
-  var mats=[],geos=[];
-  [0,Math.PI].forEach(function(off){
+  /* Sedikit di luar face aktif: terlihat jelas tanpa memotong stiker. */
+  outer.position[inf.axis]=inf.layer*1.61;
+  outer.add(inner);
+
+  arcs.forEach(function(spec){
     var pts=[];
-    for(i=0;i<=34;i++){
-      var th=off+sgn*arcLen*i/34;
+    for(i=0;i<=30;i++){
+      var th=spec.off+sgn*spec.len*i/30;
       pts.push(new THREE.Vector3(Math.cos(th)*FX_R,Math.sin(th)*FX_R,0));
     }
-    var tg=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),48,.064,10,false),
-        tm=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0,depthTest:false,blending:THREE.AdditiveBlending});
-    var tube=new THREE.Mesh(tg,tm);tube.renderOrder=20;inner.add(tube);
 
-    var te=off+sgn*arcLen,
-        cg=new THREE.ConeGeometry(.16,.40,18),
-        cm=new THREE.MeshBasicMaterial({color:col.clone().lerp(new THREE.Color(0xffffff),.48),transparent:true,opacity:0,depthTest:false,blending:THREE.AdditiveBlending});
-    var cone=new THREE.Mesh(cg,cm),tx=-Math.sin(te)*sgn,ty=Math.cos(te)*sgn;
+    var tg=new THREE.TubeGeometry(
+          new THREE.CatmullRomCurve3(pts),42,spec.tube,8,false
+        ),
+        tm=new THREE.MeshBasicMaterial({
+          color:col,transparent:true,opacity:0,depthTest:false,depthWrite:false,
+          blending:THREE.AdditiveBlending
+        }),
+        tube=new THREE.Mesh(tg,tm);
+
+    tube.renderOrder=30;
+    inner.add(tube);
+
+    var te=spec.off+sgn*spec.len,
+        cg=new THREE.ConeGeometry(spec.coneR,spec.coneH,16),
+        cm=new THREE.MeshBasicMaterial({
+          color:col.clone().lerp(new THREE.Color(0xffffff),.30),
+          transparent:true,opacity:0,depthTest:false,depthWrite:false,
+          blending:THREE.AdditiveBlending
+        }),
+        cone=new THREE.Mesh(cg,cm),
+        tx=-Math.sin(te)*sgn,
+        ty=Math.cos(te)*sgn;
+
     cone.position.set(Math.cos(te)*FX_R,Math.sin(te)*FX_R,0);
-    cone.rotation.z=Math.atan2(ty,tx)-Math.PI/2;cone.renderOrder=21;inner.add(cone);
-    mats.push(tm,cm);geos.push(tg,cg);
+    cone.rotation.z=Math.atan2(ty,tx)-Math.PI/2;
+    cone.renderOrder=31;
+    inner.add(cone);
+
+    mats.push(tm,cm);
+    weights.push(spec.alpha,spec.alpha*.94);
+    geos.push(tg,cg);
   });
 
-  /* Partikel mengikuti arah rotasi; jumlah adaptif: mobile ringan, IFP lebih kaya. */
-  var ui=document.body.dataset.ui,N=ui==='mobile'?34:ui==='ifp'?88:58,T=ui==='mobile'?4:6,
-      P=new Float32Array(N*T*3),C=new Float32Array(N*T*3),seed=[];
-  for(i=0;i<N;i++)seed.push({
-    a:Math.random()*Math.PI*2,
-    r:1.72+Math.random()*.92,
-    z:(Math.random()-.5)*1.35,
-    v:.72+Math.random()*1.15,
-    w:Math.random()*Math.PI*2
-  });
+  /* Particle trail hanya mengikuti busur utama, bukan seluruh keliling kubus. */
+  var N=ui==='mobile'?16:ui==='ifp'?34:24,
+      T=ui==='mobile'?2:3,
+      P=new Float32Array(N*T*3),
+      C=new Float32Array(N*T*3),
+      seed=[],
+      primaryLen=arcs[0].len,
+      primaryOff=arcs[0].off;
+
+  for(i=0;i<N;i++){
+    seed.push({
+      u:.06+Math.random()*.88,
+      r:FX_R+(Math.random()-.5)*.075,
+      z:(Math.random()-.5)*(ui==='mobile'?.18:.24),
+      v:.15+Math.random()*.28,
+      w:Math.random()*Math.PI*2
+    });
+  }
+
   var g=new THREE.BufferGeometry();
   g.setAttribute('position',new THREE.BufferAttribute(P,3));
   g.setAttribute('color',new THREE.BufferAttribute(C,3));
+
   var pm=new THREE.PointsMaterial({
-    size:ui==='mobile'?.072:.085,vertexColors:true,transparent:true,
-    blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:true
+    size:ui==='mobile'?.060:.073,
+    vertexColors:true,
+    transparent:true,
+    opacity:.92,
+    blending:THREE.AdditiveBlending,
+    depthWrite:false,
+    depthTest:false,
+    sizeAttenuation:true
   });
-  var pts3=new THREE.Points(g,pm);pts3.renderOrder=22;pts3.frustumCulled=false;outer.add(pts3);
+
+  var pts3=new THREE.Points(g,pm);
+  pts3.renderOrder=32;
+  pts3.frustumCulled=false;
+  inner.add(pts3);
+
   scene3.add(outer);
-  return{outer:outer,inner:inner,mats:mats,geos:geos,g:g,pm:pm,P:P,C:C,seed:seed,N:N,T:T,sgn:sgn,t0:performance.now(),pc:col};
+
+  return{
+    outer:outer,inner:inner,mats:mats,weights:weights,geos:geos,
+    g:g,pm:pm,P:P,C:C,seed:seed,N:N,T:T,sgn:sgn,
+    t0:performance.now(),pc:col,primaryLen:primaryLen,primaryOff:primaryOff
+  };
 }
+
 function fxUpdate(tw,q,t){
-  var f=tw.fx,env=Math.min(1,q*7)*(1-Math.pow(Math.max(0,(q-.84)/.16),2)),
-      elapsed=(t-f.t0)/1000,i,k,n=0;
-  f.inner.rotation.z=tw.pivot.rotation[tw.axis];
-  var pulse=.74+.26*Math.sin(elapsed*12);
-  f.mats.forEach(function(m){m.opacity=env*pulse});
+  var f=tw.fx,
+      /* smooth fade in/out: guide terlihat, lalu bersih sebelum move selesai */
+      env=Math.min(1,q*8)*Math.min(1,(1-q)*7.5),
+      elapsed=(t-f.t0)/1000,
+      i,k,n=0,
+      lead=tw.pivot.rotation[tw.axis],
+      pulse=.88+.12*Math.sin(elapsed*9);
+
+  f.inner.rotation.z=lead;
+
+  f.mats.forEach(function(m,idx){
+    m.opacity=env*pulse*f.weights[idx];
+  });
 
   for(i=0;i<f.N;i++){
-    var s=f.seed[i],lead=tw.pivot.rotation[tw.axis];
+    var s=f.seed[i];
     for(k=0;k<f.T;k++){
-      var th=s.a+f.sgn*(elapsed*s.v*3.5)+lead*.68-f.sgn*k*.09,
-          r=s.r+Math.sin(elapsed*3.3+s.w+k*.25)*.075+k*.014,
-          z=s.z+Math.sin(elapsed*4.7+s.w)*.13,
-          fade=(1-k/f.T)*env;
-      f.P[n]=Math.cos(th)*r;f.P[n+1]=Math.sin(th)*r;f.P[n+2]=z;
-      f.C[n]=Math.min(1,(f.pc.r+.28)*fade);
-      f.C[n+1]=Math.min(1,(f.pc.g+.28)*fade);
-      f.C[n+2]=Math.min(1,(f.pc.b+.28)*fade);
+      var trail=k*.055,
+          /* tetap berada di arc utama; bergerak searah rotasi layer */
+          u=(s.u+elapsed*s.v+lead/(Math.PI*2)*.45-trail)%1;
+      if(u<0)u+=1;
+
+      var th=f.primaryOff+f.sgn*f.primaryLen*u,
+          rr=s.r+Math.sin(elapsed*3.2+s.w+k*.7)*.018,
+          zz=s.z+Math.sin(elapsed*4.1+s.w)*.035,
+          fade=(1-k/f.T)*env*(.45+.55*Math.sin(Math.PI*u));
+
+      f.P[n]=Math.cos(th)*rr;
+      f.P[n+1]=Math.sin(th)*rr;
+      f.P[n+2]=zz;
+
+      f.C[n]=Math.min(1,(f.pc.r+.18)*fade);
+      f.C[n+1]=Math.min(1,(f.pc.g+.18)*fade);
+      f.C[n+2]=Math.min(1,(f.pc.b+.18)*fade);
       n+=3;
     }
   }
-  f.g.attributes.position.needsUpdate=true;f.g.attributes.color.needsUpdate=true;
+
+  f.g.attributes.position.needsUpdate=true;
+  f.g.attributes.color.needsUpdate=true;
 }
-function fxDispose(f){scene3.remove(f.outer);f.geos.forEach(function(x){x.dispose()});f.mats.forEach(function(x){x.dispose()});f.g.dispose();f.pm.dispose()}
+
+function fxDispose(f){
+  scene3.remove(f.outer);
+  f.geos.forEach(function(x){x.dispose()});
+  f.mats.forEach(function(x){x.dispose()});
+  f.g.dispose();
+  f.pm.dispose();
+}
 
 /* ===== Mulai ===== */
 initSettings();applyLayout();initControls();initScan();initVision();init3D();render();placePanel();
