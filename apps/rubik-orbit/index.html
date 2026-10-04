@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3.2.4 — IFP Vision</title>
+<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3.3 — IFP Vision</title>
 <meta name="description" content="Rubik 3x3 interaktif dengan diagram orbit lingkaran, Vision AI (gestur tangan, pindai kubus asli) untuk IFP, desktop, dan HP.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23182429'/%3E%3Ccircle cx='25' cy='24' r='17' fill='none' stroke='%237be4c5' stroke-width='3'/%3E%3Ccircle cx='39' cy='24' r='17' fill='none' stroke='%23f7ca54' stroke-width='3'/%3E%3Ccircle cx='32' cy='39' r='17' fill='none' stroke='%23ff6f68' stroke-width='3'/%3E%3C/svg%3E">
 <style>
@@ -163,10 +163,82 @@ body[data-ui=mobile] .net{grid-template-columns:repeat(4,3.2rem);grid-template-r
 body[data-ui=mobile] .creatorTop{font-size:.62rem;max-width:74vw}
 .cubePane::after{content:"Drag/zoom view kapan saja · solver tetap berjalan";position:absolute;left:.7rem;bottom:.55rem;z-index:5;color:rgba(237,246,244,.45);font-size:.62rem;pointer-events:none}
 body[data-ui=mobile] .cubePane::after{font-size:.56rem;left:.55rem;bottom:.4rem}
+
+/* ===== v3.3 · Orbit Mathematics v2 ===== */
+.orbitPane{overflow:hidden}
+.orbit-math-head{position:absolute;left:0;right:0;top:0;height:3rem;z-index:4;background:linear-gradient(180deg,rgba(16,27,31,.96),rgba(16,27,31,.55),transparent);pointer-events:none}
+.orbit-math-head .stage-title{position:absolute}
+.orbit-math-key{position:absolute;right:.8rem;top:.78rem;color:#718b91;font-size:.62rem;font-weight:800;letter-spacing:.04em}
+.orbit-math{
+  position:absolute;inset:3rem .65rem .65rem;
+  display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:.48rem;
+  overflow:hidden
+}
+.orbit-card{
+  --axis:#72e3c2;
+  position:relative;min-height:0;display:grid;grid-template-columns:minmax(7.8rem,34%) minmax(0,1fr);
+  align-items:center;gap:.65rem;padding:.48rem .65rem;
+  border:1px solid #304850;border-radius:1rem;
+  background:linear-gradient(135deg,rgba(13,28,33,.88),rgba(9,20,24,.72));
+  opacity:.72;transition:opacity .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+  overflow:hidden
+}
+.orbit-card::after{
+  content:"";position:absolute;inset:auto -2.5rem -3.5rem auto;width:9rem;height:9rem;border-radius:50%;
+  border:1px solid color-mix(in srgb,var(--axis) 32%,transparent);opacity:.35;pointer-events:none
+}
+.orbit-card.active{
+  opacity:1;border-color:color-mix(in srgb,var(--axis) 72%,#49626a);
+  box-shadow:inset .18rem 0 0 var(--axis),0 0 1.35rem color-mix(in srgb,var(--axis) 12%,transparent);
+  transform:translateX(.08rem)
+}
+.orbit-card.inactive{opacity:.46}
+.orbit-visual{min-width:0;height:100%;display:grid;place-items:center}
+.orbit-card svg{position:relative!important;inset:auto!important;width:100%!important;height:100%!important;max-height:8.3rem;display:block}
+.orbit-copy{min-width:0;align-self:center}
+.orbit-topline{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.28rem}
+.orbit-axis-pill,.orbit-move-pill{
+  border:1px solid color-mix(in srgb,var(--axis) 55%,#31464d);border-radius:999px;padding:.18rem .46rem;
+  font-size:.63rem;font-weight:950;letter-spacing:.04em;white-space:nowrap
+}
+.orbit-axis-pill{color:var(--axis);background:color-mix(in srgb,var(--axis) 9%,#09161a)}
+.orbit-move-pill{color:#eaf4f2;background:#102126}
+.orbit-card:not(.active) .orbit-move-pill{color:#789096;border-color:#31464d}
+.orbit-title{display:block;color:#eef7f5;font-size:.82rem;line-height:1.18}
+.orbit-cycle{
+  margin-top:.28rem;color:var(--axis);font:900 .76rem/1.25 ui-monospace,SFMono-Regular,Consolas,monospace;
+  white-space:normal
+}
+.orbit-desc{display:block;margin-top:.25rem;color:#8da5aa;font-size:.64rem;line-height:1.28}
+.orbit-strip-note{display:block;margin-top:.18rem;color:#667f85;font-size:.58rem}
+.orbit-face-label{fill:#d9e8e6;font:900 12px system-ui}
+.orbit-center-label{fill:#eef8f6;font:950 13px system-ui}
+.orbit-center-sub{fill:#91a8ad;font:800 9px system-ui}
+.orbit-ring{fill:none;stroke-width:2}
+.orbit-card.active .orbit-ring{filter:url(#orbitGlow)}
+.orbit-flow{fill:none;stroke-width:4;stroke-linecap:round}
+.orbit-packet{filter:url(#orbitGlow)}
+.orbit-card.active .orbit-packet{animation:orbitPulse .78s ease-in-out infinite alternate}
+@keyframes orbitPulse{from{opacity:.38}to{opacity:1}}
+body.nomotion .orbit-packet{animation:none}
+html.stack .orbit-math-key{display:none}
+body[data-ui=mobile] .stage{grid-template-rows:23rem 34rem}
+body[data-ui=mobile] .orbit-math{inset:2.65rem .45rem .45rem;gap:.34rem}
+body[data-ui=mobile] .orbit-card{grid-template-columns:6.7rem minmax(0,1fr);gap:.42rem;padding:.38rem .48rem;border-radius:.8rem}
+body[data-ui=mobile] .orbit-card svg{max-height:8rem}
+body[data-ui=mobile] .orbit-title{font-size:.75rem}
+body[data-ui=mobile] .orbit-cycle{font-size:.66rem}
+body[data-ui=mobile] .orbit-desc{font-size:.58rem}
+body[data-ui=mobile] .orbit-strip-note{display:none}
+body[data-ui=ifp] .orbit-card{grid-template-columns:minmax(10rem,32%) minmax(0,1fr);padding:.7rem .85rem}
+body[data-ui=ifp] .orbit-card svg{max-height:10rem}
+body[data-ui=ifp] .orbit-title{font-size:1rem}
+body[data-ui=ifp] .orbit-cycle{font-size:.9rem}
+
 </style></head>
 <body data-ui="desk"><div class="app">
 <header>
-  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.2.4 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
+  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.3 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
   <div class="live" id="live" role="status" aria-live="polite">Menyiapkan solver</div>
   <div class="actions">
     <a class="iconBtn pilarHub" href="../../" title="Kembali ke PILAR Hub" aria-label="PILAR Hub">←</a>
@@ -192,9 +264,11 @@ body[data-ui=mobile] .cubePane::after{font-size:.56rem;left:.55rem;bottom:.4rem}
     <div class="move-float" id="moveFloat">R</div>
   </section>
   <section class="orbitPane">
-    <span class="stage-title">Diagram orbit warna</span>
-    <div class="axis-legend"><span><i style="background:#72e3c2"></i>U/D</span><span><i style="background:#f5cc59"></i>F/B</span><span><i style="background:#ff716b"></i>R/L</span></div>
-    <svg id="orbit" viewBox="0 0 760 540" aria-label="Tiga lingkaran orbit Rubik"></svg>
+    <div class="orbit-math-head">
+      <span class="stage-title">Orbit Mathematics v2</span>
+      <span class="orbit-math-key">FACE = rotor · 4 pita = siklus permutasi</span>
+    </div>
+    <div id="orbit" class="orbit-math" aria-label="Tiga kartu orbit matematika Rubik" aria-live="polite"></div>
   </section>
 </main>
 <aside class="card side">
@@ -283,8 +357,20 @@ var F=['U','R','F','D','L','B'],COL={U:'#f2f1ed',R:'#e84a3b',F:'#18b957',D:'#f2c
 var SOLVED='UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB';
 var facelets=SOLVED.split('');
 var cube=null,ready=false,busy=false,queue=[],history=[],solution=[],step=0,paint='F',playTimer=null,prime=false;
-var circles=[{x:380,y:150,r:165,c:'#72e3c2'},{x:275,y:320,r:165,c:'#f5cc59'},{x:485,y:320,r:165,c:'#ff716b'}];
-var nodes={U:{x:215,y:166},R:{x:545,y:166},F:{x:380,y:193},L:{x:321,y:304},B:{x:439,y:304},D:{x:380,y:447}};
+var ORBITS=[
+  {id:'UD',name:'U/D',color:'#72e3c2',faces:['F','R','B','L'],rotors:'U atau D',desc:'Layer atas/bawah. Empat pita samping F–R–B–L membentuk satu siklus.'},
+  {id:'FB',name:'F/B',color:'#f5cc59',faces:['U','L','D','R'],rotors:'F atau B',desc:'Layer depan/belakang. Pita U–L–D–R membentuk satu siklus.'},
+  {id:'RL',name:'R/L',color:'#ff716b',faces:['U','F','D','B'],rotors:'R atau L',desc:'Layer kanan/kiri. Pita U–F–D–B membentuk satu siklus.'}
+];
+/* Indeks facelet URFDLB. Setiap entri adalah tiga stiker pita yang ikut berpindah. */
+var ORBIT_STRIPS={
+  U:{F:[18,19,20],R:[9,10,11],B:[45,46,47],L:[36,37,38]},
+  D:{F:[24,25,26],R:[15,16,17],B:[51,52,53],L:[42,43,44]},
+  F:{U:[6,7,8],L:[38,41,44],D:[27,28,29],R:[9,12,15]},
+  B:{U:[0,1,2],L:[36,39,42],D:[33,34,35],R:[11,14,17]},
+  R:{U:[2,5,8],F:[20,23,26],D:[29,32,35],B:[45,48,51]},
+  L:{U:[0,3,6],F:[18,21,24],D:[27,30,33],B:[47,50,53]}
+};
 var FN={U:'atas',D:'bawah',F:'depan',B:'belakang',R:'kanan',L:'kiri'};
 function el(id){return document.getElementById(id)}
 function $$(s){return Array.prototype.slice.call(document.querySelectorAll(s))}
@@ -351,62 +437,95 @@ function validColors(){var n=colorCount();return F.every(function(f){return n[f]
 function ensureCube(){if(!ready)throw Error('Mesin solver belum termuat. Pastikan internet aktif.');if(!validColors())throw Error('Jumlah setiap warna harus tepat 9.');if(!cube)cube=Cube.fromString(facelets.join(''));return cube}
 function sync(){facelets=cube.asString().split('');render()}
 
-/* ===== Diagram orbit ===== */
-function cluster(face){
-  var p=nodes[face],start=F.indexOf(face)*9,out='<g class="cluster">';
-  for(var i=0;i<9;i++){var row=Math.floor(i/3),col=i%3,x=p.x+(col-1)*9,y=p.y+(row-1)*9;out+='<circle cx="'+x+'" cy="'+y+'" r="'+(i===4?4.4:3.8)+'" fill="'+COL[facelets[start+i]]+'" stroke="#142126" stroke-width="1.2"/>'}
-  return out+'<text x="'+(p.x+18)+'" y="'+(p.y-13)+'" fill="#aebfc2" font-size="12" font-weight="800">'+face+'</text></g>';
+/* ===== Orbit Mathematics v2 ===== */
+function orbitOrder(ai){return ORBITS[ai].faces.slice()}
+function orbitMoveOrder(m){
+  var a=axisOf(m),order=orbitOrder(a),dir=directionOf(m);
+  if(dir<0)order=[order[0]].concat(order.slice(1).reverse());
+  return order;
 }
-function orbitBase(active){
-  var out='<defs><filter id="glow"><feGaussianBlur stdDeviation="2.7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
-  circles.forEach(function(c,ci){[-10,0,10].forEach(function(o,j){out+='<circle cx="'+c.x+'" cy="'+c.y+'" r="'+(c.r+o)+'" fill="none" stroke="'+c.c+'" stroke-opacity="'+(active===ci?(j===1?'.95':'.48'):(j===1?'.48':'.2'))+'" stroke-width="'+(active===ci&&j===1?'2.7':'1.2')+'" '+(active===ci?'filter="url(#glow)"':'')+'/>'})});
-  out+='<path d="M215 166 L380 193 L545 166 L439 304 L380 447 L321 304 Z" fill="none" stroke="#566c72" stroke-opacity=".28" stroke-dasharray="4 7"/>';
-  F.forEach(function(f){out+=cluster(f)});return out;
+function orbitCycleText(m){
+  var order=orbitMoveOrder(m);
+  if(m.indexOf('2')>-1)return order[0]+' ↔ '+order[2]+' · '+order[1]+' ↔ '+order[3];
+  return order.join(' → ')+' → '+order[0];
 }
-function orbitName(ai){return ['U/D','F/B','R/L'][ai]||'—'}
-function orbitPoint(c,r,deg){
-  var a=deg*Math.PI/180;
-  return{x:c.x+Math.cos(a)*r,y:c.y+Math.sin(a)*r};
+function stripColors(moveFace,face,active){
+  if(!active)return [face,face,face];
+  var idx=ORBIT_STRIPS[moveFace]&&ORBIT_STRIPS[moveFace][face];
+  return idx?idx.map(function(i){return facelets[i]}):[face,face,face];
 }
-function orbitGuide(move,dur){
-  var ai=axisOf(move),c=circles[ai],face=move.charAt(0),col=COL[face]||c.c,
-      turn=directionOf(move),sgn=turn>=0?1:-1,doubleTurn=Math.abs(turn)===2,
-      span=doubleTurn?178:96,r=c.r+7,start=-90,end=start+sgn*span,
-      p1=orbitPoint(c,r,start),p2=orbitPoint(c,r,end),sweep=sgn>0?1:0,
-      orbit=orbitName(ai),dir=move.indexOf("'")>-1?'↺':'↻',angle=doubleTurn?'180°':'90°',
-      label=move+' · '+orbit+' · '+dir+' '+angle,
-      path='M '+p1.x.toFixed(1)+' '+p1.y.toFixed(1)+' A '+r+' '+r+' 0 0 '+sweep+' '+p2.x.toFixed(1)+' '+p2.y.toFixed(1),out='';
+function orbitArrowPath(dir,doubleTurn){
+  if(doubleTurn)return '';
+  return dir>0
+    ? 'M44 29 A43 43 0 1 1 104 29'
+    : 'M104 29 A43 43 0 1 0 44 29';
+}
+function orbitNode(face,x,y,colors,active){
+  var out='<g transform="translate('+x+' '+y+')">';
+  out+='<rect x="-25" y="-12" width="50" height="24" rx="10" fill="#0b191d" fill-opacity=".96" stroke="'+(active?'#60777d':'#32474d')+'" stroke-width="1"/>';
+  out+='<text class="orbit-face-label" x="-17" y="4">'+face+'</text>';
+  for(var i=0;i<3;i++){
+    out+='<circle cx="'+(1+i*8)+'" cy="0" r="3.5" fill="'+COL[colors[i]]+'" stroke="#081114" stroke-width=".8"/>';
+  }
+  out+='</g>';return out;
+}
+function orbitSvg(ai,m,dur){
+  var cfg=ORBITS[ai],active=!!m&&axisOf(m)===ai,face=active?m.charAt(0):'',
+      order=cfg.faces,dir=active?directionOf(m):1,doubleTurn=active&&m.indexOf('2')>-1,
+      marker='oa'+ai,out='<svg viewBox="0 0 150 120" aria-hidden="true">';
 
-  out+='<defs><marker id="orbitArrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 z" fill="'+col+'"/></marker></defs>';
-  out+='<circle cx="'+c.x+'" cy="'+c.y+'" r="'+c.r+'" fill="none" stroke="'+col+'" stroke-opacity=".14" stroke-width="5" filter="url(#glow)"/>';
-  out+='<path d="'+path+'" fill="none" stroke="'+col+'" stroke-width="3.4" stroke-linecap="round" stroke-opacity=".96" marker-end="url(#orbitArrow)" filter="url(#glow)">';
-  if(!settings.motion)out+='<animate attributeName="stroke-dasharray" values="2 12;10 7;2 12" dur="'+Math.max(.5,dur*.95)+'s" repeatCount="indefinite"/>';
-  out+='</path>';
+  out+='<defs><filter id="orbitGlow"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  out+='<marker id="'+marker+'" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L10 5 L0 10 z" fill="'+cfg.color+'"/></marker></defs>';
 
-  var dots=document.body.dataset.ui==='mobile'?4:6;
-  for(var i=0;i<dots;i++){
-    var t=(i+1)/(dots+1),ang=start+sgn*span*t,p=orbitPoint(c,r,ang),delay=(i/dots)*Math.max(.55,dur);
-    out+='<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="2.2" fill="'+col+'" opacity=".55">';
-    if(!settings.motion)out+='<animate attributeName="opacity" values=".15;.9;.15" dur="'+Math.max(.55,dur)+'s" begin="'+delay.toFixed(2)+'s" repeatCount="indefinite"/>';
-    out+='</circle>';
+  out+='<circle class="orbit-ring" cx="74" cy="60" r="43" stroke="'+cfg.color+'" stroke-opacity="'+(active?'.72':'.24')+'"/>';
+
+  if(active&&!doubleTurn){
+    var p=orbitArrowPath(dir,doubleTurn);
+    out+='<path class="orbit-flow" d="'+p+'" stroke="'+cfg.color+'" stroke-opacity=".94" marker-end="url(#'+marker+')" filter="url(#orbitGlow)"/>';
+    if(!settings.motion){
+      for(var q=0;q<3;q++){
+        out+='<circle class="orbit-packet" r="2.4" fill="'+cfg.color+'"><animateMotion dur="'+Math.max(.48,dur||.58)+'s" begin="'+(q*.12).toFixed(2)+'s" repeatCount="indefinite" path="'+p+'"/></circle>';
+      }
+    }
+  }else if(active&&doubleTurn){
+    out+='<path class="orbit-flow" d="M31 60 A43 43 0 0 1 117 60" stroke="'+cfg.color+'" stroke-opacity=".88" marker-end="url(#'+marker+')"/>';
+    out+='<path class="orbit-flow" d="M117 66 A43 43 0 0 1 31 66" stroke="'+cfg.color+'" stroke-opacity=".55" marker-end="url(#'+marker+')"/>';
   }
 
-  out+='<g aria-hidden="true"><rect x="286" y="49" width="188" height="32" rx="14" fill="#071417" fill-opacity=".90" stroke="'+col+'" stroke-width="1.1"/>';
-  out+='<text x="380" y="69" text-anchor="middle" fill="#f3fbf9" font-size="12" font-weight="900">'+label+'</text></g>';
-  return out;
+  var pos=[{x:74,y:16},{x:128,y:60},{x:74,y:104},{x:20,y:60}];
+  order.forEach(function(f,i){
+    out+=orbitNode(f,pos[i].x,pos[i].y,stripColors(face,f,active),active);
+  });
+
+  out+='<circle cx="74" cy="60" r="21" fill="#09171b" stroke="'+cfg.color+'" stroke-opacity="'+(active?'.72':'.24')+'" stroke-width="1.4"/>';
+  out+='<text class="orbit-center-label" x="74" y="57" text-anchor="middle">'+(active?face:cfg.name)+'</text>';
+  out+='<text class="orbit-center-sub" x="74" y="70" text-anchor="middle">'+(active?(doubleTurn?'180°':(m.indexOf("'")>-1?'↺ 90°':'↻ 90°')):'AXIS')+'</text>';
+  return out+'</svg>';
 }
-function runner(move,dur){
-  var ai=axisOf(move),c=circles[ai],turn=directionOf(move),ang=turn*90,colors=[],fi=F.indexOf(move.charAt(0))*9;
-  for(var k=0;k<9;k++)colors.push(facelets[fi+k]);for(var j=0;j<12;j++)colors.push(facelets[(fi+9+j*4)%54]);
-  var g='<g id="runner">';colors.forEach(function(co,i){var lane=(i%3-1)*10,a=(Math.floor(i/3)/7)*Math.PI*2,x=c.x+Math.cos(a)*(c.r+lane),y=c.y+Math.sin(a)*(c.r+lane);g+='<circle cx="'+x+'" cy="'+y+'" r="4.2" fill="'+COL[co]+'" stroke="#10191c" stroke-width="1.2"/>'});
-  g+='<animateTransform attributeName="transform" type="rotate" from="0 '+c.x+' '+c.y+'" to="'+ang+' '+c.x+' '+c.y+'" dur="'+dur+'s" fill="freeze" calcMode="spline" keySplines=".3 .05 .25 1" keyTimes="0;1"/></g>';
-  return g;
+function orbitCard(ai,m,dur){
+  var cfg=ORBITS[ai],active=!!m&&axisOf(m)===ai,
+      moveLabel=active?m+' · '+(m.indexOf('2')>-1?'180°':(m.indexOf("'")>-1?'↺ 90°':'↻ 90°')):'siap',
+      cycle=active?orbitCycleText(m):'Anggota orbit: '+cfg.faces.join(' · '),
+      title=active?'Pita aktif: '+cfg.faces.join(' · '):cfg.rotors+' menggerakkan '+cfg.faces.join('–'),
+      cls='orbit-card '+(active?'active':'inactive');
+
+  if(!m)cls='orbit-card';
+
+  return '<article class="'+cls+'" style="--axis:'+cfg.color+'">'
+    +'<div class="orbit-visual">'+orbitSvg(ai,m,dur)+'</div>'
+    +'<div class="orbit-copy">'
+      +'<div class="orbit-topline"><span class="orbit-axis-pill">AXIS '+cfg.name+'</span><span class="orbit-move-pill">'+moveLabel+'</span></div>'
+      +'<b class="orbit-title">'+title+'</b>'
+      +'<div class="orbit-cycle">'+cycle+'</div>'
+      +'<small class="orbit-desc">'+cfg.desc+'</small>'
+      +'<small class="orbit-strip-note">'+(active?'Tiga titik pada tiap node = tiga stiker pita yang sedang dipindahkan.':'Pilih U/R/F/D/L/B untuk melihat pita aktual dan arah permutasinya.')+'</small>'
+    +'</div>'
+  +'</article>';
 }
 function drawOrbit(move,dur){
-  var svg=el('orbit'),active=move?axisOf(move):-1,out=orbitBase(active);
-  if(move)out+=orbitGuide(move,dur||.58);
-  if(move&&!settings.motion)out+=runner(move,dur);
-  svg.innerHTML=out;
+  var box=el('orbit'),out='';
+  for(var ai=0;ai<ORBITS.length;ai++)out+=orbitCard(ai,move,dur||.58);
+  box.innerHTML=out;
 }
 
 /* ===== Rubik 3D (WebGL) ===== */
@@ -530,9 +649,13 @@ function renderSolution(){
 }
 function render(){drawOrbit();updateCube3();renderSolution();renderEditor();el('counter').textContent=history.length+' gerakan';validate()}
 function explain(m){
-  var names=['vertikal U/D','diagonal F/B','diagonal R/L'],a=axisOf(m),n=m.indexOf('2')>-1?'180°':'90°',cy=m.indexOf('2')>-1?'2 × siklus 4':'siklus 4';
-  el('axisText').textContent=names[a];el('angleText').textContent=n;el('cycleText').textContent=cy;
-  el('notice').textContent='Gerakan '+m+': '+describe(m)+'. Memindahkan empat pita tepi pada orbit '+names[a]+'.';
+  var a=axisOf(m),cfg=ORBITS[a],n=m.indexOf('2')>-1?'180°':'90°',
+      cy=m.indexOf('2')>-1?'2 pasang swap':'siklus 4',
+      perm=orbitCycleText(m);
+  el('axisText').textContent='sumbu '+cfg.name;
+  el('angleText').textContent=n;
+  el('cycleText').textContent=cy;
+  el('notice').textContent='Gerakan '+m+': '+describe(m)+'. Permutasi pita: '+perm+'. Face '+m.charAt(0)+' adalah rotor; empat pita di orbit '+cfg.name+' berpindah.';
 }
 function flashMove(m){var f=el('moveFloat');f.textContent=m;f.classList.remove('show');void f.offsetWidth;f.classList.add('show')}
 function moveAnimated(m,record,done){
