@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3.3 — IFP Vision</title>
+<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3.4 — IFP Vision</title>
 <meta name="description" content="Rubik 3x3 interaktif dengan diagram orbit lingkaran, Vision AI (gestur tangan, pindai kubus asli) untuk IFP, desktop, dan HP.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23182429'/%3E%3Ccircle cx='25' cy='24' r='17' fill='none' stroke='%237be4c5' stroke-width='3'/%3E%3Ccircle cx='39' cy='24' r='17' fill='none' stroke='%23f7ca54' stroke-width='3'/%3E%3Ccircle cx='32' cy='39' r='17' fill='none' stroke='%23ff6f68' stroke-width='3'/%3E%3C/svg%3E">
 <style>
@@ -164,81 +164,110 @@ body[data-ui=mobile] .creatorTop{font-size:.62rem;max-width:74vw}
 .cubePane::after{content:"Drag/zoom view kapan saja · solver tetap berjalan";position:absolute;left:.7rem;bottom:.55rem;z-index:5;color:rgba(237,246,244,.45);font-size:.62rem;pointer-events:none}
 body[data-ui=mobile] .cubePane::after{font-size:.56rem;left:.55rem;bottom:.4rem}
 
-/* ===== v3.3 · Orbit Mathematics v2 ===== */
+/* ===== v3.4 · Orbit Mathematics Hybrid ===== */
 .orbitPane{overflow:hidden}
-.orbit-math-head{position:absolute;left:0;right:0;top:0;height:3rem;z-index:4;background:linear-gradient(180deg,rgba(16,27,31,.96),rgba(16,27,31,.55),transparent);pointer-events:none}
+.orbit-math-head{
+  position:absolute;left:0;right:0;top:0;height:3rem;z-index:6;
+  background:linear-gradient(180deg,rgba(16,27,31,.98),rgba(16,27,31,.72),transparent);
+  pointer-events:none
+}
 .orbit-math-head .stage-title{position:absolute}
-.orbit-math-key{position:absolute;right:.8rem;top:.78rem;color:#718b91;font-size:.62rem;font-weight:800;letter-spacing:.04em}
-.orbit-math{
-  position:absolute;inset:3rem .65rem .65rem;
-  display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:.48rem;
+.orbit-math-key{position:absolute;right:.8rem;top:.78rem;color:#718b91;font-size:.62rem;font-weight:850;letter-spacing:.045em}
+.orbit-hybrid{
+  position:absolute;inset:2.85rem .55rem .55rem;
+  display:grid;grid-template-rows:minmax(0,1.55fr) minmax(9rem,.72fr);gap:.52rem;min-height:0
+}
+.orbit-overview-wrap,.orbit-detail{
+  position:relative;min-height:0;border:1px solid #2d454d;border-radius:1rem;
+  background:linear-gradient(145deg,rgba(13,28,33,.84),rgba(8,18,22,.74));
   overflow:hidden
 }
+.orbit-overview-wrap{
+  background:
+    radial-gradient(circle at 50% 48%,rgba(114,227,194,.045),transparent 48%),
+    linear-gradient(145deg,rgba(13,28,33,.84),rgba(8,18,22,.74))
+}
+.orbit-overview-head{
+  position:absolute;left:.7rem;right:.7rem;top:.55rem;z-index:3;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:.55rem;pointer-events:none
+}
+.orbit-overview-head b{display:block;color:#dceae8;font-size:.72rem;letter-spacing:.04em}
+.orbit-overview-head small{display:block;color:#718a90;font-size:.57rem;margin-top:.12rem}
+.orbit-overview-legend{display:flex;gap:.28rem;flex-wrap:wrap;justify-content:flex-end}
+.orbit-overview-legend span{
+  display:inline-flex;align-items:center;gap:.25rem;padding:.2rem .4rem;border:1px solid #314a52;border-radius:999px;
+  background:rgba(8,20,24,.78);color:#9db1b5;font-size:.56rem;font-weight:800;white-space:nowrap
+}
+.orbit-overview-legend i{width:.42rem;height:.42rem;border-radius:50%}
+#orbitOverview{position:absolute;inset:0;width:100%;height:100%;display:block}
+.orbit-detail{padding:.52rem .62rem}
+.orbit-detail.idle{
+  display:grid;place-items:center;text-align:center;border-style:dashed;background:rgba(7,18,22,.55)
+}
+.orbit-idle-inner{max-width:28rem;padding:.6rem}
+.orbit-idle-inner b{display:block;color:#dfecea;font-size:.85rem}
+.orbit-idle-inner p{margin:.28rem 0 0;color:#789096;font-size:.65rem;line-height:1.45}
+.orbit-idle-map{display:flex;justify-content:center;gap:.36rem;flex-wrap:wrap;margin-top:.5rem}
+.orbit-idle-map span{padding:.22rem .42rem;border:1px solid #324b53;border-radius:999px;color:#9aafb3;font:800 .58rem/1 system-ui}
 .orbit-card{
   --axis:#72e3c2;
-  position:relative;min-height:0;display:grid;grid-template-columns:minmax(7.8rem,34%) minmax(0,1fr);
-  align-items:center;gap:.65rem;padding:.48rem .65rem;
-  border:1px solid #304850;border-radius:1rem;
-  background:linear-gradient(135deg,rgba(13,28,33,.88),rgba(9,20,24,.72));
-  opacity:.72;transition:opacity .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+  position:relative;height:100%;min-height:0;display:grid;grid-template-columns:minmax(7.3rem,31%) minmax(0,1fr);
+  align-items:center;gap:.65rem;padding:.32rem .55rem;
+  border:1px solid color-mix(in srgb,var(--axis) 64%,#35515a);border-radius:.82rem;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--axis) 7%,#0b1b20),rgba(7,17,21,.90));
+  box-shadow:inset .16rem 0 0 var(--axis),0 0 1.1rem color-mix(in srgb,var(--axis) 9%,transparent);
   overflow:hidden
 }
 .orbit-card::after{
-  content:"";position:absolute;inset:auto -2.5rem -3.5rem auto;width:9rem;height:9rem;border-radius:50%;
-  border:1px solid color-mix(in srgb,var(--axis) 32%,transparent);opacity:.35;pointer-events:none
+  content:"";position:absolute;right:-3.2rem;bottom:-4.2rem;width:9rem;height:9rem;border-radius:50%;
+  border:1px solid color-mix(in srgb,var(--axis) 25%,transparent);pointer-events:none
 }
-.orbit-card.active{
-  opacity:1;border-color:color-mix(in srgb,var(--axis) 72%,#49626a);
-  box-shadow:inset .18rem 0 0 var(--axis),0 0 1.35rem color-mix(in srgb,var(--axis) 12%,transparent);
-  transform:translateX(.08rem)
-}
-.orbit-card.inactive{opacity:.46}
 .orbit-visual{min-width:0;height:100%;display:grid;place-items:center}
-.orbit-card svg{position:relative!important;inset:auto!important;width:100%!important;height:100%!important;max-height:8.3rem;display:block}
+.orbit-card svg{position:relative!important;inset:auto!important;width:100%!important;height:100%!important;max-height:8.1rem;display:block}
 .orbit-copy{min-width:0;align-self:center}
-.orbit-topline{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.28rem}
-.orbit-axis-pill,.orbit-move-pill{
-  border:1px solid color-mix(in srgb,var(--axis) 55%,#31464d);border-radius:999px;padding:.18rem .46rem;
-  font-size:.63rem;font-weight:950;letter-spacing:.04em;white-space:nowrap
+.orbit-topline{display:flex;align-items:center;gap:.34rem;flex-wrap:wrap;margin-bottom:.24rem}
+.orbit-axis-pill,.orbit-move-pill,.orbit-state-pill{
+  border:1px solid color-mix(in srgb,var(--axis) 52%,#31464d);border-radius:999px;padding:.17rem .42rem;
+  font-size:.58rem;font-weight:950;letter-spacing:.04em;white-space:nowrap
 }
-.orbit-axis-pill{color:var(--axis);background:color-mix(in srgb,var(--axis) 9%,#09161a)}
+.orbit-axis-pill{color:var(--axis);background:color-mix(in srgb,var(--axis) 8%,#09161a)}
 .orbit-move-pill{color:#eaf4f2;background:#102126}
-.orbit-card:not(.active) .orbit-move-pill{color:#789096;border-color:#31464d}
-.orbit-title{display:block;color:#eef7f5;font-size:.82rem;line-height:1.18}
-.orbit-cycle{
-  margin-top:.28rem;color:var(--axis);font:900 .76rem/1.25 ui-monospace,SFMono-Regular,Consolas,monospace;
-  white-space:normal
-}
-.orbit-desc{display:block;margin-top:.25rem;color:#8da5aa;font-size:.64rem;line-height:1.28}
-.orbit-strip-note{display:block;margin-top:.18rem;color:#667f85;font-size:.58rem}
+.orbit-state-pill{color:#9fb4b7;border-color:#344e56;background:#0a181c}
+.orbit-title{display:block;color:#edf7f5;font-size:.8rem;line-height:1.18}
+.orbit-cycle{margin-top:.24rem;color:var(--axis);font:900 .73rem/1.25 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:normal}
+.orbit-desc{display:block;margin-top:.22rem;color:#8ba1a6;font-size:.61rem;line-height:1.3}
+.orbit-strip-note{display:block;margin-top:.16rem;color:#647d83;font-size:.55rem}
 .orbit-face-label{fill:#d9e8e6;font:900 12px system-ui}
 .orbit-center-label{fill:#eef8f6;font:950 13px system-ui}
 .orbit-center-sub{fill:#91a8ad;font:800 9px system-ui}
 .orbit-ring{fill:none;stroke-width:2}
-.orbit-card.active .orbit-ring{filter:url(#orbitGlow)}
 .orbit-flow{fill:none;stroke-width:4;stroke-linecap:round}
-.orbit-packet{filter:url(#orbitGlow)}
-.orbit-card.active .orbit-packet{animation:orbitPulse .78s ease-in-out infinite alternate}
+.orbit-packet{filter:url(#orbitGlow);animation:orbitPulse .78s ease-in-out infinite alternate}
 @keyframes orbitPulse{from{opacity:.38}to{opacity:1}}
 body.nomotion .orbit-packet{animation:none}
 html.stack .orbit-math-key{display:none}
-body[data-ui=mobile] .stage{grid-template-rows:23rem 34rem}
-body[data-ui=mobile] .orbit-math{inset:2.65rem .45rem .45rem;gap:.34rem}
-body[data-ui=mobile] .orbit-card{grid-template-columns:6.7rem minmax(0,1fr);gap:.42rem;padding:.38rem .48rem;border-radius:.8rem}
-body[data-ui=mobile] .orbit-card svg{max-height:8rem}
-body[data-ui=mobile] .orbit-title{font-size:.75rem}
-body[data-ui=mobile] .orbit-cycle{font-size:.66rem}
-body[data-ui=mobile] .orbit-desc{font-size:.58rem}
+body[data-ui=mobile] .stage{grid-template-rows:23rem 35rem}
+body[data-ui=mobile] .orbit-hybrid{inset:2.65rem .4rem .4rem;grid-template-rows:minmax(0,1.35fr) minmax(10.8rem,.88fr);gap:.36rem}
+body[data-ui=mobile] .orbit-overview-head{left:.45rem;right:.45rem;top:.4rem}
+body[data-ui=mobile] .orbit-overview-head small{display:none}
+body[data-ui=mobile] .orbit-overview-legend span{font-size:.49rem;padding:.16rem .3rem}
+body[data-ui=mobile] .orbit-detail{padding:.35rem}
+body[data-ui=mobile] .orbit-card{grid-template-columns:6.5rem minmax(0,1fr);gap:.38rem;padding:.3rem .42rem}
+body[data-ui=mobile] .orbit-card svg{max-height:7.5rem}
+body[data-ui=mobile] .orbit-title{font-size:.72rem}
+body[data-ui=mobile] .orbit-cycle{font-size:.62rem}
+body[data-ui=mobile] .orbit-desc{font-size:.55rem}
 body[data-ui=mobile] .orbit-strip-note{display:none}
-body[data-ui=ifp] .orbit-card{grid-template-columns:minmax(10rem,32%) minmax(0,1fr);padding:.7rem .85rem}
-body[data-ui=ifp] .orbit-card svg{max-height:10rem}
-body[data-ui=ifp] .orbit-title{font-size:1rem}
-body[data-ui=ifp] .orbit-cycle{font-size:.9rem}
+body[data-ui=ifp] .orbit-hybrid{grid-template-rows:minmax(0,1.65fr) minmax(10.5rem,.78fr)}
+body[data-ui=ifp] .orbit-card{grid-template-columns:minmax(9rem,29%) minmax(0,1fr);padding:.55rem .75rem}
+body[data-ui=ifp] .orbit-card svg{max-height:9.2rem}
+body[data-ui=ifp] .orbit-title{font-size:.92rem}
+body[data-ui=ifp] .orbit-cycle{font-size:.84rem}
 
 </style></head>
 <body data-ui="desk"><div class="app">
 <header>
-  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.3 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
+  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.4 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
   <div class="live" id="live" role="status" aria-live="polite">Menyiapkan solver</div>
   <div class="actions">
     <a class="iconBtn pilarHub" href="../../" title="Kembali ke PILAR Hub" aria-label="PILAR Hub">←</a>
@@ -265,10 +294,23 @@ body[data-ui=ifp] .orbit-cycle{font-size:.9rem}
   </section>
   <section class="orbitPane">
     <div class="orbit-math-head">
-      <span class="stage-title">Orbit Mathematics v2</span>
-      <span class="orbit-math-key">FACE = rotor · 4 pita = siklus permutasi</span>
+      <span class="stage-title">Orbit Mathematics</span>
+      <span class="orbit-math-key">Orbit Map → Detail Permutasi</span>
     </div>
-    <div id="orbit" class="orbit-math" aria-label="Tiga kartu orbit matematika Rubik" aria-live="polite"></div>
+    <div class="orbit-hybrid">
+      <section class="orbit-overview-wrap" aria-label="Peta tiga keluarga sumbu Rubik">
+        <div class="orbit-overview-head">
+          <div><b>Orbit Map</b><small>tiga keluarga sumbu rotasi</small></div>
+          <div class="orbit-overview-legend">
+            <span><i style="background:#72e3c2"></i>Sumbu U/D</span>
+            <span><i style="background:#f5cc59"></i>Sumbu F/B</span>
+            <span><i style="background:#ff716b"></i>Sumbu R/L</span>
+          </div>
+        </div>
+        <svg id="orbitOverview" viewBox="0 0 760 540" aria-label="Peta tiga orbit Rubik"></svg>
+      </section>
+      <section id="orbitDetail" class="orbit-detail" aria-live="polite" aria-label="Detail permutasi orbit aktif"></section>
+    </div>
   </section>
 </main>
 <aside class="card side">
@@ -356,7 +398,7 @@ body[data-ui=ifp] .orbit-cycle{font-size:.9rem}
 var F=['U','R','F','D','L','B'],COL={U:'#f2f1ed',R:'#e84a3b',F:'#18b957',D:'#f2ce18',L:'#f17824',B:'#2878c9'};
 var SOLVED='UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB';
 var facelets=SOLVED.split('');
-var cube=null,ready=false,busy=false,queue=[],history=[],solution=[],step=0,paint='F',playTimer=null,prime=false;
+var cube=null,ready=false,busy=false,queue=[],history=[],solution=[],step=0,paint='F',playTimer=null,prime=false,lastOrbitMove='';
 var ORBITS=[
   {id:'UD',name:'U/D',color:'#72e3c2',faces:['F','R','B','L'],rotors:'U atau D',desc:'Layer atas/bawah. Empat pita samping F–R–B–L membentuk satu siklus.'},
   {id:'FB',name:'F/B',color:'#f5cc59',faces:['U','L','D','R'],rotors:'F atau B',desc:'Layer depan/belakang. Pita U–L–D–R membentuk satu siklus.'},
@@ -437,7 +479,17 @@ function validColors(){var n=colorCount();return F.every(function(f){return n[f]
 function ensureCube(){if(!ready)throw Error('Mesin solver belum termuat. Pastikan internet aktif.');if(!validColors())throw Error('Jumlah setiap warna harus tepat 9.');if(!cube)cube=Cube.fromString(facelets.join(''));return cube}
 function sync(){facelets=cube.asString().split('');render()}
 
-/* ===== Orbit Mathematics v2 ===== */
+/* ===== Orbit Mathematics v3 · Hybrid Map + Active Detail ===== */
+var OV_CIRCLES=[
+  {x:380,y:150,r:165,c:'#72e3c2'},
+  {x:275,y:320,r:165,c:'#f5cc59'},
+  {x:485,y:320,r:165,c:'#ff716b'}
+];
+var OV_NODES={
+  U:{x:215,y:166},R:{x:545,y:166},F:{x:380,y:193},
+  L:{x:321,y:304},B:{x:439,y:304},D:{x:380,y:447}
+};
+
 function orbitOrder(ai){return ORBITS[ai].faces.slice()}
 function orbitMoveOrder(m){
   var a=axisOf(m),order=orbitOrder(a),dir=directionOf(m);
@@ -454,79 +506,132 @@ function stripColors(moveFace,face,active){
   var idx=ORBIT_STRIPS[moveFace]&&ORBIT_STRIPS[moveFace][face];
   return idx?idx.map(function(i){return facelets[i]}):[face,face,face];
 }
+
+/* ---------- OVERVIEW: peta tiga orbit lama ---------- */
+function overviewCluster(face){
+  var p=OV_NODES[face],start=F.indexOf(face)*9,out='<g class="cluster">';
+  for(var i=0;i<9;i++){
+    var row=Math.floor(i/3),col=i%3,x=p.x+(col-1)*9,y=p.y+(row-1)*9;
+    out+='<circle cx="'+x+'" cy="'+y+'" r="'+(i===4?4.4:3.8)+'" fill="'+COL[facelets[start+i]]+'" stroke="#142126" stroke-width="1.2"/>';
+  }
+  return out+'<text x="'+(p.x+18)+'" y="'+(p.y-13)+'" fill="#aebfc2" font-size="12" font-weight="800">'+face+'</text></g>';
+}
+function overviewBase(active){
+  var out='<defs><filter id="ovGlow"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+  OV_CIRCLES.forEach(function(c,ci){
+    [-9,0,9].forEach(function(o,j){
+      var on=active===ci;
+      out+='<circle cx="'+c.x+'" cy="'+c.y+'" r="'+(c.r+o)+'" fill="none" stroke="'+c.c+'" stroke-opacity="'+(on?(j===1?'.9':'.34'):(j===1?'.34':'.13'))+'" stroke-width="'+(on&&j===1?'2.5':'1.1')+'" '+(on?'filter="url(#ovGlow)"':'')+'/>';
+    });
+  });
+  out+='<path d="M215 166 L380 193 L545 166 L439 304 L380 447 L321 304 Z" fill="none" stroke="#566c72" stroke-opacity=".22" stroke-dasharray="4 8"/>';
+  F.forEach(function(f){out+=overviewCluster(f)});
+  return out;
+}
+function overviewPoint(c,r,deg){
+  var a=deg*Math.PI/180;return{x:c.x+Math.cos(a)*r,y:c.y+Math.sin(a)*r};
+}
+function overviewGuide(m,dur,live){
+  if(!m)return '';
+  var ai=axisOf(m),c=OV_CIRCLES[ai],face=m.charAt(0),col=COL[face]||c.c,
+      turn=directionOf(m),sgn=turn>=0?1:-1,doubleTurn=Math.abs(turn)===2,
+      span=doubleTurn?164:92,r=c.r+7,start=-88,
+      p1=overviewPoint(c,r,start),p2=overviewPoint(c,r,start+sgn*span),
+      sweep=sgn>0?1:0,marker='ovArrow',out='',
+      label=m+' · Sumbu '+ORBITS[ai].name+' · '+(doubleTurn?'180°':(m.indexOf("'")>-1?'↺ 90°':'↻ 90°')),
+      path='M '+p1.x.toFixed(1)+' '+p1.y.toFixed(1)+' A '+r+' '+r+' 0 0 '+sweep+' '+p2.x.toFixed(1)+' '+p2.y.toFixed(1);
+
+  out+='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L10 5 L0 10 z" fill="'+col+'"/></marker></defs>';
+  out+='<path d="'+path+'" fill="none" stroke="'+col+'" stroke-width="3.2" stroke-linecap="round" stroke-opacity=".92" marker-end="url(#'+marker+')" filter="url(#ovGlow)"/>';
+  if(live&&!settings.motion){
+    for(var q=0;q<3;q++){
+      out+='<circle r="3" fill="'+col+'" opacity=".8"><animateMotion dur="'+Math.max(.5,dur||.58)+'s" begin="'+(q*.13).toFixed(2)+'s" repeatCount="indefinite" path="'+path+'"/></circle>';
+    }
+  }
+  out+='<g><rect x="288" y="46" width="184" height="31" rx="14" fill="#071417" fill-opacity=".91" stroke="'+col+'" stroke-width="1.1"/>';
+  out+='<text x="380" y="66.5" text-anchor="middle" fill="#eef8f6" font-size="11.5" font-weight="900">'+label+'</text></g>';
+  return out;
+}
+
+/* ---------- DETAIL: satu orbit aktif ---------- */
 function orbitArrowPath(dir,doubleTurn){
   if(doubleTurn)return '';
-  return dir>0
-    ? 'M44 29 A43 43 0 1 1 104 29'
-    : 'M104 29 A43 43 0 1 0 44 29';
+  return dir>0?'M44 29 A43 43 0 1 1 104 29':'M104 29 A43 43 0 1 0 44 29';
 }
-function orbitNode(face,x,y,colors,active){
+function orbitNode(face,x,y,colors){
   var out='<g transform="translate('+x+' '+y+')">';
-  out+='<rect x="-25" y="-12" width="50" height="24" rx="10" fill="#0b191d" fill-opacity=".96" stroke="'+(active?'#60777d':'#32474d')+'" stroke-width="1"/>';
+  out+='<rect x="-25" y="-12" width="50" height="24" rx="10" fill="#0b191d" fill-opacity=".96" stroke="#60777d" stroke-width="1"/>';
   out+='<text class="orbit-face-label" x="-17" y="4">'+face+'</text>';
-  for(var i=0;i<3;i++){
-    out+='<circle cx="'+(1+i*8)+'" cy="0" r="3.5" fill="'+COL[colors[i]]+'" stroke="#081114" stroke-width=".8"/>';
-  }
-  out+='</g>';return out;
+  for(var i=0;i<3;i++)out+='<circle cx="'+(1+i*8)+'" cy="0" r="3.5" fill="'+COL[colors[i]]+'" stroke="#081114" stroke-width=".8"/>';
+  return out+'</g>';
 }
-function orbitSvg(ai,m,dur){
-  var cfg=ORBITS[ai],active=!!m&&axisOf(m)===ai,face=active?m.charAt(0):'',
-      order=cfg.faces,dir=active?directionOf(m):1,doubleTurn=active&&m.indexOf('2')>-1,
-      marker='oa'+ai,out='<svg viewBox="0 0 150 120" aria-hidden="true">';
+function detailSvg(ai,m,dur,live){
+  var cfg=ORBITS[ai],face=m.charAt(0),dir=directionOf(m),doubleTurn=m.indexOf('2')>-1,
+      marker='od'+ai,out='<svg viewBox="0 0 150 120" aria-hidden="true">';
 
   out+='<defs><filter id="orbitGlow"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
   out+='<marker id="'+marker+'" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L10 5 L0 10 z" fill="'+cfg.color+'"/></marker></defs>';
+  out+='<circle class="orbit-ring" cx="74" cy="60" r="43" stroke="'+cfg.color+'" stroke-opacity=".72"/>';
 
-  out+='<circle class="orbit-ring" cx="74" cy="60" r="43" stroke="'+cfg.color+'" stroke-opacity="'+(active?'.72':'.24')+'"/>';
-
-  if(active&&!doubleTurn){
-    var p=orbitArrowPath(dir,doubleTurn);
+  if(!doubleTurn){
+    var p=orbitArrowPath(dir,false);
     out+='<path class="orbit-flow" d="'+p+'" stroke="'+cfg.color+'" stroke-opacity=".94" marker-end="url(#'+marker+')" filter="url(#orbitGlow)"/>';
-    if(!settings.motion){
-      for(var q=0;q<3;q++){
-        out+='<circle class="orbit-packet" r="2.4" fill="'+cfg.color+'"><animateMotion dur="'+Math.max(.48,dur||.58)+'s" begin="'+(q*.12).toFixed(2)+'s" repeatCount="indefinite" path="'+p+'"/></circle>';
-      }
+    if(live&&!settings.motion){
+      for(var q=0;q<3;q++)out+='<circle class="orbit-packet" r="2.4" fill="'+cfg.color+'"><animateMotion dur="'+Math.max(.48,dur||.58)+'s" begin="'+(q*.12).toFixed(2)+'s" repeatCount="indefinite" path="'+p+'"/></circle>';
     }
-  }else if(active&&doubleTurn){
-    out+='<path class="orbit-flow" d="M31 60 A43 43 0 0 1 117 60" stroke="'+cfg.color+'" stroke-opacity=".88" marker-end="url(#'+marker+')"/>';
+  }else{
+    out+='<path class="orbit-flow" d="M31 60 A43 43 0 0 1 117 60" stroke="'+cfg.color+'" stroke-opacity=".9" marker-end="url(#'+marker+')"/>';
     out+='<path class="orbit-flow" d="M117 66 A43 43 0 0 1 31 66" stroke="'+cfg.color+'" stroke-opacity=".55" marker-end="url(#'+marker+')"/>';
   }
 
   var pos=[{x:74,y:16},{x:128,y:60},{x:74,y:104},{x:20,y:60}];
-  order.forEach(function(f,i){
-    out+=orbitNode(f,pos[i].x,pos[i].y,stripColors(face,f,active),active);
-  });
+  cfg.faces.forEach(function(f,i){out+=orbitNode(f,pos[i].x,pos[i].y,stripColors(face,f,true))});
 
-  out+='<circle cx="74" cy="60" r="21" fill="#09171b" stroke="'+cfg.color+'" stroke-opacity="'+(active?'.72':'.24')+'" stroke-width="1.4"/>';
-  out+='<text class="orbit-center-label" x="74" y="57" text-anchor="middle">'+(active?face:cfg.name)+'</text>';
-  out+='<text class="orbit-center-sub" x="74" y="70" text-anchor="middle">'+(active?(doubleTurn?'180°':(m.indexOf("'")>-1?'↺ 90°':'↻ 90°')):'AXIS')+'</text>';
+  out+='<circle cx="74" cy="60" r="21" fill="#09171b" stroke="'+cfg.color+'" stroke-opacity=".78" stroke-width="1.4"/>';
+  out+='<text class="orbit-center-label" x="74" y="57" text-anchor="middle">'+face+'</text>';
+  out+='<text class="orbit-center-sub" x="74" y="70" text-anchor="middle">'+(doubleTurn?'180°':(m.indexOf("'")>-1?'↺ 90°':'↻ 90°'))+'</text>';
   return out+'</svg>';
 }
-function orbitCard(ai,m,dur){
-  var cfg=ORBITS[ai],active=!!m&&axisOf(m)===ai,
-      moveLabel=active?m+' · '+(m.indexOf('2')>-1?'180°':(m.indexOf("'")>-1?'↺ 90°':'↻ 90°')):'siap',
-      cycle=active?orbitCycleText(m):'Anggota orbit: '+cfg.faces.join(' · '),
-      title=active?'Pita aktif: '+cfg.faces.join(' · '):cfg.rotors+' menggerakkan '+cfg.faces.join('–'),
-      cls='orbit-card '+(active?'active':'inactive');
+function detailCard(m,dur,live){
+  var ai=axisOf(m),cfg=ORBITS[ai],cycle=orbitCycleText(m),
+      moveLabel=m+' · '+(m.indexOf('2')>-1?'180°':(m.indexOf("'")>-1?'↺ 90°':'↻ 90°'));
 
-  if(!m)cls='orbit-card';
-
-  return '<article class="'+cls+'" style="--axis:'+cfg.color+'">'
-    +'<div class="orbit-visual">'+orbitSvg(ai,m,dur)+'</div>'
+  return '<article class="orbit-card" style="--axis:'+cfg.color+'">'
+    +'<div class="orbit-visual">'+detailSvg(ai,m,dur,live)+'</div>'
     +'<div class="orbit-copy">'
-      +'<div class="orbit-topline"><span class="orbit-axis-pill">AXIS '+cfg.name+'</span><span class="orbit-move-pill">'+moveLabel+'</span></div>'
-      +'<b class="orbit-title">'+title+'</b>'
+      +'<div class="orbit-topline">'
+        +'<span class="orbit-axis-pill">SUMBU '+cfg.name+'</span>'
+        +'<span class="orbit-move-pill">'+moveLabel+'</span>'
+        +'<span class="orbit-state-pill">'+(live?'SEDANG BERGERAK':'MOVE TERAKHIR')+'</span>'
+      +'</div>'
+      +'<b class="orbit-title">Rotor '+m.charAt(0)+' memindahkan pita '+cfg.faces.join(' · ')+'</b>'
       +'<div class="orbit-cycle">'+cycle+'</div>'
       +'<small class="orbit-desc">'+cfg.desc+'</small>'
-      +'<small class="orbit-strip-note">'+(active?'Tiga titik pada tiap node = tiga stiker pita yang sedang dipindahkan.':'Pilih U/R/F/D/L/B untuk melihat pita aktual dan arah permutasinya.')+'</small>'
+      +'<small class="orbit-strip-note">Tiga titik pada tiap node = tiga sticker pada pita yang ikut dipermutasi.</small>'
     +'</div>'
   +'</article>';
 }
-function drawOrbit(move,dur){
-  var box=el('orbit'),out='';
-  for(var ai=0;ai<ORBITS.length;ai++)out+=orbitCard(ai,move,dur||.58);
-  box.innerHTML=out;
+function detailIdle(){
+  return '<div class="orbit-idle-inner">'
+    +'<b>Pilih sebuah move untuk membedah orbitnya</b>'
+    +'<p>Orbit Map menunjukkan hubungan global. Detail Permutasi akan menjelaskan rotor, sumbu, empat pita yang berpindah, dan arah siklus.</p>'
+    +'<div class="orbit-idle-map"><span>U/D → F·R·B·L</span><span>F/B → U·L·D·R</span><span>R/L → U·F·D·B</span></div>'
+  +'</div>';
 }
+function drawOrbit(move,dur){
+  if(move)lastOrbitMove=move;
+  var shown=move||lastOrbitMove,live=!!move,active=shown?axisOf(shown):-1;
+  el('orbitOverview').innerHTML=overviewBase(active)+(shown?overviewGuide(shown,dur||.58,live):'');
+  var detail=el('orbitDetail');
+  if(shown){
+    detail.classList.remove('idle');
+    detail.innerHTML=detailCard(shown,dur||.58,live);
+  }else{
+    detail.classList.add('idle');
+    detail.innerHTML=detailIdle();
+  }
+}
+
 
 /* ===== Rubik 3D (WebGL) ===== */
 var scene3,camera3,renderer3,controls3,cubeRoot,cubies=[],turnTween=null,raycaster3,downPoint=null,GEO={},MATCACHE={};
@@ -685,7 +790,7 @@ function next(){
 function prev(){if(busy||step<=0)return;step--;moveAnimated(inverse(solution[step]),false,function(){renderSolution()})}
 function stopPlay(){if(playTimer){clearInterval(playTimer);playTimer=null;el('play').textContent='▶ Otomatis'}}
 function togglePlay(){if(playTimer){stopPlay();return}if(!solution.length){toast('Tekan “Cari solusi” dulu.');return}el('play').textContent='Ⅱ Jeda';playTimer=setInterval(function(){if(step>=solution.length){stopPlay();state('Rubik selesai!')}else if(!busy)next()},Math.round(850/settings.speed))}
-function reset(){stopPlay();queue=[];cube=ready?new Cube():null;facelets=SOLVED.split('');history=[];solution=[];step=0;render();state('Rubik direset')}
+function reset(){stopPlay();queue=[];cube=ready?new Cube():null;facelets=SOLVED.split('');history=[];solution=[];step=0;lastOrbitMove='';render();state('Rubik direset')}
 function undo(){if(!history.length||busy)return;var m=history.pop();moveAnimated(inverse(m),false)}
 function renderEditor(){
   var pos={U:[2,1],L:[1,2],F:[2,2],R:[3,2],B:[4,2],D:[2,3]},h='';
