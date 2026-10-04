@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3.2.3 — IFP Vision</title>
+<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3.2.4 — IFP Vision</title>
 <meta name="description" content="Rubik 3x3 interaktif dengan diagram orbit lingkaran, Vision AI (gestur tangan, pindai kubus asli) untuk IFP, desktop, dan HP.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23182429'/%3E%3Ccircle cx='25' cy='24' r='17' fill='none' stroke='%237be4c5' stroke-width='3'/%3E%3Ccircle cx='39' cy='24' r='17' fill='none' stroke='%23f7ca54' stroke-width='3'/%3E%3Ccircle cx='32' cy='39' r='17' fill='none' stroke='%23ff6f68' stroke-width='3'/%3E%3C/svg%3E">
 <style>
@@ -161,12 +161,12 @@ body[data-ui=mobile] .net{grid-template-columns:repeat(4,3.2rem);grid-template-r
 /* v3.1 · scene clean + transient 3D rotation guidance */
 .creatorTop{max-width:min(42rem,72vw);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 body[data-ui=mobile] .creatorTop{font-size:.62rem;max-width:74vw}
-.cubePane::after{content:"Gerak kubus ↔ orbit warna tersinkron";position:absolute;left:.7rem;bottom:.55rem;z-index:5;color:rgba(237,246,244,.45);font-size:.62rem;pointer-events:none}
+.cubePane::after{content:"Drag/zoom view kapan saja · solver tetap berjalan";position:absolute;left:.7rem;bottom:.55rem;z-index:5;color:rgba(237,246,244,.45);font-size:.62rem;pointer-events:none}
 body[data-ui=mobile] .cubePane::after{font-size:.56rem;left:.55rem;bottom:.4rem}
 </style></head>
 <body data-ui="desk"><div class="app">
 <header>
-  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.2.3 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
+  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.2.4 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
   <div class="live" id="live" role="status" aria-live="polite">Menyiapkan solver</div>
   <div class="actions">
     <a class="iconBtn pilarHub" href="../../" title="Kembali ke PILAR Hub" aria-label="PILAR Hub">←</a>
@@ -507,7 +507,9 @@ function startLayerTurn(m,dur,done){
   if(!scene3||turnTween||settings.motion)return false;
   var inf=layerInfo(m),pivot=new THREE.Group();scene3.add(pivot);
   cubies.filter(function(o){return Math.round(o.position[inf.axis])===inf.layer}).forEach(function(o){pivot.attach(o)});
-  controls3.enabled=false;
+  /* Kamera tetap interaktif saat layer/solver bergerak.
+     busy mencegah klik pada face membuat move baru, jadi orbit/zoom aman. */
+  controls3.enabled=true;
   turnTween={pivot:pivot,axis:inf.axis,target:inf.target,start:performance.now(),ms:dur*1000,done:done};
   try{turnTween.fx=fxMake(inf,m)}catch(e){console.warn('[Rubik 3D FX]',e)}
   turnTween.timer=setTimeout(completeTween,dur*1000+500);   // cadangan bila tab tersembunyi (rAF berhenti)
