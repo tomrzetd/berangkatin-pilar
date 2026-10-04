@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3.2.1 — IFP Vision</title>
+<meta name="theme-color" content="#18262a"><title>PILAR™ Rubik Orbit Mathematics v3.2.2 — IFP Vision</title>
 <meta name="description" content="Rubik 3x3 interaktif dengan diagram orbit lingkaran, Vision AI (gestur tangan, pindai kubus asli) untuk IFP, desktop, dan HP.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23182429'/%3E%3Ccircle cx='25' cy='24' r='17' fill='none' stroke='%237be4c5' stroke-width='3'/%3E%3Ccircle cx='39' cy='24' r='17' fill='none' stroke='%23f7ca54' stroke-width='3'/%3E%3Ccircle cx='32' cy='39' r='17' fill='none' stroke='%23ff6f68' stroke-width='3'/%3E%3C/svg%3E">
 <style>
@@ -166,7 +166,7 @@ body[data-ui=mobile] .cubePane::after{font-size:.56rem;left:.55rem;bottom:.4rem}
 </style></head>
 <body data-ui="desk"><div class="app">
 <header>
-  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.2.1 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
+  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.2.2 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
   <div class="live" id="live" role="status" aria-live="polite">Menyiapkan solver</div>
   <div class="actions">
     <a class="iconBtn pilarHub" href="../../" title="Kembali ke PILAR Hub" aria-label="PILAR Hub">←</a>
@@ -833,11 +833,7 @@ function initVision(){
   window.RubikVision={onLayout:placePanel};
 }
 
-/* ===== Mulai ===== */
-initSettings();applyLayout();initControls();initScan();initVision();init3D();render();placePanel();
-setTimeout(function(){try{if(window.Cube){state('Menyiapkan mesin solver (beberapa detik)…');setTimeout(function(){try{Cube.initSolver();cube=new Cube();ready=true;sync();state('Solver siap — pilih gerakan, Acak, atau 📷 Pindai')}catch(e){state('Mesin solver gagal dimuat',true)}},60)}else state('Mesin solver gagal dimuat (cek internet)',true)}catch(e){state('Mesin solver gagal dimuat',true)}},90);
-})();
-
+/* v3.2.2 FX scope fix: blok ini harus DI DALAM IIFE karena memakai scene3 privat. */
 /* ===== v3: panah arah putar + partikel angin (Three.js) ===== */
 var FX_R=1.92;
 function fxMake(inf,move){
@@ -915,6 +911,12 @@ function fxUpdate(tw,q,t){
   f.g.attributes.position.needsUpdate=true;f.g.attributes.color.needsUpdate=true;
 }
 function fxDispose(f){scene3.remove(f.outer);f.geos.forEach(function(x){x.dispose()});f.mats.forEach(function(x){x.dispose()});f.g.dispose();f.pm.dispose()}
+
+/* ===== Mulai ===== */
+initSettings();applyLayout();initControls();initScan();initVision();init3D();render();placePanel();
+setTimeout(function(){try{if(window.Cube){state('Menyiapkan mesin solver (beberapa detik)…');setTimeout(function(){try{Cube.initSolver();cube=new Cube();ready=true;sync();state('Solver siap — pilih gerakan, Acak, atau 📷 Pindai')}catch(e){state('Mesin solver gagal dimuat',true)}},60)}else state('Mesin solver gagal dimuat (cek internet)',true)}catch(e){state('Mesin solver gagal dimuat',true)}},90);
+})();
+
 </script>  <script src="../../pulse/config.js"></script>
   <script src="../../core/pulse.js"></script>
 </body></html>
