@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PILAR™ Microscope Lab v0.7 — Vision · ML · ESP32</title>
+    <title>PILAR™ Microscope Lab v0.8 — Instrument HUD · Vision · ML</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -1143,6 +1143,142 @@
         .pilar-mode-btn{white-space:nowrap}
         @media(max-width:900px){.pilar-source-row{padding:8px 12px}.ai-class-row{grid-template-columns:1fr auto}.ai-class-row b{grid-column:2}.esp-focus-grid{grid-template-columns:repeat(2,1fr)}}
 
+     
+        /* ===== v0.8 · PILAR Instrument HUD / Camera Pie Menu ===== */
+        .camera-view{
+            --camera-aspect:16/9;
+            min-height:0!important;
+            height:auto;
+            aspect-ratio:var(--camera-aspect);
+            max-height:560px;
+            width:100%;
+            isolation:isolate;
+            border-top:1px solid rgba(99,102,241,.16)
+        }
+        #videoElement{
+            width:100%;height:100%;max-width:100%;max-height:100%;
+            object-fit:contain;border-radius:0
+        }
+        html[data-ui="desktop"] .camera-view{min-height:360px!important;max-height:min(56vh,560px)}
+        html[data-ui="ifp"] .camera-view{min-height:500px!important;max-height:62vh}
+        html[data-ui="mobile"] .camera-view{
+            min-height:0!important;max-height:none;
+            aspect-ratio:var(--camera-aspect,4/3)
+        }
+
+        .instrument-hud{
+            position:absolute;z-index:42;left:12px;right:12px;top:12px;
+            display:flex;justify-content:space-between;gap:10px;pointer-events:none
+        }
+        .instrument-hud-left,.instrument-hud-right{display:flex;gap:7px;align-items:center;min-width:0}
+        .hud-chip,.hud-menu-trigger{
+            min-height:34px;display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;
+            color:#ecf9ff;background:rgba(5,17,29,.76);border:1px solid rgba(126,238,255,.25);
+            box-shadow:0 7px 24px rgba(0,0,0,.18);backdrop-filter:blur(12px) saturate(1.25);
+            -webkit-backdrop-filter:blur(12px) saturate(1.25);font-size:.69rem;font-weight:850;
+            white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.25)
+        }
+        .hud-chip i:not(.fa-bullseye):not(.fa-search){
+            width:8px;height:8px;border-radius:50%;background:#f59e0b;box-shadow:0 0 12px rgba(245,158,11,.7)
+        }
+        .hud-chip.live i:not(.fa-bullseye):not(.fa-search){background:#37e39b;box-shadow:0 0 12px rgba(55,227,155,.8)}
+        .hud-chip.frozen i:not(.fa-bullseye):not(.fa-search){background:#7eeeff;box-shadow:0 0 12px rgba(126,238,255,.8)}
+        .hud-menu-trigger{
+            pointer-events:auto;cursor:pointer;border-color:rgba(201,255,66,.38);color:#dfffa1;
+            background:rgba(8,27,34,.80);transition:.18s ease
+        }
+        .hud-menu-trigger:hover,.hud-menu-trigger[aria-expanded="true"]{
+            transform:translateY(-1px);border-color:#c9ff42;box-shadow:0 0 0 2px rgba(201,255,66,.08),0 8px 25px rgba(0,0,0,.24)
+        }
+        .hud-menu-trigger span{font-size:.58rem;letter-spacing:.08em}
+
+        .hud-hint{
+            position:absolute;z-index:41;left:14px;bottom:12px;padding:6px 9px;border-radius:999px;
+            color:rgba(233,247,252,.7);background:rgba(4,15,25,.58);border:1px solid rgba(255,255,255,.12);
+            backdrop-filter:blur(8px);font-size:.61rem;font-weight:750;pointer-events:none;
+            transition:opacity .22s ease
+        }
+        .camera-view.ai-live .hud-hint{opacity:.55}
+
+        .hud-pie{
+            position:absolute;inset:0;z-index:70;pointer-events:none;opacity:0;
+            transition:opacity .16s ease;--pie-cx:50%;--pie-cy:50%;--pie-r:116px
+        }
+        .hud-pie.open{opacity:1;pointer-events:auto}
+        .hud-pie-backdrop{
+            position:absolute;inset:0;border:0;background:
+              radial-gradient(circle at var(--pie-cx) var(--pie-cy),rgba(26,54,65,.16) 0 90px,rgba(1,8,14,.30) 190px,rgba(1,8,14,.15) 100%);
+            backdrop-filter:blur(1.5px);cursor:default
+        }
+        .hud-pie-title{
+            position:absolute;left:var(--pie-cx);top:calc(var(--pie-cy) - var(--pie-r) - 48px);
+            transform:translateX(-50%);z-index:3;padding:6px 10px;border-radius:999px;
+            background:rgba(5,18,29,.87);border:1px solid rgba(126,238,255,.26);
+            color:#bfe8f3;font-size:.61rem;font-weight:900;letter-spacing:.08em;white-space:nowrap;
+            box-shadow:0 8px 24px rgba(0,0,0,.25)
+        }
+        .hud-pie-center,.hud-pie-item{
+            position:absolute;z-index:4;left:var(--pie-cx);top:var(--pie-cy);
+            border:1px solid rgba(126,238,255,.30);color:#effcff;
+            background:linear-gradient(145deg,rgba(13,37,52,.96),rgba(6,21,32,.94));
+            box-shadow:0 8px 26px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.05);
+            backdrop-filter:blur(14px);cursor:pointer;touch-action:manipulation
+        }
+        .hud-pie-center{
+            width:68px;height:68px;border-radius:50%;transform:translate(-50%,-50%);
+            display:grid;place-items:center;align-content:center;gap:0;color:#a9c3ca
+        }
+        .hud-pie-center i{font-size:1.05rem}.hud-pie-center small{font-size:.47rem;font-weight:900;margin-top:2px}
+        .hud-pie-item{
+            width:72px;height:72px;border-radius:50%;
+            transform:translate(-50%,-50%) translate(var(--px),var(--py)) scale(.72);
+            display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+            opacity:0;transition:transform .18s cubic-bezier(.2,.8,.2,1),opacity .15s ease,border-color .15s ease;
+            transition-delay:calc(var(--i) * 12ms)
+        }
+        .hud-pie.open .hud-pie-item{
+            transform:translate(-50%,-50%) translate(var(--px),var(--py)) scale(1);opacity:1
+        }
+        .hud-pie-item i{font-size:1.05rem;color:#7eeeff}
+        .hud-pie-item span{max-width:62px;overflow:hidden;text-overflow:ellipsis;font-size:.54rem;font-weight:900;line-height:1.05}
+        .hud-pie-item.on{border-color:#c9ff42;background:linear-gradient(145deg,rgba(43,70,42,.96),rgba(12,37,33,.94))}
+        .hud-pie-item.on i{color:#c9ff42}
+        .hud-pie-item.warn i{color:#ffc857}
+        .hud-pie-item.capture{border-color:rgba(99,227,160,.72)}.hud-pie-item.capture i{color:#63e3a0}
+        .hud-pie-item:disabled{opacity:.26!important;cursor:not-allowed}
+        .hud-pie-item:not(:disabled):active{filter:brightness(1.2)}
+
+        /* Focus Coach kini menjadi HUD sekunder; tidak menabrak status utama. */
+        .ai-focus-hud{top:56px!important;left:12px!important}
+
+        /* Capture FAB diperkecil agar tidak bersaing dengan radial menu. */
+        .fab-capture{width:64px!important;height:64px!important;border-width:4px!important;font-size:1.3rem!important;bottom:14px!important}
+
+        /* Device-specific HUD scaling */
+        html[data-ui="ifp"] .hud-pie{--pie-r:158px}
+        html[data-ui="ifp"] .hud-pie-item{width:94px;height:94px}
+        html[data-ui="ifp"] .hud-pie-center{width:86px;height:86px}
+        html[data-ui="ifp"] .hud-pie-item span{font-size:.66rem;max-width:80px}
+        html[data-ui="ifp"] .hud-pie-item i{font-size:1.35rem}
+        html[data-ui="ifp"] .hud-chip,html[data-ui="ifp"] .hud-menu-trigger{min-height:46px;padding:9px 14px;font-size:.78rem}
+
+        html[data-ui="mobile"] .hud-pie{--pie-r:96px}
+        html[data-ui="mobile"] .hud-pie-item{width:62px;height:62px}
+        html[data-ui="mobile"] .hud-pie-center{width:58px;height:58px}
+        html[data-ui="mobile"] .hud-pie-item i{font-size:.92rem}
+        html[data-ui="mobile"] .hud-pie-item span{font-size:.48rem;max-width:53px}
+        html[data-ui="mobile"] .hud-pie-title{top:calc(var(--pie-cy) - var(--pie-r) - 40px);font-size:.52rem}
+        html[data-ui="mobile"] .instrument-hud{left:8px;right:8px;top:8px}
+        html[data-ui="mobile"] .hud-chip,html[data-ui="mobile"] .hud-menu-trigger{min-height:31px;padding:6px 8px}
+        html[data-ui="mobile"] #hudFocusChip{display:none}
+        html[data-ui="mobile"] .hud-hint{font-size:.53rem;left:8px;bottom:8px}
+        html[data-ui="mobile"] .ai-focus-hud{top:47px!important;left:8px!important}
+
+        @media(max-width:480px){
+          .hud-menu-trigger span{display:none}
+          #hudLiveChip b{max-width:55px;overflow:hidden;text-overflow:ellipsis}
+        }
+
     </style>
 </head>
 <body>
@@ -1151,7 +1287,7 @@
             <div class="logo">
                 <i class="fas fa-microscope"></i>
                 <div class="logo-text-group">
-                    <div>PILAR™ Microscope Lab <small class="pilar-version">v0.7</small></div>
+                    <div>PILAR™ Microscope Lab <small class="pilar-version">v0.8</small></div>
                     <div class="tagline">IFP / MPI · Observasi · Vision · ML · Pengukuran · Bukti</div>
                 </div>
                 <div class="branding-pill" id="brandingPill"></div>
@@ -1232,6 +1368,31 @@
                     </div>
                     
                     <canvas id="aiCanvas" aria-hidden="true"></canvas>
+
+                    <div class="instrument-hud" aria-live="polite">
+                        <div class="instrument-hud-left">
+                            <span class="hud-chip" id="hudLiveChip"><i></i><b>READY</b></span>
+                            <span class="hud-chip" id="hudFocusChip"><i class="fas fa-bullseye"></i><b>Focus —</b></span>
+                        </div>
+                        <div class="instrument-hud-right">
+                            <span class="hud-chip" id="hudZoomChip"><i class="fas fa-search"></i><b>1.0×</b></span>
+                            <button class="hud-menu-trigger" id="hudMenuBtn" type="button" aria-label="Buka menu instrumen" aria-expanded="false">
+                                <i class="fas fa-circle-nodes"></i><span>TOOLS</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="hud-pie" id="hudPie" aria-hidden="true">
+                        <button class="hud-pie-backdrop" id="hudPieBackdrop" type="button" tabindex="-1" aria-label="Tutup menu"></button>
+                        <div class="hud-pie-title" id="hudPieTitle">LIHAT · Quick Tools</div>
+                        <button class="hud-pie-center" id="hudPieCenter" type="button" aria-label="Tutup radial menu">
+                            <i class="fas fa-xmark"></i><small>TUTUP</small>
+                        </button>
+                        <div id="hudPieItems"></div>
+                    </div>
+
+                    <div class="hud-hint" id="hudHint"><i class="fas fa-hand-pointer"></i> tahan / klik kanan untuk Quick Tools</div>
+
                     <div class="ai-focus-hud" aria-live="polite"><span id="hudTxt">Fokus</span><i><b id="hudBar"></b></i><span id="hudScore">—</span></div>
                     <button class="fab-capture" id="fabCapture" aria-label="Ambil gambar"><i class="fas fa-camera"></i></button>
                     <video id="videoElement" autoplay playsinline></video>
@@ -1440,7 +1601,7 @@
         </div>
     </div>
 
-    <footer class="pilar-app-footer"><span>PILAR™ Microscope Lab · v0.7</span><span>PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span></footer>
+    <footer class="pilar-app-footer"><span>PILAR™ Microscope Lab · v0.8</span><span>PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span></footer>
 
     <div class="modal" id="imageModal">
         <img id="modalImage" src="" alt="Preview">
@@ -2176,18 +2337,140 @@
       const M=window.microscope;if(!M)return;
       const V=M.videoElement,box=M.cameraViewContainer,root=document.documentElement;
 
-      // Device mode: explicit IFP/Desktop/Mobile, while Auto remains default.
+      // Device mode v0.8: layar besar SAJA tidak cukup disebut IFP.
       const modes=['auto','ifp','desktop','mobile'];let modeIndex=0;
+      function detectUiMode(){
+        const touchPoints=navigator.maxTouchPoints||0,
+              coarse=matchMedia?.('(pointer:coarse)')?.matches||false,
+              compact=innerWidth<=900,
+              large=innerWidth>=1600&&innerHeight>=800,
+              interactivePanel=large&&(touchPoints>=2||coarse);
+        return compact?'mobile':interactivePanel?'ifp':'desktop';
+      }
       function applyMode(){
-        const requested=modes[modeIndex];
-        const detected=innerWidth>=1800?'ifp':innerWidth<=900?'mobile':'desktop';
-        const mode=requested==='auto'?detected:requested;
+        const requested=modes[modeIndex],detected=detectUiMode(),mode=requested==='auto'?detected:requested;
         root.dataset.ui=mode;
         $('modeBtn').innerHTML='<i class="fas fa-display"></i> '+(requested==='auto'?'AUTO · ':'')+mode.toUpperCase();
         M.updateOverlays();
+        syncCameraAspect();
+        renderPie();
       }
       $('modeBtn').onclick=()=>{modeIndex=(modeIndex+1)%modes.length;applyMode();pulse('microscope_ui_mode',{mode:modes[modeIndex]})};
-      addEventListener('resize',()=>{if(modeIndex===0)applyMode()});applyMode();
+      addEventListener('resize',()=>{if(modeIndex===0)applyMode();else syncCameraAspect()});
+
+      // Instrument viewport + HUD / Blender-style contextual Pie Menu.
+      function syncCameraAspect(){
+        const vw=V.videoWidth||0,vh=V.videoHeight||0;
+        const ratio=vw&&vh?vw/vh:(root.dataset.ui==='mobile'?4/3:16/9);
+        box.style.setProperty('--camera-aspect',ratio.toFixed(4));
+        M.updateOverlays();
+      }
+      V.addEventListener('loadedmetadata',syncCameraAspect);
+      V.addEventListener('resize',syncCameraAspect);
+
+      const HUD_ACTIONS={
+        scan:{icon:'fa-rotate',label:'Scan',run:()=>$('scanBtn').click(),disabled:()=>false},
+        live:{icon:'fa-play',label:()=>M.isStreaming?'Stop':'Start',run:()=>$(M.isStreaming?'stopBtn':'startBtn').click(),disabled:()=>!M.isStreaming&&$('startBtn').disabled},
+        freeze:{icon:'fa-snowflake',label:()=>M.isFrozen?'Lanjut':'Freeze',run:()=>$('freezeBtn').click(),disabled:()=>!M.isStreaming,on:()=>M.isFrozen},
+        capture:{icon:'fa-camera',label:'Capture',className:'capture',run:()=>M.captureImage(),disabled:()=>!M.isStreaming},
+        zoomIn:{icon:'fa-magnifying-glass-plus',label:'Zoom +',run:()=>M.adjustZoom(.2),disabled:()=>!M.isStreaming},
+        zoomOut:{icon:'fa-magnifying-glass-minus',label:'Zoom −',run:()=>M.adjustZoom(-.2),disabled:()=>!M.isStreaming},
+        grid:{icon:'fa-table-cells',label:'Grid',run:()=>document.querySelector('.tool-item[data-tool="grid"]')?.click(),on:()=>M.activeTools.has('grid')},
+        crosshair:{icon:'fa-crosshairs',label:'Crosshair',run:()=>document.querySelector('.tool-item[data-tool="crosshair"]')?.click(),on:()=>M.activeTools.has('crosshair')},
+        ruler:{icon:'fa-ruler',label:'Ukur',run:()=>document.querySelector('.tool-item[data-tool="ruler"]')?.click(),disabled:()=>!M.isStreaming,on:()=>M.activeTools.has('ruler')},
+        calibrate:{icon:'fa-scale-balanced',label:'Kalibrasi',run:()=>document.querySelector('.tool-item[data-tool="calibrate"]')?.click(),disabled:()=>!M.isStreaming,on:()=>M.calibrationMode},
+        clearRuler:{icon:'fa-eraser',label:'Hapus ukur',run:()=>$('clearRulerBtn').click(),disabled:()=>!M.measurements.length},
+        fullscreen:{icon:'fa-expand',label:'Fullscreen',run:()=>document.querySelector('.tool-item[data-tool="fullscreen"]')?.click()},
+        reset:{icon:'fa-arrow-rotate-left',label:'Reset',run:()=>document.querySelector('.tool-item[data-tool="reset"]')?.click()},
+        autoEnh:{icon:'fa-wand-magic-sparkles',label:'Auto image',run:()=>$('autoEnh').click(),disabled:()=>!M.isStreaming},
+        visionCount:{icon:'fa-microscope',label:'Count',run:()=>{const e=$('aiCount');e.checked=!e.checked;e.dispatchEvent(new Event('change'))},on:()=>$('aiCount').checked,disabled:()=>!M.isStreaming},
+        gallery:{icon:'fa-images',label:'Galeri',run:()=>M.goPhase('dokumentasi')}
+      };
+      const HUD_PHASES={
+        lihat:['scan','live','freeze','grid','crosshair','zoomIn','capture','fullscreen'],
+        fokus:['freeze','zoomOut','zoomIn','autoEnh','grid','crosshair','capture','reset'],
+        ukur:['freeze','ruler','calibrate','crosshair','grid','clearRuler','capture','fullscreen'],
+        buktikan:['capture','freeze','grid','crosshair','visionCount','autoEnh','reset','fullscreen'],
+        dokumentasi:['capture','gallery','freeze','grid','crosshair','reset','fullscreen','live']
+      };
+      const pie=$('hudPie'),pieItems=$('hudPieItems'),pieBtn=$('hudMenuBtn');
+      let pieOpen=false,longTimer=0,longStart=null;
+
+      function hudRadius(){
+        return root.dataset.ui==='ifp'?158:root.dataset.ui==='mobile'?96:116;
+      }
+      function renderPie(){
+        if(!pieItems)return;
+        const keys=HUD_PHASES[M.phase]||HUD_PHASES.lihat,r=hudRadius();
+        $('hudPieTitle').textContent=M.phase.toUpperCase()+' · QUICK TOOLS';
+        pieItems.innerHTML='';
+        keys.forEach((key,i)=>{
+          const a=HUD_ACTIONS[key],b=document.createElement('button'),angle=(-90+i*(360/keys.length))*Math.PI/180;
+          b.type='button';b.className='hud-pie-item '+(a.className||'')+(a.on?.()?' on':'');
+          b.style.setProperty('--i',i);
+          b.style.setProperty('--px',(Math.cos(angle)*r).toFixed(1)+'px');
+          b.style.setProperty('--py',(Math.sin(angle)*r).toFixed(1)+'px');
+          b.disabled=!!a.disabled?.();
+          const label=typeof a.label==='function'?a.label():a.label;
+          b.innerHTML='<i class="fas '+a.icon+'"></i><span>'+label+'</span>';
+          b.title=label;
+          b.onclick=e=>{e.stopPropagation();if(b.disabled)return;a.run();setTimeout(()=>{syncHud();renderPie()},40);if(!['grid','crosshair','ruler','freeze','visionCount'].includes(key))closePie()};
+          pieItems.appendChild(b);
+        });
+      }
+      function syncHud(){
+        const live=$('hudLiveChip'),focus=$('hudFocusChip'),zoom=$('hudZoomChip');
+        live.classList.toggle('live',M.isStreaming&&!M.isFrozen);
+        live.classList.toggle('frozen',M.isFrozen);
+        live.querySelector('b').textContent=M.isFrozen?'FROZEN':M.isStreaming?'LIVE':'READY';
+        zoom.querySelector('b').textContent=(M.zoomLevel||1).toFixed(1)+'×';
+        const fs=$('focusChip')?.textContent||'';
+        focus.querySelector('b').textContent='Focus '+(fs==='idle'?'—':fs);
+        if(pieOpen)renderPie();
+      }
+      function positionPie(clientX,clientY){
+        const cr=box.getBoundingClientRect(),r=hudRadius()+50,
+              x=clientX==null?cr.width/2:clientX-cr.left,
+              y=clientY==null?cr.height/2:clientY-cr.top,
+              cx=clamp(x,r,Math.max(r,cr.width-r)),
+              cy=clamp(y,r,Math.max(r,cr.height-r));
+        pie.style.setProperty('--pie-cx',cx+'px');
+        pie.style.setProperty('--pie-cy',cy+'px');
+      }
+      function openPie(clientX,clientY){
+        if(pieOpen)return;pieOpen=true;positionPie(clientX,clientY);renderPie();
+        pie.classList.add('open');pie.setAttribute('aria-hidden','false');pieBtn.setAttribute('aria-expanded','true');
+        navigator.vibrate?.(16);pulse('microscope_hud_open',{phase:M.phase,ui:root.dataset.ui});
+      }
+      function closePie(){
+        pieOpen=false;pie.classList.remove('open');pie.setAttribute('aria-hidden','true');pieBtn.setAttribute('aria-expanded','false');
+      }
+      pieBtn.onclick=e=>{e.stopPropagation();pieOpen?closePie():openPie()};
+      $('hudPieBackdrop').onclick=closePie;$('hudPieCenter').onclick=closePie;
+
+      box.addEventListener('contextmenu',e=>{
+        if(M.isMeasuring||M.calibrationMode)return;
+        e.preventDefault();openPie(e.clientX,e.clientY);
+      });
+      box.addEventListener('pointerdown',e=>{
+        if(e.pointerType==='mouse'||M.isMeasuring||M.calibrationMode||e.target.closest('button,input,select'))return;
+        longStart={x:e.clientX,y:e.clientY,id:e.pointerId};
+        clearTimeout(longTimer);longTimer=setTimeout(()=>{if(longStart)openPie(longStart.x,longStart.y)},520);
+      },{passive:true});
+      box.addEventListener('pointermove',e=>{
+        if(longStart&&Math.hypot(e.clientX-longStart.x,e.clientY-longStart.y)>14){clearTimeout(longTimer);longStart=null}
+      },{passive:true});
+      ['pointerup','pointercancel'].forEach(ev=>box.addEventListener(ev,()=>{clearTimeout(longTimer);longStart=null},{passive:true}));
+      document.addEventListener('keydown',e=>{
+        if((e.key==='q'||e.key==='Q')&&!e.target.matches('input,textarea,select')){e.preventDefault();pieOpen?closePie():openPie()}
+        if(e.key==='Escape'&&pieOpen)closePie();
+      });
+
+      const originalMarkPhase=M.markPhase.bind(M);
+      M.markPhase=(phase,message,activate=true)=>{originalMarkPhase(phase,message,activate);renderPie();syncHud()};
+      setInterval(syncHud,300);
+      syncHud();
+      applyMode();
 
       // Entry badge from universal PILAR Vision Challenge.
       const entry=new URLSearchParams(location.search).get('pilarEntry');
@@ -2227,7 +2510,7 @@
           const ix=ipCanvas.getContext('2d');
           ipTimer=setInterval(()=>{try{ix.drawImage(ipImg,0,0,ipCanvas.width,ipCanvas.height)}catch(_){}},40);
           M.stream=ipCanvas.captureStream(25);V.srcObject=M.stream;V.style.display='block';M.noCameraPlaceholder.style.display='none';await V.play();
-          M.isStreaming=true;M.isFrozen=false;M.pixelScale=null;M.updateCameraStatus(true,'IP Cam');M.enableControls(true);M.applyTransformations();
+          M.isStreaming=true;M.isFrozen=false;M.pixelScale=null;M.updateCameraStatus(true,'IP Cam');M.enableControls(true);M.applyTransformations();syncCameraAspect();
           M.showNotification('IP Cam terhubung','success');pulse('microscope_ipcam_connect');
         }catch(e){M.showNotification(e.message,'error')}
         finally{M.showLoading(false)}
@@ -2435,7 +2718,7 @@
       const originalStop=M.stopCamera.bind(M);
       M.stopCamera=(silent=false)=>{box.classList.remove('ai-live');drawBlobs(null);return originalStop(silent)};
 
-      M.showHelp=()=>alert('PILAR Microscope Lab v0.7\n\n1. Hub memberi dua pintu: Masuk Cepat atau Vision Challenge.\n2. SCAN/START membuka USB microscope/webcam; FREEZE membantu pengukuran stabil.\n3. Vision Count = CV eksperimental (Otsu + connected components), bukan diagnosis dan bukan ML.\n4. Teachable Microscope = MobileNet + KNN lokal di browser; contoh gambar tidak diunggah oleh fitur ini.\n5. PILAR Focus Controller dapat memakai USB Serial atau BLE. WiFi ws:// tidak bekerja dari GitHub Pages HTTPS.\n6. Smart Autofocus memakai skor ketajaman Laplacian dua tahap.\n7. Kalibrasi tetap berbasis source pixel dan harus diulang bila set-up optik berubah.\n8. Capture tetap disimpan sebagai Blob di IndexedDB dengan overlay + Creator ID.');
+      M.showHelp=()=>alert('PILAR Microscope Lab v0.8\n\n1. Hub memberi dua pintu: Masuk Cepat atau Vision Challenge.\n2. SCAN/START membuka USB microscope/webcam; FREEZE membantu pengukuran stabil.\n3. Vision Count = CV eksperimental (Otsu + connected components), bukan diagnosis dan bukan ML.\n4. Teachable Microscope = MobileNet + KNN lokal di browser; contoh gambar tidak diunggah oleh fitur ini.\n5. PILAR Focus Controller dapat memakai USB Serial atau BLE. WiFi ws:// tidak bekerja dari GitHub Pages HTTPS.\n6. Smart Autofocus memakai skor ketajaman Laplacian dua tahap.\n7. Kalibrasi tetap berbasis source pixel dan harus diulang bila set-up optik berubah.\n8. Camera HUD: klik TOOLS, klik kanan desktop, tahan pada IFP/mobile, atau tekan Q untuk Pie Menu.\n9. Capture tetap disimpan sebagai Blob di IndexedDB dengan overlay + Creator ID.');
     });
   })();
   </script>
