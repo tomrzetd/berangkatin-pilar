@@ -519,12 +519,13 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
 .reveal-row button[aria-pressed="false"]{border-color:#355274;background:#13243a}
 .vector-legend span[hidden]{display:none!important}
 
-/* v0.9.3D-fix3 · stable semantic labels for B/I/F */
+/* v0.9.3D-fix4 · stable semantic labels for B/I/F */
 .reveal-row button.waiting{border-color:#b7802c!important;background:linear-gradient(180deg,#1e2a26,#16251f)!important}
 .reveal-row button.waiting .reveal-eye{color:#ffb24a!important;text-shadow:0 0 10px rgba(255,178,74,.35)}
 .reveal-row button.waiting small{color:#9eb3c4!important}
 .reveal-row button[data-visual-state="on"] .reveal-eye{color:#7ef0a8}
 
+#pilarBoot{display:none!important}
 </style>
 </head>
 <body class="boot-lock">
@@ -539,7 +540,7 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
         </div>
         <div class="boot-head-right">
           <div class="creator-id">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div>
-          <div class="boot-app-meta"><b>Lab Maya Lorentz</b><span>Submission SPA · v0.9.3D-fix3</span></div>
+          <div class="boot-app-meta"><b>Lab Maya Lorentz</b><span>Submission SPA · v0.9.3D-fix4</span></div>
         </div>
       </header>
 
@@ -574,7 +575,7 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
               </div>
             </div>
             <div class="app-inspector-meta">
-              <span id="selectedAppVersion">v0.9.3D-fix3</span>
+              <span id="selectedAppVersion">v0.9.3D-fix4</span>
               <span id="selectedAppStatus">SIAP</span>
             </div>
           </section>
@@ -606,7 +607,7 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
           </div>
         </aside>
       </div>
-      <footer class="boot-foot"><span>PILAR™ Lab Maya Lorentz · SPA v0.9.3D-fix3 · <b>by : rizalabdurrahman05@guru.smp.belajar.id</b></span><span id="bootRuntime">checking…</span></footer>
+      <footer class="boot-foot"><span>PILAR™ Lab Maya Lorentz · SPA v0.9.3D-fix4 · <b>by : rizalabdurrahman05@guru.smp.belajar.id</b></span><span id="bootRuntime">checking…</span></footer>
     </div>
   </section>
 
@@ -615,7 +616,7 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
       <div class="brand-wrap">
         <button class="home-btn" id="homeBtn" title="Kembali ke PILAR Hub" aria-label="Kembali ke PILAR Hub">←</button>
         <strong class="brand">PILAR</strong>
-        <span class="lab-name">Lorentz · Mission Lab v0.9.3D-fix3</span>
+        <span class="lab-name">Lorentz · Mission Lab v0.9.3D-fix4</span>
       </div>
       <div class="top-creator">by : rizalabdurrahman05@guru.smp.belajar.id</div>
       <div class="top-actions">
@@ -2420,7 +2421,7 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
     $('#selectedAppCategory').textContent='MISSION LAB';
     $('#selectedAppTitle').textContent='Gaya Lorentz';
     $('#selectedAppSubtitle').textContent='Gerakkan kawat tanpa menyentuhnya';
-    $('#selectedAppVersion').textContent='v0.9.3D-fix3';
+    $('#selectedAppVersion').textContent='v0.9.3D-fix4';
     $('#selectedAppStatus').textContent='SIAP';
     $('#selectedAppNote').textContent='Satu halaman: observasi → misi → bukti → rakit motor 3D realistis. Vision AI opsional menampilkan face wireframe HUD dan gesture tangan.';
     $('#lorentzLaunchModes').hidden=false;$('#bootOpenApp').hidden=true;$('#launchPrompt').textContent='Mulai Misi Magnetik';
@@ -2433,7 +2434,7 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
   }
   function renderLibrary(){
     const box=$('#pilarLibrary');if(!box)return;box.innerHTML='';
-    (window.PILAR_APP_REGISTRY||[]).forEach(item=>{const b=document.createElement('button');b.className='pilar-app-card';b.type='button';b.dataset.appId=item.id;b.setAttribute('aria-pressed','false');b.innerHTML=`<span class="pilar-app-icon">${item.icon||'🧲'}</span><span><strong>${item.title}</strong><small class="app-subtitle">${item.subtitle||''}</small><small>Lab Maya · v0.9.3D-fix3</small></span><em>BUKA</em>`;b.onclick=()=>selectApp(item.id,{focus:true});box.appendChild(b)});
+    (window.PILAR_APP_REGISTRY||[]).forEach(item=>{const b=document.createElement('button');b.className='pilar-app-card';b.type='button';b.dataset.appId=item.id;b.setAttribute('aria-pressed','false');b.innerHTML=`<span class="pilar-app-icon">${item.icon||'🧲'}</span><span><strong>${item.title}</strong><small class="app-subtitle">${item.subtitle||''}</small><small>Lab Maya · v0.9.3D-fix4</small></span><em>BUKA</em>`;b.onclick=()=>selectApp(item.id,{focus:true});box.appendChild(b)});
     selectApp(selectedAppId,{focus:false});
   }
   function resetBootUI(){
@@ -2825,7 +2826,7 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
     $('#tourBtn').onclick=()=>startTour(true);$('#tourSkip').onclick=tourDone;$('#tourNext').onclick=skipTourStep;$('#coachClose').onclick=()=>{$('#adaptiveCoach').hidden=true;markAction()};
     bindGateMultitouch();bindGateTap();$('#gateTouchMode').onclick=disableGateVision;$('#gateVisionMode').onclick=enableGateVision;$('#gateEnter').onclick=()=>enterFromGate(false);$('#gateSkip').onclick=()=>enterFromGate(true);
     addEventListener('resize',()=>{if(!$('#guidedTour').hidden&&tourTarget)positionTour(tourTarget)});
-    $('#homeBtn').onclick=()=>{missionGateActive=false;$('#missionGate').hidden=true;document.body.classList.remove('gate-lock');showHome()};
+    $('#homeBtn').onclick=()=>{missionGateActive=false;$('#missionGate').hidden=true;document.body.classList.remove('gate-lock');location.href='../../'};
     P.state.subscribe(updateUI);if(P.ownership)P.ownership.stamp($('#ownershipMark'));updateUI(P.state.get());
   }
 
@@ -2925,9 +2926,14 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
   P.gate={show:showMissionGate,bind:bindAppUI}; // kait QA/uji otomatis
   addEventListener('pagehide',()=>{stopLoop();try{render?.destroy?.()}catch(_){}try{motor3d?.destroy?.()}catch(_){}try{P.visionAI?.destroy?.()}catch(_){}render=null;motor3d=null},{once:true});
   drawBootCaps();renderLibrary();resetBootUI();$('#bootQuick').onclick=()=>boot({visionMode:false});$('#bootVision').onclick=()=>boot({visionMode:true});
-  const hubEntry=new URLSearchParams(location.search).get('pilarEntry');if(hubEntry==='quick'||hubEntry==='vision')setTimeout(()=>boot({visionMode:hubEntry==='vision'}),120);
+  const hubEntry=new URLSearchParams(location.search).get('pilarEntry');
+  const startWithVision=hubEntry==='vision';
+  setTimeout(()=>boot({visionMode:startWithVision}),80);
 })();
 
 </script>
+  <script src="../../pulse/config.js"></script>
+  <script src="../../core/pulse.js"></script>
+  <script>window.PILAR_PULSE?.setApp?.('lorentz');</script>
 </body>
 </html>
