@@ -24,15 +24,11 @@ Fitur kamera/Vision memerlukan HTTPS atau localhost dan hanya diminta setelah ak
 ## PILAR Pulse
 Pulse adalah kanal dukungan anonim antara pengguna dan developer. Pengguna baru harus mengaktifkan Pulse terlebih dahulu. Data yang dikirim dibatasi pada ID anonim, app aktif, kategori perangkat/browser, kemampuan grafis, status koneksi, event PILAR dasar, dan chat yang sengaja dikirim.
 
-Konfigurasi backend ada di `pulse/`. Kunci publishable Supabase memang boleh berada di client; jangan pernah commit `service_role`, password database, private key, atau token rahasia.
-
 ## Menambah app
 1. Buat `apps/<slug>/index.html`.
 2. Tambahkan entri di `apps/registry.js`.
 3. Sediakan navigasi kembali ke PILAR Hub.
 4. Minta izin kamera/mikrofon hanya ketika benar-benar diperlukan.
 
-## Keamanan & privasi
-Lihat [SECURITY.md](SECURITY.md).
-
-Creator ID publik: `by : rizalabdurrahman05@guru.smp.belajar.id`
+## Creator ID
+Creator : `by : rizalabdurrahman05@guru.smp.belajar.id`
