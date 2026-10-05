@@ -1,16 +1,12 @@
-# PILAR Pulse v0.1 — setup
+# PILAR Pulse — Setup
 
-1. Supabase > SQL Editor > New query.
-2. Paste seluruh isi `pulse/schema.sql`, lalu Run.
-3. Supabase > Authentication > Providers: aktifkan Anonymous Sign-Ins.
-4. Pastikan Email provider aktif untuk login developer via magic link/OTP.
-5. Supabase > Authentication > URL Configuration:
-   - Site URL: `https://tomrzetd.github.io/berangkatin-pilar/`
-   - Redirect URL: `https://tomrzetd.github.io/berangkatin-pilar/developer/`
-6. Buka PILAR. Pulse akan membuat identitas anonim per browser melalui Supabase Auth.
-7. Dashboard developer: `/developer/` dan login dengan:
-   `rizalabdurrahman05@guru.smp.belajar.id`
+1. Jalankan `pulse/schema.sql` di Supabase SQL Editor.
+2. Aktifkan Anonymous Sign-Ins.
+3. Aktifkan Email Auth untuk akun developer.
+4. Atur Site URL ke GitHub Pages PILAR dan Redirect URL ke `/developer/`.
+5. Isi `pulse/config.js` hanya dengan Supabase URL, publishable key, dan konfigurasi publik.
+6. Buka `/developer/` untuk login developer.
 
-Data yang dikirim: ID anonim, current app, browser family/major version, platform, device class, viewport, touch count, WebGL/WebGPU, last seen, event app dasar, dan chat yang sengaja dikirim user.
+Pengguna baru tidak mengirim data Pulse sampai memilih **Aktifkan Pulse**.
 
-Tidak dikirim: precise location, canvas/font fingerprint, MAC address, kamera/mikrofon, atau isi aktivitas lain di luar event PILAR yang eksplisit.
+Jangan pernah menaruh `service_role`, password database, private key, atau token rahasia di file client.
