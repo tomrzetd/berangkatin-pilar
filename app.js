@@ -38,9 +38,9 @@
     $('#launchPrompt').textContent=item.status==='ready'?'Pilih cara masuk':'Dalam pengembangan';
     $('#bootQuickTitle').textContent=item.id==='lorentz'?'Masuk Cepat':'Buka '+item.title;
     $('#bootQuickDesc').textContent=item.id==='lorentz'
-      ? 'Mouse · touch · multitouch IFP. Tanpa kamera dan tanpa modul Vision AI.'
+      ? 'Mission 00 · touch/multitouch IFP. Masuk tanpa kamera; Vision AI tetap opsional di dalam Lab Maya.'
       : (item.category||'PILAR App')+' · v'+item.version+' · langsung masuk tanpa challenge kamera.';
-    $('#bootVisionDesc').textContent='Tantangan berganti: pose serius → senyum atau puzzle pinch dengan tangan.';
+    $('#bootVisionDesc').textContent=item.id==='lorentz'?'Masuk langsung ke Mission 00 dengan hand pose + face wireframe opsional.':'Tantangan berganti: pose serius → senyum atau puzzle pinch dengan tangan.';
     $('#selectedAppNote').textContent=inspectorNotes[item.id]||'Dua pintu tersedia: langsung masuk atau selesaikan Vision Challenge.';
     const ready=item.status==='ready';
     $('#bootQuick').disabled=!ready;
@@ -120,7 +120,12 @@
   async function launchSelected(mode){
     const item=selectedApp();
     if(!item||item.status!=='ready')return;
-    if(item.id==='lorentz')return boot(mode==='vision'?'vision':'standard');
+    if(item.id==='lorentz'){
+      try{await window.PILAR_PULSE?.track?.('hub_app_launch',{app_id:item.id,entry:mode==='vision'?'vision':'quick'})}catch(_){}
+      const sep=item.url.includes('?')?'&':'?';
+      location.href=item.url+sep+'pilarEntry='+(mode==='vision'?'vision':'quick');
+      return;
+    }
     if(mode==='standard'){
       try{await window.PILAR_PULSE?.track?.('hub_app_launch',{app_id:item.id,entry:'quick'})}catch(_){}
       location.href=item.url;
