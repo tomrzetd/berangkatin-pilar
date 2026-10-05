@@ -9,13 +9,27 @@ const path=location.pathname.toLowerCase();
 const appMap=[['/apps/microscope','microscope'],['/apps/rubik-orbit','rubik-orbit'],['/apps/mbg-duel','mbg-duel'],['/apps/soundscope','soundscope'],['/apps/pak-taro','pak-taro']];
 for(const [p,id] of appMap)if(path.includes(p))appId=id;
 
-function enabled(){try{return localStorage.getItem(LS)!=='0'}catch(_){return true}}
+function enabled(){try{return localStorage.getItem(LS)==='1'}catch(_){return false}}
 function setEnabled(v){try{localStorage.setItem(LS,v?'1':'0')}catch(_){}}
 function browser(){
   const ua=navigator.userAgent;
-  const m=ua.match(/Edg\/([\d]+)/)||ua.match(/Chrome\/([\d]+)/)||ua.match(/Firefox\/([\d]+)/)||ua.match(/Version\/([\d]+).*Safari/);
-  const n=/Edg\//.test(ua)?'Edge':/Chrome\//.test(ua)?'Chrome':/Firefox\//.test(ua)?'Firefox':/Safari\//.test(ua)?'Safari':'Browser';
-  return n+(m?' '+m[1]:'');
+  return /Edg\//.test(ua)?'Edge':/Chrome\//.test(ua)?'Chrome':/Firefox\//.test(ua)?'Firefox':/Safari\//.test(ua)?'Safari':'Browser';
+}
+function platformClass(){
+  const ua=navigator.userAgent;
+  if(/Android/i.test(ua))return 'Android';
+  if(/iPhone|iPad|iPod/i.test(ua))return 'iOS/iPadOS';
+  if(/Windows/i.test(ua))return 'Windows';
+  if(/Macintosh|Mac OS X/i.test(ua))return 'macOS';
+  if(/Linux/i.test(ua))return 'Linux';
+  return 'Other';
+}
+function viewportClass(){
+  const w=Math.max(innerWidth||0,innerHeight||0);
+  if(w<760)return 'small';
+  if(w<1400)return 'medium';
+  if(w<2200)return 'large';
+  return 'ifp';
 }
 function deviceClass(){
   const ua=navigator.userAgent;
@@ -29,8 +43,8 @@ function hasWebGL(){try{const c=document.createElement('canvas');return !!(c.get
 function publicId(uid){return 'PILAR-'+uid.replace(/-/g,'').slice(0,8).toUpperCase()}
 function meta(){return{
   user_id:user.id,public_id:publicId(user.id),last_seen:new Date().toISOString(),current_app:appId,
-  device_class:deviceClass(),browser:browser(),platform:(navigator.userAgentData&&navigator.userAgentData.platform)||navigator.platform||'unknown',
-  viewport:innerWidth+'×'+innerHeight,touch_points:navigator.maxTouchPoints||0,webgl:hasWebGL(),webgpu:!!navigator.gpu,pulse_enabled:true
+  device_class:deviceClass(),browser:browser(),platform:platformClass(),
+  viewport:viewportClass(),touch_points:(navigator.maxTouchPoints||0)>0?1:0,webgl:hasWebGL(),webgpu:!!navigator.gpu,pulse_enabled:true
 }}
 function injectUI(){
   if(document.getElementById('pilarPulseBtn'))return;
@@ -61,9 +75,9 @@ function injectUI(){
 }
 function notice(){
   try{if(localStorage.getItem('pilar_pulse_notice')==='1')return}catch(_){}
-  const n=document.createElement('div');n.id='pilarPulseNotice';n.innerHTML='PILAR Pulse memakai <b>ID anonim + info perangkat dasar</b> untuk status koneksi, kompatibilitas, dan dukungan. Tidak memakai lokasi presisi atau fingerprint.<button>OK</button><button data-off>Nonaktifkan</button>';document.body.appendChild(n);
-  n.querySelector('button').onclick=()=>{try{localStorage.setItem('pilar_pulse_notice','1')}catch(_){}n.remove()};
-  n.querySelector('[data-off]').onclick=async()=>{setEnabled(false);n.remove();await disablePulse()};
+  const n=document.createElement('div');n.id='pilarPulseNotice';n.innerHTML='PILAR Pulse bersifat <b>opsional</b>. Jika diaktifkan, PILAR mengirim ID anonim, app aktif, kategori perangkat/browser, kemampuan grafis, status online, dan chat yang kamu kirim. Tidak mengirim lokasi presisi, audio, video, atau fingerprint unik.<button data-on>Aktifkan</button><button data-off>Tidak sekarang</button>';document.body.appendChild(n);
+  n.querySelector('[data-on]').onclick=async()=>{try{localStorage.setItem('pilar_pulse_notice','1')}catch(_){}n.remove();await enablePulse()};
+  n.querySelector('[data-off]').onclick=()=>{setEnabled(false);try{localStorage.setItem('pilar_pulse_notice','1')}catch(_){}n.remove()};
 }
 function setButton(state,label){
   const b=document.getElementById('pilarPulseBtn');if(!b)return;b.classList.remove('on','off');b.classList.add(state);b.textContent=label;
@@ -109,7 +123,7 @@ async function startSession(){
 async function ping(){
   if(!ready||document.hidden)return;
   const now=new Date().toISOString();
-  await db.from('pilar_profiles').update({last_seen:now,current_app:appId,viewport:innerWidth+'×'+innerHeight}).eq('user_id',user.id);
+  await db.from('pilar_profiles').update({last_seen:now,current_app:appId,viewport:viewportClass()}).eq('user_id',user.id);
   await db.from('pilar_sessions').update({last_seen:now,current_app:appId,page_path:location.pathname}).eq('id',sessionId);
 }
 async function track(name,details={}){
@@ -156,7 +170,8 @@ async function disablePulse(){
 }
 async function enablePulse(){
   if(ready){syncPulseUI(true);return}
-  setEnabled(true);setButton('on','◌ Menghubungkan…');syncPulseUI(false);
+  setEnabled(true);try{localStorage.setItem('pilar_pulse_notice','1')}catch(_){}
+  setButton('on','◌ Menghubungkan…');syncPulseUI(false);
   syncInlineIdentity('Pulse · connecting…','');
   const id=document.getElementById('ppIdentity');if(id)id.textContent='Menghubungkan PILAR Pulse…';
   try{
@@ -185,8 +200,8 @@ if(!enabled()){
   setButton('off','○ Aktifkan Pulse');syncPulseUI(false);
   syncInlineIdentity('Pulse · OFF','off');
   const id=document.getElementById('ppIdentity');if(id)id.textContent='Pulse nonaktif · klik Aktifkan Pulse';
+  notice();
   return
 }
-notice();
 auth().then(startSession).catch(err=>{console.warn('[PILAR Pulse]',err);setButton('off','○ Pulse setup');const id=document.getElementById('ppIdentity');if(id)id.textContent='Backend belum siap / Anonymous Auth belum aktif'});
 })(window);
