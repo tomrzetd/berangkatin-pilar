@@ -1,4 +1,4 @@
-/* PILAR SoundScope v4.0.1 — acoustic Morse link. Direct mic Goertzel RX; no backend. */
+/* PILAR SoundScope v4.0.2 — acoustic Morse link. Timing-safe RX with glitch rejection. */
 (function(){
 'use strict';
 const A=window.SOUNDSCOPE_MORSE_AUDIO;
@@ -67,8 +67,8 @@ options('mTxUnit',[80,100,120,160,220],120,v=>v+' ms · '+Math.round(1200/v)+' W
 options('mRxUnit',[80,100,120,160,220],120,v=>v+' ms');
 const cfg={mode:'tx',active:false,tx:null,rx:{
   listening:false,buffer:new Float32Array(2048),
-  freq:1000,unit:120,present:false,onAt:0,lastOff:0,lastChange:0,
-  raw:[],text:'',symbols:[],history:[],wordSpaced:false,
+  freq:1000,unit:120,present:false,candidate:false,candidateSince:0,onAt:0,lastOff:0,lastValidOff:0,lastChange:0,
+  raw:[],text:'',symbols:[],history:[],wordSpaced:false,glitches:0,
   noise:0.00008,level:0,rawLevel:0,sideLevel:0,snr:0,auto:false,autoSamples:[],lastScan:0,lastUi:0,lastStatus:0
 }};
 const R=cfg.rx;
@@ -194,7 +194,7 @@ function stopRx(message='RX berhenti. Mikrofon dapat dimatikan dari kontrol utam
  status('mLiveText','RECEIVER BERHENTI');
 }
 function clearRx(){
- R.symbols=[];R.text='';R.history=[];R.raw=[];R.present=false;R.onAt=0;R.lastOff=0;R.lastChange=0;R.wordSpaced=false;R.noise=.00008;R.level=0;R.rawLevel=0;R.sideLevel=0;R.snr=0;
+ R.symbols=[];R.text='';R.history=[];R.raw=[];R.present=false;R.candidate=false;R.candidateSince=0;R.onAt=0;R.lastOff=0;R.lastValidOff=0;R.lastChange=0;R.wordSpaced=false;R.glitches=0;R.noise=.00008;R.level=0;R.rawLevel=0;R.sideLevel=0;R.snr=0;
  status('mRxText','…');status('mRxSymbols','Simbol masuk: —');updateRail();
 }
 async function startRx(){
@@ -206,7 +206,7 @@ async function startRx(){
   if(!connectRx())throw Error('Input mikrofon tidak tersedia');
   clearRx();R.listening=true;
   $('mRxStart').disabled=true;
-  status('mRxStatus','RX aktif pada '+R.freq+' Hz. Meter MIC harus bereaksi pada suara apa pun; meter CARRIER hanya naik bila nada target terdeteksi.');
+  status('mRxStatus','RX aktif pada '+R.freq+' Hz. Meter MIC = semua suara; CARRIER = nada target. Decoder kini menolak glitch <½T dan menjaga gap 1T/3T.');
   status('mLiveText','MIKROFON MENDENGAR');$('mLive').classList.add('on');setStep(3);
  }catch(e){stopRx('Gagal memulai receiver: '+(e.message||String(e)))}
 }
@@ -243,57 +243,99 @@ function finishLetter(){
  R.text+=ch;R.raw.push({seq,ch});R.symbols=[];
  if(R.text.length>200)R.text=R.text.slice(-200);
  status('mRxText',R.text.trimEnd());
- status('mRxSymbols',seq+' → '+ch+(ch==='□'?' (tak dikenal)':''));
+ status('mRxSymbols',seq.replaceAll('.','·').replaceAll('-','—')+' → '+ch+(ch==='□'?' · pola tak dikenal':' · huruf valid'));
  setStep(4);updateRail();
 }
 function tickRx(now){
  if(!R.listening||!A.micOn)return;
  const s=sampleCarrier();if(!s)return;
- R.level=R.level?R.level*.58+s.carrier*.42:s.carrier;
- R.sideLevel=R.sideLevel?R.sideLevel*.70+s.side*.30:s.side;
- R.rawLevel=R.rawLevel?R.rawLevel*.72+s.raw*.28:s.raw;
- const mult=+$('mSensitivity').value;
- const snrMin=mult<=3?3.5:mult<=4?5.5:7.5;
- const onTh=Math.max(.00012,R.noise*mult);
- const offTh=Math.max(.00007,onTh*.52);
- R.snr=20*Math.log10((R.level+.000001)/(Math.max(R.sideLevel,R.noise*.45)+.000001));
- const toneStrong=R.level>onTh&&R.snr>=snrMin;
- const heard=R.present?(R.level>offTh&&R.snr>=snrMin-2.5):toneStrong;
 
- if(!R.present&&!toneStrong){
-  const candidate=Math.max(.00002,Math.min(R.level,.02));
-  R.noise=clamp(R.noise*.975+candidate*.025,.00002,.025);
+ R.level=R.level?R.level*.48+s.carrier*.52:s.carrier;
+ R.sideLevel=R.sideLevel?R.sideLevel*.66+s.side*.34:s.side;
+ R.rawLevel=R.rawLevel?R.rawLevel*.72+s.raw*.28:s.raw;
+
+ const mult=+$('mSensitivity').value;
+ const snrMin=mult<=3?3.5:mult<=4?5.5:7.0;
+ const onTh=Math.max(.00012,R.noise*mult);
+ // OFF dibuat lebih dekat ke threshold ON agar gema 1T tidak menyambung dua pulsa.
+ const offTh=Math.max(.00008,onTh*.72);
+ R.snr=20*Math.log10((R.level+.000001)/(Math.max(R.sideLevel,R.noise*.45)+.000001));
+
+ const rawGate=R.present
+   ? (R.level>offTh&&R.snr>=snrMin-2.2)
+   : (R.level>onTh&&R.snr>=snrMin);
+
+ // Noise floor hanya belajar ketika tidak ada kandidat carrier kuat.
+ if(!R.present&&!rawGate){
+  const candidateNoise=Math.max(.00002,Math.min(R.level,.02));
+  R.noise=clamp(R.noise*.982+candidateNoise*.018,.00002,.025);
  }
 
- // Stabilkan status ON/OFF; pulsa transien yang terlalu pendek dibuang.
- if(heard!==R.present&&now-R.lastChange>22){
-  R.lastChange=now;R.present=heard;
-  if(heard){
-   if(R.symbols.length&&R.lastOff&&now-R.lastOff>R.unit*2.25)finishLetter();
-   R.onAt=now;R.wordSpaced=false;setStep(3);
+ // Candidate edge: perubahan harus bertahan beberapa puluh ms sebelum dianggap nyata.
+ if(rawGate!==R.candidate){
+  R.candidate=rawGate;
+  R.candidateSince=now;
+ }
+
+ const onDebounce=Math.max(18,R.unit*.14);
+ const offDebounce=Math.max(28,R.unit*.24);
+ const debounce=R.candidate?onDebounce:offDebounce;
+
+ if(R.candidate!==R.present && now-R.candidateSince>=debounce){
+  // Gunakan waktu saat kandidat pertama muncul, bukan waktu sesudah debounce,
+  // agar panjang dot/dash dan gap tetap mendekati timing akustik aslinya.
+  const edge=R.candidateSince;
+  R.present=R.candidate;
+  R.lastChange=now;
+
+  if(R.present){
+   R.onAt=edge;
+   R.wordSpaced=false;
+   setStep(3);
    status('mLiveText','CARRIER '+Math.round(R.freq)+' Hz TERDETEKSI');
   }else{
-   const ms=now-R.onAt;
-   if(ms>=R.unit*.35){
-    const mark=ms>=R.unit*2?'—':'·';
+   const ms=edge-R.onAt;
+   const minPulse=R.unit*.52;
+   if(ms>=minPulse){
+    const mark=ms>=R.unit*1.85?'—':'·';
     R.symbols.push(mark==='—'?'-':'.');
     R.raw.push({mark,duration:Math.round(ms)});
-    if(R.symbols.length>8)R.symbols=[];
-    status('mRxSymbols','Sedang dibaca: '+R.symbols.join(' ').replaceAll('.','·').replaceAll('-','—'));
+    R.lastOff=edge;
+    R.lastValidOff=edge;
+    if(R.symbols.length>7){
+      // Pola Morse valid maksimum 6 elemen; >7 hampir pasti noise.
+      R.symbols=[];R.glitches++;
+      status('mRxSymbols','Noise burst dibuang · '+R.glitches+' glitch');
+    }else{
+      status('mRxSymbols','Pulsa '+Math.round(ms)+' ms → '+mark+' · pola: '+R.symbols.join(' ').replaceAll('.','·').replaceAll('-','—'));
+    }
     updateRail();
+   }else{
+    // Pulsa terlalu pendek diabaikan DAN tidak mengubah lastValidOff.
+    R.glitches++;
+    status('mRxSymbols','Glitch '+Math.round(ms)+' ms diabaikan · total '+R.glitches);
    }
-   R.lastOff=now;
   }
  }
- if(!R.present&&R.lastOff){
-  const gap=now-R.lastOff;
-  if(R.symbols.length&&gap>=R.unit*2.4)finishLetter();
-  if(!R.wordSpaced&&R.text.length&&gap>=R.unit*5.9){
+
+ // Selesaikan huruf berdasarkan gap sejak PULSA VALID terakhir.
+ // Glitch pendek tidak mereset jam ini.
+ if(R.symbols.length&&R.lastValidOff){
+  const gap=now-R.lastValidOff;
+  if(gap>=R.unit*2.55 && (!R.present || now-R.onAt<R.unit*.45))finishLetter();
+ }
+
+ // Spasi kata hanya saat benar-benar OFF; jangan muncul di tengah dash panjang.
+ if(!R.present&&R.lastValidOff&&R.text.length){
+  const gap=now-R.lastValidOff;
+  if(!R.wordSpaced&&gap>=R.unit*6.25){
    R.text+=' ';R.wordSpaced=true;status('mRxText',R.text.trimEnd());
   }
  }
+
  R.history.push({t:now,on:R.present});
  while(R.history.length&&now-R.history[0].t>2500)R.history.shift();
+
  if(R.auto&&now-R.lastScan>75)scanCarrier(now);
 
  if(now-R.lastUi>110){
@@ -306,12 +348,13 @@ function tickRx(now){
   $('mRxLevel').style.width=clamp(R.level/Math.max(onTh,.00012)*55,0,100)+'%';
   if(!R.auto)status('mRxLock',R.freq+' Hz · '+(R.present?'✓ signal':'manual'));
  }
+
  if(!R.auto&&now-R.lastStatus>500){
   R.lastStatus=now;
   const rawDb=20*Math.log10(R.rawLevel+.000001);
-  if(R.present)status('mRxStatus','✓ Carrier '+R.freq+' Hz masuk. Decoder sedang mengukur durasi ON/OFF.');
-  else if(rawDb>-42&&R.snr<snrMin)status('mRxStatus','Mic mendengar suara, tetapi energi '+R.freq+' Hz belum dominan. Coba Uji Carrier atau Auto Lock.');
-  else if(rawDb<-58)status('mRxStatus','Mic hampir sunyi. Dekatkan speaker HP (±20–60 cm) dan naikkan volume media HP sekitar 60–80%.');
+  if(R.present)status('mRxStatus','✓ Carrier stabil. Decoder menjaga jeda 1T dan membuang glitch pendek.');
+  else if(rawDb>-42&&R.snr<snrMin)status('mRxStatus','Mic mendengar suara, tetapi carrier '+R.freq+' Hz belum cukup dominan. Dekatkan speaker atau Auto Lock.');
+  else if(rawDb<-58)status('mRxStatus','Mic hampir sunyi. Dekatkan speaker HP (±20–60 cm), volume media 60–80%.');
   else status('mRxStatus','Mic aktif. Menunggu carrier '+R.freq+' Hz…');
  }
 }
