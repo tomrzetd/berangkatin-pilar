@@ -1,4 +1,4 @@
-/* PILAR SoundScope v4.3.1 — Acoustic Physics pure DSP core.
+/* PILAR SoundScope v4.4.0 — Acoustic Physics DSP + ranging + localization core.
  * Browser + Node compatible. Stage 1: Echo Sonar.
  */
 (function(root,factory){
@@ -57,5 +57,42 @@ function synthEcho(o={}){
  for(let i=0;i<N;i++)y[i]+=noise*rnd();
  return {samples:y,chirp,directIndex:direct,echoIndex:direct+extra,c,tempC,distanceM:o.distanceM??2,baselineM};
 }
-return {speedOfSound,makeChirp,correlation,localPeaks,rangeFromExcess,excessFromRange,analyzeEcho,synthEcho};
+
+function goertzelPower(signal,sr,freq,start=0,end=signal.length){
+ start=Math.max(0,start|0);end=Math.min(signal.length,end|0);const N=end-start;if(N<32||freq<=0||freq>=sr/2)return 0;
+ const c=2*Math.cos(2*Math.PI*freq/sr);let q1=0,q2=0;
+ for(let i=start;i<end;i++){const n=i-start,w=.5-.5*Math.cos(2*Math.PI*n/Math.max(1,N-1)),q=signal[i]*w+c*q1-q2;q2=q1;q1=q}
+ return Math.max(0,q1*q1+q2*q2-c*q1*q2);
+}
+function estimateTone(signal,o={}){
+ const sr=o.sr||48000,center=o.center||2000,span=o.span??35,step=o.step??1;if(!signal||signal.length<256)return {ok:false,reason:'sampel kurang'};
+ const fs=[];for(let f=center-span;f<=center+span+1e-9;f+=step)fs.push(f);const p=fs.map(f=>goertzelPower(signal,sr,f));let bi=0;for(let i=1;i<p.length;i++)if(p[i]>p[bi])bi=i;
+ if(bi<=0||bi>=p.length-1)return {ok:false,reason:'puncak di tepi pencarian',freq:fs[bi]};
+ const a=Math.log(p[bi-1]+1e-18),b=Math.log(p[bi]+1e-18),c=Math.log(p[bi+1]+1e-18),den=a-2*b+c,frac=Math.abs(den)>1e-9?.5*(a-c)/den:0,freq=fs[bi]+Math.max(-1,Math.min(1,frac))*step;
+ const sorted=p.slice().sort((x,y)=>x-y),noise=sorted[Math.floor(sorted.length*.45)]+1e-18,snrDb=10*Math.log10((p[bi]+1e-18)/noise);
+ return {ok:snrDb>(o.minSnrDb??6),freq,power:p[bi],snrDb};
+}
+function dopplerVelocity(observedHz,baselineHz,tempC=27){const f0=Math.max(1,baselineHz),c=speedOfSound(tempC);return {velocity:c*(observedHz-f0)/f0,shiftHz:observedHz-f0,c}}
+function toneEnvelope(signal,o={}){
+ const sr=o.sr||48000,freq=o.freq||1000,win=Math.max(64,Math.round(sr*(o.winMs??8)/1000)),hop=Math.max(1,Math.round(sr*(o.hopMs??1)/1000)),values=[],indices=[];
+ for(let s=Math.max(0,o.start||0);s+win<=Math.min(signal.length,o.end??signal.length);s+=hop){values.push(Math.sqrt(goertzelPower(signal,sr,freq,s,s+win))/win);indices.push(s+Math.floor(win/2))}
+ return {values:Float32Array.from(values),indices:Int32Array.from(indices),win,hop,freq};
+}
+function detectToneOnset(signal,o={}){
+ const e=toneEnvelope(signal,o),a=e.values;if(!a.length)return {ok:false,reason:'tidak ada window'};let peak=0;for(const v of a)if(v>peak)peak=v;
+ const th=Math.max(o.minAmp??1e-5,peak*(o.ratio??.42)),need=o.consecutive??2;let run=0,at=-1;for(let i=0;i<a.length;i++){if(a[i]>=th){if(++run>=need){at=i-need+1;break}}else run=0}
+ if(at<0)return {ok:false,peak,threshold:th,envelope:e,reason:'burst tidak ditemukan'};
+ return {ok:true,index:e.indices[at],peak,threshold:th,envelope:e,confidence:Math.max(0,Math.min(1,(peak-th)/(peak+1e-12)))};
+}
+function rangeFromRoundTrip(dtSec,turnaroundMs,tempC=27,biasM=0){const travel=Math.max(0,dtSec-Math.max(0,turnaroundMs)/1000),raw=speedOfSound(tempC)*travel/2;return {rawM:raw,distanceM:Math.max(0,raw-(biasM||0)),travelSec:travel,c:speedOfSound(tempC)}}
+function trilaterate(anchors,o={}){
+ const pts=(anchors||[]).filter(a=>Number.isFinite(a.x)&&Number.isFinite(a.y)&&Number.isFinite(a.r)&&a.r>0);if(pts.length<3)return {ok:false,reason:'butuh minimal 3 anchor'};
+ let x=pts.reduce((s,a)=>s+a.x,0)/pts.length,y=pts.reduce((s,a)=>s+a.y,0)/pts.length;
+ for(let it=0;it<(o.iterations||18);it++){let A=0,B=0,Cc=0,D=0,Ev=0;for(const a of pts){const dx=x-a.x,dy=y-a.y,d=Math.max(1e-6,Math.hypot(dx,dy)),res=d-a.r,w=Math.max(.05,a.w??1),jx=dx/d,jy=dy/d;A+=w*jx*jx;B+=w*jx*jy;Cc+=w*jy*jy;D+=w*jx*res;Ev+=w*jy*res}const det=A*Cc-B*B;if(Math.abs(det)<1e-10)break;const sx=(Cc*D-B*Ev)/det,sy=(-B*D+A*Ev)/det;x-=sx;y-=sy;if(Math.hypot(sx,sy)<1e-6)break}
+ const residuals=pts.map(a=>{const model=Math.hypot(x-a.x,y-a.y);return {id:a.id||'',measured:a.r,model,residual:model-a.r}}),rms=Math.sqrt(residuals.reduce((s,r)=>s+r.residual*r.residual,0)/residuals.length),spread=Math.sqrt(pts.reduce((s,a)=>s+(a.x-x)*(a.x-x)+(a.y-y)*(a.y-y),0)/pts.length);
+ return {ok:true,x,y,rms,uncertainty:Math.max(.03,rms*1.8+.02/(spread+.1)),residuals,n:pts.length};
+}
+function synthTone(o={}){const sr=o.sr||48000,f=o.freq||2000,seconds=o.seconds||.15,amp=o.amp??.3,N=Math.round(sr*seconds),x=new Float32Array(N);let seed=987654321;const rnd=()=>((seed=(1664525*seed+1013904223)>>>0)/4294967296)*2-1;for(let i=0;i<N;i++)x[i]=amp*Math.sin(2*Math.PI*f*i/sr)+(o.noise??.004)*rnd();return x}
+
+return {speedOfSound,makeChirp,correlation,localPeaks,rangeFromExcess,excessFromRange,analyzeEcho,synthEcho,goertzelPower,estimateTone,dopplerVelocity,toneEnvelope,detectToneOnset,rangeFromRoundTrip,trilaterate,synthTone};
 });

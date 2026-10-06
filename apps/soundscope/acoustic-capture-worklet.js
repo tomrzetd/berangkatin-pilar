@@ -1,11 +1,12 @@
-/* PILAR SoundScope v4.3.0 — microphone sample capture worklet */
+/* PILAR SoundScope v4.4.0 — capture + sample-clock anchor responder */
 class PilarAcousticCaptureProcessor extends AudioWorkletProcessor{
- constructor(){super();this.block=new Float32Array(2048);this.fill=0;this.total=0}
- process(inputs,outputs){
-  const input=inputs[0]&&inputs[0][0],out=outputs[0]&&outputs[0][0];if(out)out.fill(0);if(!input)return true;
-  let p=0;while(p<input.length){const n=Math.min(this.block.length-this.fill,input.length-p);this.block.set(input.subarray(p,p+n),this.fill);this.fill+=n;p+=n;this.total+=n;
-   if(this.fill===this.block.length){const data=this.block;this.port.postMessage({type:'samples',end:this.total,data},[data.buffer]);this.block=new Float32Array(2048);this.fill=0}}
-  return true;
- }
+ constructor(){super();this.block=new Float32Array(2048);this.fill=0;this.total=0;this.r={enabled:false,pollFreq:1000,replyFreq:1800,delayMs:120,replyMs:24,amp:.26,minAmp:.006};this.di=0;this.dq=0;this.raw=0;this.ph=0;this.above=0;this.armed=true;this.replyAt=-1;this.replyEnd=-1;this.rph=0;this.port.onmessage=e=>{const m=e.data||{};if(m.type==='responder'){Object.assign(this.r,m.config||{});this.r.enabled=!!m.enabled;this.armed=true;this.above=0;this.replyAt=-1;this.port.postMessage({type:'responder-state',enabled:this.r.enabled})}}}
+ process(inputs,outputs){const input=inputs[0]&&inputs[0][0],out=outputs[0]&&outputs[0][0];if(out)out.fill(0);const N=input?input.length:(out?out.length:128),alpha=Math.exp(-1/(sampleRate*.0035));
+  for(let n=0;n<N;n++){const x=input?input[n]:0,absIndex=this.total+n;if(input){this.block[this.fill++]=x;if(this.fill===this.block.length){const data=this.block;this.port.postMessage({type:'samples',end:absIndex+1,data},[data.buffer]);this.block=new Float32Array(2048);this.fill=0}}
+   if(this.r.enabled&&input){const w=2*Math.PI*this.r.pollFreq/sampleRate;this.ph+=w;if(this.ph>Math.PI*2)this.ph-=Math.PI*2;const c=Math.cos(this.ph),s=Math.sin(this.ph),k=1-alpha;this.di=alpha*this.di+k*x*c;this.dq=alpha*this.dq+k*x*s;this.raw=alpha*this.raw+k*Math.abs(x);const amp=2*Math.hypot(this.di,this.dq),th=Math.max(this.r.minAmp,this.raw*.9);
+    if(this.armed&&amp>th){if(++this.above>=Math.max(24,Math.round(sampleRate*.0025))){this.armed=false;const delay=Math.round(sampleRate*this.r.delayMs/1000),dur=Math.round(sampleRate*this.r.replyMs/1000);this.replyAt=absIndex+delay;this.replyEnd=this.replyAt+dur;this.rph=0;this.port.postMessage({type:'anchor-trigger',at:absIndex,amp,pollFreq:this.r.pollFreq,replyAt:this.replyAt})}}else this.above=Math.max(0,this.above-2);
+    if(!this.armed&&absIndex>this.replyEnd+Math.round(sampleRate*.18)){this.armed=true;this.above=0;this.port.postMessage({type:'anchor-rearmed'})}}
+   if(out&&this.r.enabled&&absIndex>=this.replyAt&&absIndex<this.replyEnd){const j=absIndex-this.replyAt,len=Math.max(1,this.replyEnd-this.replyAt),ramp=Math.max(1,Math.round(sampleRate*.003)),env=Math.min(1,j/ramp,(len-j)/ramp);this.rph+=2*Math.PI*this.r.replyFreq/sampleRate;out[n]=this.r.amp*Math.max(0,env)*Math.sin(this.rph)}}
+  this.total+=N;return true}
 }
 registerProcessor('pilar-acoustic-capture',PilarAcousticCaptureProcessor);
