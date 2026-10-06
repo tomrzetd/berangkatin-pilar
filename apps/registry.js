@@ -5,7 +5,7 @@
     {id:'microscope',title:'Microscope Lab',subtitle:'Instrument HUD · Vision · ML · ukur · ESP32',category:'Tools / MPI',icon:'🔬',url:'apps/microscope/',version:'0.8',status:'ready'},
     {id:'rubik-orbit',title:'Rubik Orbit',subtitle:'Hybrid Orbit Map · permutation detail · 3D solver',category:'Game / Tools',icon:'◈',url:'apps/rubik-orbit/',version:'3.4',status:'ready'},
     {id:'mbg-duel',title:'MBG Delivery Duel',subtitle:'Algoritma rute · duel multitouch · Vision AI',category:'Game / MPI',icon:'🚚',url:'apps/mbg-duel/',version:'3.0',status:'ready'},
-    {id:'soundscope',title:'SoundScope Lab',subtitle:'FFT · PolyTouch · Guitar Tuner · mic',category:'Tools / MPI',icon:'〰',url:'apps/soundscope/',version:'3.2',status:'ready'},
+    {id:'soundscope',title:'SoundScope Lab',subtitle:'FFT · PolyTouch · Morse Acoustic Link · Tuner · mic',category:'Tools / MPI',icon:'〰',url:'apps/soundscope/',version:'4.0',status:'ready'},
     {id:'pak-taro',title:'Lab Misteri Pak Taro',subtitle:'Pola · eksperimen · bukti · Vision AI',category:'Game / MPI',icon:'🧪',url:'apps/pak-taro/',version:'2.0',status:'ready'},
     {id:'air-writing',title:'Air Writing Lab',subtitle:'Laser draw · Trace Quest · Face Vision · gesture',category:'Tools / Vision / MPI',icon:'✍️',url:'apps/air-writing/',version:'3.1',status:'ready'},
     {id:'puzzlesnap',title:'PuzzleSnap',subtitle:'Foto jadi puzzle · multitouch · pinch gesture · Vision AI',category:'Game / Vision / MPI',icon:'🧩',url:'apps/puzzlesnap/',version:'2.1',status:'ready'},
