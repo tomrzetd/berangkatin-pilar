@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="id"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>PILAR™ · SoundScope Lab — IFP Edition v4.2.0 · Acoustic Link · OOK + BFSK/Hamming</title>
+<title>PILAR™ · SoundScope Lab — IFP Edition v4.3.0 · Acoustic Instrumentation · Sonar + OOK/BFSK</title>
 <style>
 :root{color-scheme:dark;--bg1:#07101b;--bg2:#0a1524;--panel:rgba(13,26,43,.94);--line:#28415f;--text:#eef7ff;--muted:#9db2ca;--good:#63e3a0;--warn:#ffd36c;--bad:#ff6d83;--blue:#69baff;--cyan:#7eeeff;--pink:#ff6d83;--btn:3.4rem;--r:1.2rem}
 *{box-sizing:border-box}
@@ -109,10 +109,10 @@ input[type=range]{width:100%;height:2rem;accent-color:var(--blue)}
 .tunerStrings button{min-height:2.6rem;border:1px solid var(--line);border-radius:.8rem;background:rgba(0,0,0,.22);color:var(--text);font-weight:850}
 .tunerStrings button.on{border-color:var(--good);background:rgba(56,230,153,.18);box-shadow:0 0 0 1px rgba(56,230,153,.2)}
 @media(max-width:600px){.tunerStrings{grid-template-columns:repeat(4,minmax(0,1fr))}.tunerNote{font-size:4rem}}
-</style><link rel="stylesheet" href="./morse-link.css?v=4.2.0"></head>
+</style><link rel="stylesheet" href="./morse-link.css?v=4.2.0"><link rel="stylesheet" href="./acoustic-physics.css?v=4.3.0"></head>
 <body>
 <div class="top">
-  <div class="pilar-top-left"><a class="hubBtn" href="../../" title="Kembali ke PILAR Hub" aria-label="Kembali ke PILAR Hub">←</a><div class="pilar-title"><b>PILAR™ · 🎧 SoundScope Lab — IPA SMP (IFP)</b><small>Waveform • Spektrum log-frekuensi • Puncak & harmonik • Frequency Detective • Sound Signature • Kamera AI</small></div></div>
+  <div class="pilar-top-left"><a class="hubBtn" href="../../" title="Kembali ke PILAR Hub" aria-label="Kembali ke PILAR Hub">←</a><div class="pilar-title"><b>PILAR™ · 🎧 SoundScope Lab — IPA SMP (IFP)</b><small>Acoustic Instrumentation • Spectrum • Echo Sonar • Communication • Tuner • Vision</small></div></div>
   <div class="brand"><i></i><span id="brand">…</span></div>
 </div>
 <div class="app">
@@ -122,7 +122,7 @@ input[type=range]{width:100%;height:2rem;accent-color:var(--blue)}
       <div class="row"><button class="btn good" id="bStart">🎤 Mulai Mic</button><button class="btn danger" id="bStop">Stop</button></div>
       <label>Mikrofon (IFP internal / eksternal)<select id="selMic"></select></label>
       <div class="card"><b>🧰 Tools</b>
-        <div class="tools"><button class="btn primary on" data-tool="lab">🧪 Lab</button><button class="btn primary" data-tool="det">🕵️ Detective</button><button class="btn primary" data-tool="sig">🧬 Signature</button><button class="btn primary" data-tool="cam">📷 Kamera AI</button><button class="btn good" data-tool="tuner">🎸 Guitar Tuner</button><button class="btn primary" data-tool="morse">📡 Morse Acoustic Link · NEW</button></div>
+        <div class="tools"><button class="btn primary on" data-tool="lab">🧪 Lab</button><button class="btn primary" data-tool="det">🕵️ Detective</button><button class="btn primary" data-tool="sig">🧬 Signature</button><button class="btn primary" data-tool="cam">📷 Kamera AI</button><button class="btn good" data-tool="tuner">🎸 Guitar Tuner</button><button class="btn primary" data-tool="acoustic">🌊 Acoustic Physics · NEW</button><button class="btn primary" data-tool="morse">📡 Acoustic Communication</button></div>
       </div>
       <div class="card"><b>🎚️ Tampilan</b>
         <label>Gain mic <input type="range" id="slGain" min="0" max="3" step=".01" value="1"></label>
@@ -156,7 +156,7 @@ input[type=range]{width:100%;height:2rem;accent-color:var(--blue)}
       <div class="cv"><div class="cap">🌊 Waveform • stabil (trigger) • amplitudo vs waktu</div><canvas id="cvW"></canvas></div>
       <div class="cv"><div class="cap">📊 Spektrum • skala log 20 Hz–20 kHz • dB</div><canvas id="cvS"></canvas></div>
     </div>
-    <section class="morse-stage" id="morseStage" hidden aria-label="Perjalanan sinyal Morse"></section>
+    <section class="morse-stage" id="morseStage" hidden aria-label="Perjalanan sinyal Morse"></section><section class="acoustic-stage" id="acousticStage" hidden aria-label="Acoustic Physics"></section>
   </section>
 
   <section class="panel" aria-label="Tool aktif">
@@ -201,7 +201,7 @@ input[type=range]{width:100%;height:2rem;accent-color:var(--blue)}
         <div class="card"><b>📚 Profil</b><div id="sList" class="hint">Belum ada profil.</div></div>
       </div>
 
-      <div id="tp-morse" hidden><div id="morseControlMount"></div></div>
+      <div id="tp-morse" hidden><div id="morseControlMount"></div></div><div id="tp-acoustic" hidden><div id="acousticControlMount"></div></div>
 
       <div id="tp-cam" hidden>
         <div class="card"><b>📷 Theremin Kamera (AI di perangkat)</b>
@@ -258,7 +258,7 @@ async function startMic(){
   }catch(e){$("mDot").className="dot bad";$("mTxt").textContent="Gagal akses mic";toast("Gagal akses mic. Cek izin browser.","bad")}
 }
 function stopMic(silent){
-  window.SoundScopeMorse?.micStopped?.();
+  window.SoundScopeMorse?.micStopped?.();window.SoundScopeAcoustic?.micStopped?.();
   if(S.mic){S.mic.getTracks().forEach(t=>t.stop());S.mic=null}
   if(S.src){try{S.src.disconnect()}catch{}S.src=null}
   S.micOn=false;$("mDot").className="dot";$("mTxt").textContent="Mic belum aktif";if(!silent)toast("Mic dihentikan.","warn");
@@ -556,7 +556,7 @@ function frame(now){
   if(S.an&&(!frozen||tool==="morse")){S.an.smoothingTimeConstant=+$("slSm").value;S.an.getFloatTimeDomainData(td);S.an.getFloatFrequencyData(fd);
     for(let i=0;i<fd.length;i++){const v=Math.max(fd[i],-140);disp[i]=lerp(disp[i],v,v>disp[i]?.6:.14);hold[i]=Math.max(disp[i],hold[i]-.25)}}
   if(fc%2===0)camStep(now);
-  const pk=tool==="morse"?[]:findPeaks(),r=tool==="morse"?0:rms(),act=r>.004&&pk.length&&pk[0].db>VMIN+(VMAX-VMIN)*.35,dom=act?pk[0]:null;
+  const special=tool==="morse"||tool==="acoustic",pk=special?[]:findPeaks(),r=special?0:rms(),act=r>.004&&pk.length&&pk[0].db>VMIN+(VMAX-VMIN)*.35,dom=act?pk[0]:null;
   hzS=dom?(hzS?lerp(hzS,dom.f,.25):dom.f):0;rmsS=lerp(rmsS,r,.15);
   if(fc%4===0){
     const db=20*Math.log10(rmsS+1e-6);
@@ -568,21 +568,23 @@ function frame(now){
   updDet(hzS,rmsS,dt);
   updateTuner(now);
   if(tool==="morse")window.SoundScopeMorse?.tick?.(now);
+  else if(tool==="acoustic")window.SoundScopeAcoustic?.tick?.(now);
   else{drawWave(+$("slZoom").value);drawSpec(pk,dom)}
 }
 
 /* ---------- Tools & UI ---------- */
-const TT={lab:"🧪 Lab",tuner:"🎸 Guitar Tuner",det:"🕵️ Frequency Detective",sig:"🧬 Sound Signature",cam:"📷 Kamera AI",morse:"📡 Morse Acoustic Link"};
+const TT={lab:"🧪 Lab",tuner:"🎸 Guitar Tuner",det:"🕵️ Frequency Detective",sig:"🧬 Sound Signature",cam:"📷 Kamera AI",acoustic:"🌊 Acoustic Physics",morse:"📡 Acoustic Communication"};
 function setTool(t){
-  tool=t;["lab","tuner","det","sig","cam","morse"].forEach(k=>$("tp-"+k).hidden=k!==t);$("tTitle").textContent=TT[t];
+  tool=t;["lab","tuner","det","sig","cam","acoustic","morse"].forEach(k=>$("tp-"+k).hidden=k!==t);$("tTitle").textContent=TT[t];
   window.SoundScopeMorse?.activate?.(t==="morse");
+  window.SoundScopeAcoustic?.activate?.(t==="acoustic");
   document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("on",b.dataset.tool===t));
   if(t!=="cam")tone(220,0);
   if(t==="tuner"){
     $("selWave").value="off";syncGeneratorUI();tunerSmooth=0;
     toast("Guitar Tuner: generator dimatikan, dengarkan mikrofon saja.","good");
   }
-  if(t==="morse"){$("selWave").value="off";syncGeneratorUI();releaseAllPoly()}
+  if(t==="morse"||t==="acoustic"){$("selWave").value="off";syncGeneratorUI();releaseAllPoly()}
   if(t==="det")detRender();if(t==="sig")sigRender();
 }
 document.querySelectorAll("[data-tool]").forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
@@ -623,6 +625,9 @@ window.SOUNDSCOPE_MORSE_AUDIO={ensure,startMic,get ctx(){return S.ctx},get src()
 setTool("lab");requestAnimationFrame(frame);
 })();
 </script>
+  <script src="./acoustic-core.js?v=4.3.0"></script>
+  <script src="./acoustic-engine.js?v=4.3.0"></script>
+  <script src="./acoustic-physics.js?v=4.3.0"></script>
   <script src="./fsk-core.js?v=4.2.0"></script>
   <script src="./morse-link.js?v=4.2.0"></script>
   <script src="../../pulse/config.js"></script>
