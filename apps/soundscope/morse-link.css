@@ -1,27 +1,27 @@
 
-/* PILAR SoundScope v4.1.1 — Acoustic Link OOK + FSK */
+/* PILAR SoundScope v4.1.0 — Morse Acoustic Link + skema BFSK/Hamming */
 [hidden]{display:none!important}
 .tools [data-tool="tuner"]{grid-column:auto}
-.tools [data-tool="morse"]{grid-column:1/-1;background:linear-gradient(105deg,rgba(105,186,255,.22),rgba(99,227,160,.10));border-color:rgba(126,238,255,.42)}
+.tools [data-tool="morse"]{grid-column:1/-1;background:linear-gradient(105deg,rgba(105,186,255,.24),rgba(99,227,160,.12));border-color:rgba(126,238,255,.45)}
 body.morse-mode .stage>.kpis,body.morse-mode .stage>.chips,body.morse-mode .stage>.viz{display:none}
 body.morse-mode .stage{overflow:hidden}
 .morse-stage{height:100%;min-height:0;padding:clamp(.55rem,1vw,1rem);display:grid;grid-template-rows:auto auto minmax(155px,1fr) auto;gap:.65rem;align-content:stretch}
 .morse-topline{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap}
 .morse-kicker{color:var(--good);font-weight:950;letter-spacing:.13em;font-size:.77rem}
-.morse-live{display:flex;align-items:center;gap:.5rem;border:1px solid rgba(105,186,255,.34);border-radius:999px;padding:.4rem .7rem;background:rgba(0,0,0,.25);font-size:.72rem;font-weight:850}
+.morse-live{display:flex;align-items:center;gap:.5rem;border:1px solid rgba(105,186,255,.32);border-radius:999px;padding:.4rem .7rem;background:rgba(0,0,0,.25);font-size:.72rem;font-weight:850}
 .morse-live>i{width:.55rem;height:.55rem;background:#6c7893;border-radius:50%;flex:none}
 .morse-live.on>i{background:var(--good);box-shadow:0 0 .8rem var(--good)}
 .morse-title{margin:.2rem 0;font-size:clamp(1.25rem,1.65vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
 .morse-sub{color:var(--muted);font-size:clamp(.77rem,.85vw,.94rem);line-height:1.5;max-width:65rem}
 .morse-chain{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.35rem;position:relative;isolation:isolate}
-.morse-step{position:relative;min-width:0;min-height:5rem;padding:.55rem .2rem;text-align:center;border:1px solid rgba(40,65,95,.82);border-radius:1rem;background:rgba(6,22,43,.72);transition:background .16s,border-color .16s,box-shadow .16s}
+.morse-step{position:relative;min-width:0;min-height:5rem;padding:.55rem .2rem;text-align:center;border:1px solid rgba(93,160,210,.3);border-radius:1rem;background:rgba(6,22,43,.72);transition:background .16s,border-color .16s,box-shadow .16s}
 .morse-step .i{font-size:1.4rem;display:block}
 .morse-step b{font-size:.74rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .morse-step small{font-size:.64rem;color:var(--muted);display:block;margin-top:.2rem;line-height:1.2}
-.morse-step.current{border-color:var(--good);box-shadow:inset 0 0 22px rgba(99,227,160,.13),0 0 17px rgba(99,227,160,.13);background:rgba(15,49,38,.76)}
+.morse-step.current{border-color:var(--good);box-shadow:inset 0 0 22px rgba(99,227,160,.13),0 0 17px rgba(99,227,160,.13);background:rgba(23,67,66,.72)}
 .morse-step.current:after{content:'›';position:absolute;right:-.5rem;top:32%;color:var(--good);font-size:1.2rem;z-index:2;animation:morse-hop .48s ease-in-out infinite alternate}
 @keyframes morse-hop{from{transform:translateX(-2px);opacity:.3}to{transform:translateX(3px);opacity:1}}
-.morse-visual{position:relative;min-height:150px;overflow:hidden;border:1px solid rgba(75,155,214,.35);background:radial-gradient(circle at 85% 40%,rgba(105,186,255,.10),transparent 42%),#07111e;border-radius:1.15rem}
+.morse-visual{position:relative;min-height:150px;overflow:hidden;border:1px solid rgba(75,155,214,.35);background:radial-gradient(circle at 85% 40%,rgba(43,133,177,.1),transparent 42%),#07111e;border-radius:1.15rem}
 .morse-visual canvas{display:block;width:100%;height:100%}
 .morse-visual .cap{pointer-events:none;display:flex;gap:.5rem;justify-content:space-between;flex-wrap:wrap;background:rgba(2,11,25,.8)}
 .morse-legend{position:absolute;z-index:2;right:.75rem;bottom:.6rem;display:flex;gap:.65rem;flex-wrap:wrap;font-size:.66rem;font-weight:850;color:#b7c9dc}
@@ -29,7 +29,7 @@ body.morse-mode .stage{overflow:hidden}
 .morse-bottom{display:grid;grid-template-columns:1fr;gap:.45rem}
 .morse-strip{min-height:3.6rem;display:flex;flex-wrap:wrap;gap:.36rem;align-items:center;align-content:center;border-radius:.8rem;border:1px solid rgba(255,255,255,.11);padding:.5rem .7rem;background:rgba(3,10,23,.55)}
 .morse-token{border:1px solid rgba(96,157,200,.35);padding:.28rem .47rem;background:rgba(255,255,255,.05);border-radius:.5rem;font-family:ui-monospace,Consolas,monospace;font-size:.8rem;font-weight:850;transition:all .18s}
-.morse-token.current{background:var(--good);border-color:var(--good);color:#061728;transform:translateY(-2px);box-shadow:0 0 15px rgba(56,230,153,.4)}
+.morse-token.current{background:var(--good);border-color:var(--good);color:#061728;transform:translateY(-2px);box-shadow:0 0 15px rgba(99,227,160,.4)}
 .morse-token.sp{color:var(--muted);border-style:dashed}
 .morse-caption{font-size:.75rem;color:var(--muted)}
 .morse-config{display:grid;gap:.65rem}
@@ -44,7 +44,7 @@ body.morse-mode .stage{overflow:hidden}
 .morse-config textarea{min-height:5.7rem;resize:vertical;font-size:.9rem;line-height:1.4}
 .morse-config .morse-ctl{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
 .morse-config .morse-ctl button{height:auto;min-height:3rem;font-size:.77rem;padding:.4rem}
-.morse-big{font:900 clamp(1.25rem,2.2vw,2.3rem)/1.25 ui-monospace,Consolas,monospace;letter-spacing:.05em;color:var(--good);overflow-wrap:anywhere;min-height:3.2rem;padding:.45rem;border-radius:.7rem;background:rgba(1,10,22,.57);border:1px solid rgba(56,230,153,.28)}
+.morse-big{font:900 clamp(1.25rem,2.2vw,2.3rem)/1.25 ui-monospace,Consolas,monospace;letter-spacing:.05em;color:var(--good);overflow-wrap:anywhere;min-height:3.2rem;padding:.45rem;border-radius:.7rem;background:rgba(1,10,22,.57);border:1px solid rgba(99,227,160,.28)}
 .morse-note{color:#9db2ca;font-size:.74rem;line-height:1.5}
 .morse-stats{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
 .morse-stats>div{border-radius:.65rem;background:rgba(0,0,0,.19);padding:.5rem;border:1px solid var(--line);min-width:0}
@@ -52,7 +52,7 @@ body.morse-mode .stage{overflow:hidden}
 .morse-stats b{display:block;font-size:.95rem;margin-top:.16rem}
 .morse-progress{height:.47rem;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden}
 .morse-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--good));transition:width .09s linear}
-.morse-meter-row{display:grid;grid-template-columns:3.6rem 1fr;gap:.45rem;align-items:center}.morse-meter-row>span{font-size:.62rem;font-weight:900;color:var(--muted);letter-spacing:.08em}.morse-meter-row:first-of-type .morse-progress i{background:linear-gradient(90deg,#6f849b,var(--blue))}
+.morse-meter-row{display:grid;grid-template-columns:3.6rem 1fr;gap:.45rem;align-items:center}.morse-meter-row>span{font-size:.62rem;font-weight:900;color:var(--muted);letter-spacing:.08em}.morse-meter-row:first-of-type .morse-progress i{background:linear-gradient(90deg,#6c7893,#69baff)}
 .morse-config .btn:disabled{opacity:.4;cursor:not-allowed}
 @media(max-width:1380px){.morse-step small{font-size:.59rem}.morse-step{min-height:4.6rem}}
 @media(max-width:1100px){
@@ -79,3 +79,16 @@ body.morse-mode .stage{overflow:hidden}
   .morse-token{font-size:.68rem;padding:.18rem .3rem}
 }
 @media(prefers-reduced-motion:reduce){.morse-step.current:after{animation:none}}
+/* v4.1.0 — pemilih skema OOK / BFSK */
+.morse-config[data-scheme="fsk"] .only-ook{display:none!important}
+.morse-config[data-scheme="ook"] .only-fsk{display:none!important}
+.morse-token.fsk-bit{min-width:1.35rem;text-align:center;padding:.28rem .3rem}
+.morse-token.fsk-lg{font-size:.62rem;padding:.14rem .38rem;font-weight:700}
+.morse-token.b-pre{border-color:rgba(141,184,217,.55);color:#8db8d9}
+.morse-token.b-sync{border-color:#ffd36c;color:#ffd36c}
+.morse-token.b-head{border-color:#b685ff;color:#c9a6ff}
+.morse-token.b-body{border-color:rgba(99,227,160,.55);color:#9ff0c8}
+.morse-token.b-err{background:#ff6d83!important;border-color:#ff6d83!important;color:#fff!important}
+.morse-progress.fx0 i{background:linear-gradient(90deg,#69baff,#7ee7ff)}
+.morse-progress.fx1 i{background:linear-gradient(90deg,#ffa85a,#ffd36c)}
+#mTxCode,#mRxText{overflow-wrap:anywhere}
