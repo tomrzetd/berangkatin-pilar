@@ -9,6 +9,7 @@ PILAR adalah hub pembelajaran interaktif berbasis web untuk simulasi, game, eksp
 - MBG Delivery Duel
 - SoundScope
 - Lab Misteri Pak Taro
+- Air Writing Lab
 
 Daftar aplikasi ada di `apps/registry.js`. Setiap app mandiri berada di `apps/<slug>/index.html`.
 
