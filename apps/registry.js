@@ -7,6 +7,7 @@
     {id:'mbg-duel',title:'MBG Delivery Duel',subtitle:'Algoritma rute · duel multitouch · Vision AI',category:'Game / MPI',icon:'🚚',url:'apps/mbg-duel/',version:'3.0',status:'ready'},
     {id:'soundscope',title:'SoundScope Lab',subtitle:'FFT · PolyTouch · Guitar Tuner · mic',category:'Tools / MPI',icon:'〰',url:'apps/soundscope/',version:'3.2',status:'ready'},
     {id:'pak-taro',title:'Lab Misteri Pak Taro',subtitle:'Pola · eksperimen · bukti · Vision AI',category:'Game / MPI',icon:'🧪',url:'apps/pak-taro/',version:'2.0',status:'ready'},
+    {id:'air-writing',title:'Air Writing Lab',subtitle:'Laser draw · Trace Quest · Face Vision · gesture',category:'Tools / Vision / MPI',icon:'✍️',url:'apps/air-writing/',version:'3.1',status:'ready'},
     {id:'pressure',title:'Tekanan IPA',subtitle:'Padat · cair · gas',category:'Simulasi',icon:'🫧',url:'apps/pressure/',version:'0.1',status:'coming'}
   ];
 })(window);
