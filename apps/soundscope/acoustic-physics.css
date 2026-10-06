@@ -12,3 +12,20 @@ body.acoustic-mode .stage{overflow:hidden}.acoustic-stage{height:100%;padding:cl
 
 .acp-stage-body{min-height:0;display:grid}.acp-actions.quad{grid-template-columns:1fr 1fr}.anchor-table{display:grid;gap:.4rem}.anchor-row{display:grid;grid-template-columns:2rem repeat(3,minmax(0,1fr)) 4.8rem;gap:.35rem;align-items:end;padding:.42rem;border:1px solid var(--line);border-radius:.7rem;background:rgba(0,0,0,.14)}.anchor-row.simple{grid-template-columns:2rem 1.2fr 1fr 1fr;align-items:center;font-size:.68rem}.anchor-row label{margin:0;font-size:.55rem}.anchor-row input{height:2.2rem;min-height:2.2rem;padding:0 .4rem}.anchor-q{text-align:right;color:var(--good);font-weight:900;font-size:.7rem}.anchor-stage{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}.anchor-tile{border:1px solid var(--line);border-radius:1rem;padding:1rem;text-align:center;background:rgba(0,0,0,.18)}.anchor-tile.ok{border-color:rgba(99,227,160,.45);background:rgba(15,49,38,.28)}.anchor-tile b{display:block;font-size:1.5rem}.anchor-tile span{display:block;font-size:1.1rem;font-weight:900;color:var(--warn)}.anchor-tile small{color:var(--muted)}.acp-viz.one{grid-template-columns:minmax(0,1.35fr) minmax(250px,.65fr)}
 @media(max-width:650px){.acp-actions.quad{grid-template-columns:1fr}.anchor-row{grid-template-columns:1.8rem 1fr 1fr}.anchor-stage{grid-template-columns:1fr 1fr}.acp-viz.one{grid-template-columns:1fr;grid-template-rows:1.2fr .8fr}}
+
+/* v4.5.0 — radar modern, selaras token tema (--cyan/--good/--warn/--blue/--line) */
+.acp-actions.tri{grid-template-columns:1fr 1fr}.acp-actions.tri>:first-child{grid-column:1/-1}
+.acp-radar-wrap{background:radial-gradient(circle at 50% 54%,rgba(24,50,76,.55),#07111e 70%);box-shadow:inset 0 0 0 1px rgba(126,238,255,.06),0 10px 30px rgba(0,0,0,.3)}
+.acp-corr-wrap{background:linear-gradient(180deg,rgba(9,20,35,.9),#07111e)}
+.acp-overlay{left:auto;right:.9rem;top:.7rem;transform:none;text-align:right;background:rgba(5,12,21,.72);border:1px solid var(--line);border-radius:.8rem;padding:.4rem .7rem;backdrop-filter:blur(6px)}
+.acp-overlay b{font-size:clamp(1.2rem,1.8vw,2.1rem);font-variant-numeric:tabular-nums}
+.acp-chain span{transition:border-color .2s,color .2s}.acp-chain span:first-child{border-color:rgba(99,227,160,.4)}.acp-chain span:last-child{border-color:rgba(255,211,108,.5);color:var(--warn)}
+.acp-live.on i{animation:acpPulse 1.1s ease-in-out infinite}@keyframes acpPulse{50%{opacity:.35}}
+.acp-readout strong{font-variant-numeric:tabular-nums}.anchor-tile.ok b{color:var(--good)}
+.acp-viz{grid-template-columns:minmax(300px,1fr) minmax(340px,1fr)}
+@media(max-width:650px){.acp-overlay{right:.5rem;top:2.6rem}}
+
+.acp-actions.tri{grid-template-columns:1fr 1fr 1fr}
+.acp-runtime{display:grid;grid-template-columns:1fr minmax(9rem,13rem);gap:.45rem;align-items:center;padding:.4rem .5rem;border:1px solid var(--line);border-radius:.75rem;background:rgba(0,0,0,.14)}
+.acp-runtime span{font-size:.62rem;color:var(--cyan);font-weight:900;letter-spacing:.04em}.acp-runtime select{height:2.25rem;min-height:2.25rem;padding:.25rem .55rem;font-size:.68rem}
+@media(max-width:650px){.acp-actions.tri{grid-template-columns:1fr}.acp-runtime{grid-template-columns:1fr}}

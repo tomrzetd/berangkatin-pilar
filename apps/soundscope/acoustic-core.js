@@ -1,4 +1,4 @@
-/* PILAR SoundScope v4.4.0 — Acoustic Physics DSP + ranging + localization core.
+/* PILAR SoundScope v4.5.1 — Acoustic Physics DSP + ranging + localization core.
  * Browser + Node compatible. Stage 1: Echo Sonar.
  */
 (function(root,factory){
@@ -10,10 +10,10 @@
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function speedOfSound(tempC){return 331+0.6*clamp(Number(tempC)||20,-10,60)}
 function makeChirp(o={}){
- const sr=o.sr||48000,durMs=o.durationMs||6,f0=o.f0||2500,f1=o.f1||6000,amp=o.amp??0.8;
+ const sr=o.sr||48000,durMs=o.durationMs||6,f0=o.f0||2500,f1=o.f1||6000,amp=o.amp??0.8,ph0=o.phase||0;
  const N=Math.max(64,Math.round(sr*durMs/1000)),x=new Float32Array(N),T=N/sr,k=(f1-f0)/T;
- for(let n=0;n<N;n++){const t=n/sr,ph=2*Math.PI*(f0*t+.5*k*t*t),w=.5-.5*Math.cos(2*Math.PI*n/Math.max(1,N-1));x[n]=amp*w*Math.sin(ph)}
- return x;
+ for(let n=0;n<N;n++){const t=n/sr,ph=2*Math.PI*(f0*t+.5*k*t*t),w=.5-.5*Math.cos(2*Math.PI*n/Math.max(1,N-1));x[n]=amp*w*Math.sin(ph+ph0)}
+ x.meta={sr,durationMs:durMs,f0,f1,amp};return x;
 }
 function correlation(signal,tpl,start=0,end=signal.length){
  const M=tpl.length,s0=Math.max(0,start),last=Math.min(signal.length-M+1,end),N=Math.max(0,last-s0),out=new Float32Array(N);
@@ -28,24 +28,37 @@ function localPeaks(c,minSep=24,threshold=.15){
 }
 function rangeFromExcess(excessM,baselineM=0){const L=Math.max(0,excessM),b=Math.max(0,baselineM);return .5*Math.sqrt(Math.max(0,(L+b)*(L+b)-b*b))}
 function excessFromRange(rangeM,baselineM=0){const d=Math.max(0,rangeM),b=Math.max(0,baselineM);return Math.sqrt(b*b+4*d*d)-b}
+const median=a=>{if(!a.length)return 0;const s=Array.from(a).sort((x,y)=>x-y);return s[s.length>>1]};
+function chirpQuad(chirp){if(chirp._q)return chirp._q;const m=chirp.meta;return chirp._q=m?makeChirp({...m,phase:-Math.PI/2}):chirp}
+/* Matched filter kuadratur (I/Q), LINEAR: keluaran = amplitudo salinan chirp. Envelope tidak berosilasi mengikuti carrier
+ * (bebas jitter 1/4 siklus) dan gema yang tumpang-tindih dengan bunyi langsung tetap terpisah (superposisi, bukan normalisasi energi lokal). */
+function correlationEnv(signal,tpl,tq,start=0,end=signal.length){
+ const M=tpl.length,s0=Math.max(0,start),last=Math.min(signal.length-M+1,end),N=Math.max(0,last-s0),out=new Float32Array(N);
+ let et=1e-12;for(let j=0;j<M;j++)et+=tpl[j]*tpl[j];
+ for(let q=0;q<N;q++){const i=s0+q;let a=0,b=0;for(let j=0;j<M;j++){const v=signal[i+j];a+=v*tpl[j];b+=v*tq[j]}out[q]=Math.hypot(a,b)/et}
+ return {values:out,offset:s0};
+}
+function refinePeak(c,p){const a=c.values,k=p.i-c.offset;if(k<=0||k>=a.length-1)return 0;const d=a[k-1]-2*a[k]+a[k+1];return Math.abs(d)>1e-9?clamp(.5*(a[k-1]-a[k+1])/d,-.5,.5):0}
 function analyzeEcho(signal,chirp,o={}){
  const sr=o.sr||48000,tempC=o.tempC??27,c=speedOfSound(tempC),baselineM=Math.max(0,o.baselineM||0);
  const maxRangeM=o.maxRangeM||5,minRangeM=o.minRangeM||.45,startMs=o.searchStartMs??25,endMs=o.searchEndMs??260;
- const cor=correlation(signal,chirp,Math.round(sr*startMs/1000),Math.min(signal.length,Math.round(sr*endMs/1000)));
- let max=0;for(const v of cor.values)if(v>max)max=v;
- const peaks=localPeaks(cor,Math.max(8,Math.round(sr*.0007)),Math.max(o.threshold??.16,max*.42));
- if(!peaks.length)return {ok:false,reason:'chirp langsung tidak ditemukan',correlation:cor,peaks,c,tempC};
- const strong=Math.max(.18,max*.55),direct=peaks.find(p=>p.v>=strong)||peaks[0];
+ const cor=correlationEnv(signal,chirp,chirpQuad(chirp),Math.round(sr*startMs/1000),Math.min(signal.length,Math.round(sr*endMs/1000)));
+ let max=0;for(const v of cor.values)if(v>max)max=v;const floor=median(cor.values);
+ const k=o.cfar??4.5,peaks=localPeaks(cor,Math.max(8,Math.round(sr*.0007)),Math.max(1e-6,floor*k));
+ for(const p of peaks)p.f=refinePeak(cor,p);
+ if(!peaks.length)return {ok:false,reason:'chirp langsung tidak ditemukan',correlation:cor,peaks,c,tempC,floor};
+ const strong=max*.55,direct=peaks.find(p=>p.v>=strong)||peaks[0];
+ if(direct.v<Math.max(1e-6,floor*(o.directCfar??8)))return {ok:false,reason:'chirp langsung belum cukup kuat',correlation:cor,peaks,c,tempC,floor};
  const minDs=Math.round(excessFromRange(minRangeM,baselineM)/c*sr),maxDs=Math.round(excessFromRange(maxRangeM,baselineM)/c*sr);
  const candidates=peaks.filter(p=>p.i>=direct.i+minDs&&p.i<=direct.i+maxDs);
- if(!candidates.length)return {ok:false,reason:'gema dalam jangkauan belum ditemukan',direct,correlation:cor,peaks,c,tempC};
- // Sonar v1 reports the nearest valid reflector. Normalized correlation intentionally ignores amplitude,
- // so choosing the strongest later peak can jump to a cleaner secondary reflection.
- const echo=candidates[0];
- if(echo.v<Math.max(.105,direct.v*.10))return {ok:false,reason:'gema terlalu lemah',direct,echo,correlation:cor,peaks,c,tempC};
- const dt=(echo.i-direct.i)/sr,excessM=c*dt,distanceM=rangeFromExcess(excessM,baselineM);
- const confidence=clamp((echo.v-.10)/.55,0,1)*clamp(direct.v/.65,0,1);
- return {ok:true,distanceM,dt,excessM,confidence,direct,echo,correlation:cor,peaks,c,tempC,baselineM};
+ if(!candidates.length)return {ok:false,reason:'gema dalam jangkauan belum ditemukan',direct,correlation:cor,peaks,c,tempC,floor};
+ // Gema valid pertama yang cukup kuat dibanding kandidat terbaik: puncak noise kecil di depan tidak menang, pantulan sekunder tidak menang.
+ const best=candidates.reduce((m,p)=>p.v>m.v?p:m,candidates[0]),echo=candidates.find(p=>p.v>=.5*best.v);
+ const snr=echo.v/Math.max(floor,1e-6);
+ if(snr<k)return {ok:false,reason:'gema terlalu lemah / tenggelam noise (SNR '+snr.toFixed(1)+'×)',direct,echo,correlation:cor,peaks,c,tempC,floor};
+ const dt=((echo.i+echo.f)-(direct.i+direct.f))/sr,excessM=c*dt,distanceM=rangeFromExcess(excessM,baselineM);
+ const confidence=clamp((snr-k)/12,0,1)*clamp(direct.v/Math.max(floor,1e-9)/25,0,1);
+ return {ok:true,distanceM,dt,excessM,confidence,snr,floor,direct,echo,candidates,correlation:cor,peaks,c,tempC,baselineM};
 }
 function synthEcho(o={}){
  const sr=o.sr||48000,tempC=o.tempC??27,c=speedOfSound(tempC),baselineM=Math.max(0,o.baselineM||0),chirp=o.chirp||makeChirp({sr});
@@ -82,7 +95,8 @@ function detectToneOnset(signal,o={}){
  const e=toneEnvelope(signal,o),a=e.values;if(!a.length)return {ok:false,reason:'tidak ada window'};let peak=0;for(const v of a)if(v>peak)peak=v;
  const th=Math.max(o.minAmp??1e-5,peak*(o.ratio??.42)),need=o.consecutive??2;let run=0,at=-1;for(let i=0;i<a.length;i++){if(a[i]>=th){if(++run>=need){at=i-need+1;break}}else run=0}
  if(at<0)return {ok:false,peak,threshold:th,envelope:e,reason:'burst tidak ditemukan'};
- return {ok:true,index:e.indices[at],peak,threshold:th,envelope:e,confidence:Math.max(0,Math.min(1,(peak-th)/(peak+1e-12)))};
+ let exact=e.indices[at];if(at>0&&a[at]>a[at-1])exact=e.indices[at-1]+clamp((th-a[at-1])/(a[at]-a[at-1]),0,1)*(e.indices[at]-e.indices[at-1]);
+ return {ok:true,index:e.indices[at],exact,peak,threshold:th,envelope:e,confidence:Math.max(0,Math.min(1,(peak-th)/(peak+1e-12)))};
 }
 function rangeFromRoundTrip(dtSec,turnaroundMs,tempC=27,biasM=0){const travel=Math.max(0,dtSec-Math.max(0,turnaroundMs)/1000),raw=speedOfSound(tempC)*travel/2;return {rawM:raw,distanceM:Math.max(0,raw-(biasM||0)),travelSec:travel,c:speedOfSound(tempC)}}
 function trilaterate(anchors,o={}){
@@ -94,5 +108,5 @@ function trilaterate(anchors,o={}){
 }
 function synthTone(o={}){const sr=o.sr||48000,f=o.freq||2000,seconds=o.seconds||.15,amp=o.amp??.3,N=Math.round(sr*seconds),x=new Float32Array(N);let seed=987654321;const rnd=()=>((seed=(1664525*seed+1013904223)>>>0)/4294967296)*2-1;for(let i=0;i<N;i++)x[i]=amp*Math.sin(2*Math.PI*f*i/sr)+(o.noise??.004)*rnd();return x}
 
-return {speedOfSound,makeChirp,correlation,localPeaks,rangeFromExcess,excessFromRange,analyzeEcho,synthEcho,goertzelPower,estimateTone,dopplerVelocity,toneEnvelope,detectToneOnset,rangeFromRoundTrip,trilaterate,synthTone};
+return {speedOfSound,makeChirp,chirpQuad,correlationEnv,median,correlation,localPeaks,rangeFromExcess,excessFromRange,analyzeEcho,synthEcho,goertzelPower,estimateTone,dopplerVelocity,toneEnvelope,detectToneOnset,rangeFromRoundTrip,trilaterate,synthTone};
 });
