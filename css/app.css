@@ -262,3 +262,258 @@
 .runtime-pulse-id[data-state="on"]{color:#9eecc0;border-color:#35644a;background:#0a2119}
 .runtime-pulse-id[data-state="off"]{color:#8796a5;border-color:#394653;background:#111820}
 @media(max-width:900px){.runtime-pulse-id{display:none}}
+
+
+/* v0.6.0 · SmartTV / IFP launcher shell */
+/*
+  Target utama: IFP/MPI landscape 16:9 dengan touch jarak jauh.
+  Hub mengisi hampir seluruh viewport, namun HP portrait tetap satu kolom.
+*/
+@media (min-width:1100px) and (min-height:620px){
+  .pilar-boot{
+    padding:14px;
+    place-items:center;
+  }
+  .boot-card{
+    width:min(1780px,calc(100vw - 28px));
+    height:min(1040px,calc(100dvh - 28px));
+    max-width:none;
+    border-radius:26px;
+  }
+  .boot-head{
+    padding:clamp(14px,1.15vw,24px) clamp(20px,1.8vw,34px);
+  }
+  .boot-brand{gap:16px}
+  .boot-brand strong{font-size:clamp(20px,1.35vw,27px)}
+  .boot-brand small{font-size:clamp(9px,.7vw,12px)}
+  .boot-mark{height:40px}
+  .boot-mark i{width:7px}
+  .boot-head-right{gap:18px}
+  .creator-id{
+    font-size:clamp(8px,.58vw,10px);
+    padding:7px 10px;
+  }
+  .boot-app-meta b{font-size:clamp(13px,.8vw,16px)}
+  .boot-app-meta span{font-size:clamp(10px,.65vw,12px)}
+
+  .boot-main{
+    grid-template-columns:minmax(0,1.48fr) minmax(370px,.72fr);
+  }
+  .boot-copy{
+    padding:clamp(22px,2vw,38px) clamp(24px,2.2vw,44px) clamp(18px,1.6vw,30px);
+  }
+  .boot-actions{
+    padding:clamp(22px,2vw,38px) clamp(22px,1.8vw,34px);
+  }
+  .boot-kicker{font-size:clamp(10px,.72vw,13px)}
+  .boot-copy h1{
+    font-size:clamp(46px,4.1vw,78px);
+    margin:8px 0 12px;
+  }
+  .boot-copy>p{
+    max-width:760px;
+    font-size:clamp(14px,.96vw,18px);
+    line-height:1.55;
+  }
+  .boot-philosophy{
+    margin-top:16px;
+    gap:7px;
+  }
+  .boot-philosophy span{
+    font-size:clamp(9px,.62vw,11px);
+    padding:7px 11px;
+  }
+
+  .pilar-library-wrap{margin-top:16px}
+  .pilar-library-title{margin-bottom:10px}
+  .pilar-library-title span{font-size:clamp(10px,.7vw,12px)}
+  .pilar-library-title small{font-size:clamp(9px,.58vw,11px)}
+  .pilar-library{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:clamp(8px,.7vw,13px);
+  }
+  .pilar-app-card{
+    grid-template-columns:48px minmax(0,1fr) max-content;
+    gap:11px;
+    min-height:78px;
+    padding:11px 12px;
+    border-radius:15px;
+  }
+  .pilar-app-icon{
+    width:48px;height:48px;
+    border-radius:13px;
+    font-size:23px;
+  }
+  .pilar-app-card strong{
+    font-size:clamp(12px,.77vw,15px);
+    line-height:1.2;
+  }
+  .pilar-app-card .app-subtitle{
+    font-size:clamp(9px,.58vw,11px);
+    line-height:1.25;
+    margin-top:3px;
+  }
+  .pilar-app-card small:not(.app-subtitle){
+    font-size:clamp(8px,.54vw,10px);
+    margin-top:3px;
+  }
+  .pilar-app-card em{
+    font-size:clamp(8px,.5vw,9px);
+    padding:5px 7px;
+  }
+  .pilar-app-card.current{
+    transform:translateY(-1px);
+    box-shadow:
+      inset 4px 0 0 rgba(201,255,66,.72),
+      0 10px 26px rgba(0,0,0,.20);
+  }
+
+  .boot-device{
+    margin-top:15px;
+    padding-bottom:0;
+  }
+  .boot-device-title{font-size:10px;margin-bottom:6px}
+  .boot-cap{font-size:10px;padding:5px 8px}
+
+  .boot-mode-title{
+    font-size:clamp(10px,.68vw,12px);
+    margin-bottom:10px;
+  }
+  .app-inspector-card{
+    margin-bottom:14px;
+    padding:clamp(15px,1.15vw,21px);
+    border-radius:20px;
+  }
+  .app-inspector-hero{
+    grid-template-columns:82px minmax(0,1fr);
+    gap:16px;
+  }
+  .app-inspector-icon{
+    width:82px;height:82px;
+    font-size:39px;
+  }
+  .app-inspector-category{font-size:10px}
+  .app-inspector-copy h2{font-size:clamp(25px,1.7vw,34px)}
+  .app-inspector-copy p{font-size:clamp(11px,.76vw,14px)}
+  .app-inspector-meta{margin-top:12px}
+  .app-inspector-meta span{font-size:9px;padding:5px 8px}
+
+  .boot-mode{
+    grid-template-columns:54px 1fr auto;
+    gap:13px;
+    min-height:82px;
+    padding:13px 15px;
+    border-radius:17px;
+    margin-bottom:10px;
+  }
+  .boot-mode-icon{
+    width:52px;height:52px;
+    font-size:25px;
+  }
+  .boot-mode strong{font-size:clamp(14px,.9vw,17px)}
+  .boot-mode small{font-size:clamp(10px,.65vw,12px)}
+  .boot-mode em{font-size:9px;padding:5px 7px}
+  .inspector-note{font-size:11px!important;line-height:1.45!important}
+  .boot-foot{
+    min-height:40px;
+    padding:9px 20px;
+    font-size:10px;
+  }
+}
+
+/* Laptop/IFP viewport yang lebih sempit: tetap 2 kolom agar shelf tidak menjadi daftar panjang. */
+@media (min-width:900px) and (max-width:1099px){
+  .boot-card{
+    width:calc(100vw - 22px);
+    height:calc(100dvh - 22px);
+    max-width:none;
+  }
+  .boot-main{grid-template-columns:minmax(0,1.22fr) minmax(340px,.78fr)}
+  .pilar-library{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pilar-app-card{min-height:66px}
+}
+
+/* HP portrait: launcher berubah menjadi feed satu kolom, tanpa ruang kosong dekoratif. */
+@media (max-width:760px){
+  .pilar-boot{
+    padding:0;
+    place-items:start stretch;
+    background:#050913;
+  }
+  .boot-card{
+    width:100%;
+    min-height:100dvh;
+    border-radius:0;
+    border-left:0;
+    border-right:0;
+  }
+  .boot-head{
+    padding:13px 14px;
+    gap:10px;
+  }
+  .boot-brand{gap:10px;min-width:0}
+  .boot-brand strong{font-size:17px}
+  .boot-brand small{
+    font-size:8px;
+    letter-spacing:.055em;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:62vw;
+  }
+  .boot-mark{height:29px}
+  .boot-mark i{width:5px}
+  .creator-id{display:none}
+  .boot-copy{padding:22px 16px 18px}
+  .boot-kicker{font-size:10px}
+  .boot-copy h1{
+    font-size:clamp(38px,12.2vw,52px);
+    margin:8px 0 12px;
+  }
+  .boot-copy>p{font-size:14px;line-height:1.55}
+  .boot-philosophy{margin-top:16px;gap:5px}
+  .boot-philosophy span{font-size:9px;padding:6px 8px}
+
+  .pilar-library-wrap{margin-top:18px}
+  .pilar-library{grid-template-columns:1fr;gap:9px}
+  .pilar-app-card{
+    grid-template-columns:46px minmax(0,1fr) max-content;
+    gap:11px;
+    min-height:72px;
+    padding:11px 12px;
+    border-radius:14px;
+  }
+  .pilar-app-icon{
+    width:46px;height:46px;
+    border-radius:12px;
+    font-size:22px;
+  }
+  .pilar-app-card strong{font-size:14px}
+  .pilar-app-card .app-subtitle{font-size:10px}
+  .pilar-app-card small:not(.app-subtitle){font-size:9px}
+  .pilar-app-card em{font-size:8px;padding:5px 6px}
+
+  .boot-device{margin-top:17px}
+  .boot-actions{padding:20px 16px 26px}
+  .app-inspector-card{padding:14px;margin-bottom:14px}
+  .app-inspector-hero{grid-template-columns:60px minmax(0,1fr);gap:12px}
+  .app-inspector-icon{width:60px;height:60px;font-size:29px}
+  .app-inspector-copy h2{font-size:24px}
+  .app-inspector-copy p{font-size:11px}
+  .boot-mode{
+    grid-template-columns:48px 1fr auto;
+    min-height:76px;
+    padding:12px;
+  }
+  .boot-mode-icon{width:46px;height:46px}
+  .boot-mode strong{font-size:14px}
+  .boot-mode small{font-size:10px}
+  .boot-foot{padding:11px 14px;font-size:9px}
+}
+
+/* Android system bar / browser chrome: sisakan napas pada bagian bawah komponen interaktif. */
+@supports (padding:max(0px)){
+  .boot-foot{
+    padding-bottom:max(9px,env(safe-area-inset-bottom));
+  }
+}
