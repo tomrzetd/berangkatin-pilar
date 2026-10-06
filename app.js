@@ -21,6 +21,8 @@
     'mbg-duel':'MBG Duel mendukung touch, multitouch IFP, dan Vision AI. Dua pintu masuk tetap tersedia dari Hub.',
     soundscope:'SoundScope baru meminta mikrofon/kamera saat fitur terkait dipakai. Vision Challenge tidak menyalakan audio.',
     'pak-taro':'Pak Taro punya eksperimen, pola, dan Vision AI internal. Gerbang Vision di Hub tetap opsional.',
+    puzzlesnap:'PuzzleSnap mengubah foto atau gambar menjadi puzzle 3×3–5×5, mendukung touch/multitouch IFP dan pinch gesture. Kamera tetap diminta hanya saat fitur foto/gestur dipilih.',
+
     pressure:'Sedang disiapkan. Dua pintu masuk akan otomatis aktif saat app berstatus ready.'
   };
   function selectedApp(){
