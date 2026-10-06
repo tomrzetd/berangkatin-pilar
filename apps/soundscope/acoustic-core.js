@@ -1,4 +1,4 @@
-/* PILAR SoundScope v4.3.0 — Acoustic Physics pure DSP core.
+/* PILAR SoundScope v4.3.1 — Acoustic Physics pure DSP core.
  * Browser + Node compatible. Stage 1: Echo Sonar.
  */
 (function(root,factory){
@@ -10,7 +10,7 @@
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function speedOfSound(tempC){return 331+0.6*clamp(Number(tempC)||20,-10,60)}
 function makeChirp(o={}){
- const sr=o.sr||48000,durMs=o.durationMs||14,f0=o.f0||2500,f1=o.f1||6000,amp=o.amp??0.8;
+ const sr=o.sr||48000,durMs=o.durationMs||6,f0=o.f0||2500,f1=o.f1||6000,amp=o.amp??0.8;
  const N=Math.max(64,Math.round(sr*durMs/1000)),x=new Float32Array(N),T=N/sr,k=(f1-f0)/T;
  for(let n=0;n<N;n++){const t=n/sr,ph=2*Math.PI*(f0*t+.5*k*t*t),w=.5-.5*Math.cos(2*Math.PI*n/Math.max(1,N-1));x[n]=amp*w*Math.sin(ph)}
  return x;
