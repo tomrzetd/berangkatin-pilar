@@ -1,19 +1,19 @@
 <!doctype html>
 <html lang="id"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>PILAR™ · SoundScope Lab — IFP Edition v4.0.3 · Morse Link</title>
+<title>PILAR™ · SoundScope Lab — IFP Edition v4.1.1 · Morse Link OOK+FSK</title>
 <style>
-:root{color-scheme:dark;--bg1:#070a1a;--bg2:#101a3a;--panel:rgba(255,255,255,.08);--line:rgba(255,255,255,.16);--text:rgba(255,255,255,.94);--muted:rgba(255,255,255,.72);--good:#38e699;--warn:#ffd042;--bad:#ff5353;--blue:#3aa0ff;--pink:#ff4d6d;--btn:3.4rem;--r:1.2rem}
+:root{color-scheme:dark;--bg1:#07101b;--bg2:#0a1524;--panel:rgba(13,26,43,.94);--line:#28415f;--text:#eef7ff;--muted:#9db2ca;--good:#63e3a0;--warn:#ffd36c;--bad:#ff6d83;--blue:#69baff;--cyan:#7eeeff;--pink:#ff6d83;--btn:3.4rem;--r:1.2rem}
 *{box-sizing:border-box}
 html{font-size:clamp(14px,.55vw + 8px,32px);height:100%}
-body{margin:0;height:100%;color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(60% 50% at 18% 18%,rgba(58,160,255,.22),transparent 60%),radial-gradient(50% 45% at 84% 20%,rgba(255,77,109,.18),transparent 55%),radial-gradient(60% 50% at 55% 88%,rgba(56,230,153,.16),transparent 60%),linear-gradient(135deg,var(--bg1),var(--bg2));background-color:#070a1a;padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);display:flex;flex-direction:column;overflow:auto;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+body{margin:0;height:100%;color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(60% 50% at 18% 18%,rgba(105,186,255,.16),transparent 60%),radial-gradient(48% 44% at 84% 20%,rgba(126,238,255,.10),transparent 58%),radial-gradient(60% 50% at 55% 88%,rgba(99,227,160,.10),transparent 62%),linear-gradient(135deg,var(--bg1),var(--bg2));background-color:#07101b;padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);display:flex;flex-direction:column;overflow:auto;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 .top{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.8rem 1rem 0;flex-wrap:wrap}
 .top b{font-size:1.25rem}.top small{display:block;color:var(--muted);font-size:.8rem;margin-top:.2rem}
 .brand{padding:.6rem 1.2rem;border-radius:99px;border:1px solid var(--line);background:radial-gradient(80% 140% at 25% 30%,rgba(255,255,255,.16),rgba(255,255,255,.05));box-shadow:inset 0 2px 0 rgba(255,255,255,.18),0 12px 30px rgba(0,0,0,.35);font-weight:800;font-size:.85rem;display:flex;gap:.6rem;align-items:center}
 .brand i{width:.6rem;height:.6rem;border-radius:50%;background:var(--blue);box-shadow:0 0 0 .35rem rgba(58,160,255,.18)}
 .app{flex:1;min-height:0;display:grid;grid-template-columns:22rem minmax(0,1fr) 24rem;gap:.8rem;padding:.8rem 1rem 1rem}
-.panel,.stage{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 18px 52px rgba(0,0,0,.45);display:flex;flex-direction:column;min-height:0;overflow:hidden}
-.stage{background:rgba(0,0,0,.25)}
+.panel,.stage{background:linear-gradient(180deg,rgba(13,26,43,.96),rgba(9,20,35,.96));border:1px solid var(--line);border-radius:var(--r);box-shadow:0 18px 52px rgba(0,0,0,.45);display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.stage{background:radial-gradient(circle at 50% 28%,rgba(24,50,76,.72),rgba(10,21,36,.96) 48%,rgba(5,12,21,.98) 100%)}
 .ph{padding:.7rem .9rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:.6rem;background:rgba(255,255,255,.05);flex-wrap:wrap}
 .ph h2{margin:0;font-size:1rem}
 .pb{padding:.8rem .9rem;overflow:auto;min-height:0;flex:1;-webkit-overflow-scrolling:touch}
@@ -109,7 +109,7 @@ input[type=range]{width:100%;height:2rem;accent-color:var(--blue)}
 .tunerStrings button{min-height:2.6rem;border:1px solid var(--line);border-radius:.8rem;background:rgba(0,0,0,.22);color:var(--text);font-weight:850}
 .tunerStrings button.on{border-color:var(--good);background:rgba(56,230,153,.18);box-shadow:0 0 0 1px rgba(56,230,153,.2)}
 @media(max-width:600px){.tunerStrings{grid-template-columns:repeat(4,minmax(0,1fr))}.tunerNote{font-size:4rem}}
-</style><link rel="stylesheet" href="./morse-link.css"></head>
+</style><link rel="stylesheet" href="./morse-link.css?v=4.1.1"></head>
 <body>
 <div class="top">
   <div class="pilar-top-left"><a class="hubBtn" href="../../" title="Kembali ke PILAR Hub" aria-label="Kembali ke PILAR Hub">←</a><div class="pilar-title"><b>PILAR™ · 🎧 SoundScope Lab — IPA SMP (IFP)</b><small>Waveform • Spektrum log-frekuensi • Puncak & harmonik • Frequency Detective • Sound Signature • Kamera AI</small></div></div>
@@ -623,7 +623,7 @@ window.SOUNDSCOPE_MORSE_AUDIO={ensure,startMic,get ctx(){return S.ctx},get src()
 setTool("lab");requestAnimationFrame(frame);
 })();
 </script>
-  <script src="./morse-link.js"></script>
+  <script src="./morse-link.js?v=4.1.1"></script>
   <script src="../../pulse/config.js"></script>
   <script src="../../core/pulse.js"></script>
 </body></html>
