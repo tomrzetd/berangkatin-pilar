@@ -1,5 +1,5 @@
 
-/* PILAR SoundScope v4.0.1 — Morse Acoustic Link */
+/* PILAR SoundScope v4.0.2 — Morse Acoustic Link */
 [hidden]{display:none!important}
 .tools [data-tool="tuner"]{grid-column:auto}
 .tools [data-tool="morse"]{grid-column:1/-1;background:linear-gradient(105deg,rgba(58,160,255,.24),rgba(56,230,153,.12));border-color:rgba(80,215,240,.45)}
