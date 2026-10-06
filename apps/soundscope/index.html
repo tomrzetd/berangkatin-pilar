@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="id"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>PILAR™ · SoundScope Lab — IFP Edition v4.0 · Morse Link</title>
+<title>PILAR™ · SoundScope Lab — IFP Edition v4.0.1 · Morse Link</title>
 <style>
 :root{color-scheme:dark;--bg1:#070a1a;--bg2:#101a3a;--panel:rgba(255,255,255,.08);--line:rgba(255,255,255,.16);--text:rgba(255,255,255,.94);--muted:rgba(255,255,255,.72);--good:#38e699;--warn:#ffd042;--bad:#ff5353;--blue:#3aa0ff;--pink:#ff4d6d;--btn:3.4rem;--r:1.2rem}
 *{box-sizing:border-box}
@@ -553,7 +553,7 @@ let last=performance.now(),fc=0,hzS=0,rmsS=0;
 function frame(now){
   requestAnimationFrame(frame);const dt=now-last;last=now;fc++;
   VMAX=+$("slMax").value;VMIN=Math.min(+$("slMin").value,VMAX-20);
-  if(S.an&&!frozen){S.an.smoothingTimeConstant=+$("slSm").value;S.an.getFloatTimeDomainData(td);S.an.getFloatFrequencyData(fd);
+  if(S.an&&(!frozen||tool==="morse")){S.an.smoothingTimeConstant=+$("slSm").value;S.an.getFloatTimeDomainData(td);S.an.getFloatFrequencyData(fd);
     for(let i=0;i<fd.length;i++){const v=Math.max(fd[i],-140);disp[i]=lerp(disp[i],v,v>disp[i]?.6:.14);hold[i]=Math.max(disp[i],hold[i]-.25)}}
   if(fc%2===0)camStep(now);
   const pk=tool==="morse"?[]:findPeaks(),r=tool==="morse"?0:rms(),act=r>.004&&pk.length&&pk[0].db>VMIN+(VMAX-VMIN)*.35,dom=act?pk[0]:null;
@@ -619,7 +619,7 @@ document.querySelectorAll("#tStrings [data-string]").forEach(b=>b.onclick=()=>{t
 syncTunerButtons();syncGeneratorUI();
 
 if(!navigator.mediaDevices?.getUserMedia)toast("Browser tidak mendukung mikrofon.","bad");else scan();
-window.SOUNDSCOPE_MORSE_AUDIO={ensure,startMic,get ctx(){return S.ctx},get src(){return S.src},get micOn(){return S.micOn},spectrum(){return fd}};
+window.SOUNDSCOPE_MORSE_AUDIO={ensure,startMic,get ctx(){return S.ctx},get src(){return S.src},get micOn(){return S.micOn},spectrum(){return fd},timeDomain(){return td},sampleRate(){return S.ctx?.sampleRate||48000}};
 setTool("lab");requestAnimationFrame(frame);
 })();
 </script>
