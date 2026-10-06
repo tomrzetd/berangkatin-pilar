@@ -1,0 +1,1384 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07101b">
+<title>PILAR™ Air Writing v3.1 · Crimson Face Vision</title>
+<style>
+:root{
+  --bg:#07101b;--bg2:#050b13;--panel:#0d1a2b;--panel2:#091423;--line:#28415f;
+  --text:#eef7ff;--muted:#9db2ca;--cyan:#7eeeff;--blue:#69baff;--lime:#c9ff42;
+  --green:#63e3a0;--yellow:#ffd36c;--red:#ff536d;--pink:#ff5ea8;
+  --crimson:#ff365b;--crimson2:#8d1532;--ember:#ff8b76;
+  --laser:#ff536d;--laser2:#ffd0d7;--shadow:0 24px 70px #0008;
+  --top:64px;--dock:72px;--btn:44px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:15px/1.45 Inter,Segoe UI,system-ui,-apple-system,sans-serif}
+body{min-height:100dvh;overflow:hidden;background:
+  radial-gradient(circle at 13% 0%,rgba(255,54,91,.16),transparent 34%),
+  radial-gradient(circle at 88% 10%,rgba(255,99,125,.08),transparent 30%),
+  radial-gradient(circle at 55% 105%,rgba(126,238,255,.055),transparent 34%),
+  linear-gradient(145deg,#0b101b,#080a12 60%,#140810 100%)}
+button,input,select{font:inherit}
+button{min-height:var(--btn);border:1px solid #355274;background:#13243a;color:var(--text);border-radius:12px;padding:9px 13px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:hover{filter:brightness(1.1)}
+button:active{transform:translateY(1px)}
+button:focus-visible,select:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+button.primary{background:linear-gradient(135deg,#1686aa,#20b49a);border-color:#39d8c1;color:#03151c;font-weight:900}
+button.accent{background:linear-gradient(135deg,#ff5774,#d62958);border-color:#ff8da0;color:#fff;font-weight:900}
+button.ghost{background:#081625b8}
+button[aria-pressed=true]{border-color:var(--cyan);background:#103149;color:#eaffff}
+[hidden]{display:none!important}
+
+#app{height:100dvh;display:grid;grid-template-rows:var(--top) minmax(0,1fr) var(--dock)}
+.topbar{
+  display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;align-items:center;gap:12px;
+  padding:8px 14px;background:linear-gradient(90deg,#090d16f4,#100913f2);border-bottom:1px solid #583044;backdrop-filter:blur(16px);z-index:30
+}
+.brand-wrap{display:flex;align-items:center;gap:10px;min-width:0}
+.home-btn{width:42px;padding:0;font-size:20px;background:#071321;border-color:#31506d}
+.brand-block{min-width:0}
+.brand-line{display:flex;align-items:baseline;gap:9px;min-width:0}
+.brand{letter-spacing:.16em;color:#ff7e92;font-size:18px;font-weight:950;text-shadow:0 0 18px rgba(255,54,91,.28)}
+.app-name{font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-block small{display:block;color:var(--muted);font-size:10px;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.creator{font-size:10px;color:#8199b2;white-space:nowrap}
+.top-stats{display:flex;gap:7px;align-items:center}
+.pill{border:1px solid var(--line);background:#0b1625;border-radius:999px;padding:6px 10px;font-size:11px;white-space:nowrap}
+.pill b{color:var(--yellow)}
+.pill.live{color:#caffdf;border-color:#2d694c}
+.top-actions{display:flex;gap:6px;align-items:center}
+.icon-btn{width:42px;padding:0}
+.quality{min-height:42px;background:#0b1726;color:var(--text);border:1px solid #355274;border-radius:11px;padding:0 8px}
+
+.workspace{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(285px,340px);gap:0}
+.stage-shell{
+  position:relative;min-width:0;min-height:0;overflow:hidden;background:
+  linear-gradient(rgba(94,233,255,.035) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(94,233,255,.035) 1px,transparent 1px),
+  radial-gradient(circle at 50% 43%,#2a1b2a 0,#121522 48%,#090a11 100%);
+  background-size:36px 36px,36px 36px,auto;
+  border-right:1px solid #4d2b3d
+}
+#video{display:none}
+#display{width:100%;height:100%;display:block;touch-action:none;user-select:none}
+.stage-vignette{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 100px #0009;z-index:2}
+.stage-top{
+  position:absolute;z-index:8;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;gap:8px;pointer-events:none
+}
+.stage-top>*{pointer-events:auto}
+.mode-pill{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:#071321df;border-radius:999px;padding:7px 11px;font-size:11px;box-shadow:0 8px 26px #0005}
+.mode-dot{width:8px;height:8px;border-radius:50%;background:#61758b}
+.mode-pill.draw .mode-dot{background:var(--red);box-shadow:0 0 12px var(--red)}
+.mode-pill.select .mode-dot{background:var(--yellow);box-shadow:0 0 12px var(--yellow)}
+.mode-pill.clear .mode-dot{background:var(--lime);box-shadow:0 0 12px var(--lime)}
+.mode-pill.vision .mode-dot{background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.perf-mini{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.perf-mini span{border:1px solid #253d58;background:#071321d9;border-radius:999px;padding:6px 9px;font:700 10px ui-monospace,SFMono-Regular,Consolas,monospace;color:#a9c0d7}
+
+.stage-bottom{
+  position:absolute;z-index:8;left:12px;right:12px;bottom:12px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;pointer-events:none
+}
+.stage-bottom>*{pointer-events:auto}
+.hint-card{
+  max-width:min(650px,72%);border:1px solid #2a4763;background:#071321e8;border-radius:14px;padding:9px 12px;box-shadow:0 12px 36px #0007
+}
+.hint-card b{color:var(--cyan)}
+.hint-card span{display:block;color:#b6c7d8;font-size:11px;margin-top:2px}
+.combo-pop{
+  min-width:112px;text-align:center;border:1px solid #405230;background:#0c1715e8;border-radius:14px;padding:8px 10px;
+  color:#dcff99;font-weight:900;box-shadow:0 12px 36px #0006
+}
+.combo-pop small{display:block;color:#92ad80;font-size:9px;letter-spacing:.1em}
+.combo-pop b{font-size:20px}
+
+.start-overlay{
+  position:absolute;inset:0;z-index:20;display:grid;place-items:center;padding:18px;background:rgba(5,9,17,.92);backdrop-filter:blur(10px)
+}
+.launch-card{
+  width:min(860px,96%);border:1px solid #284561;border-radius:28px;background:linear-gradient(155deg,rgba(10,20,34,.98),rgba(5,9,17,.99));
+  box-shadow:0 38px 120px #000b,inset 0 0 70px rgba(94,233,255,.035);overflow:hidden
+}
+.launch-head{padding:24px 26px 18px;border-bottom:1px solid #1d344d}
+.kicker{font-size:10px;letter-spacing:.18em;color:var(--cyan);font-weight:950}
+.launch-head h1{font-size:clamp(34px,5vw,62px);line-height:.94;letter-spacing:-.045em;margin:8px 0 12px}
+.launch-head h1 span{background:linear-gradient(90deg,#ff536d,#ff9bab,var(--cyan));color:transparent;background-clip:text;-webkit-background-clip:text}
+.launch-head p{margin:0;color:#b4c3d2;max-width:680px}
+.launch-modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:18px 22px}
+.launch-mode{text-align:left;min-height:132px;padding:18px;border-radius:18px;position:relative;overflow:hidden}
+.launch-mode strong{display:block;font-size:19px;margin-bottom:4px}
+.launch-mode small{display:block;color:#adc0d2;line-height:1.5}
+.launch-mode em{position:absolute;right:12px;top:12px;font-style:normal;font-size:9px;font-weight:950;letter-spacing:.09em;border:1px solid #355274;border-radius:999px;padding:4px 7px;color:#bcd0e3}
+.launch-mode.primary em{color:#042217;border-color:#76d6c1;background:#7ef0c5}
+.launch-privacy{padding:0 22px 20px;color:#8098af;font-size:11px}
+.launch-privacy b{color:#a9c2d9}
+#launchStatus{margin-top:8px;color:var(--yellow)}
+
+.side-panel{min-height:0;overflow:auto;padding:12px;background:
+  radial-gradient(circle at 100% 0%,rgba(255,54,91,.075),transparent 34%),#0b111d}
+.card{background:linear-gradient(150deg,#141826,#100f1a);border:1px solid #3d3043;border-radius:18px;padding:14px;margin-bottom:10px;box-shadow:0 12px 34px #0003,inset 0 1px rgba(255,94,120,.025)}
+.card-title{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:8px}
+.card-title span{font-size:10px;font-weight:950;letter-spacing:.12em;color:#ff8497}
+.card-title small{color:#7e96ad}
+.quest-name{font-size:25px;line-height:1;margin:3px 0 8px}
+.quest-copy{color:var(--muted);font-size:12px;margin:0 0 10px}
+.score-orb{
+  display:grid;grid-template-columns:90px 1fr;gap:12px;align-items:center;padding:10px;border:1px solid #223c5b;border-radius:15px;background:#07111e
+}
+.orb{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(var(--lime) 0deg,#1b2b3e 0deg)}
+.orb:after{content:"";position:absolute;inset:7px;border-radius:50%;background:#07111e;border:1px solid #27425f}
+.orb b{position:relative;z-index:2;font-size:22px;color:#e8ffb8}
+.score-meta strong{display:block;font-size:13px}
+.score-meta span{display:block;color:#90a8bd;font-size:11px;margin-top:3px}
+.quest-progress{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:10px 0}
+.quest-dot{height:7px;border-radius:999px;background:#1a3046}
+.quest-dot.done{background:linear-gradient(90deg,var(--green),var(--lime));box-shadow:0 0 10px rgba(201,255,66,.18)}
+.quest-dot.active{outline:1px solid var(--cyan);outline-offset:2px}
+.side-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.side-actions button{font-size:12px}
+.side-actions .wide{grid-column:1/-1}
+
+.gesture-grid{display:grid;gap:7px}
+.gesture{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:center;padding:8px;border:1px solid #1f3650;border-radius:12px;background:#081421}
+.gesture i{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#12243a;font-style:normal;font-size:18px}
+.gesture b{display:block;font-size:11px}.gesture small{color:#869fb6}
+.gesture.active{border-color:#477a67;background:#0d241d}
+.gesture.active i{background:#17382d}
+
+.mini-settings{display:grid;grid-template-columns:1fr auto;gap:7px;align-items:center}
+.switch-row{display:flex;gap:6px;flex-wrap:wrap}
+.switch-row button{min-height:38px;padding:6px 9px;font-size:11px}
+.info-list{display:grid;gap:6px;font-size:11px;color:#8ea5bb}
+.info-list div{display:flex;justify-content:space-between;gap:10px}
+.info-list b{color:#cfdeec;font-weight:750}
+
+.dock{
+  display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 12px;background:#050c15ef;border-top:1px solid var(--line);z-index:30
+}
+.dock-group{display:flex;gap:6px;align-items:center}
+.dock-center{display:flex;justify-content:center;gap:6px;min-width:0}
+.dock button{min-height:46px}
+.dock .label{display:inline}
+.input-chip{border:1px solid #2c4663;background:#091828;border-radius:999px;padding:7px 10px;font-size:10px;color:#a9bed0;white-space:nowrap}
+.input-chip b{color:var(--cyan)}
+
+.face-hud{
+  position:absolute;z-index:10;right:12px;top:58px;width:min(270px,28vw);overflow:hidden;
+  border:1px solid rgba(255,83,109,.55);border-radius:16px;background:#090b12e8;box-shadow:0 18px 55px #0009,0 0 32px rgba(255,54,91,.08);
+  backdrop-filter:blur(10px);pointer-events:none
+}
+.face-head,.face-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 9px;font-size:9px;letter-spacing:.08em;color:#aebed0}
+.face-head{border-bottom:1px solid #462739}.face-head span{font-weight:950;color:#ff7f94}.face-head b{font-size:10px;color:#fff0f3;letter-spacing:.03em}
+#faceView{display:block;width:100%;aspect-ratio:4/3;background:#05070b}
+.face-foot{border-top:1px solid #352433}.face-foot b{color:#ff8799}.face-foot em{font-style:normal;color:#7eeeff}
+.face-note{color:#786d79;font-size:8px;padding:0 9px 7px}
+@media(max-width:980px){.face-hud{width:min(190px,34vw);top:54px;right:8px}.face-note{display:none}}
+@media(max-width:620px){.face-hud{width:145px;top:52px}.face-head{padding:5px 6px}.face-head span{display:none}.face-foot{padding:4px 6px}.face-foot em{display:none}}
+body[data-ui=ifp] .face-hud{width:320px;top:70px}
+
+.toast{
+  position:fixed;z-index:90;left:50%;top:calc(var(--top) + 16px);transform:translate(-50%,-8px);
+  max-width:min(620px,88vw);padding:10px 14px;border:1px solid var(--yellow);background:#071321f4;border-radius:13px;
+  color:#eef8ff;box-shadow:0 20px 60px #0009;opacity:0;pointer-events:none;transition:.22s
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast b{color:var(--yellow)}
+.xp-float{position:fixed;z-index:95;pointer-events:none;font-weight:950;color:var(--lime);text-shadow:0 0 18px #c9ff4277;animation:xpFly .9s ease-out forwards}
+@keyframes xpFly{to{transform:translateY(-55px) scale(1.15);opacity:0}}
+
+body[data-ui=ifp]{--top:76px;--dock:86px;--btn:54px;font-size:17px}
+body[data-ui=ifp] .side-panel{padding:16px}
+body[data-ui=ifp] .quest-name{font-size:30px}
+body[data-ui=ifp] .gesture{min-height:62px}
+body[data-ui=ifp] .brand{font-size:21px}
+
+@media(max-width:980px){
+  body{overflow:auto}
+  #app{height:auto;min-height:100dvh;grid-template-rows:58px auto auto}
+  .creator{display:none}
+  .topbar{grid-template-columns:minmax(0,1fr) auto}
+  .top-stats{display:none}
+  .workspace{grid-template-columns:1fr;grid-template-rows:minmax(54dvh,66dvh) auto}
+  .stage-shell{border-right:0;border-bottom:1px solid var(--line)}
+  .side-panel{overflow:visible;padding:10px}
+  .side-panel .card{margin-bottom:8px}
+  .gesture-grid{grid-template-columns:repeat(3,1fr)}
+  .gesture{grid-template-columns:1fr;text-align:center}
+  .gesture i{margin:auto}
+  .dock{position:sticky;bottom:0;grid-template-columns:1fr auto;background:#050c15f7}
+  .dock-center{justify-content:flex-start;overflow:auto}
+  .dock-group:first-child{display:none}
+  .dock .label{display:none}
+  .stage-bottom{bottom:9px}
+  .hint-card{max-width:78%}
+}
+@media(max-width:620px){
+  :root{--btn:46px}
+  .brand-block small{display:none}
+  .app-name{font-size:13px}
+  .top-actions .quality{display:none}
+  .launch-modes{grid-template-columns:1fr}
+  .launch-mode{min-height:112px}
+  .launch-head{padding:20px}
+  .launch-modes{padding:14px 16px}
+  .launch-privacy{padding:0 16px 16px}
+  .workspace{grid-template-rows:minmax(50dvh,60dvh) auto}
+  .gesture-grid{grid-template-columns:1fr}
+  .gesture{grid-template-columns:34px 1fr;text-align:left}
+  .gesture i{margin:0}
+  .perf-mini span:nth-child(n+3){display:none}
+  .hint-card{max-width:72%;font-size:11px}
+  .combo-pop{min-width:88px;padding:6px 8px}
+  .combo-pop b{font-size:16px}
+  .dock{padding:6px 8px}
+  .dock button{padding:8px 10px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body data-ui="desk" class="theme-crimson">
+<div id="app">
+  <header class="topbar">
+    <div class="brand-wrap">
+      <button class="home-btn" id="homeBtn" aria-label="Kembali ke PILAR Hub" title="Kembali ke PILAR Hub">←</button>
+      <div class="brand-block">
+        <div class="brand-line"><strong class="brand">PILAR</strong><span class="app-name">Air Writing · Crimson Vision v3.1</span></div>
+        <small>TOUCH · MOUSE · PEN · HAND + FACE AI · TRACE QUEST</small>
+      </div>
+    </div>
+    <div class="creator">by : rizalabdurrahman05@guru.smp.belajar.id</div>
+    <div class="top-stats">
+      <span class="pill live">● <span id="engineState">QUICK READY</span></span>
+      <span class="pill">XP <b id="xpTop">0</b></span>
+      <span class="pill">BEST <b id="bestTop">0</b></span>
+    </div>
+    <div class="top-actions">
+      <select id="qualitySelect" class="quality" aria-label="Kualitas visual">
+        <option value="auto">Auto</option>
+        <option value="eco">Hemat</option>
+        <option value="standard">Standar</option>
+        <option value="vivid">Vivid</option>
+      </select>
+      <button class="icon-btn ghost" id="soundBtn" aria-label="Suara" title="Suara">♪</button>
+      <button class="icon-btn ghost" id="fullscreenBtn" aria-label="Layar penuh" title="Layar penuh">⛶</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="stage-shell" id="stage">
+      <video id="video" playsinline muted autoplay></video>
+      <canvas id="display" aria-label="Kanvas PILAR Air Writing"></canvas>
+      <div class="stage-vignette"></div>
+
+      <div class="stage-top">
+        <div class="mode-pill" id="modePill"><i class="mode-dot"></i><b id="modeText">TOUCH READY</b></div>
+        <div class="perf-mini">
+          <span>FPS <b id="pFps">0</b></span>
+          <span>AI <b id="pLatency">–</b> ms</span>
+          <span id="pBackend">POINTER</span>
+          <span>PTS <b id="pPoints">0</b></span>
+        </div>
+      </div>
+
+      <div class="face-hud" id="faceHud" hidden aria-label="Face expression detector">
+        <div class="face-head"><span>FACE EDGE · LOCAL AI</span><b id="faceEmotion">🙂 NETRAL</b></div>
+        <canvas id="faceView" width="320" height="240"></canvas>
+        <div class="face-foot"><b id="faceConfidence">0%</b><em id="facePerf">FACE OFF</em></div>
+        <div class="face-note">Ekspresi = perkiraan visual dari blendshape, bukan pembacaan emosi/diagnosis.</div>
+      </div>
+
+      <div class="stage-bottom">
+        <div class="hint-card"><b id="hintTitle">Tarik untuk menulis</b><span id="hintText">Mouse, stylus, touch, atau aktifkan Vision AI untuk menulis di udara.</span></div>
+        <div class="combo-pop"><small>SESSION COMBO</small><b id="comboText">×1</b></div>
+      </div>
+
+      <div class="start-overlay" id="startOverlay">
+        <div class="launch-card">
+          <div class="launch-head">
+            <div class="kicker">PILAR · UNIVERSAL INPUT LAB</div>
+            <h1>Tulis. Gerakkan.<br><span>Bikin jejak cahaya.</span></h1>
+            <p>Mulai tanpa kamera atau naikkan level ke Vision AI. Semua core drawing tetap bisa dipakai di desktop, mobile, MPI, dan IFP.</p>
+          </div>
+          <div class="launch-modes">
+            <button class="launch-mode primary" id="quickStart">
+              <em>RECOMMENDED</em>
+              <strong>⚡ Masuk Cepat</strong>
+              <small>Mouse · touch · stylus. Tidak membutuhkan kamera dan paling stabil untuk semua perangkat.</small>
+            </button>
+            <button class="launch-mode" id="visionStart">
+              <em>VISION</em>
+              <strong>✋ Air Writing</strong>
+              <small>Telunjuk menjadi laser. Pinch memindah stroke. Face Edge membaca ekspresi visual. Safe Clear perlu 5 jari + tahan 1,8 detik.</small>
+            </button>
+          </div>
+          <div class="launch-privacy">
+            <b>Privasi Vision:</b> Hand + Face AI diproses lokal di browser. Video tidak direkam atau dikirim ke PILAR Pulse. Label ekspresi bersifat heuristik visual, bukan diagnosis emosi.
+            <div id="launchStatus"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side-panel">
+      <section class="card">
+        <div class="card-title"><span>TRACE QUEST</span><small id="questCounter">1 / 5</small></div>
+        <h2 class="quest-name" id="questName">Orbit</h2>
+        <p class="quest-copy" id="questCopy">Ikuti jalur hantu dengan satu goresan. Akurasi + cakupan menentukan skor.</p>
+        <div class="score-orb">
+          <div class="orb" id="scoreOrb"><b id="scoreValue">—</b></div>
+          <div class="score-meta">
+            <strong id="scoreRank">Belum dicoba</strong>
+            <span>Best: <b id="questBest">0</b> · Target emas ≥ 88</span>
+            <span id="questFeedback">Buat satu stroke lalu lepaskan.</span>
+          </div>
+        </div>
+        <div class="quest-progress" id="questProgress"></div>
+        <div class="side-actions">
+          <button id="freeBtn">✎ Free Draw</button>
+          <button id="traceBtn" aria-pressed="true">◎ Trace</button>
+          <button class="primary wide" id="nextQuest">Target berikutnya →</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-title"><span>GESTURE CORE</span><small>anti-accidental</small></div>
+        <div class="gesture-grid">
+          <div class="gesture" id="gDraw"><i>☝️</i><div><b>DRAW</b><small>Telunjuk saja</small></div></div>
+          <div class="gesture" id="gMove"><i>🤌</i><div><b>GRAB</b><small>Pinch dekat stroke</small></div></div>
+          <div class="gesture" id="gClear"><i>🖐️</i><div><b>SAFE CLEAR</b><small>5 jari · diam · tahan 1,8 dtk</small></div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-title"><span>LAB CONTROL</span><small id="uiProfile">desktop</small></div>
+        <div class="switch-row">
+          <button id="quickModeBtn" aria-pressed="true">Pointer</button>
+          <button id="visionModeBtn">Vision</button>
+          <button id="skeletonBtn" aria-pressed="true">Hand Edge</button>
+          <button id="faceBtn" aria-pressed="true">Face Edge</button>
+          <button id="guideBtn" aria-pressed="true">Guide</button>
+        </div>
+        <div class="info-list" style="margin-top:10px">
+          <div><span>Renderer</span><b>Canvas 2D adaptive</b></div>
+          <div><span>Hand AI</span><b id="visionInfo">lazy load</b></div>
+          <div><span>Face AI</span><b id="faceInfo">lazy load</b></div>
+          <div><span>Camera</span><b id="cameraInfo">off</b></div>
+          <div><span>Storage</span><b>local stats only</b></div>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <nav class="dock">
+    <div class="dock-group">
+      <span class="input-chip">INPUT <b id="inputLabel">POINTER</b></span>
+    </div>
+    <div class="dock-center">
+      <button id="undoBtn">↶ <span class="label">Undo</span></button>
+      <button id="clearBtn">⌫ <span class="label">Clear</span></button>
+      <button id="cameraBtn">✋ <span class="label">Vision</span></button>
+      <button id="nextBtn">→ <span class="label">Next</span></button>
+    </div>
+    <div class="dock-group">
+      <button class="accent" id="challengeBtn">◎ <span class="label">Trace Quest</span></button>
+    </div>
+  </nav>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+
+/* ─────────────────────────────────────────────────────────────
+   PILAR Air Writing v3.1 · Crimson Face
+   - Pointer-first universal input
+   - MediaPipe Tasks Vision lazy loaded
+   - Gesture hysteresis + palm dwell clear
+   - Adaptive quality
+   - Trace Quest scoring
+   - Normalized stroke coordinates for responsive layouts
+   ───────────────────────────────────────────────────────────── */
+
+const CFG={
+  version:'3.1.0',
+  minPointPx:3.5,
+  maxStrokes:42,
+  maxPointsPerStroke:900,
+  selectRadiusPx:74,
+  palmArmMs:550,
+  palmHoldMs:1800,
+  palmCooldownMs:2300,
+  palmMotionReset:0.045,
+  palmThumbSpread:0.72,
+  pinchEnter:0.34,
+  pinchExit:0.46,
+  simplifyEpsilon:0.00145,
+  targetGold:88,
+  targetPass:70,
+  statsKey:'pilar.airwriting.v3.stats',
+  settingsKey:'pilar.airwriting.v3.settings'
+};
+
+const QUALITY={
+  eco:{particles:80,sparks:2,glow:1,inferFps:16,faceFps:6,videoW:640,videoH:480},
+  standard:{particles:170,sparks:4,glow:2,inferFps:22,faceFps:9,videoW:960,videoH:540},
+  vivid:{particles:280,sparks:6,glow:3,inferFps:30,faceFps:12,videoW:1280,videoH:720}
+};
+
+const state={
+  ui:'desk',
+  input:'pointer',
+  interaction:'IDLE',
+  visionOn:false,
+  visionLoading:false,
+  showSkeleton:true,
+  showFace:true,
+  showGuide:true,
+  trace:true,
+  targetIndex:0,
+  score:null,
+  combo:1,
+  quality:'auto',
+  runtimeQuality:'standard',
+  sound:true,
+  xp:0,
+  best:{},
+  completed:[],
+  cameraBackend:'—',
+  faceBackend:'—',
+  faceExpression:'NETRAL',
+  faceConfidence:0,
+  lastInferMs:0,
+  lastFaceMs:0,
+  renderFps:0,
+  fpsSmooth:60
+};
+
+let strokes=[];
+let currentStroke=[];
+let redoStack=[];
+let particles=[];
+let activePointer=null;
+let selectedIdx=null;
+let grabLast=null;
+let cursorPt=null;
+let smoothVisionPt=null;
+let palmStart=0;
+let palmProgress=0;
+let palmCooldownUntil=0;
+let palmLastCenter=null;
+let clearGestureConsumed=false;
+let pinchLatched=false;
+let lastGesture='IDLE';
+let clearFlash=0;
+let successFlash=0;
+let lastInteractionAt=performance.now();
+
+const video=$('#video');
+const canvas=$('#display');
+const ctx=canvas.getContext('2d',{alpha:true,desynchronized:true});
+const stage=$('#stage');
+let view={w:1,h:1,dpr:1};
+
+let visionModule=null;
+let visionFileset=null;
+let handLandmarker=null;
+let faceLandmarker=null;
+let visionResult=null;
+let faceResult=null;
+let visionStream=null;
+let lastVideoTime=-1;
+let lastInferAt=0;
+let lastFaceInferAt=0;
+let inferSamples=[];
+let faceSamples=[];
+let expressionEMA={};
+let eyesClosedSince=0;
+let renderFrames=0;
+let renderTickAt=performance.now();
+let lastUiPerfAt=0;
+
+const modelUrl='https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task';
+const faceModelUrl='https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task';
+const visionVersion='0.10.14';
+const visionImport=`https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${visionVersion}/+esm`;
+const visionWasm=`https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${visionVersion}/wasm`;
+
+/* ── Targets ─────────────────────────────────────────────── */
+function linePoints(a,b,n=24){
+  return Array.from({length:n},(_,i)=>[lerp(a[0],b[0],i/(n-1)),lerp(a[1],b[1],i/(n-1))]);
+}
+function joinPaths(parts){
+  const out=[];
+  parts.forEach((p,i)=>out.push(...(i?p.slice(1):p)));
+  return out;
+}
+const TARGETS=[
+  {
+    id:'orbit',name:'Orbit',copy:'Buat satu lingkaran halus mengikuti jalur hantu.',
+    build(){
+      return Array.from({length:100},(_,i)=>{
+        const a=-Math.PI/2+(Math.PI*2*i/99);
+        return [.5+Math.cos(a)*.22,.49+Math.sin(a)*.29];
+      });
+    }
+  },
+  {
+    id:'delta',name:'Delta',copy:'Tiga sisi, satu stroke. Jaga sudut dan tutup kembali bentuknya.',
+    build(){
+      const a=[.5,.2],b=[.24,.75],c=[.76,.75];
+      return joinPaths([linePoints(a,b,36),linePoints(b,c,36),linePoints(c,a,36)]);
+    }
+  },
+  {
+    id:'pulse',name:'Pulse',copy:'Ikuti jalur zig-zag seperti sinyal energi PILAR.',
+    build(){
+      const pts=[[.18,.52],[.32,.52],[.39,.31],[.48,.72],[.57,.36],[.64,.52],[.82,.52]];
+      return joinPaths(pts.slice(0,-1).map((p,i)=>linePoints(p,pts[i+1],18)));
+    }
+  },
+  {
+    id:'infinity',name:'Infinity',copy:'Gerak kontinu: silang di tengah lalu kembali ke titik awal.',
+    build(){
+      return Array.from({length:120},(_,i)=>{
+        const t=Math.PI*2*i/119;
+        const x=.5+.27*Math.sin(t);
+        const y=.5+.22*Math.sin(t)*Math.cos(t)*1.5;
+        return [x,y];
+      });
+    }
+  },
+  {
+    id:'wave',name:'Wave',copy:'Jaga ritme tangan: empat gelombang dengan amplitudo konsisten.',
+    build(){
+      return Array.from({length:120},(_,i)=>{
+        const f=i/119;
+        return [.15+.7*f,.5+.18*Math.sin(f*Math.PI*8)];
+      });
+    }
+  }
+];
+TARGETS.forEach(t=>t.points=t.build());
+
+/* ── persistence ─────────────────────────────────────────── */
+function loadState(){
+  try{
+    const s=JSON.parse(localStorage.getItem(CFG.statsKey)||'{}');
+    state.xp=Number(s.xp)||0;
+    state.best=s.best&&typeof s.best==='object'?s.best:{};
+    state.completed=Array.isArray(s.completed)?s.completed:[];
+  }catch{}
+  try{
+    const s=JSON.parse(localStorage.getItem(CFG.settingsKey)||'{}');
+    if(['auto','eco','standard','vivid'].includes(s.quality))state.quality=s.quality;
+    if(typeof s.sound==='boolean')state.sound=s.sound;
+    if(typeof s.showSkeleton==='boolean')state.showSkeleton=s.showSkeleton;
+    if(typeof s.showFace==='boolean')state.showFace=s.showFace;
+  }catch{}
+}
+function saveStats(){
+  try{localStorage.setItem(CFG.statsKey,JSON.stringify({xp:state.xp,best:state.best,completed:state.completed.slice(0,20)}))}catch{}
+}
+function saveSettings(){
+  try{localStorage.setItem(CFG.settingsKey,JSON.stringify({quality:state.quality,sound:state.sound,showSkeleton:state.showSkeleton,showFace:state.showFace}))}catch{}
+}
+
+/* ── UI profile ──────────────────────────────────────────── */
+function detectUI(){
+  const w=innerWidth,h=innerHeight;
+  const coarse=matchMedia('(pointer:coarse)').matches;
+  if(w<760||(h<520&&w<920))return 'mobile';
+  if(w>=1700&&coarse&&(navigator.maxTouchPoints||0)>=5)return 'ifp';
+  if(w>=2200)return 'ifp';
+  return 'desk';
+}
+function applyUI(){
+  state.ui=detectUI();
+  document.body.dataset.ui=state.ui;
+  $('#uiProfile').textContent=state.ui;
+  chooseRuntimeQuality();
+}
+addEventListener('resize',applyUI,{passive:true});
+
+/* ── quality ─────────────────────────────────────────────── */
+function chooseRuntimeQuality(){
+  if(state.quality!=='auto'){
+    state.runtimeQuality=state.quality;
+    return;
+  }
+  const latency=inferSamples.length?inferSamples.reduce((a,b)=>a+b,0)/inferSamples.length:0;
+  if(state.ui==='mobile'||latency>58||state.fpsSmooth<34)state.runtimeQuality='eco';
+  else if(latency&&latency<28&&state.fpsSmooth>52&&state.ui!=='mobile')state.runtimeQuality='vivid';
+  else state.runtimeQuality='standard';
+}
+function q(){return QUALITY[state.runtimeQuality]||QUALITY.standard}
+
+/* ── canvas sizing ───────────────────────────────────────── */
+function resizeCanvas(){
+  const r=stage.getBoundingClientRect();
+  view.w=Math.max(1,r.width);
+  view.h=Math.max(1,r.height);
+  view.dpr=Math.min(devicePixelRatio||1,state.ui==='mobile'?1.35:1.6);
+  const W=Math.round(view.w*view.dpr),H=Math.round(view.h*view.dpr);
+  if(canvas.width!==W||canvas.height!==H){
+    canvas.width=W;canvas.height=H;
+  }
+}
+new ResizeObserver(resizeCanvas).observe(stage);
+
+/* ── helpers ─────────────────────────────────────────────── */
+function normPointFromEvent(e){
+  const r=canvas.getBoundingClientRect();
+  return [clamp((e.clientX-r.left)/r.width,0,1),clamp((e.clientY-r.top)/r.height,0,1)];
+}
+function pxPoint(p){return [p[0]*view.w,p[1]*view.h]}
+function pointDistancePx(a,b){
+  return Math.hypot((a[0]-b[0])*view.w,(a[1]-b[1])*view.h);
+}
+function bboxOf(pts){
+  let x0=1,y0=1,x1=0,y1=0;
+  for(const p of pts){x0=Math.min(x0,p[0]);y0=Math.min(y0,p[1]);x1=Math.max(x1,p[0]);y1=Math.max(y1,p[1])}
+  return {x0,y0,x1,y1};
+}
+function updateStrokeBox(s){s.box=bboxOf(s.pts)}
+
+function perpendicularDistance(p,a,b){
+  const x=b[0]-a[0],y=b[1]-a[1];
+  if(x===0&&y===0)return dist(p,a);
+  const t=clamp(((p[0]-a[0])*x+(p[1]-a[1])*y)/(x*x+y*y),0,1);
+  return Math.hypot(p[0]-(a[0]+t*x),p[1]-(a[1]+t*y));
+}
+function simplifyRDP(points,eps){
+  if(points.length<3)return points.slice();
+  let maxD=0,index=0;
+  const a=points[0],b=points[points.length-1];
+  for(let i=1;i<points.length-1;i++){
+    const d=perpendicularDistance(points[i],a,b);
+    if(d>maxD){index=i;maxD=d}
+  }
+  if(maxD>eps){
+    const left=simplifyRDP(points.slice(0,index+1),eps);
+    const right=simplifyRDP(points.slice(index),eps);
+    return left.slice(0,-1).concat(right);
+  }
+  return [a,b];
+}
+function downsample(points,max=CFG.maxPointsPerStroke){
+  if(points.length<=max)return points;
+  const step=(points.length-1)/(max-1);
+  return Array.from({length:max},(_,i)=>points[Math.round(i*step)]);
+}
+function addCurrentPoint(p,source='pointer'){
+  lastInteractionAt=performance.now();
+  if(!currentStroke.length){
+    currentStroke=[p];
+    cursorPt=p;
+    return;
+  }
+  const prev=currentStroke[currentStroke.length-1];
+  if(pointDistancePx(prev,p)<CFG.minPointPx)return;
+  currentStroke.push(p);
+  if(currentStroke.length>CFG.maxPointsPerStroke*1.35)currentStroke=downsample(currentStroke,CFG.maxPointsPerStroke);
+  cursorPt=p;
+  spawnParticles(p,q().sparks);
+}
+function commitCurrent(reason='draw'){
+  if(currentStroke.length<2){currentStroke=[];return}
+  let pts=simplifyRDP(currentStroke,CFG.simplifyEpsilon);
+  pts=downsample(pts);
+  const stroke={pts,box:bboxOf(pts),createdAt:Date.now()};
+  strokes.push(stroke);
+  if(strokes.length>CFG.maxStrokes)strokes.shift();
+  currentStroke=[];
+  redoStack=[];
+  if(state.trace&&reason==='draw')scoreStroke(stroke);
+}
+function clearAll(origin='button'){
+  strokes=[];currentStroke=[];redoStack=[];particles=[];selectedIdx=null;grabLast=null;
+  state.score=null;renderQuestUI();
+  clearFlash=origin==='gesture'?1:0.5;
+  feedback(origin==='gesture'?'Canvas bersih — gesture dikonfirmasi.':'Canvas dibersihkan.','clear');
+  beep(180,.04);
+}
+function undo(){
+  if(currentStroke.length){currentStroke=[];feedback('Stroke aktif dibatalkan.');return}
+  const s=strokes.pop();if(!s){feedback('Belum ada stroke untuk di-undo.');return}
+  redoStack.push(s);feedback('Undo satu stroke.');beep(260,.025);
+}
+
+/* ── particles ───────────────────────────────────────────── */
+function spawnParticles(p,count=3,kind='laser'){
+  const max=q().particles;
+  for(let i=0;i<count&&particles.length<max;i++){
+    const a=Math.random()*Math.PI*2;
+    const speed=(.0007+Math.random()*.0022)*(kind==='success'?1.8:1);
+    particles.push({
+      x:p[0],y:p[1],vx:Math.cos(a)*speed,vy:Math.sin(a)*speed-(kind==='success'?.0012:.0004),
+      life:1,size:(kind==='success'?3:1.4)+Math.random()*(kind==='success'?5:3),kind
+    });
+  }
+}
+function successBurst(){
+  for(let i=0;i<75&&particles.length<q().particles;i++)spawnParticles([.5,.5],1,'success');
+}
+
+/* ── trace scoring ───────────────────────────────────────── */
+function pathLength(pts){
+  let L=0;for(let i=1;i<pts.length;i++)L+=dist(pts[i-1],pts[i]);return L;
+}
+function resamplePath(pts,n=96){
+  if(pts.length<2)return pts.slice();
+  const total=pathLength(pts);if(total<=1e-6)return Array(n).fill(pts[0]);
+  const step=total/(n-1),out=[pts[0].slice()];
+  let D=0,prev=pts[0].slice(),i=1;
+  while(i<pts.length&&out.length<n){
+    const cur=pts[i],d=dist(prev,cur);
+    if(D+d>=step){
+      const t=(step-D)/Math.max(d,1e-8);
+      const p=[lerp(prev[0],cur[0],t),lerp(prev[1],cur[1],t)];
+      out.push(p);prev=p;D=0;
+    }else{D+=d;prev=cur;i++}
+  }
+  while(out.length<n)out.push(pts[pts.length-1].slice());
+  return out;
+}
+function avgNearest(a,b){
+  let sum=0;
+  for(const p of a){
+    let best=Infinity;
+    for(const q of b){
+      const dx=(p[0]-q[0])*1.0,dy=(p[1]-q[1])*.78;
+      const d=Math.hypot(dx,dy);if(d<best)best=d;
+    }
+    sum+=best;
+  }
+  return sum/a.length;
+}
+function scoreTrace(stroke,target){
+  const a=resamplePath(stroke.pts,84),b=resamplePath(target.points,84);
+  const close=avgNearest(a,b);
+  const cover=avgNearest(b,a);
+  const closeness=1-clamp(close/.115,0,1);
+  const coverage=1-clamp(cover/.13,0,1);
+  const lengthRatio=pathLength(a)/Math.max(pathLength(b),1e-6);
+  const lengthPenalty=Math.abs(1-clamp(lengthRatio,.45,1.65))*.18;
+  return Math.round(clamp((closeness*.58+coverage*.42-lengthPenalty)*100,0,100));
+}
+function scoreStroke(stroke){
+  const target=TARGETS[state.targetIndex];
+  const score=scoreTrace(stroke,target);
+  state.score=score;
+  const prev=Number(state.best[target.id])||0;
+  const newBest=score>prev;
+  if(newBest)state.best[target.id]=score;
+
+  if(score>=CFG.targetPass){
+    state.combo=Math.min(9,state.combo+1);
+    if(!state.completed.includes(target.id))state.completed.push(target.id);
+    const delta=Math.max(6,(newBest?score-prev:0)+Math.min(18,state.combo*2));
+    state.xp+=delta;
+    showXp(delta);
+    successBurst();
+    successFlash=1;
+    beep(score>=CFG.targetGold?880:660,.08);
+    vibrate(score>=CFG.targetGold?[25,30,55]:[22,20,22]);
+    feedback(score>=CFG.targetGold?'GOLD TRACE! Presisi mantap.':'Quest lolos! Coba kejar skor emas.','success');
+  }else{
+    state.combo=1;
+    beep(210,.045);
+    feedback(score>=55?'Sudah dekat. Ikuti jalur hantu lebih rapat.':'Coba lebih pelan dan jaga seluruh jalur tetap terliput.','warn');
+  }
+  saveStats();
+  renderQuestUI();
+}
+function scoreRank(score){
+  if(score==null)return ['Belum dicoba','—'];
+  if(score>=94)return ['PLATINUM','✦'];
+  if(score>=88)return ['GOLD','★'];
+  if(score>=78)return ['SILVER','◆'];
+  if(score>=70)return ['BRONZE','●'];
+  return ['RETRY','↻'];
+}
+
+/* ── sound/haptic ────────────────────────────────────────── */
+let audioCtx=null;
+function ensureAudio(){
+  if(!state.sound)return null;
+  try{audioCtx=audioCtx||new (AudioContext||webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx}catch{return null}
+}
+function beep(freq=440,dur=.04){
+  const ac=ensureAudio();if(!ac)return;
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(.028,ac.currentTime);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+dur);
+  o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+dur);
+}
+function vibrate(pattern){try{navigator.vibrate?.(pattern)}catch{}}
+
+/* ── notifications ───────────────────────────────────────── */
+let toastTimer=0;
+function toast(html){
+  const t=$('#toast');t.innerHTML=html;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
+function feedback(msg,kind=''){
+  $('#questFeedback').textContent=msg;
+  if(kind==='success')toast('<b>Quest update</b> · '+msg);
+}
+function showXp(n){
+  $('#xpTop').textContent=state.xp;
+  const el=document.createElement('div');el.className='xp-float';el.textContent=`+${n} XP`;
+  el.style.left=(innerWidth*.5+Math.random()*70-35)+'px';el.style.top=(innerHeight*.42)+'px';document.body.appendChild(el);
+  setTimeout(()=>el.remove(),950);
+}
+
+/* ── selection/move ──────────────────────────────────────── */
+function findStrokeAt(p){
+  const rx=CFG.selectRadiusPx/view.w,ry=CFG.selectRadiusPx/view.h;
+  let best=null,bestD=Infinity;
+  for(let i=0;i<strokes.length;i++){
+    const s=strokes[i],b=s.box;
+    if(p[0]<b.x0-rx||p[0]>b.x1+rx||p[1]<b.y0-ry||p[1]>b.y1+ry)continue;
+    const step=Math.max(1,Math.ceil(s.pts.length/80));
+    for(let j=0;j<s.pts.length;j+=step){
+      const d=pointDistancePx(p,s.pts[j]);
+      if(d<bestD){bestD=d;best=i}
+    }
+  }
+  return bestD<=CFG.selectRadiusPx?best:null;
+}
+function beginGrab(p){
+  commitCurrent('internal');
+  selectedIdx=findStrokeAt(p);
+  grabLast=p;
+  if(selectedIdx!=null){beep(520,.025);feedback('Stroke tertangkap. Gerakkan pinch untuk memindah.')}
+}
+function moveGrab(p){
+  if(selectedIdx==null||!strokes[selectedIdx]||!grabLast)return;
+  const dx=p[0]-grabLast[0],dy=p[1]-grabLast[1];
+  strokes[selectedIdx].pts=strokes[selectedIdx].pts.map(q=>[clamp(q[0]+dx,0,1),clamp(q[1]+dy,0,1)]);
+  updateStrokeBox(strokes[selectedIdx]);grabLast=p;
+}
+function endGrab(){selectedIdx=null;grabLast=null}
+
+/* ── pointer input ───────────────────────────────────────── */
+canvas.addEventListener('pointerdown',e=>{
+  if(state.input!=='pointer')return;
+  ensureAudio();
+  activePointer=e.pointerId;canvas.setPointerCapture?.(e.pointerId);
+  currentStroke=[];state.interaction='DRAW';
+  addCurrentPoint(normPointFromEvent(e));setModeUI('DRAW');
+  e.preventDefault();
+});
+canvas.addEventListener('pointermove',e=>{
+  if(state.input!=='pointer'||activePointer!==e.pointerId)return;
+  addCurrentPoint(normPointFromEvent(e));e.preventDefault();
+});
+function pointerEnd(e){
+  if(state.input!=='pointer'||activePointer!==e.pointerId)return;
+  commitCurrent('draw');activePointer=null;state.interaction='IDLE';setModeUI('IDLE');e.preventDefault();
+}
+canvas.addEventListener('pointerup',pointerEnd);
+canvas.addEventListener('pointercancel',pointerEnd);
+
+/* ── gesture recognition ─────────────────────────────────── */
+function d3(a,b){return Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z)}
+function fingerExtended(lm,tip,pip,mcp){
+  const wrist=lm[0];
+  return d3(lm[tip],wrist)>d3(lm[pip],wrist)*1.08 && d3(lm[tip],lm[mcp])>d3(lm[pip],lm[mcp])*.92;
+}
+function palmCenterOf(lm){
+  const ids=[0,5,9,13,17];
+  const p=ids.reduce((a,i)=>[a[0]+lm[i].x,a[1]+lm[i].y],[0,0]);
+  return [p[0]/ids.length,p[1]/ids.length];
+}
+function gestureFromLandmarks(lm,ts){
+  const handScale=Math.max(.05,d3(lm[0],lm[9]));
+  const pinchRatio=d3(lm[4],lm[8])/handScale;
+  pinchLatched=pinchLatched?pinchRatio<CFG.pinchExit:pinchRatio<CFG.pinchEnter;
+
+  const idx=fingerExtended(lm,8,6,5);
+  const mid=fingerExtended(lm,12,10,9);
+  const ring=fingerExtended(lm,16,14,13);
+  const pink=fingerExtended(lm,20,18,17);
+  const thumbSpread=d3(lm[4],lm[5])/handScale;
+  const thumbOpen=thumbSpread>CFG.palmThumbSpread;
+  const palmOpen=idx&&mid&&ring&&pink&&thumbOpen&&!pinchLatched;
+  const indexOnly=idx&&!mid&&!ring&&!pink&&!pinchLatched;
+
+  const raw=[1-lm[8].x,lm[8].y];
+  if(!smoothVisionPt)smoothVisionPt=raw;
+  const alpha=.34;
+  smoothVisionPt=[lerp(smoothVisionPt[0],raw[0],alpha),lerp(smoothVisionPt[1],raw[1],alpha)];
+  cursorPt=smoothVisionPt;
+
+  // SAFE CLEAR: 5 jari + relatif diam + dwell panjang + one-shot latch.
+  // Pose transisi tangan terbuka tidak lagi langsung menghapus stroke.
+  if(palmOpen){
+    const pc=palmCenterOf(lm);
+    const motion=palmLastCenter?Math.hypot(pc[0]-palmLastCenter[0],pc[1]-palmLastCenter[1]):0;
+    palmLastCenter=pc;
+    if(!palmStart)palmStart=ts;
+    if(motion>CFG.palmMotionReset){palmStart=ts;palmProgress=0}
+    const held=ts-palmStart;
+    palmProgress=clamp(held/CFG.palmHoldMs,0,1);
+    if(held>=CFG.palmHoldMs && ts>palmCooldownUntil && !clearGestureConsumed){
+      clearAll('gesture');clearGestureConsumed=true;
+      palmCooldownUntil=ts+CFG.palmCooldownMs;palmProgress=1;
+    }
+  }else{
+    palmStart=0;palmProgress=0;palmLastCenter=null;clearGestureConsumed=false;
+  }
+
+  let g='IDLE';
+  if(palmOpen)g='CLEAR';
+  else if(pinchLatched)g='SELECT';
+  else if(indexOnly)g='DRAW';
+
+  if(g!==lastGesture){
+    if(lastGesture==='DRAW')commitCurrent('draw');
+    if(lastGesture==='SELECT'&&g!=='SELECT')endGrab();
+    if(g==='SELECT')beginGrab(smoothVisionPt);
+    if(g==='DRAW'){currentStroke=[];prevVisionPoint=null}
+    lastGesture=g;
+  }
+
+  if(g==='DRAW')addCurrentPoint(smoothVisionPt,'vision');
+  else if(g==='SELECT')moveGrab(smoothVisionPt);
+
+  state.interaction=g;setModeUI(g);
+  return {g,lm,palmOpen,pinchRatio,thumbSpread};
+}
+let prevVisionPoint=null;
+
+/* ── Vision AI ───────────────────────────────────────────── */
+async function loadVision(){
+  if(handLandmarker&&faceLandmarker)return;
+  if(state.visionLoading)return;
+  state.visionLoading=true;
+  $('#visionInfo').textContent='loading…';$('#faceInfo').textContent='loading…';
+  $('#launchStatus').textContent='Memuat Hand + Face Landmarker…';
+  try{
+    visionModule=visionModule||await import(visionImport);
+    visionFileset=visionFileset||await visionModule.FilesetResolver.forVisionTasks(visionWasm);
+    if(!handLandmarker){
+      const handOpts={baseOptions:{modelAssetPath:modelUrl,delegate:'GPU'},runningMode:'VIDEO',numHands:1,minHandDetectionConfidence:.55,minHandPresenceConfidence:.5,minTrackingConfidence:.5};
+      try{handLandmarker=await visionModule.HandLandmarker.createFromOptions(visionFileset,handOpts);state.cameraBackend='GPU'}
+      catch(e){handOpts.baseOptions.delegate='CPU';handLandmarker=await visionModule.HandLandmarker.createFromOptions(visionFileset,handOpts);state.cameraBackend='CPU'}
+    }
+    if(!faceLandmarker){
+      const faceOpts={baseOptions:{modelAssetPath:faceModelUrl,delegate:'GPU'},runningMode:'VIDEO',numFaces:1,outputFaceBlendshapes:true,outputFacialTransformationMatrixes:false,minFaceDetectionConfidence:.5,minFacePresenceConfidence:.5,minTrackingConfidence:.5};
+      try{faceLandmarker=await visionModule.FaceLandmarker.createFromOptions(visionFileset,faceOpts);state.faceBackend='GPU'}
+      catch(e){faceOpts.baseOptions.delegate='CPU';faceLandmarker=await visionModule.FaceLandmarker.createFromOptions(visionFileset,faceOpts);state.faceBackend='CPU'}
+    }
+    $('#visionInfo').textContent=`Hand ${visionVersion} · ${state.cameraBackend}`;
+    $('#faceInfo').textContent=`Face ${visionVersion} · ${state.faceBackend}`;
+  }finally{state.visionLoading=false}
+}
+async function startVision(){
+  if(state.visionOn){state.input='vision';syncInputUI();return}
+  ensureAudio();
+  $('#launchStatus').textContent='Menyiapkan Vision AI…';
+  try{
+    await loadVision();
+    chooseRuntimeQuality();
+    const qq=q();
+    visionStream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:'user',width:{ideal:qq.videoW},height:{ideal:qq.videoH},frameRate:{ideal:30,max:30}},
+      audio:false
+    });
+    video.srcObject=visionStream;await video.play();
+    state.visionOn=true;state.input='vision';lastVideoTime=-1;
+    $('#cameraInfo').textContent=`${video.videoWidth||qq.videoW}×${video.videoHeight||qq.videoH}`;    $('#engineState').textContent='VISION LIVE';
+    $('#startOverlay').hidden=true;
+    syncInputUI();feedback('Vision aktif. ☝️ telunjuk untuk menggambar.');
+    beep(700,.06);
+  }catch(err){
+    console.error(err);
+    state.visionOn=false;state.input='pointer';syncInputUI();
+    $('#launchStatus').textContent=err?.name==='NotAllowedError'?'Izin kamera ditolak. Masuk Cepat tetap bisa dipakai.':'Vision gagal: '+(err?.message||err);
+    toast('<b>Vision belum aktif.</b> Mode pointer tetap tersedia.');
+  }
+}
+function stopVision(){
+  state.visionOn=false;
+  if(visionStream){visionStream.getTracks().forEach(t=>t.stop());visionStream=null}
+  video.srcObject=null;visionResult=null;faceResult=null;lastGesture='IDLE';smoothVisionPt=null;palmStart=0;palmProgress=0;palmLastCenter=null;clearGestureConsumed=false;pinchLatched=false;
+  state.faceExpression='NETRAL';state.faceConfidence=0;$('#faceHud').hidden=true;
+  state.input='pointer';state.interaction='IDLE';$('#cameraInfo').textContent='off';$('#engineState').textContent='QUICK READY';
+  syncInputUI();setModeUI('IDLE');
+}
+async function toggleVision(){state.visionOn?stopVision():await startVision()}
+
+/* ── Face expression + solid edge ───────────────────────── */
+const FACE_PATHS=[
+  [10,338,297,332,284,251,389,356,454,323,361,288,397,365,379,378,400,377,152,148,176,149,150,136,172,58,132,93,234,127,162,21,54,103,67,109,10],
+  [33,7,163,144,145,153,154,155,133,173,157,158,159,160,161,246,33],
+  [362,382,381,380,374,373,390,249,263,466,388,387,386,385,384,398,362],
+  [70,63,105,66,107],[336,296,334,293,300],
+  [61,146,91,181,84,17,314,405,321,375,291,409,270,269,267,0,37,39,40,185,61],
+  [78,95,88,178,87,14,317,402,318,324,308,415,310,311,312,13,82,81,80,191,78],
+  [168,6,197,195,5,4,1,19,94,2],[98,97,2,326,327]
+];
+function blendshapeMap(res){
+  const cats=res?.faceBlendshapes?.[0]?.categories||[];const out={};
+  for(const c of cats)out[c.categoryName]=c.score||0;return out;
+}
+function bavg(b,...keys){return keys.reduce((a,k)=>a+(b[k]||0),0)/Math.max(1,keys.length)}
+function classifyExpression(res,ts){
+  const b=blendshapeMap(res);if(!Object.keys(b).length){state.faceExpression='NETRAL';state.faceConfidence=0;return}
+  const smile=bavg(b,'mouthSmileLeft','mouthSmileRight'),frown=bavg(b,'mouthFrownLeft','mouthFrownRight');
+  const blink=bavg(b,'eyeBlinkLeft','eyeBlinkRight'),squint=bavg(b,'eyeSquintLeft','eyeSquintRight'),wide=bavg(b,'eyeWideLeft','eyeWideRight');
+  const outerUp=bavg(b,'browOuterUpLeft','browOuterUpRight'),browUp=(b.browInnerUp||0)*.55+outerUp*.45,browDown=bavg(b,'browDownLeft','browDownRight');
+  const jaw=b.jawOpen||0,pucker=b.mouthPucker||0,cheek=bavg(b,'cheekSquintLeft','cheekSquintRight');
+  const asym=Math.min(1,Math.abs((b.browOuterUpLeft||0)-(b.browOuterUpRight||0))*1.8+Math.abs((b.browDownLeft||0)-(b.browDownRight||0))*1.4);
+  if(blink>.58){if(!eyesClosedSince)eyesClosedSince=ts}else eyesClosedSince=0;
+  const sleepyHold=eyesClosedSince?clamp((ts-eyesClosedSince)/750,0,1):0;
+  const raw={TERTAWA:clamp(smile*.52+jaw*.32+squint*.16,0,1),NGANTUK:clamp(sleepyHold*.72+blink*.18+(1-wide)*.10,0,1),'ALIS NAIK':clamp(browUp*.68+wide*.32,0,1),SEDIH:clamp(frown*.57+browUp*.23+browDown*.20,0,1),SENANG:clamp(smile*.72+cheek*.28,0,1),BINGUNG:clamp(asym*.56+browDown*.22+pucker*.22,0,1)};
+  for(const [k,v] of Object.entries(raw))expressionEMA[k]=lerp(expressionEMA[k]||0,v,.28);
+  let [label,score]=Object.entries(expressionEMA).sort((a,b)=>b[1]-a[1])[0]||['NETRAL',0];
+  const min={TERTAWA:.54,NGANTUK:.58,'ALIS NAIK':.50,SEDIH:.46,SENANG:.38,BINGUNG:.44}[label]||.5;
+  if(score<min){label='NETRAL';score=1-Math.min(1,Math.max(...Object.values(expressionEMA),0))*.55}
+  state.faceExpression=label;state.faceConfidence=score;
+}
+function expressionIcon(label){return {TERTAWA:'😂',NGANTUK:'😴','ALIS NAIK':'🤨',SEDIH:'😢',SENANG:'😊',BINGUNG:'🤔',NETRAL:'🙂'}[label]||'🙂'}
+function drawFacePaths(targetCtx,lm,mapPoint,alpha=.88,lineWidth=1.35){
+  if(!lm)return;targetCtx.save();targetCtx.lineCap='round';targetCtx.lineJoin='round';targetCtx.lineWidth=lineWidth;
+  targetCtx.strokeStyle=`rgba(255,83,109,${alpha})`;targetCtx.shadowBlur=6;targetCtx.shadowColor='rgba(255,54,91,.55)';
+  for(const path of FACE_PATHS){let begun=false;targetCtx.beginPath();for(const id of path){if(!lm[id])continue;const p=mapPoint(lm[id]);if(!begun){targetCtx.moveTo(p[0],p[1]);begun=true}else targetCtx.lineTo(p[0],p[1])}if(begun)targetCtx.stroke()}
+  if(lm[1]){const p=mapPoint(lm[1]);targetCtx.fillStyle='rgba(255,224,230,.9)';targetCtx.beginPath();targetCtx.arc(p[0],p[1],2.1,0,Math.PI*2);targetCtx.fill()}
+  targetCtx.restore();
+}
+function drawFaceMain(){
+  if(!state.visionOn||!state.showFace||!faceResult?.faceLandmarks?.[0])return;
+  drawFacePaths(ctx,faceResult.faceLandmarks[0],m=>pxPoint([1-m.x,m.y]),.76,state.ui==='ifp'?2:1.35);
+}
+const faceCanvas=$('#faceView'),faceCtx=faceCanvas.getContext('2d',{alpha:false,desynchronized:true});
+function drawFaceHud(){
+  const hud=$('#faceHud');if(!state.visionOn||!state.showFace){hud.hidden=true;return}hud.hidden=false;
+  const W=faceCanvas.width,H=faceCanvas.height;faceCtx.clearRect(0,0,W,H);faceCtx.fillStyle='#05070b';faceCtx.fillRect(0,0,W,H);
+  if(video.readyState>=2){faceCtx.save();faceCtx.translate(W,0);faceCtx.scale(-1,1);faceCtx.drawImage(video,0,0,W,H);faceCtx.restore();faceCtx.fillStyle='rgba(12,3,8,.25)';faceCtx.fillRect(0,0,W,H)}
+  const lm=faceResult?.faceLandmarks?.[0];if(lm)drawFacePaths(faceCtx,lm,m=>[(1-m.x)*W,m.y*H],.95,1.45);
+  $('#faceEmotion').textContent=`${expressionIcon(state.faceExpression)} ${state.faceExpression}`;
+  $('#faceConfidence').textContent=lm?`${Math.round(state.faceConfidence*100)}%`:'—';
+  $('#facePerf').textContent=lm?`${state.faceBackend} · ${state.lastFaceMs.toFixed(0)}ms`:'FACE SEARCH';
+}
+
+/* ── render ──────────────────────────────────────────────── */
+function drawVideoCover(){
+  if(!state.visionOn||video.readyState<2)return false;
+  const sw=video.videoWidth||640,sh=video.videoHeight||480;
+  const scale=Math.max(view.w/sw,view.h/sh);
+  const dw=sw*scale,dh=sh*scale,dx=(view.w-dw)/2,dy=(view.h-dh)/2;
+  ctx.save();ctx.translate(view.w,0);ctx.scale(-1,1);
+  ctx.drawImage(video,-(dx+dw),dy,dw,dh);
+  ctx.restore();
+  ctx.fillStyle='rgba(3,10,18,.22)';ctx.fillRect(0,0,view.w,view.h);
+  return true;
+}
+function strokePath(points){
+  if(points.length<2)return;
+  const a=pxPoint(points[0]);ctx.beginPath();ctx.moveTo(a[0],a[1]);
+  for(let i=1;i<points.length;i++){const p=pxPoint(points[i]);ctx.lineTo(p[0],p[1])}
+}
+function drawLaser(points,selected=false){
+  if(points.length<2)return;
+  const level=q().glow;
+  ctx.save();ctx.lineCap='round';ctx.lineJoin='round';ctx.globalCompositeOperation='lighter';
+  if(level>=3){
+    ctx.strokeStyle='rgba(255,40,90,.18)';ctx.lineWidth=22;ctx.shadowBlur=20;ctx.shadowColor='#ff275f';strokePath(points);ctx.stroke();
+  }
+  if(level>=2){
+    ctx.strokeStyle='rgba(255,64,94,.34)';ctx.lineWidth=13;ctx.shadowBlur=12;ctx.shadowColor='#ff405e';strokePath(points);ctx.stroke();
+  }
+  if(level>=1){
+    ctx.strokeStyle=selected?'#ffd36c':'#ff6078';ctx.lineWidth=6;ctx.shadowBlur=7;ctx.shadowColor=selected?'#ffd36c':'#ff6078';strokePath(points);ctx.stroke();
+  }
+  ctx.strokeStyle=selected?'#fff0ad':'#ffe8ed';ctx.lineWidth=2;ctx.shadowBlur=1;strokePath(points);ctx.stroke();
+  ctx.restore();
+}
+function drawTarget(){
+  if(!state.trace||!state.showGuide)return;
+  const target=TARGETS[state.targetIndex];
+  ctx.save();ctx.setLineDash([9,9]);ctx.lineWidth=4;ctx.lineCap='round';ctx.strokeStyle='rgba(126,238,255,.5)';
+  ctx.shadowBlur=12;ctx.shadowColor='rgba(126,238,255,.55)';strokePath(target.points);ctx.stroke();ctx.setLineDash([]);
+  const p=pxPoint(target.points[0]);ctx.fillStyle='#c9ff42';ctx.beginPath();ctx.arc(p[0],p[1],7,0,Math.PI*2);ctx.fill();
+  ctx.font='800 12px Inter,system-ui';ctx.fillStyle='#b7d5e9';ctx.fillText('START',p[0]+11,p[1]+4);
+  ctx.restore();
+}
+function drawParticles(){
+  if(!particles.length)return;
+  ctx.save();ctx.globalCompositeOperation='lighter';
+  particles=particles.filter(p=>{
+    p.x+=p.vx;p.y+=p.vy;p.vy+=.00006;p.vx*=.97;p.life-=.034;
+    if(p.life<=0)return false;
+    const [x,y]=pxPoint([p.x,p.y]);const a=clamp(p.life,0,1);
+    ctx.fillStyle=p.kind==='success'?`rgba(201,255,66,${a})`:`rgba(255,75,102,${a})`;
+    ctx.shadowBlur=p.kind==='success'?10:6;ctx.shadowColor=p.kind==='success'?'#c9ff42':'#ff6078';
+    ctx.beginPath();ctx.arc(x,y,p.size*a+1,0,Math.PI*2);ctx.fill();
+    return true;
+  });
+  ctx.restore();
+}
+function drawSkeleton(lm){
+  if(!state.visionOn||!state.showSkeleton||!lm)return;
+  const connections=[
+    [0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],
+    [9,13],[13,14],[14,15],[15,16],[13,17],[17,18],[18,19],[19,20],[0,17]
+  ];
+  ctx.save();ctx.lineWidth=1.4;ctx.strokeStyle='rgba(126,238,255,.42)';ctx.fillStyle='rgba(201,255,66,.55)';
+  for(const [a,b] of connections){
+    const pa=pxPoint([1-lm[a].x,lm[a].y]),pb=pxPoint([1-lm[b].x,lm[b].y]);
+    ctx.beginPath();ctx.moveTo(pa[0],pa[1]);ctx.lineTo(pb[0],pb[1]);ctx.stroke();
+  }
+  for(const m of lm){const p=pxPoint([1-m.x,m.y]);ctx.beginPath();ctx.arc(p[0],p[1],2.2,0,Math.PI*2);ctx.fill()}
+  ctx.restore();
+}
+function drawCursor(){
+  if(!cursorPt)return;
+  const [x,y]=pxPoint(cursorPt);
+  const t=performance.now()*.006;
+  const r=10+Math.sin(t)*2;
+  ctx.save();
+  ctx.strokeStyle=state.interaction==='SELECT'?'#ffd36c':state.interaction==='CLEAR'?'#c9ff42':'#ff6078';
+  ctx.lineWidth=2;ctx.shadowBlur=14;ctx.shadowColor=ctx.strokeStyle;
+  ctx.beginPath();ctx.arc(x,y,r+7,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);ctx.fill();
+  if(palmProgress>0){
+    ctx.lineWidth=5;ctx.strokeStyle='#c9ff42';ctx.beginPath();ctx.arc(x,y,27,-Math.PI/2,-Math.PI/2+Math.PI*2*palmProgress);ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawFlash(){
+  if(clearFlash>0){
+    ctx.fillStyle=`rgba(201,255,66,${clearFlash*.12})`;ctx.fillRect(0,0,view.w,view.h);clearFlash*=.88;
+  }
+  if(successFlash>0){
+    ctx.fillStyle=`rgba(126,238,255,${successFlash*.08})`;ctx.fillRect(0,0,view.w,view.h);successFlash*=.9;
+  }
+}
+function render(now){
+  resizeCanvas();
+  ctx.setTransform(view.dpr,0,0,view.dpr,0,0);
+  ctx.clearRect(0,0,view.w,view.h);
+  drawVideoCover();
+  drawTarget();
+  for(let i=0;i<strokes.length;i++)drawLaser(strokes[i].pts,i===selectedIdx);
+  if(currentStroke.length>1)drawLaser(currentStroke);
+  drawParticles();
+  if(visionResult?.landmarks?.[0])drawSkeleton(visionResult.landmarks[0]);
+  drawFaceMain();
+  drawFaceHud();
+  drawCursor();
+  drawFlash();
+
+  renderFrames++;
+  if(now-renderTickAt>=500){
+    const raw=renderFrames/((now-renderTickAt)/1000);
+    state.renderFps=raw;state.fpsSmooth=lerp(state.fpsSmooth,raw,.25);renderFrames=0;renderTickAt=now;chooseRuntimeQuality();
+  }
+  if(now-lastUiPerfAt>240){updatePerfUI();lastUiPerfAt=now}
+}
+async function loop(now){
+  if(!document.hidden){
+    if(state.visionOn&&handLandmarker&&video.readyState>=2){
+      const interval=1000/q().inferFps;
+      if(now-lastInferAt>=interval&&video.currentTime!==lastVideoTime){
+        lastInferAt=now;lastVideoTime=video.currentTime;
+        const t0=performance.now();
+        try{
+          visionResult=handLandmarker.detectForVideo(video,now);
+          state.lastInferMs=performance.now()-t0;
+          inferSamples.push(state.lastInferMs);if(inferSamples.length>24)inferSamples.shift();
+          if(visionResult?.landmarks?.length)gestureFromLandmarks(visionResult.landmarks[0],now);
+          else{
+            if(lastGesture==='DRAW')commitCurrent('draw');
+            if(lastGesture==='SELECT')endGrab();
+            lastGesture='IDLE';state.interaction='IDLE';smoothVisionPt=null;cursorPt=null;palmStart=0;palmProgress=0;palmLastCenter=null;clearGestureConsumed=false;setModeUI('IDLE');
+          }
+          if(faceLandmarker && now-lastFaceInferAt>=1000/q().faceFps){
+            lastFaceInferAt=now;const f0=performance.now();
+            faceResult=faceLandmarker.detectForVideo(video,now);state.lastFaceMs=performance.now()-f0;
+            faceSamples.push(state.lastFaceMs);if(faceSamples.length>18)faceSamples.shift();classifyExpression(faceResult,now);
+          }
+        }catch(err){console.warn('[PILAR Vision]',err)}
+      }
+    }
+    render(now);
+  }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* ── Quest UI ────────────────────────────────────────────── */
+function renderQuestUI(){
+  const t=TARGETS[state.targetIndex],best=Number(state.best[t.id])||0;
+  $('#questName').textContent=t.name;
+  $('#questCopy').textContent=t.copy;
+  $('#questCounter').textContent=`${state.targetIndex+1} / ${TARGETS.length}`;
+  $('#questBest').textContent=best;
+  $('#xpTop').textContent=state.xp;
+  $('#bestTop').textContent=Math.max(0,...Object.values(state.best).map(Number));
+  $('#comboText').textContent='×'+state.combo;
+  $('#traceBtn').setAttribute('aria-pressed',String(state.trace));
+  $('#freeBtn').setAttribute('aria-pressed',String(!state.trace));
+  $('#challengeBtn').setAttribute('aria-pressed',String(state.trace));
+  const score=state.score;
+  $('#scoreValue').textContent=score==null?'—':score;
+  const [rank,icon]=scoreRank(score);$('#scoreRank').textContent=`${icon} ${rank}`.trim();
+  const deg=score==null?0:clamp(score,0,100)*3.6;
+  $('#scoreOrb').style.background=`conic-gradient(${score>=CFG.targetGold?'var(--lime)':score>=CFG.targetPass?'var(--green)':'var(--cyan)'} ${deg}deg,#1b2b3e ${deg}deg)`;
+  const box=$('#questProgress');box.innerHTML='';
+  TARGETS.forEach((x,i)=>{
+    const d=document.createElement('i');d.className='quest-dot'+(state.completed.includes(x.id)?' done':'')+(i===state.targetIndex?' active':'');box.appendChild(d);
+  });
+}
+function setTrace(v){
+  state.trace=!!v;state.score=null;currentStroke=[];renderQuestUI();
+  feedback(state.trace?'Trace Quest aktif. Ikuti jalur hantu.':'Free Draw aktif. Tulis atau gambar sesukamu.');
+}
+function nextQuest(){
+  state.targetIndex=(state.targetIndex+1)%TARGETS.length;state.score=null;strokes=[];currentStroke=[];particles=[];renderQuestUI();
+  feedback(`Target baru: ${TARGETS[state.targetIndex].name}.`);
+  beep(520,.035);
+}
+
+/* ── general UI ──────────────────────────────────────────── */
+function setModeUI(mode){
+  const pill=$('#modePill');pill.className='mode-pill';
+  let text='IDLE';
+  if(state.input==='pointer'){text=activePointer!=null?'DRAW · POINTER':'TOUCH READY';if(activePointer!=null)pill.classList.add('draw')}
+  else if(mode==='DRAW'){text='DRAW · AIR';pill.classList.add('draw','vision')}
+  else if(mode==='SELECT'){text='GRAB · PINCH';pill.classList.add('select','vision')}
+  else if(mode==='CLEAR'){text=`SAFE CLEAR ${Math.round(palmProgress*100)}%`;pill.classList.add('clear','vision')}
+  else {text='VISION READY';pill.classList.add('vision')}
+  $('#modeText').textContent=text;
+  $('#gDraw').classList.toggle('active',mode==='DRAW');
+  $('#gMove').classList.toggle('active',mode==='SELECT');
+  $('#gClear').classList.toggle('active',mode==='CLEAR');
+  if(mode==='DRAW'){
+    $('#hintTitle').textContent=state.input==='vision'?'Telunjuk = laser':'Tarik untuk menulis';
+    $('#hintText').textContent=state.trace?'Ikuti jalur hantu lalu lepaskan untuk mendapat skor.':'Gerakkan bebas. Undo dan Clear tersedia di dock.';
+  }else if(mode==='SELECT'){
+    $('#hintTitle').textContent='Stroke tertangkap';
+    $('#hintText').textContent='Pertahankan pinch sambil menggeser. Lepas pinch untuk meletakkan.';
+  }else if(mode==='CLEAR'){
+    $('#hintTitle').textContent=palmProgress<CFG.palmArmMs/CFG.palmHoldMs?'Telapak terdeteksi · tahan dulu':'SAFE CLEAR · tetap diam';
+    $('#hintText').textContent='Wajib 5 jari terbuka + relatif diam selama 1,8 detik. Gerakan mendadak mereset progress.';
+  }else{
+    $('#hintTitle').textContent=state.input==='vision'?'Tunjukkan telunjuk':'Tarik untuk menulis';
+    $('#hintText').textContent=state.input==='vision'?'☝ draw · 🤌 grab · 🖐 tahan clear':'Mouse, stylus, touch, atau aktifkan Vision AI.';
+  }
+}
+function syncInputUI(){
+  $('#quickModeBtn').setAttribute('aria-pressed',String(state.input==='pointer'));
+  $('#visionModeBtn').setAttribute('aria-pressed',String(state.input==='vision'));
+  $('#faceBtn').setAttribute('aria-pressed',String(state.showFace));
+  $('#faceHud').hidden=!(state.visionOn&&state.showFace);
+  $('#inputLabel').textContent=state.input.toUpperCase();
+  $('#pBackend').textContent=state.input==='vision'?`${state.cameraBackend} · ${state.runtimeQuality.toUpperCase()}`:'POINTER';
+  $('#cameraBtn').innerHTML=state.visionOn?'■ <span class="label">Stop Vision</span>':'✋ <span class="label">Vision</span>';
+  setModeUI('IDLE');
+}
+function updatePerfUI(){
+  $('#pFps').textContent=state.renderFps.toFixed(0);
+  $('#pLatency').textContent=state.visionOn?state.lastInferMs.toFixed(1):'–';
+  $('#pPoints').textContent=strokes.reduce((n,s)=>n+s.pts.length,0)+currentStroke.length;
+  $('#pBackend').textContent=state.input==='vision'?`${state.cameraBackend} · ${state.runtimeQuality.toUpperCase()}`:'POINTER';
+}
+function setSkeleton(v){
+  state.showSkeleton=!!v;$('#skeletonBtn').setAttribute('aria-pressed',String(state.showSkeleton));saveSettings();
+}
+function setFace(v){
+  state.showFace=!!v;$('#faceBtn').setAttribute('aria-pressed',String(state.showFace));$('#faceHud').hidden=!(state.visionOn&&state.showFace);saveSettings();
+  feedback(state.showFace?'Face Edge aktif.':'Face Edge disembunyikan.');
+}
+function setGuide(v){state.showGuide=!!v;$('#guideBtn').setAttribute('aria-pressed',String(state.showGuide))}
+function toggleSound(){
+  state.sound=!state.sound;$('#soundBtn').textContent=state.sound?'♪':'×♪';$('#soundBtn').setAttribute('aria-pressed',String(state.sound));saveSettings();if(state.sound)beep(620,.03);
+}
+async function toggleFullscreen(){
+  try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch{}
+}
+function goHome(){
+  if(location.pathname.includes('/apps/'))location.href='../../';
+  else history.length>1?history.back():location.href='./';
+}
+
+/* ── controls ────────────────────────────────────────────── */
+$('#quickStart').onclick=()=>{$('#startOverlay').hidden=true;state.input='pointer';syncInputUI();ensureAudio();feedback('Masuk Cepat aktif. Tarik di kanvas untuk mulai.');};
+$('#visionStart').onclick=startVision;
+$('#quickModeBtn').onclick=()=>{if(state.visionOn)stopVision();else{state.input='pointer';syncInputUI()}};
+$('#visionModeBtn').onclick=startVision;
+$('#cameraBtn').onclick=toggleVision;
+$('#undoBtn').onclick=undo;
+$('#clearBtn').onclick=()=>clearAll('button');
+$('#nextBtn').onclick=nextQuest;
+$('#nextQuest').onclick=nextQuest;
+$('#freeBtn').onclick=()=>setTrace(false);
+$('#traceBtn').onclick=()=>setTrace(true);
+$('#challengeBtn').onclick=()=>setTrace(!state.trace);
+$('#skeletonBtn').onclick=()=>setSkeleton(!state.showSkeleton);
+$('#faceBtn').onclick=()=>setFace(!state.showFace);
+$('#guideBtn').onclick=()=>setGuide(!state.showGuide);
+$('#soundBtn').onclick=toggleSound;
+$('#fullscreenBtn').onclick=toggleFullscreen;
+$('#homeBtn').onclick=goHome;
+$('#qualitySelect').onchange=e=>{state.quality=e.target.value;chooseRuntimeQuality();saveSettings();feedback(`Kualitas: ${state.quality}.`)};
+
+addEventListener('keydown',e=>{
+  if(e.target instanceof HTMLInputElement||e.target instanceof HTMLSelectElement)return;
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo()}
+  else if(e.key==='Escape'&&state.visionOn)stopVision();
+  else if(e.key.toLowerCase()==='c')clearAll('button');
+  else if(e.key.toLowerCase()==='v')toggleVision();
+  else if(e.key===' '){e.preventDefault();nextQuest()}
+  else if(e.key.toLowerCase()==='f')toggleFullscreen();
+});
+document.addEventListener('visibilitychange',()=>{
+  if(visionStream){
+    for(const t of visionStream.getVideoTracks())t.enabled=!document.hidden;
+  }
+});
+addEventListener('pagehide',()=>{if(visionStream)visionStream.getTracks().forEach(t=>t.stop());try{handLandmarker?.close?.()}catch{}try{faceLandmarker?.close?.()}catch{}},{once:true});
+
+/* ── optional PILAR Pulse when mounted under /apps/ ─────── */
+async function attachPulse(){
+  if(!location.pathname.includes('/apps/'))return;
+  try{
+    const base=new URL('../../',location.href);
+    const load=src=>new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=new URL(src,base).href;s.onload=resolve;s.onerror=reject;document.head.appendChild(s)});
+    await load('pulse/config.js');await load('core/pulse.js');
+    window.PILAR_PULSE?.setApp?.('air-writing');
+  }catch{}
+}
+
+/* ── boot ───────────────────────────────────────────────── */
+loadState();
+applyUI();
+resizeCanvas();
+state.showGuide=true;
+$('#qualitySelect').value=state.quality;
+$('#faceBtn').setAttribute('aria-pressed',String(state.showFace));
+$('#soundBtn').textContent=state.sound?'♪':'×♪';
+setSkeleton(state.showSkeleton);
+setGuide(true);
+renderQuestUI();
+syncInputUI();
+attachPulse();
+
+if(!navigator.mediaDevices?.getUserMedia){
+  $('#visionStart').disabled=true;$('#visionStart').querySelector('small').textContent='Kamera browser tidak tersedia. Gunakan Masuk Cepat.';
+  $('#visionModeBtn').disabled=true;$('#cameraBtn').disabled=true;
+}
+</script>
+</body>
+</html>
