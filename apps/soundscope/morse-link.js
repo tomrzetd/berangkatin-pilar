@@ -1,4 +1,4 @@
-/* PILAR SoundScope v4.0.2 — acoustic Morse link. Timing-safe RX with glitch rejection. */
+/* PILAR SoundScope v4.0.3 — acoustic Morse link. Timing-safe RX with glitch rejection. */
 (function(){
 'use strict';
 const A=window.SOUNDSCOPE_MORSE_AUDIO;
@@ -194,7 +194,7 @@ function stopRx(message='RX berhenti. Mikrofon dapat dimatikan dari kontrol utam
  status('mLiveText','RECEIVER BERHENTI');
 }
 function clearRx(){
- R.symbols=[];R.text='';R.history=[];R.raw=[];R.present=false;R.candidate=false;R.candidateSince=0;R.onAt=0;R.lastOff=0;R.lastValidOff=0;R.lastChange=0;R.wordSpaced=false;R.glitches=0;R.noise=.00008;R.level=0;R.rawLevel=0;R.sideLevel=0;R.snr=0;
+ R.symbols=[];R.text='';R.history=[];R.raw=[];R.present=false;R.candidate=false;R.candidateSince=0;R.onAt=0;R.lastOff=0;R.lastValidOff=0;R.lastChange=0;R.wordSpaced=false;R.glitches=0;R.noise=.00008;R.level=0;R.rawLevel=0;R.sideLevel=0;R.snr=0;R.peak=0;R.lastTick=0;
  status('mRxText','…');status('mRxSymbols','Simbol masuk: —');updateRail();
 }
 async function startRx(){
@@ -256,17 +256,26 @@ function tickRx(now){
 
  const mult=+$('mSensitivity').value;
  const snrMin=mult<=3?3.5:mult<=4?5.5:7.0;
- const onTh=Math.max(.00012,R.noise*mult);
- // OFF dibuat lebih dekat ke threshold ON agar gema 1T tidak menyambung dua pulsa.
- const offTh=Math.max(.00008,onTh*.72);
+ const dtMs=clamp(R.lastTick?now-R.lastTick:16,1,100);R.lastTick=now;
+ const onAbs=Math.max(.00012,R.noise*mult);
  R.snr=20*Math.log10((R.level+.000001)/(Math.max(R.sideLevel,R.noise*.45)+.000001));
+
+ // FIX v4.0.3: ambang ON/OFF RELATIF terhadap puncak carrier (bukan hanya terhadap noise floor).
+ // Ruangan memantulkan nada (gema 0,2–0,8 dtk), sehingga di jeda 1T level carrier hanya turun 6–20 dB.
+ // Ambang absolut (±25–55 dB di bawah puncak) tidak pernah tercapai -> semua titik/garis menyatu jadi satu pulsa panjang.
+ // Puncak naik cepat saat carrier sungguhan hadir, turun pelan (τ≈3,5 dtk) agar volume yang berubah tetap terikuti.
+ R.peak=(R.peak||0)*Math.exp(-dtMs/3500);
+ if(R.present&&R.snr>=snrMin-2.2&&R.level>R.peak)R.peak+=(R.level-R.peak)*.4;
+ const onTh=Math.max(onAbs,R.peak*.60);
+ const offTh=Math.max(onAbs*.72,R.peak*.45);
 
  const rawGate=R.present
    ? (R.level>offTh&&R.snr>=snrMin-2.2)
    : (R.level>onTh&&R.snr>=snrMin);
 
- // Noise floor hanya belajar ketika tidak ada kandidat carrier kuat.
- if(!R.present&&!rawGate){
+ // FIX v4.0.3: noise floor hanya belajar saat benar-benar sepi (ekor gema sudah lewat),
+ // bukan dari ekor gema carrier yang membuat noise floor 'naik' dan ambang ikut naik.
+ if(!R.present&&!rawGate&&now-R.lastChange>700&&(!R.peak||R.level<R.peak*.12)){
   const candidateNoise=Math.max(.00002,Math.min(R.level,.02));
   R.noise=clamp(R.noise*.982+candidateNoise*.018,.00002,.025);
  }
