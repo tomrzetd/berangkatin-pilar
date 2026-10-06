@@ -1,5 +1,5 @@
 
-/* PILAR SoundScope v4 — Morse Acoustic Link */
+/* PILAR SoundScope v4.0.1 — Morse Acoustic Link */
 [hidden]{display:none!important}
 .tools [data-tool="tuner"]{grid-column:auto}
 .tools [data-tool="morse"]{grid-column:1/-1;background:linear-gradient(105deg,rgba(58,160,255,.24),rgba(56,230,153,.12));border-color:rgba(80,215,240,.45)}
@@ -52,6 +52,7 @@ body.morse-mode .stage{overflow:hidden}
 .morse-stats b{display:block;font-size:.95rem;margin-top:.16rem}
 .morse-progress{height:.47rem;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden}
 .morse-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--good));transition:width .09s linear}
+.morse-meter-row{display:grid;grid-template-columns:3.6rem 1fr;gap:.45rem;align-items:center}.morse-meter-row>span{font-size:.62rem;font-weight:900;color:var(--muted);letter-spacing:.08em}.morse-meter-row:first-of-type .morse-progress i{background:linear-gradient(90deg,#6c7893,#3aa0ff)}
 .morse-config .btn:disabled{opacity:.4;cursor:not-allowed}
 @media(max-width:1380px){.morse-step small{font-size:.59rem}.morse-step{min-height:4.6rem}}
 @media(max-width:1100px){
@@ -62,6 +63,8 @@ body.morse-mode .stage{overflow:hidden}
   .morse-config{padding-bottom:.4rem}
 }
 @media(max-width:600px){
+  .morse-stats{grid-template-columns:1fr 1fr}.morse-stats b{font-size:.78rem}
+
   body.morse-mode .stage{min-height:460px;height:460px!important}
   .morse-stage{padding:.55rem;gap:.45rem}
   .morse-title{font-size:1.15rem}
