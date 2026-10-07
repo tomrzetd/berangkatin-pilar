@@ -13,7 +13,7 @@
     advancedLabel:'Eksperimen lanjut · jenis cairan dan lebar wadah',
     defaults:()=>({depth:.5,fluid:'tawar',width:8}),
     engDefaults:()=>({depths:[1.0,1.6,3.0]}),
-    look:{title:'Perenang yang sama. Air yang sama.',text:'Mulai dari yang terlihat: perenang dapat diseret naik–turun. Jangan cari rumus dulu.',question:'Jika telinga berpindah dari sekitar 1 m ke 3 m, apakah tekanan air menjadi tetap, 3×, atau 9×?'},
+    look:{title:'Perenang yang sama. Air yang sama.',text:'Mulai dari yang terlihat: perenang dapat diseret naik–turun. Jangan cari rumus dulu.',question:'Jika perenang turun dari kedalaman sekitar 1 m ke 3 m, bagaimana tekanan air berubah: tetap, 3×, atau 9×?'},
     predict:{title:'Dari 1 m ke 3 m, menurutmu?',text:'Airnya sama. Yang berubah hanya seberapa dalam perenang berada dari permukaan air.',
       options:[{v:'sama',l:'Tetap sama'},{v:'3',l:'Menjadi 3×'},{v:'9',l:'Menjadi 9×'}],answer:'3',
       why:'Tekanan hidrostatis p = ρ·g·h berbanding lurus dengan kedalaman h, sehingga 3× lebih dalam → 3× lebih besar (bukan 9×).'},

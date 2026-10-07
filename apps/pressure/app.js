@@ -263,7 +263,7 @@
     const slot=$(`.control-slot[data-slot="${st.phase}"]`);if(slot&&dock.parentNode!==slot)slot.appendChild(dock);
     $('#xp').textContent=S.xp;
     // tebak
-    $('#predGrid button').forEach(b=>{b.classList.toggle('selected',b.dataset.pred===st.prediction);b.disabled=!!st.locked});const lockBtn=$('#lockPred');if(lockBtn)lockBtn.textContent=st.locked?'Lanjut ke Coba →':'Uji tebakanku →';
+    $$('#predGrid button').forEach(b=>{b.classList.toggle('selected',b.dataset.pred===st.prediction);b.disabled=!!st.locked});const lockBtn=$('#lockPred');if(lockBtn)lockBtn.textContent=st.locked?'Lanjut ke Coba →':'Uji tebakanku →';
     $('#predFeedback').textContent=st.locked?'Tebakan terkunci: '+spec.predict.options.find(o=>o.v===st.prediction).l+'.':st.prediction?'Tebakanmu: '+spec.predict.options.find(o=>o.v===st.prediction).l+' (belum dikunci).':'Belum ada tebakan yang dikunci.';
     // coba
     spec.missions.forEach(m=>{const el=$(`#missionList [data-mission="${m.id}"]`);if(!el)return;el.classList.toggle('done',st.missions[m.id]);$('span',el).textContent=(st.missions[m.id]?'✓ ':'○ ')+m.desc});
