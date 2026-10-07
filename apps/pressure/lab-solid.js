@@ -24,6 +24,7 @@
   const spec={
     id:'padat',icon:'🧱',tab:'Padat',title:'Tekanan pada Zat Padat',tagline:'Balok yang sama, bekas di pasir bisa berbeda.',accent:'#ffd36c',
     studentUX:'natural-solid-v1',
+    natural:{tryTitle:'Balik baloknya. Lihat pasirnya.',tryText:'Berat balok tetap. Ubah hanya posisi bidang yang menyentuh pasir.',ahaTitle:'Mengapa bekas pasir berubah padahal baloknya sama?',ahaToast:'Beratnya sama, tetapi bekas di pasir berubah. Sekarang cari penyebabnya.',proofHint:'Ambil bukti balok TIDUR dan BERDIRI dengan massa yang sama.',recordAgain:'Sekarang balik posisi balok dan ambil bukti kedua.',proofDone:'Dua posisi menunjukkan pola yang sama. Sekarang pakai konsepnya untuk merancang.',reflection:'Hubungkan <strong>luas bidang tekan</strong> dengan <strong>besar tekanan</strong> yang dihasilkan.'},
     advancedLabel:'Eksperimen lanjut · benda, massa, dan permukaan',
     defaults:()=>({obj:'balok',orient:'tidur',mass:5,surface:'pasir'}),
     engDefaults:()=>({task:'salju',area:600,done:{}}),

@@ -18,7 +18,7 @@ for(const sp of labs){
   // spesifikasi lengkap
   ['id','tab','title','defaults','look','predict','controls','reveals','missions','patterns','formula','hud','proof','eng','model','createScene'].forEach(k=>assert(sp[k]!==undefined,sp.id+' tanpa '+k));
   assert(sp.predict.options.some(o=>o.v===sp.predict.answer),sp.id+': jawaban tebak tidak ada di opsi');
-  assert(sp.missions.length===3);
+  if(String(sp.studentUX||'').startsWith('natural-'))assert(sp.missions.length>=1&&sp.missions.length<=2);else assert(sp.missions.length===3);
   for(const phase of ['lihat','tebak','coba','aha','buktikan','rekayasa']){
     for(const rev of [false,true]){
       const st={phase,params:sp.defaults(),reveal:{},missions:{},eng:sp.engDefaults?sp.engDefaults():{},sim:sp.simInit?sp.simInit():{},evidence:[]};

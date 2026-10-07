@@ -7,50 +7,32 @@
   const kp=v=>fmt(v/1e3,1)+' kPa';
 
   const spec={
-    id:'cair',icon:'🏊',tab:'Cair',title:'Tekanan Hidrostatis · Berenang',tagline:'Mengapa telinga terasa sakit saat menyelam dalam?',accent:'#69baff',
+    id:'cair',icon:'🏊',tab:'Cair',title:'Tekanan Cair · Menyelam',tagline:'Semakin dalam, apa yang sebenarnya berubah?',accent:'#69baff',
+    studentUX:'natural-fluid-v1',
+    natural:{tryTitle:'Seret perenang turun. Rasakan polanya.',tryText:'Ubah kedalaman saja. Perhatikan perubahan di sekitar telinga dan penggaris.',ahaTitle:'Mengapa tekanan bertambah saat makin dalam?',ahaToast:'Perenang makin dalam dan tekanan ikut membesar. Sekarang cari hubungan kedalamannya.',proofHint:'Ambil satu bukti dekat 1 m dan satu lagi dekat 3 m pada cairan yang sama.',recordAgain:'Pindahkan perenang jauh lebih dalam lalu ambil bukti kedua.',proofDone:'Kedalaman dan tekanan berubah dengan perbandingan yang sama. Sekarang gunakan pola itu untuk merancang.',reflection:'Hubungkan <strong>kedalaman</strong>, <strong>massa jenis cairan</strong>, dan <strong>tekanan hidrostatis</strong>.'},
+    advancedLabel:'Eksperimen lanjut · jenis cairan dan lebar wadah',
     defaults:()=>({depth:.5,fluid:'tawar',width:8}),
     engDefaults:()=>({depths:[1.0,1.6,3.0]}),
-    look:{title:'Lihat kolamnya. Perhatikan perenang dan penggarisnya.',
-      text:'Seorang siswa berenang di kolam. Di dinding ada penggaris kedalaman dengan nilai tekanan. Kamu bisa menyeret perenang naik–turun, atau memakai penggeser.',
-      question:'Saat perenang makin dalam, apa yang berubah pada tubuhnya? Dan apakah lebar kolam ikut berpengaruh?'},
-    predict:{title:'Tebak dulu. Salah justru berguna.',text:'Kamu menyelam dari kedalaman 1 m ke 3 m dalam air tawar. Bagaimana tekanan <b>akibat air</b> pada telingamu?',
+    look:{title:'Perenang yang sama. Air yang sama.',text:'Mulai dari yang terlihat: perenang dapat diseret naik–turun. Jangan cari rumus dulu.',question:'Jika telinga berpindah dari sekitar 1 m ke 3 m, apakah tekanan air menjadi tetap, 3×, atau 9×?'},
+    predict:{title:'Dari 1 m ke 3 m, menurutmu?',text:'Airnya sama. Yang berubah hanya kedalaman telinga dari permukaan.',
       options:[{v:'sama',l:'Tetap sama'},{v:'3',l:'Menjadi 3×'},{v:'9',l:'Menjadi 9×'}],answer:'3',
       why:'Tekanan hidrostatis p = ρ·g·h berbanding lurus dengan kedalaman h, sehingga 3× lebih dalam → 3× lebih besar (bukan 9×).'},
     controls:[
-      {k:'depth',type:'range',label:'Kedalaman telinga perenang (h)',unit:'m',min:()=>0,max:()=>4.2,step:()=>.05,dec:()=>2},
-      {k:'fluid',type:'seg',label:'Cairan',options:()=>Object.values(PH().fluid.FLUIDS).map(f=>({v:f.id,l:f.name+' · '+f.rho}))},
-      {k:'width',type:'range',label:'Lebar kolam',unit:'m',min:()=>4,max:()=>12,step:()=>1,dec:()=>0}
-    ],
-    reveals:[{k:'arrows',label:'Panah',on:'Sembunyikan panah p',off:'Lihat panah tekanan'},{k:'wall',label:'Dinding',on:'Sembunyikan profil',off:'Lihat profil dinding'}],
-    missions:[
-      {id:'dive',title:'01 · Menyelam Dalam',desc:'Bawa telinga perenang sampai kedalaman ≥ 2 m.'},
-      {id:'fluid',title:'02 · Ganti Cairan',desc:'Pilih cairan lain dan bandingkan tekanan pada kedalaman yang sama.'},
-      {id:'width',title:'03 · Ubah Lebar Kolam',desc:'Geser lebar kolam. Apakah tekanan pada kedalaman sama ikut berubah?'}],
-    onParam(k,v,old,st,api){
-      if(k==='depth'&&+v>=2)api.mark('dive');
-      if(k==='fluid'&&v!==old)api.mark('fluid');
-      if(k==='width'&&+v!==+old)api.mark('width');
-    },
-    check(){},
-    patterns:[
-      {icon:'⬇',title:'Makin dalam, tekanan makin besar',text:'Tekanan air naik sebanding dengan kedalaman h.'},
-      {icon:'💧',title:'Cairan lebih rapat, tekanan lebih besar',text:'Pada kedalaman sama, air laut menekan lebih kuat daripada air tawar; minyak lebih ringan.'},
-      {icon:'↔',title:'Lebar kolam tidak berpengaruh',text:'Yang menentukan hanya kedalaman — bukan bentuk atau lebar wadah. Di satu titik, tekanan sama ke segala arah (Pascal).'}],
+{k:'depth',type:'range',label:'Seret / atur kedalaman',unit:'m',min:()=>0,max:()=>4.2,step:()=>.05,dec:()=>2},
+{k:'fluid',type:'seg',label:'Jenis cairan',adv:true,options:()=>Object.values(PH().fluid.FLUIDS).map(f=>({v:f.id,l:f.name}))},
+{k:'width',type:'range',label:'Lebar wadah',unit:'m',adv:true,min:()=>4,max:()=>12,step:()=>1,dec:()=>0}],
+reveals:[{k:'arrows',on:'🙈 Sembunyikan panah',off:'👁 Lihat arah tekanan'},{k:'wall',on:'🙈 Sembunyikan profil',off:'👁 Lihat profil tekanan'}],
+missions:[{id:'dive',title:'Bandingkan dua kedalaman',desc:'Bawa telinga perenang hingga kedalaman ≥ 2,5 m.'}],
+onParam(k,v,old,st,api){if(k==='depth'&&+v>=2.5)api.mark('dive')},check(){},
+    patterns:[{icon:'⬇',title:'Lebih dalam → tekanan lebih besar',text:'Pada cairan yang sama, tekanan bertambah sebanding dengan kedalaman.'},{icon:'↔',title:'Tekanan bekerja ke segala arah',text:'Di satu titik dalam cairan diam, dorongan tidak hanya ke bawah.'},{icon:'💧',title:'Jenis cairan juga berpengaruh',text:'Pada kedalaman sama, cairan yang lebih rapat memberi tekanan lebih besar.'}],
     formula:{main:'p = ρ · g · h',sec:'p total = p₀ + ρ · g · h',note:'ρ = massa jenis cairan (kg/m³), g = 9,81 m/s², h = kedalaman dari permukaan. p₀ ≈ 101.325 Pa (tekanan udara). Gaya pada permukaan: F = p · A.'},
-    hud:(st)=>{const c=PH().fluid.calc(Object.assign({},st.params));return[['Kedalaman h',fmt(st.params.depth,2)+' m'],['p hidrostatis',kp(c.ph)],['p total',kp(c.ptot)+' · '+fmt(c.atm,2)+' atm'],['Gaya gendang telinga',fmt(c.Fear,2)+' N']]},
-    proof:{title:'Bisakah hasilmu diulang?',
-      text:'Targetkan <b>tekanan hidrostatis 20 kPa (±1 kPa)</b> pada <b>dua cairan berbeda</b>. Catat setiap percobaan. Apa yang harus kamu ubah supaya tekanannya sama?',
-      target:['Target','p = 19–21 kPa × 2 cairan'],
-      cols:['Cairan','h (m)','ρ (kg/m³)','p air (kPa)','p total (kPa)'],
-      record:(st)=>{const c=PH().fluid.calc(st.params),f=PH().fluid.FLUIDS[st.params.fluid];
-        return{cells:[f.name,fmt(st.params.depth,2),String(f.rho),fmt(c.ph/1e3,1),fmt(c.ptot/1e3,1)],data:{fluid:f.id,ph:c.ph,h:st.params.depth}}},
-      evaluate(st){
-        const hit=new Set(st.evidence.filter(r=>Math.abs(r.data.ph-20e3)<=1e3).map(r=>r.data.fluid));
-        if(hit.size>=2)return{ok:true,msg:'<b>Target tercapai.</b> Tekanan 20 kPa dicapai di dua cairan, tetapi pada kedalaman berbeda. Cairan lebih rapat → kedalamannya lebih kecil.'};
-        return{ok:false,msg:hit.size===1?'Satu cairan sudah tepat. Ganti cairan lalu cari kedalaman yang membuat p ≈ 20 kPa lagi (h = p / ρg).':'Cari kedalaman yang membuat tekanan air sekitar 20 kPa, lalu catat.'}}},
-    eng:{eyebrow:'AKSI REKAYASA · PRODUK',title:'Rancang zonasi kolam yang aman.',
-      text:'Atur kedalaman maksimum tiga zona. Setiap zona punya batas tekanan aman. Rancangan yang baik <b>aman</b> dan <b>tidak boros</b> (kedalaman mencapai ≥ 85% dari batas).',
-      hypothesis:'tekanan hidrostatis p = ρ·g·h membatasi kedalaman aman tiap zona kolam.',
+    hud:(st)=>{const c=PH().fluid.calc(Object.assign({},st.params)),h=st.params.depth;if(!st.formula)return[['Kedalaman',fmt(h,2)+' m'],['Tekanan air',h<1?'kecil':h<2.5?'makin besar':'besar'],['Arah tekanan','ke segala arah'],['Angka','buka di Pahami']];return[['Kedalaman h',fmt(h,2)+' m'],['p hidrostatis',kp(c.ph)],['ρ cairan',fmt(c.rho,0)+' kg/m³'],['p total',kp(c.ptot)]]},
+proof:{title:'Dua kedalaman sudah cukup.',text:'Gunakan <b>cairan yang sama</b>. Ambil satu bukti sekitar <b>1 m</b> dan satu lagi sekitar <b>3 m</b>.',target:['Target','dua kedalaman · cairan sama · rasio p mengikuti rasio h'],cols:['Cairan','h (m)','p air (kPa)','Rasio'],
+record:(st)=>{const c=PH().fluid.calc(st.params),f=PH().fluid.FLUIDS[st.params.fluid];return{cells:[f.name,fmt(st.params.depth,2),fmt(c.ph/1e3,1),'—'],data:{fluid:f.id,ph:c.ph,h:st.params.depth,label:fmt(st.params.depth,1)+' m · '+f.name,summary:'p = '+fmt(c.ph/1e3,1)+' kPa'}}},
+evaluate(st){let best=null;for(const a of st.evidence)for(const b of st.evidence){if(a===b||a.data.fluid!==b.data.fluid||Math.min(a.data.h,b.data.h)<.5)continue;const hr=Math.max(a.data.h,b.data.h)/Math.min(a.data.h,b.data.h),pr=Math.max(a.data.ph,b.data.ph)/Math.max(1,Math.min(a.data.ph,b.data.ph));if(hr>=2.4&&Math.abs(pr/hr-1)<.05)best={hr,pr}}return best?{ok:true,msg:`<b>Bukti cocok.</b> Kedalaman berubah ${fmt(best.hr,1)}× dan tekanan juga sekitar ${fmt(best.pr,1)}×.`}:{ok:false,msg:'Ambil dua kondisi pada cairan yang sama dengan kedalaman yang cukup berbeda, misalnya 1 m dan 3 m.'}}},
+    eng:{eyebrow:'RANCANG · PROFIL KEDALAMAN',title:'Rancang kolam demonstrasi tiga zona.',
+      text:'Atur tiga kedalaman agar masing-masing mendekati <b>batas tekanan desain model</b> tanpa melewatinya. Ini latihan rekayasa, <b>bukan standar keselamatan manusia</b>.',
+      hypothesis:'tekanan hidrostatis p = ρ·g·h menentukan tekanan desain pada tiap kedalaman.',
       html:`<div id="zoneRows"></div><div class="eng-checks" id="zoneChecks"></div><div class="eng-need" id="wallNote"></div>`,
       bind(c){
         const rows=c.$('#zoneRows');
@@ -60,13 +42,13 @@
       update(c){
         const rho=PH().fluid.FLUIDS[c.st.params.fluid].rho,res=PH().fluid.zoneCheck(rho,c.st.eng.depths);
         res.forEach((r,i)=>{const inp=c.$('#zone'+i);if(+inp.value!==c.st.eng.depths[i])inp.value=c.st.eng.depths[i];c.$('#zone'+i+'Out').textContent=fmt(r.h,2)+' m'});
-        c.$('#zoneChecks').innerHTML=res.map(r=>`<span class="${r.ok?'ok':'bad'}">${r.ok?'✓':'✗'} ${r.name}: p = ${kp(r.ph)} · ${r.safe?(r.efficient?'aman & efisien':'aman, tapi terlalu dangkal (target h ≥ '+fmt(.85*r.hmax,2)+' m)'):'TIDAK aman, maks h = '+fmt(r.hmax,2)+' m'}</span>`).join('');
+        c.$('#zoneChecks').innerHTML=res.map(r=>`<span class="${r.ok?'ok':'bad'}">${r.ok?'✓':'✗'} ${r.name}: p = ${kp(r.ph)} · ${r.safe?(r.efficient?'sesuai target':'masih di bawah target (target h ≥ '+fmt(.85*r.hmax,2)+' m)'):'melewati batas model, maks h = '+fmt(r.hmax,2)+' m'}</span>`).join('');
         const H=Math.max(...c.st.eng.depths),F=PH().fluid.wallForce(rho,H,c.st.params.width);
         c.$('#wallNote').innerHTML=`Gaya air pada dinding kolam terdalam (${fmt(H,2)} m, lebar ${c.st.params.width} m): <b>${fmt(F/1e3,0)} kN</b> ≈ berat ${fmt(F/9810,0)} ton. Dinding bawah perlu lebih tebal.`;
-        const ok=res.every(r=>r.ok);if(ok&&!c.st.eng.done){c.st.eng.done=true;c.api.xp(25);c.api.toast('Zonasi kolam aman','Ketiga zona memenuhi batas tekanan.')}
-        c.setEngStatus(ok?'Rancangan lolos':res.filter(r=>r.ok).length+'/3 zona lolos');
+        const ok=res.every(r=>r.ok);if(ok&&!c.st.eng.done){c.st.eng.done=true;c.api.xp(25);c.api.toast('Profil kedalaman lolos','Ketiga zona memenuhi batas tekanan desain model.')}
+        c.setEngStatus(ok?'Rancangan lolos':res.filter(r=>r.ok).length+'/3 zona sesuai');
       }},
-    model:'Air dianggap tidak termampatkan dan massa jenis seragam. Batas “aman” tiap zona adalah angka edukatif, bukan standar keselamatan. Tekanan total memasukkan tekanan udara p₀; gendang telinga sungguhan juga dipengaruhi tekanan udara di telinga tengah.',
+    model:'Cairan dianggap tidak termampatkan dan massa jenis seragam. Batas zona pada tahap Rancang hanyalah target desain edukatif, bukan standar keselamatan manusia. Tekanan total memasukkan tekanan udara p₀.',
     report:()=>'Tekanan hidrostatis p = ρ·g·h.',
     createScene
   };
@@ -157,12 +139,12 @@
         // panah tekanan di telinga
         const len=.28+c.ph*3.0e-5;
         earArrows.forEach((a,i)=>{const d=dirs[i];a.visible=!!st.reveal.arrows&&!eng;a.position.copy(d).multiplyScalar(.22+len);a.setDirection(d.clone().negate());a.setLength(len,.2,.13)});
-        stage.setSpriteText(earLabel,'p = '+kp(c.ph));earLabel.visible=!eng;
+        stage.setSpriteText(earLabel,st.formula?'p = '+kp(c.ph):(p.depth<1?'tekanan kecil':p.depth<2.5?'tekanan naik':'tekanan besar'));earLabel.visible=!eng;
         // gelembung
         const bp=bg.attributes.position;for(let i=0;i<BN;i++){let y=bp.getY(i)+dt*(.5+(i%5)*.12);if(y>depthVis)y=0;bp.setY(i,y)}bp.needsUpdate=true;
         bubbles.position.set(sw.position.x+.12,sw.position.y,0);bubbles.visible=!eng&&depthVis>.15;
         // penggaris
-        rl.forEach((s,i)=>stage.setSpriteText(s,`${fmt(i*.5,1)} m · ${fmt(fl.rho*PH().G*i*.5/1e3,1)} kPa`));
+        rl.forEach((s,i)=>stage.setSpriteText(s,st.formula?`${fmt(i*.5,1)} m · ${fmt(fl.rho*PH().G*i*.5/1e3,1)} kPa`:`${fmt(i*.5,1)} m`));
         // profil dinding
         wallArrows.forEach((a,i)=>{const h=(i+.5)*.5,len=.06+fl.rho*PH().G*h*4.4e-5;a.visible=!!st.reveal.wall;a.position.set(W/2-len,-h,0);a.setLength(len,.2,.13)});
         // zona

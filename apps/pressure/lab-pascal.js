@@ -16,52 +16,25 @@
   const calc=st=>PH().pascal.calc(eff(st));
 
   const spec={
-    id:'pascal',icon:'🚗',tab:'Pascal',title:'Lift Hidrolik · Pencucian Mobil',tagline:'Bagaimana tangan bisa mengangkat mobil satu ton?',accent:'#ff9d5c',
-    defaults:()=>({F1:100,A1:2,A2:150,car:'sedan',ts:20}),
+    id:'pascal',icon:'🚗',tab:'Pascal',title:'Pascal · Lift Hidrolik',tagline:'Tangan kecil, mobil besar: kok bisa?',accent:'#ff9d5c',
+studentUX:'natural-pascal-v1',natural:{tryTitle:'Pompa pegangan. Lihat mobilnya.',tryText:'Dengan setelan awal, cukup tarik–dorong pegangan atau tekan tombol pompa. Perhatikan piston kecil dan besar.',ahaTitle:'Mengapa gaya kecil bisa mengangkat mobil?',ahaToast:'Mobil bergerak walau gaya tangan jauh lebih kecil dari beratnya. Sekarang lihat peran luas piston.',proofHint:'Ambil dua bukti dengan F₁ dan A₁ sama, tetapi A₂ berbeda.',recordAgain:'Ubah luas piston besar A₂ lalu ambil bukti kedua.',proofDone:'Perubahan luas piston menghasilkan perubahan gaya dengan rasio yang sama. Sekarang rancang lift.',reflection:'Hubungkan <strong>luas piston</strong>, <strong>gaya</strong>, dan kompromi <strong>jumlah langkah pompa</strong>.'},advancedLabel:'Eksperimen lanjut · kendaraan, piston kecil, dan percepatan waktu',
+defaults:()=>({F1:100,A1:1,A2:150,car:'sedan',ts:20}),
     engDefaults:()=>({A1:5,A2:100,done:false}),
     simInit:()=>({h:0,pump:0,auto:false,lower:false,grabbed:false,manualDelta:0,strokes:0,phase:0}),
-    look:{title:'Lihat sistemnya. Ikuti jalur cairannya.',
-      text:'Di bawah lantai pencucian ada dua silinder berisi oli yang dihubungkan pipa: silinder kecil (pompa) dan silinder besar (penopang mobil). Lantai dibuat transparan agar kamu bisa melihatnya.',
-      question:'Kalau kamu hanya menekan pompa kecil, mengapa mobil di atas silinder besar bisa terangkat?'},
-    predict:{title:'Tebak dulu. Salah justru berguna.',text:'Sedan 1.200 kg (berat ≈ 11,8 kN) harus diangkat dengan dorongan tangan sekitar <b>100–500 N</b> saja pada pompa kecil. Mungkinkah?',
+    look:{title:'Satu tangan. Satu mobil.',text:'Ada piston kecil yang kamu pompa dan piston besar yang menopang mobil. Keduanya terhubung oleh oli.',question:'Mungkinkah dorongan tangan sekitar 100 N mengangkat mobil yang beratnya lebih dari 10.000 N?'},
+    predict:{title:'Menurutmu, apa kuncinya?',text:'Gaya tangan jauh lebih kecil daripada berat mobil. Pilih penjelasan yang paling masuk akal.',
       options:[{v:'mustahil',l:'Mustahil: gaya dorong harus ≥ berat mobil'},{v:'luas',l:'Bisa, jika piston besar jauh lebih luas'},{v:'cepat',l:'Bisa, asal dipompa lebih cepat'}],answer:'luas',
       why:'Tekanan di dalam cairan tertutup diteruskan sama besar ke segala arah. Gaya pada piston besar = tekanan × luasnya, jadi luas yang besar “menggandakan” gaya.'},
-    controls:[
-      {k:'car',type:'seg',label:'Kendaraan',options:()=>Object.values(PH().pascal.CARS).map(c=>({v:c.id,l:c.name+' · '+c.mass+' kg'}))},
-      {k:'F1',type:'range',label:'Gaya dorong pada pompa (F₁)',unit:'N',min:()=>10,max:()=>500,step:()=>10,dec:()=>0},
-      {k:'A1',type:'range',label:'Luas piston kecil (A₁)',unit:'cm²',min:()=>1,max:()=>20,step:()=>.5,dec:()=>1},
-      {k:'A2',type:'range',label:'Luas piston besar (A₂)',unit:'cm²',min:()=>50,max:()=>400,step:()=>10,dec:()=>0},
-      {k:'ts',type:'seg',label:'Percepat waktu',options:()=>[{v:1,l:'1×'},{v:5,l:'5×'},{v:20,l:'20×'}]},
-      {type:'actions',items:[{id:'pump',label:'▶ Pompa / Berhenti',primary:true},{id:'lower',label:'▼ Turunkan (buka katup)'},{id:'reset',label:'↺ Ulang'}]}
-    ],
-    reveals:[{k:'pressure',label:'P',on:'Sembunyikan P',off:'Lihat tekanan P'},{k:'force',label:'F',on:'Sembunyikan F',off:'Lihat gaya F₁, F₂, W'},{k:'work',label:'Usaha',on:'Sembunyikan usaha',off:'Lihat usaha'}],
-    missions:[
-      {id:'lift',title:'01 · Angkat Mobilnya',desc:'Atur F₁, A₁, A₂ hingga mobil terangkat ≥ 0,5 m. Petunjuk: F₂ harus ≥ W.'},
-      {id:'area',title:'02 · Ubah Luas Piston',desc:'Ubah A₁ atau A₂ dan lihat perubahan gaya yang dibutuhkan.'},
-      {id:'heavy',title:'03 · Angkat yang Lebih Berat',desc:'Pilih SUV atau truk, lalu angkat ≥ 0,3 m.'}],
-    onParam(k,v,old,st,api){
-      if((k==='A1'||k==='A2')&&+v!==+old)api.mark('area');
-    },
-    check(st,api){if(st.phase==='rekayasa')return;const m=PH().pascal.CARS[st.params.car].mass;if(st.sim.h>=.5)api.mark('lift');if(m>=1800&&st.sim.h>=.3)api.mark('heavy')},
-    patterns:[
-      {icon:'🔗',title:'Tekanan di mana-mana sama',text:'F₁ ÷ A₁ selalu sama dengan F₂ ÷ A₂ — cairan meneruskan tekanan ke segala arah.'},
-      {icon:'💪',title:'Gaya diperbesar sebanyak rasio luas',text:'A₂ = 100 × A₁ → gaya angkat 100× gaya dorong.'},
-      {icon:'🐢',title:'Tidak ada yang gratis',text:'Piston besar naik sedikit sekali setiap langkah. Usaha masuk F₁·d₁ sama dengan usaha keluar F₂·d₂.'}],
+controls:[
+{k:'F1',type:'range',label:'Gaya tangan F₁',unit:'N',min:()=>50,max:()=>300,step:()=>10,dec:()=>0},{k:'A2',type:'range',label:'Luas piston besar A₂',unit:'cm²',min:()=>50,max:()=>300,step:()=>10,dec:()=>0},{k:'car',type:'seg',label:'Kendaraan',adv:true,options:()=>Object.values(PH().pascal.CARS).map(c=>({v:c.id,l:c.name+' · '+c.mass+' kg'}))},{k:'A1',type:'range',label:'Luas piston kecil A₁',unit:'cm²',adv:true,min:()=>1,max:()=>20,step:()=>.5,dec:()=>1},{k:'ts',type:'seg',label:'Percepat waktu',adv:true,options:()=>[{v:1,l:'1×'},{v:5,l:'5×'},{v:20,l:'20×'}]},{type:'actions',items:[{id:'pump',label:'▶ Pompa / Berhenti',primary:true},{id:'lower',label:'▼ Turunkan'},{id:'reset',label:'↺ Ulang'}]}],
+reveals:[{k:'pressure',on:'🙈 Sembunyikan P',off:'👁 Lihat tekanan'},{k:'force',on:'🙈 Sembunyikan gaya',off:'👁 Lihat gaya'},{k:'work',on:'🙈 Sembunyikan usaha',off:'👁 Lihat usaha'}],
+missions:[{id:'lift',title:'Angkat mobilnya',desc:'Pompa sampai mobil terangkat ≥ 0,25 m.'}],onParam(){},check(st,api){if(st.phase!=='rekayasa'&&st.sim.h>=.25)api.mark('lift')},
+    patterns:[{icon:'💧',title:'Tekanan diteruskan oleh cairan',text:'Dorongan pada piston kecil menghasilkan tekanan yang sama pada cairan tertutup.'},{icon:'💪',title:'Piston lebih luas menghasilkan gaya lebih besar',text:'Tekanan yang sama bekerja pada luas yang lebih besar sehingga gaya keluaran membesar.'},{icon:'🐢',title:'Gaya besar dibayar dengan jarak',text:'Piston besar naik lebih sedikit setiap langkah. Energi tidak muncul gratis.'}],
     formula:{main:'F₁ / A₁ = F₂ / A₂',sec:'F₂ = F₁ · (A₂ / A₁)',note:'Volume cairan berpindah sama: A₁·d₁ = A₂·d₂ → d₂ = d₁·(A₁/A₂). Maka F₁·d₁ = F₂·d₂ (usaha ideal, tanpa gesekan). Keuntungan mekanik KM = A₂/A₁.'},
-    hud:(st)=>{const c=calc(st);return[['Tekanan P',pr(c.P)+(c.relief?' ⚠':'')],['F₂ ⁄ berat W',kn(c.F2)+' ⁄ '+kn(c.W)],['Tinggi naik h',fmt(st.sim.h,2)+' m'],['Langkah pompa',fmt(st.sim.strokes,0)]]},
-    proof:{title:'Bisakah hasilmu diulang?',
-      text:'Tantangan: angkat kendaraan <b>≥ 1.400 kg</b> (SUV/truk) dengan gaya dorong <b>F₁ ≤ 150 N</b>. Tentukan A₁ dan A₂, lalu catat saat F₂ ≥ W.',
-      target:['Target','m ≥ 1.400 kg · F₁ ≤ 150 N'],
-      cols:['Kendaraan','F₁ (N)','A₁','A₂','P','F₂ / W','Hasil'],
-      record:(st)=>{const c=calc(st),car=PH().pascal.CARS[st.params.car],ok=c.canLift&&car.mass>=1400&&st.params.F1<=150;
-        return{cells:[car.name,fmt(st.params.F1,0),fmt(st.params.A1,1),fmt(st.params.A2,0),pr(c.P),fmt(c.F2/c.W,2)+'×',c.canLift?'terangkat':'gagal'],data:{ok,lift:c.canLift}}},
-      evaluate(st){
-        const ok=st.evidence.some(r=>r.data.ok);
-        if(ok)return{ok:true,msg:'<b>Target tercapai.</b> Rasio luas yang besar membuat gaya kecil cukup untuk mobil berat.'};
-        return{ok:false,msg:'Butuh rasio A₂/A₁ ≥ W / F₁. Untuk SUV (≈17,7 kN) dengan F₁ = 150 N, rasio harus ≥ 118. Coba A₁ = 1,5 cm² dan A₂ = 200 cm².'};
-      }},
-    eng:{eyebrow:'AKSI REKAYASA · PRODUK',title:'Rancang lift hidrolik bengkel.',
-      text:'Kendaraan: <b>sedan 1.200 kg</b>, pekerja mampu mendorong <b>≤ 500 N</b>, naik <b>1,2 m</b>, selesai dalam <b>≤ 150 langkah</b> pompa (≈ 75 detik), dan tekanan sistem <b>≤ 2,5 MPa</b>. Tentukan A₁ dan A₂, lalu uji dengan tombol Pompa.',
+hud:(st)=>{const c=calc(st);if(!st.formula)return[['Gaya tangan',fmt(eff(st).F1,0)+' N'],['Mobil',c.canLift?'bisa terangkat':'belum terangkat'],['Tinggi',fmt(st.sim.h,2)+' m'],['Petunjuk','piston besar membantu']];return[['Tekanan P',pr(c.P)+(c.relief?' ⚠':'')],['F₂ ⁄ berat W',kn(c.F2)+' ⁄ '+kn(c.W)],['Rasio luas',fmt(c.ratio,1)+'×'],['Langkah pompa',fmt(st.sim.strokes,0)]]},
+proof:{title:'Bandingkan dua piston besar.',text:'Pertahankan <b>F₁ dan A₁</b>. Ambil satu bukti dengan A₂ kecil lalu satu lagi dengan A₂ yang jauh lebih besar.',target:['Target','A₂ berubah ≥ 2× · F₂ mengikuti rasio luas'],cols:['A₂','F₁','A₁','F₂','Rasio'],record:(st)=>{const c=calc(st),p=st.params;return{cells:[fmt(p.A2,0)+' cm²',fmt(p.F1,0)+' N',fmt(p.A1,1)+' cm²',kn(c.F2),fmt(c.ratio,1)+'×'],data:{A2:p.A2,A1:p.A1,F1:p.F1,F2:c.F2,car:p.car,label:'A₂ '+fmt(p.A2,0)+' cm²',summary:'F₂ = '+kn(c.F2)}}},evaluate(st){let best=null;for(const a of st.evidence)for(const b of st.evidence){if(a===b||a.data.car!==b.data.car||Math.abs(a.data.F1-b.data.F1)>.1||Math.abs(a.data.A1-b.data.A1)>.01)continue;const ar=Math.max(a.data.A2,b.data.A2)/Math.min(a.data.A2,b.data.A2),fr=Math.max(a.data.F2,b.data.F2)/Math.max(1,Math.min(a.data.F2,b.data.F2));if(ar>=2&&Math.abs(fr/ar-1)<.05)best={ar,fr}}return best?{ok:true,msg:`<b>Bukti cocok.</b> Luas piston besar berubah ${fmt(best.ar,1)}× dan gaya keluar juga sekitar ${fmt(best.fr,1)}×.`}:{ok:false,msg:'Gunakan F₁ dan A₁ yang sama. Ubah hanya A₂, misalnya 70 cm² lalu 210 cm².'}}},
+    eng:{eyebrow:'RANCANG · LIFT BENGKEL',title:'Buat lift yang kuat, cepat, dan tidak berlebihan.',
+      text:'Sedan 1.200 kg harus naik 1,2 m. Atur dua luas piston sampai tiga indikator hijau: <b>gaya tangan</b>, <b>jumlah pompa</b>, dan <b>tekanan sistem</b>.',
       hypothesis:'rasio luas piston A₂/A₁ menguatkan gaya (Pascal) tetapi menambah jumlah langkah karena jarak piston besar mengecil.',
       html:`<div class="slider-row"><label for="engA1">Luas piston kecil <b>A₁</b></label><output id="engA1Out"></output><input id="engA1" type="range" min="1" max="20" step="0.5"></div>
         <div class="slider-row"><label for="engA2">Luas piston besar <b>A₂</b></label><output id="engA2Out"></output><input id="engA2" type="range" min="50" max="400" step="10"></div>

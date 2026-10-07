@@ -9,7 +9,7 @@
   let stage=null,scene=null,spec=null,panelEls=null,dock=null,lastKey='',loopOn=false,lastT=0,lastUi=0,lastChk=0;
 
   const cur=()=>S.labs[S.labId];
-  const naturalUX=()=>spec&&spec.studentUX==='natural-solid-v1';
+  const naturalUX=()=>spec&&String(spec.studentUX||'').startsWith('natural-');
   const phaseGroup=ph=>ph==='lihat'||ph==='tebak'?'amati':ph==='coba'?'coba':ph==='aha'||ph==='buktikan'?'pahami':'rancang';
   function naturalTarget(step,st){
     if(step==='amati')return st.locked?'tebak':'lihat';
@@ -44,7 +44,7 @@
       const st=cur();if(st.missions[id]!==false)return;
       st.missions[id]=true;S.xp+=5;
       const m=spec.missions.find(x=>x.id===id);toast('Misi selesai ✓',m?m.title.replace(/^\d+ · /,''):'');
-      if(Object.values(st.missions).every(Boolean)&&!st.aha){st.aha=true;S.xp+=10;setTimeout(()=>toast('💡 Ada pola!',naturalUX()?'Beratnya sama, tetapi bekas di pasir berubah. Sekarang pahami penyebabnya.':'Tahap AHA terbuka. Lanjut ke tab 4.'),900)}
+      if(Object.values(st.missions).every(Boolean)&&!st.aha){st.aha=true;S.xp+=10;setTimeout(()=>toast('💡 Ada pola!',naturalUX()?(spec.natural?.ahaToast||'Fenomenanya sudah terlihat. Sekarang pahami penyebabnya.'):'Tahap AHA terbuka. Lanjut ke tab 4.'),900)}
       refresh();
     },
     setParam(k,v){
@@ -61,7 +61,7 @@
 
   /* ───────── panel fase ───────── */
   function naturalSolidPanels(sp){
-    const o=sp.predict,pf=sp.proof,eg=sp.eng;
+    const o=sp.predict,pf=sp.proof,eg=sp.eng,n=sp.natural||{};
     return `
     <section class="phase-card natural-card" data-panel="lihat">
       <div class="eyebrow">AMATI · FENOMENA</div>
@@ -78,8 +78,8 @@
     </section>
     <section class="phase-card natural-card" data-panel="coba" hidden>
       <div class="eyebrow">COBA · UBAH SATU HAL</div>
-      <h1>Balik baloknya. Lihat pasirnya.</h1>
-      <p>Berat balok tetap. Ubah hanya posisi bidang yang menyentuh pasir.</p>
+      <h1>${n.tryTitle||'Ubah satu hal. Amati akibatnya.'}</h1>
+      <p>${n.tryText||'Jangan ubah semuanya sekaligus. Cari satu hubungan sebab–akibat.'}</p>
       <div class="control-slot" data-slot="coba"></div>
       <div class="mission-list natural-mission" id="missionList">${sp.missions.map(m=>`<div data-mission="${m.id}"><b>${m.title}</b><span>○ ${m.desc}</span></div>`).join('')}</div>
       <div class="reveal-row natural-reveal" id="revealRow">${sp.reveals.map(r=>`<button data-reveal="${r.k}" aria-pressed="false">${r.off}</button>`).join('')}</div>
@@ -87,7 +87,7 @@
     </section>
     <section class="phase-card natural-card" data-panel="aha" hidden>
       <div class="eyebrow">PAHAMI · AHA</div>
-      <h1>Apa yang sebenarnya berubah?</h1>
+      <h1>${n.ahaTitle||'Apa yang sebenarnya berubah?'}</h1>
       <div class="prompt-box" id="predResult"></div>
       <div class="pattern-cards natural-patterns">${sp.patterns.map(x=>`<article><span>${x.icon}</span><div><b>${x.title}</b><p>${x.text}</p></div></article>`).join('')}</div>
       <button class="primary wide-cta" id="revealFormula">Lihat hubungan angkanya</button>
@@ -102,7 +102,7 @@
       <div class="control-grid"><button class="primary" id="recordNow">📸 Ambil bukti</button><button id="clearLedger">Ulang bukti</button></div>
       <div class="evidence-snapshots" id="evidenceSnapshots"><div class="empty-evidence">Belum ada bukti. Ambil kondisi pertama.</div></div>
       <table hidden><tbody id="ledgerBody"></tbody></table>
-      <div class="prompt-box soft" id="proofHint">Bandingkan balok tidur dan berdiri dengan massa yang sama.</div>
+      <div class="prompt-box soft" id="proofHint">${n.proofHint||'Ambil dua bukti yang hanya berbeda pada satu variabel.'}</div>
       <div class="control-grid"><button id="copyReport">Salin data</button><button class="primary" id="toEng" data-go="rekayasa">Pakai konsepnya →</button></div>
     </section>
     <section class="phase-card natural-card" data-panel="rekayasa" hidden>
@@ -110,7 +110,7 @@
       <h1>${eg.title}</h1><p>${eg.text}</p>
       <div class="eng-status"><span>STATUS RANCANGAN</span><b id="engStatus">—</b></div>
       <div id="engPanelHost">${eg.html}</div>
-      <div class="reflection-box natural-reflect"><b>Kenapa desainmu bekerja?</b><p>Hubungkan <strong>luas bidang tekan</strong> dengan <strong>besar tekanan</strong> yang dihasilkan.</p></div>
+      <div class="reflection-box natural-reflect"><b>Kenapa desainmu bekerja?</b><p>${n.reflection||'Jelaskan hubungan sebab–akibat yang membuat rancanganmu berhasil.'}</p></div>
       <details class="model-details"><summary>Tentang model simulasi</summary><p>${sp.model}</p></details>
     </section>`;
   }
@@ -201,7 +201,7 @@
   /* ───────── navigasi fase ───────── */
   function canGo(st,ph){
     if(ph==='coba'&&!st.locked)return'Kunci tebakan dulu di tab Tebak.';
-    if(ph==='aha'&&!st.aha)return'Selesaikan tiga misi di tab Coba terlebih dahulu.';
+    if(ph==='aha'&&!st.aha)return naturalUX()?'Selesaikan tantangan utama di tab Coba terlebih dahulu.':'Selesaikan tiga misi di tab Coba terlebih dahulu.';
     if(ph==='buktikan'&&!st.formula)return'Rumuskan temuan di tab AHA dulu.';
     if(ph==='rekayasa'&&!st.proofDone)return'Buktikan dulu: capai target di tab Buktikan.';
     return null;
@@ -230,11 +230,11 @@
     if(!st.locked){st.locked=true;st.predCorrect=st.prediction===spec.predict.answer;S.xp+=10}
     go('coba');toast('Tebakan terkunci','Sekarang uji dengan eksperimen.');
   }
-  function revealFormula(){const st=cur();if(!st.aha)return toast('Belum terbuka','Selesaikan misi dulu.');st.formula=true;if(naturalUX())st.reveal.numbers=true;S.xp+=15;refresh()}
+  function revealFormula(){const st=cur();if(!st.aha)return toast('Belum terbuka','Selesaikan tantangan dulu.');st.formula=true;if(naturalUX())spec.reveals.forEach(r=>st.reveal[r.k]=true);S.xp+=15;refresh()}
   function record(){
     const st=cur(),r=spec.proof.record(st);st.seq++;st.evidence.push({id:st.seq,cells:r.cells,data:r.data});
     const ev=spec.proof.evaluate(st);
-    if(ev.ok&&!st.proofDone){st.proofDone=true;S.xp+=20;toast('Bukti cocok ✓',naturalUX()?'Dua kondisi menunjukkan pola yang sama. Sekarang pakai konsepnya untuk merancang.':'Tahap Rekayasa terbuka.')}else toast(naturalUX()?'Bukti tersimpan 📸':'Data dicatat',naturalUX()?'Sekarang ubah posisi balok dan ambil satu bukti lagi.':'Percobaan #'+st.seq+' masuk Evidence Ledger.');
+    if(ev.ok&&!st.proofDone){st.proofDone=true;S.xp+=20;toast('Bukti cocok ✓',naturalUX()?(spec.natural?.proofDone||'Dua kondisi menunjukkan pola yang sama. Sekarang pakai konsepnya untuk merancang.'):'Tahap Rekayasa terbuka.')}else toast(naturalUX()?'Bukti tersimpan 📸':'Data dicatat',naturalUX()?(spec.natural?.recordAgain||'Ubah satu variabel lalu ambil bukti berikutnya.'):'Percobaan #'+st.seq+' masuk Evidence Ledger.');
     refresh();
   }
   function makeBrief(){
@@ -279,7 +279,7 @@
       $('#ledgerBody').innerHTML=st.evidence.slice().reverse().map(r=>`<tr><td>${r.id}</td>${r.cells.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('');
       const snaps=$('#evidenceSnapshots');
       if(snaps){
-        snaps.innerHTML=st.evidence.length?st.evidence.slice(-2).map((r,i)=>`<article><span>Bukti ${i+1}</span><b>${r.data.label||r.cells[0]}</b><small>${r.data.areaLabel||''} · ${r.data.pressureLabel||''}</small></article>`).join(''):'<div class="empty-evidence">Belum ada bukti. Ambil kondisi pertama.</div>';
+        snaps.innerHTML=st.evidence.length?st.evidence.slice(-2).map((r,i)=>`<article><span>Bukti ${i+1}</span><b>${r.data.label||r.cells[0]}</b><small>${r.data.summary||[r.data.areaLabel,r.data.pressureLabel,r.cells[1],r.cells[2]].filter(Boolean).slice(0,2).join(' · ')}</small></article>`).join(''):'<div class="empty-evidence">Belum ada bukti. Ambil kondisi pertama.</div>';
       }
       const ev=spec.proof.evaluate(st);$('#proofHint').innerHTML=st.evidence.length?ev.msg:'Belum ada data yang cukup untuk membandingkan.';
     }
@@ -302,7 +302,7 @@
     if(!stage){try{stage=P.pressureStage.create($('#stage'));stage.setQuality(S.quality)}catch(e){return showError(e)}}
     spec=sp;S.labId=id;if(!S.labs[id])S.labs[id]=makeLab(sp);
     const st=cur();
-    document.body.classList.toggle('natural-solid',sp.studentUX==='natural-solid-v1');
+    document.body.classList.toggle('natural-pressure',String(sp.studentUX||'').startsWith('natural-'));document.body.dataset.pressureLab=sp.id;
     renderPhaseTabs();
     $('#panelHost').innerHTML=panelsHTML(sp);buildDock();bindPanels();
     $$('#labChips button').forEach(b=>b.classList.toggle('active',b.dataset.lab===id));

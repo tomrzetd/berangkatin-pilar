@@ -60,7 +60,7 @@
       const rho=FLUIDS[p.fluid].rho,ph=rho*G*p.depth;
       return{rho,ph,ptot:PATM+ph,atm:(PATM+ph)/PATM,Fear:ph*EAR_AREA,Fwall:.5*rho*G*p.depth*p.depth*p.width};
     },
-    ZONES:[{id:'anak',name:'Anak',limit:12e3},{id:'pemula',name:'Pemula',limit:20e3},{id:'mahir',name:'Mahir',limit:35e3}],
+    ZONES:[{id:'A',name:'Zona A',limit:12e3},{id:'B',name:'Zona B',limit:20e3},{id:'C',name:'Zona C',limit:35e3}],
     zoneCheck(rho,depths){
       return fluid.ZONES.map((z,i)=>{
         const hmax=z.limit/(rho*G),h=depths[i];
