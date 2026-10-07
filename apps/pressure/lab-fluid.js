@@ -9,12 +9,12 @@
   const spec={
     id:'cair',icon:'🏊',tab:'Cair',title:'Tekanan Cair · Menyelam',tagline:'Semakin dalam, apa yang sebenarnya berubah?',accent:'#69baff',
     studentUX:'natural-fluid-v1',
-    natural:{tryTitle:'Seret perenang turun. Rasakan polanya.',tryText:'Ubah kedalaman saja. Perhatikan perubahan di sekitar telinga dan penggaris.',ahaTitle:'Mengapa tekanan bertambah saat makin dalam?',ahaToast:'Perenang makin dalam dan tekanan ikut membesar. Sekarang cari hubungan kedalamannya.',proofHint:'Ambil satu bukti dekat 1 m dan satu lagi dekat 3 m pada cairan yang sama.',recordAgain:'Pindahkan perenang jauh lebih dalam lalu ambil bukti kedua.',proofDone:'Kedalaman dan tekanan berubah dengan perbandingan yang sama. Sekarang gunakan pola itu untuk merancang.',reflection:'Hubungkan <strong>kedalaman</strong>, <strong>massa jenis cairan</strong>, dan <strong>tekanan hidrostatis</strong>.'},
+    natural:{tryTitle:'Seret perenang turun. Rasakan polanya.',tryText:'Ubah kedalaman saja. Perhatikan perubahan di sekitar telinga dan penggaris.',ahaTitle:'Mengapa tekanan bertambah saat makin dalam?',ahaToast:'Perenang makin dalam dan tekanan ikut membesar. Sekarang cari hubungan kedalamannya.',proofHint:'Ambil satu bukti dekat 1 m dan satu lagi dekat 3 m pada cairan yang sama.',recordAgain:'Pindahkan perenang jauh lebih dalam lalu ambil bukti kedua.',proofDone:'Kedalaman dan tekanan berubah dengan perbandingan yang sama. Sekarang gunakan pola itu untuk merancang.',reflection:'Hubungkan <strong>kedalaman</strong>, <strong>massa jenis cairan</strong>, dan <strong>tekanan hidrostatis</strong>.',ctaTry:'Seret lebih dalam…'},
     advancedLabel:'Eksperimen lanjut · jenis cairan dan lebar wadah',
     defaults:()=>({depth:.5,fluid:'tawar',width:8}),
     engDefaults:()=>({depths:[1.0,1.6,3.0]}),
     look:{title:'Perenang yang sama. Air yang sama.',text:'Mulai dari yang terlihat: perenang dapat diseret naik–turun. Jangan cari rumus dulu.',question:'Jika telinga berpindah dari sekitar 1 m ke 3 m, apakah tekanan air menjadi tetap, 3×, atau 9×?'},
-    predict:{title:'Dari 1 m ke 3 m, menurutmu?',text:'Airnya sama. Yang berubah hanya kedalaman telinga dari permukaan.',
+    predict:{title:'Dari 1 m ke 3 m, menurutmu?',text:'Airnya sama. Yang berubah hanya seberapa dalam perenang berada dari permukaan air.',
       options:[{v:'sama',l:'Tetap sama'},{v:'3',l:'Menjadi 3×'},{v:'9',l:'Menjadi 9×'}],answer:'3',
       why:'Tekanan hidrostatis p = ρ·g·h berbanding lurus dengan kedalaman h, sehingga 3× lebih dalam → 3× lebih besar (bukan 9×).'},
     controls:[
@@ -26,7 +26,7 @@ missions:[{id:'dive',title:'Bandingkan dua kedalaman',desc:'Bawa telinga perenan
 onParam(k,v,old,st,api){if(k==='depth'&&+v>=2.5)api.mark('dive')},check(){},
     patterns:[{icon:'⬇',title:'Lebih dalam → tekanan lebih besar',text:'Pada cairan yang sama, tekanan bertambah sebanding dengan kedalaman.'},{icon:'↔',title:'Tekanan bekerja ke segala arah',text:'Di satu titik dalam cairan diam, dorongan tidak hanya ke bawah.'},{icon:'💧',title:'Jenis cairan juga berpengaruh',text:'Pada kedalaman sama, cairan yang lebih rapat memberi tekanan lebih besar.'}],
     formula:{main:'p = ρ · g · h',sec:'p total = p₀ + ρ · g · h',note:'ρ = massa jenis cairan (kg/m³), g = 9,81 m/s², h = kedalaman dari permukaan. p₀ ≈ 101.325 Pa (tekanan udara). Gaya pada permukaan: F = p · A.'},
-    hud:(st)=>{const c=PH().fluid.calc(Object.assign({},st.params)),h=st.params.depth;if(!st.formula)return[['Kedalaman',fmt(h,2)+' m'],['Tekanan air',h<1?'kecil':h<2.5?'makin besar':'besar'],['Arah tekanan','ke segala arah'],['Angka','buka di Pahami']];return[['Kedalaman h',fmt(h,2)+' m'],['p hidrostatis',kp(c.ph)],['ρ cairan',fmt(c.rho,0)+' kg/m³'],['p total',kp(c.ptot)]]},
+    hud:(st)=>{const c=PH().fluid.calc(Object.assign({},st.params)),h=st.params.depth;if(!st.formula||['lihat','tebak','coba'].includes(st.phase))return[['Kedalaman',fmt(h,2)+' m'],['Tekanan air',h<1?'kecil':h<2.5?'makin besar':'besar'],['Arah tekanan','ke segala arah'],['Angka','buka di Pahami']];return[['Kedalaman h',fmt(h,2)+' m'],['p hidrostatis',kp(c.ph)],['ρ cairan',fmt(c.rho,0)+' kg/m³'],['p total',kp(c.ptot)]]},
 proof:{title:'Dua kedalaman sudah cukup.',text:'Gunakan <b>cairan yang sama</b>. Ambil satu bukti sekitar <b>1 m</b> dan satu lagi sekitar <b>3 m</b>.',target:['Target','dua kedalaman · cairan sama · rasio p mengikuti rasio h'],cols:['Cairan','h (m)','p air (kPa)','Rasio'],
 record:(st)=>{const c=PH().fluid.calc(st.params),f=PH().fluid.FLUIDS[st.params.fluid];return{cells:[f.name,fmt(st.params.depth,2),fmt(c.ph/1e3,1),'—'],data:{fluid:f.id,ph:c.ph,h:st.params.depth,label:fmt(st.params.depth,1)+' m · '+f.name,summary:'p = '+fmt(c.ph/1e3,1)+' kPa'}}},
 evaluate(st){let best=null;for(const a of st.evidence)for(const b of st.evidence){if(a===b||a.data.fluid!==b.data.fluid||Math.min(a.data.h,b.data.h)<.5)continue;const hr=Math.max(a.data.h,b.data.h)/Math.min(a.data.h,b.data.h),pr=Math.max(a.data.ph,b.data.ph)/Math.max(1,Math.min(a.data.ph,b.data.ph));if(hr>=2.4&&Math.abs(pr/hr-1)<.05)best={hr,pr}}return best?{ok:true,msg:`<b>Bukti cocok.</b> Kedalaman berubah ${fmt(best.hr,1)}× dan tekanan juga sekitar ${fmt(best.pr,1)}×.`}:{ok:false,msg:'Ambil dua kondisi pada cairan yang sama dengan kedalaman yang cukup berbeda, misalnya 1 m dan 3 m.'}}},
@@ -121,7 +121,7 @@ evaluate(st){let best=null;for(const a of st.evidence)for(const b of st.evidence
     let lastW=-1,lastFluid='',depthVis=.5;
     return{
       update(st,dt){
-        const p=st.params,W=p.width,t=stage.time,fl=PH().fluid.FLUIDS[p.fluid],c=PH().fluid.calc(p),eng=st.phase==='rekayasa';
+        const p=st.params,W=p.width,t=stage.time,fl=PH().fluid.FLUIDS[p.fluid],c=PH().fluid.calc(p),eng=st.phase==='rekayasa',theory=st.formula&&!['lihat','tebak','coba'].includes(st.phase);
         if(W!==lastW){lastW=W;
           wallL.position.x=-W/2-.15;wallR.position.x=W/2+.15;wallB.scale.x=W+.6;floor.scale.x=W+.6;water.scale.x=W;surf.scale.x=W;
           ruler.position.set(-W/2+.45,0,L/2-.2);
@@ -139,12 +139,12 @@ evaluate(st){let best=null;for(const a of st.evidence)for(const b of st.evidence
         // panah tekanan di telinga
         const len=.28+c.ph*3.0e-5;
         earArrows.forEach((a,i)=>{const d=dirs[i];a.visible=!!st.reveal.arrows&&!eng;a.position.copy(d).multiplyScalar(.22+len);a.setDirection(d.clone().negate());a.setLength(len,.2,.13)});
-        stage.setSpriteText(earLabel,st.formula?'p = '+kp(c.ph):(p.depth<1?'tekanan kecil':p.depth<2.5?'tekanan naik':'tekanan besar'));earLabel.visible=!eng;
+        stage.setSpriteText(earLabel,theory?'p = '+kp(c.ph):(p.depth<1?'tekanan kecil':p.depth<2.5?'tekanan naik':'tekanan besar'));earLabel.visible=!eng;
         // gelembung
         const bp=bg.attributes.position;for(let i=0;i<BN;i++){let y=bp.getY(i)+dt*(.5+(i%5)*.12);if(y>depthVis)y=0;bp.setY(i,y)}bp.needsUpdate=true;
         bubbles.position.set(sw.position.x+.12,sw.position.y,0);bubbles.visible=!eng&&depthVis>.15;
         // penggaris
-        rl.forEach((s,i)=>stage.setSpriteText(s,st.formula?`${fmt(i*.5,1)} m · ${fmt(fl.rho*PH().G*i*.5/1e3,1)} kPa`:`${fmt(i*.5,1)} m`));
+        rl.forEach((s,i)=>stage.setSpriteText(s,theory?`${fmt(i*.5,1)} m · ${fmt(fl.rho*PH().G*i*.5/1e3,1)} kPa`:`${fmt(i*.5,1)} m`));
         // profil dinding
         wallArrows.forEach((a,i)=>{const h=(i+.5)*.5,len=.06+fl.rho*PH().G*h*4.4e-5;a.visible=!!st.reveal.wall;a.position.set(W/2-len,-h,0);a.setLength(len,.2,.13)});
         // zona

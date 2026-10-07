@@ -19,7 +19,7 @@
 
   const spec={
     id:'bernoulli',icon:'🚁',tab:'Drone+',title:'Drone · Bonus Rekayasa Udara',tagline:'Naikkan throttle, lalu cari tahu mengapa ia terangkat.',accent:'#7eeeff',
-studentUX:'natural-drone-v1',natural:{tryTitle:'Naikkan throttle sampai drone lepas landas.',tryText:'Untuk awal, abaikan sudut bilah dan baterai. Fokus pada satu hal: kecepatan putaran rotor.',ahaTitle:'Mengapa sedikit tambahan putaran terasa sangat kuat?',ahaToast:'Drone sudah lepas landas. Sekarang hubungkan putaran rotor dengan gaya angkat.',proofHint:'Ambil dua bukti dengan throttle kira-kira 30% dan 60%. Pertahankan sudut bilah yang sama.',recordAgain:'Naikkan throttle mendekati dua kali kondisi pertama, tunggu RPM stabil, lalu ambil bukti kedua.',proofDone:'Saat RPM kira-kira 2×, gaya angkat mendekati 4×. Sekarang gunakan konsepnya untuk merancang drone.',reflection:'Hubungkan <strong>RPM</strong>, <strong>gaya angkat</strong>, <strong>muatan</strong>, dan batas sudut bilah sebelum stall.'},advancedLabel:'Eksperimen lanjut · sudut bilah, kemiringan, muatan, baterai',
+studentUX:'natural-drone-v1',natural:{tryTitle:'Naikkan throttle sampai drone lepas landas.',tryText:'Untuk awal, abaikan sudut bilah dan baterai. Fokus pada satu hal: kecepatan putaran rotor.',ahaTitle:'Mengapa sedikit tambahan putaran terasa sangat kuat?',ahaToast:'Drone sudah lepas landas. Sekarang hubungkan putaran rotor dengan gaya angkat.',proofHint:'Ambil dua bukti dengan throttle kira-kira 30% dan 60%. Pertahankan sudut bilah yang sama.',recordAgain:'Naikkan throttle mendekati dua kali kondisi pertama, tunggu RPM stabil, lalu ambil bukti kedua.',proofDone:'Saat RPM kira-kira 2×, gaya angkat mendekati 4×. Sekarang gunakan konsepnya untuk merancang drone.',reflection:'Hubungkan <strong>RPM</strong>, <strong>gaya angkat</strong>, <strong>muatan</strong>, dan batas sudut bilah sebelum stall.',ctaTry:'Naikkan throttle…'},advancedLabel:'Eksperimen lanjut · sudut bilah, kemiringan, muatan, baterai',
 defaults:()=>({throttle:0,alpha:8,tilt:0,payload:0,batt:'sedang'}),
     engDefaults:()=>({batt:'sedang',payload:.6,alpha:8,done:false}),
     simInit:()=>newSim('sedang'),
@@ -34,7 +34,7 @@ reveals:[{k:'forces',on:'🙈 Sembunyikan gaya',off:'👁 Lihat gaya T & W'},{k:
 missions:[{id:'liftoff',title:'Lepas landas',desc:'Naikkan throttle sampai drone terbang ≥ 1 m.'}],onParam(k,v,old,st,api){if(k==='batt'&&v!==old)st.sim=newSim(v)},check(st,api){if(st.phase!=='rekayasa'&&st.sim.y>=1)api.mark('liftoff')},
     patterns:[{icon:'⚡',title:'RPM 2× → gaya angkat sekitar 4×',text:'Pada model ini, gaya angkat mengikuti kuadrat kecepatan aliran di bilah.'},{icon:'💨',title:'Bilah mempercepat dan membelokkan udara',text:'Beda tekanan membantu menjelaskan gaya angkat; downwash juga menunjukkan udara didorong ke bawah.'},{icon:'📐',title:'Sudut bilah ada batasnya',text:'Menambah sudut membantu sampai mendekati stall. Terlalu besar justru menurunkan kemampuan angkat.'}],
     formula:{main:'p + ½ρv² = konstan',sec:'L = ½ · ρ · v² · S · C_L      Hover: ΣT = m · g',note:'Bernoulli: di sepanjang aliran, kecepatan besar ↔ tekanan kecil. Dari sudut pandang Newton, bilah juga mendorong udara ke bawah (downwash) sehingga udara mendorong drone ke atas — kedua penjelasan saling melengkapi. (Mitos: “udara atas dan bawah harus tiba bersamaan di ujung” itu tidak benar.)'},
-hud:(st)=>{const s=st.sim,d=PH().drone,Wn=s.m*PH().G||d.mass(st.params.batt,st.params.payload)*PH().G,pct=100*s.battWh/d.BATT[s.batt].Wh;if(!st.formula)return[['Tinggi',fmt(s.y,2)+' m'],['Rotor',s.rpm<1200?'pelan':s.rpm<3200?'makin cepat':'cepat'],['Gaya angkat',s.T<Wn*.9?'belum cukup':s.T<Wn*1.1?'hampir seimbang':'lebih besar dari berat'],['Baterai',fmt(pct,0)+'%']];return[['Tinggi',fmt(s.y,2)+' m'],['RPM motor',fmt(s.rpm,0)],['Gaya angkat ⁄ berat',fmt(s.T,1)+' N ⁄ '+fmt(Wn,1)+' N'],['Baterai',fmt(pct,0)+'% · '+fmt(s.P,0)+' W']]},
+hud:(st)=>{const s=st.sim,d=PH().drone,Wn=s.m*PH().G||d.mass(st.params.batt,st.params.payload)*PH().G,pct=100*s.battWh/d.BATT[s.batt].Wh;if(!st.formula||['lihat','tebak','coba'].includes(st.phase))return[['Tinggi',fmt(s.y,2)+' m'],['Rotor',s.rpm<1200?'pelan':s.rpm<3200?'makin cepat':'cepat'],['Gaya angkat',s.T<Wn*.9?'belum cukup':s.T<Wn*1.1?'hampir seimbang':'lebih besar dari berat'],['Baterai',fmt(pct,0)+'%']];return[['Tinggi',fmt(s.y,2)+' m'],['RPM motor',fmt(s.rpm,0)],['Gaya angkat ⁄ berat',fmt(s.T,1)+' N ⁄ '+fmt(Wn,1)+' N'],['Baterai',fmt(pct,0)+'% · '+fmt(s.P,0)+' W']]},
 proof:{title:'Uji hubungan RPM dan gaya.',text:'Ambil dua kondisi dengan <b>sudut bilah, muatan, dan baterai sama</b>. Buat RPM kondisi kedua kira-kira 2× kondisi pertama.',target:['Target','RPM ≈ 2× · gaya angkat ≈ 4×'],cols:['RPM','Throttle','α','Gaya T','Tinggi'],record:(st)=>{const s=st.sim,p=st.params;return{cells:[fmt(s.rpm,0),fmt(p.throttle*100,0)+'%',fmt(p.alpha,1)+'°',fmt(s.T,1)+' N',fmt(s.y,2)+' m'],data:{rpm:s.rpm,T:s.T,alpha:p.alpha,payload:p.payload,batt:p.batt,label:fmt(s.rpm,0)+' RPM',summary:'T = '+fmt(s.T,1)+' N'}}},evaluate(st){let best=null;for(const a of st.evidence)for(const b of st.evidence){if(a===b||a.data.batt!==b.data.batt||Math.abs(a.data.alpha-b.data.alpha)>.01||Math.abs(a.data.payload-b.data.payload)>.01||Math.min(a.data.rpm,b.data.rpm)<500)continue;const rr=Math.max(a.data.rpm,b.data.rpm)/Math.min(a.data.rpm,b.data.rpm),tr=Math.max(a.data.T,b.data.T)/Math.max(.01,Math.min(a.data.T,b.data.T));if(rr>=1.75&&rr<=2.25&&tr>=3&&tr<=5.2)best={rr,tr}}return best?{ok:true,msg:`<b>Bukti cocok.</b> RPM berubah ${fmt(best.rr,2)}× dan gaya angkat berubah sekitar ${fmt(best.tr,2)}×.`}:{ok:false,msg:'Ambil dua kondisi stabil dengan RPM kedua kira-kira dua kali RPM pertama. Pertahankan α, muatan, dan baterai.'}}},
     eng:{eyebrow:'RANCANG · DRONE BANTUAN',title:'Bawa muatan tanpa membuat drone “ngos-ngosan”.',
       text:'Atur muatan, baterai, dan sudut bilah. Targetnya sederhana: <b>bawa 0,6 kg</b>, <b>terbang ≥ 8 menit</b>, dan tetap punya <b>cadangan gaya angkat yang nyaman</b>.' ,
@@ -61,11 +61,12 @@ proof:{title:'Uji hubungan RPM dan gaya.',text:'Ambil dua kondisi dengan <b>sudu
         c.setEngStatus(ok?'Desain lolos':checks.filter(x=>x[0]).length+'/3 syarat');
       },
       onEnter(c){c.st.sim=newSim(c.st.eng.batt)}},
-    model:'Model memakai gaya angkat bilah ½ρv²·S·C_L dengan C_L = C_L0 + 2π·α (sampai stall ±14°), satu kecepatan efektif di 70% panjang bilah, dan daya hover dari teori momentum dengan efisiensi tetap. Waktu baterai dipercepat 60× (1 detik layar = 1 menit). Drone digambar diperbesar ±3×. Stabilitas, kontrol sikap, dan angin tidak dimodelkan.',
+    model:'Model memakai gaya angkat bilah ½ρv²·S·C_L dengan C_L = C_L0 + 2π·α (sampai stall ±14°), satu kecepatan efektif di 70% panjang bilah, dan daya hover dari teori momentum dengan efisiensi tetap. Pada eksplorasi awal baterai tidak dikuras; percepatan 60× hanya dipakai saat Uji Rancang. Drone digambar diperbesar ±3×. Stabilitas, kontrol sikap, dan angin tidak dimodelkan.',
     report:()=>'Gaya angkat L = ½ρv²·S·C_L.',
     step(st,dt){
       const s=st.sim,p=effP(st);
       if(s.batt!==p.batt)Object.assign(s,newSim(p.batt));
+      if(st.phase!=='rekayasa')s.battWh=PH().drone.BATT[p.batt].Wh;
       PH().drone.step(s,p,dt);
     },
     action(id,st){
@@ -134,7 +135,7 @@ proof:{title:'Uji hubungan RPM dan gaya.',text:'Ambil dua kondisi dengan <b>sudu
     const panelTex=stage.canvasTex(256,256,(g,w,h)=>{g.fillStyle='#14283b';g.fillRect(0,0,w,h);g.strokeStyle='#24455f';g.lineWidth=1.5;for(let i=0;i<=16;i++){g.beginPath();g.moveTo(i*w/16,0);g.lineTo(i*w/16,h);g.stroke();g.beginPath();g.moveTo(0,i*h/16);g.lineTo(w,i*h/16);g.stroke()}},[5,3]);
     stage.mesh(new T.PlaneGeometry(10,6),std(0xffffff,{map:panelTex,roughness:.9}),0,0,-1.3,lab,false);
     [2.2,-2.2].forEach(y=>stage.mesh(new T.BoxGeometry(10,.06,2),std(0x7eeeff,{transparent:true,opacity:.22,roughness:.1}),0,y,0,lab,false));
-    const labTitle=stage.sprite('PENAMPANG BILAH (diperbesar) · angin dari kiri →',{w:700,h:80,size:34,bg:'rgba(6,17,30,.85)',scale:1.1,depthTest:false});labTitle.position.set(0,2.75,0);labTitle.renderOrder=9;lab.add(labTitle);
+    const labTitle=stage.sprite('PENAMPANG BILAH · aliran udara →',{w:620,h:80,size:34,bg:'rgba(6,17,30,.85)',scale:1.0,depthTest:false});labTitle.position.set(0,2.75,0);labTitle.renderOrder=9;lab.add(labTitle);
     const C=3,prof=naca(.04,.4,.12,48);
     const toXY=a=>a.map(([x,y])=>new T.Vector2((x-.5)*C,y*C));
     const camXY=toXY(prof.cam),upXY=toXY(prof.up),loXY=toXY(prof.lo);
@@ -147,7 +148,7 @@ proof:{title:'Uji hubungan RPM dan gaya.',text:'Ambil dua kondisi dengan <b>sudu
     const topArrows=sIdx.map(()=>{const a=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(),.5,0x6aa7ff,.12,.1);pitch.add(a);return a});
     const botArrows=sIdx.map(()=>{const a=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(),.5,0xff7a8a,.12,.1);pitch.add(a);return a});
     const aL=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(),1,0x63e3a0,.3,.2);lab.add(aL);
-    const labInfo=stage.sprite('',{w:760,h:120,size:32,bg:'rgba(6,17,30,.88)',scale:1.2,depthTest:false});labInfo.position.set(0,-2.85,0);labInfo.renderOrder=9;lab.add(labInfo);
+    const labInfo=stage.sprite('',{w:650,h:104,size:30,bg:'rgba(6,17,30,.88)',scale:1.0,depthTest:false});labInfo.position.set(0,-2.7,0);labInfo.renderOrder=9;lab.add(labInfo);
     // garis arus + partikel dalam kerangka angin
     const NL=6,LP=70,UL=-4.4,UR=4.4,lines=[],y0s=[];
     for(let i=0;i<NL;i++)y0s.push(.4+i*.26);for(let i=0;i<NL;i++)y0s.push(-.4-i*.26);
@@ -176,11 +177,11 @@ proof:{title:'Uji hubungan RPM dan gaya.',text:'Ambil dua kondisi dengan <b>sudu
     const colSlow=new T.Color(0x3a7bff),colFast=new T.Color(0xffa23a),tc=new T.Color();
 
     // ----- interaksi: tidak ada grab (hanya orbit) -----
-    stage.grabbables=[];
+    stage.grabbables=[];let activeView='drone';lab.visible=false;
 
     return{
       update(st,dt){
-        const s=st.sim,p=effP(st),d=PH().drone,eng=st.phase==='rekayasa',t=stage.time;
+        const s=st.sim,p=effP(st),d=PH().drone,eng=st.phase==='rekayasa',t=stage.time,theory=st.formula&&!['lihat','tebak','coba'].includes(st.phase);lab.visible=activeView==='bilah';
         // ===== drone =====
         drone.position.set(s.x,s.y+.075*DS,0);drone.rotation.z=-s.tilt;
         const omega=s.rpm*2*Math.PI/60,vis=Math.min(omega,60);
@@ -200,7 +201,7 @@ proof:{title:'Uji hubungan RPM dan gaya.',text:'Ambil dua kondisi dengan <b>sudu
         aT.position.set(s.x,s.y+.075*DS+.2,0);aT.setLength(Math.max(.3,Lt),.28,.2);
         aW.position.set(s.x,s.y+.075*DS-.1,0);aW.setLength(Lw,.28,.2);
         tag.position.set(s.x,s.y+1.45,0);
-        stage.setSpriteText(tag,st.reveal.forces?`T = ${fmt(s.T,1)} N   |   W = ${fmt(Wn,1)} N`:(s.y<.05&&s.T<Wn?'Naikkan throttle ↑':`y = ${fmt(s.y,2)} m`),s.T>Wn*1.01?'#63e3a0':'#eaf6ff');
+        stage.setSpriteText(tag,theory&&st.reveal.forces?`T = ${fmt(s.T,1)} N   |   W = ${fmt(Wn,1)} N`:(s.y<.05&&s.T<Wn?'Naikkan throttle ↑':s.T>Wn?'Gaya angkat > berat ↑':'Cari titik hampir melayang'),s.T>Wn*1.01?'#63e3a0':'#eaf6ff');
         warn.visible=!!(s.crash||s.battWh<=0);warn.position.set(0,5.4,0);
         stage.setSpriteText(warn,s.battWh<=0?'Baterai habis — motor mati':'Mendarat keras! Tekan “Ulang”');
         // ===== penampang bilah =====
@@ -225,9 +226,9 @@ proof:{title:'Uji hubungan RPM dan gaya.',text:'Ambil dua kondisi dengan <b>sudu
         topArrows.forEach((ar,i)=>{const pt=upXY[sIdx[i]],len=clamp(topP*sc,.12,1.3);ar.visible=showCp;ar.setDirection(new T.Vector3(0,1,0));ar.position.set(pt.x,pt.y,0);ar.setLength(len,.14,.1)});
         botArrows.forEach((ar,i)=>{const pt=loXY[sIdx[i]],len=clamp(botP*sc,.1,1.3);ar.visible=showCp;ar.setDirection(new T.Vector3(0,1,0));ar.position.set(pt.x,pt.y-len,0);ar.setLength(len,.14,.1)});
         aL.visible=showCp;aL.position.set(0,.4,0);aL.setLength(clamp(.5+CL*1.1,.4,2.4),.3,.2);
-        stage.setSpriteText(labInfo,`v atas ${fmt(sp.top,1)} m/s  >  v bawah ${fmt(sp.bottom,1)} m/s   ·   Δp = ${fmt(dp,0)} Pa`+(demo?'   (RPM demo 2.500)':''));
+        stage.setSpriteText(labInfo,theory?`v atas ${fmt(sp.top,1)} m/s  >  v bawah ${fmt(sp.bottom,1)} m/s  ·  Δp ${fmt(dp,0)} Pa`:'Amati aliran di atas dan bawah bilah. Mana yang lebih cepat?');
       },
-      view(n){stage.setView(n==='bilah'?{az:0,el:.04,r:8.5,t:[AIR_X,2,0]}:n==='atas'?{az:.9,el:.6,r:15,t:[0,3,0]}:{az:.45,el:.2,r:15,t:[0,3,0]})},
+      view(n){activeView=n==='bilah'?'bilah':'drone';lab.visible=activeView==='bilah';stage.setView(n==='bilah'?{az:0,el:.04,r:8.2,t:[AIR_X,2,0]}:n==='atas'?{az:.9,el:.6,r:15,t:[0,3,0]}:{az:.45,el:.2,r:15,t:[0,3,0]})},
       views:[{id:'drone',label:'Drone'},{id:'bilah',label:'Bilah'}]
     };
   }

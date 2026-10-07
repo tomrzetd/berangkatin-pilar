@@ -17,7 +17,7 @@
 
   const spec={
     id:'pascal',icon:'🚗',tab:'Pascal',title:'Pascal · Lift Hidrolik',tagline:'Tangan kecil, mobil besar: kok bisa?',accent:'#ff9d5c',
-studentUX:'natural-pascal-v1',natural:{tryTitle:'Pompa pegangan. Lihat mobilnya.',tryText:'Dengan setelan awal, cukup tarik–dorong pegangan atau tekan tombol pompa. Perhatikan piston kecil dan besar.',ahaTitle:'Mengapa gaya kecil bisa mengangkat mobil?',ahaToast:'Mobil bergerak walau gaya tangan jauh lebih kecil dari beratnya. Sekarang lihat peran luas piston.',proofHint:'Ambil dua bukti dengan F₁ dan A₁ sama, tetapi A₂ berbeda.',recordAgain:'Ubah luas piston besar A₂ lalu ambil bukti kedua.',proofDone:'Perubahan luas piston menghasilkan perubahan gaya dengan rasio yang sama. Sekarang rancang lift.',reflection:'Hubungkan <strong>luas piston</strong>, <strong>gaya</strong>, dan kompromi <strong>jumlah langkah pompa</strong>.'},advancedLabel:'Eksperimen lanjut · kendaraan, piston kecil, dan percepatan waktu',
+studentUX:'natural-pascal-v1',natural:{tryTitle:'Pompa pegangan. Lihat mobilnya.',tryText:'Dengan setelan awal, cukup tarik–dorong pegangan atau tekan tombol pompa. Perhatikan piston kecil dan besar.',ahaTitle:'Mengapa gaya kecil bisa mengangkat mobil?',ahaToast:'Mobil bergerak walau gaya tangan jauh lebih kecil dari beratnya. Sekarang lihat peran luas piston.',proofHint:'Ambil dua bukti dengan F₁ dan A₁ sama, tetapi A₂ berbeda.',recordAgain:'Ubah luas piston besar A₂ lalu ambil bukti kedua.',proofDone:'Perubahan luas piston menghasilkan perubahan gaya dengan rasio yang sama. Sekarang rancang lift.',reflection:'Hubungkan <strong>luas piston</strong>, <strong>gaya</strong>, dan kompromi <strong>jumlah langkah pompa</strong>.',ctaTry:'Pompa mobilnya…'},advancedLabel:'Eksperimen lanjut · kendaraan, piston kecil, dan percepatan waktu',
 defaults:()=>({F1:100,A1:1,A2:150,car:'sedan',ts:20}),
     engDefaults:()=>({A1:5,A2:100,done:false}),
     simInit:()=>({h:0,pump:0,auto:false,lower:false,grabbed:false,manualDelta:0,strokes:0,phase:0}),
@@ -31,7 +31,7 @@ reveals:[{k:'pressure',on:'🙈 Sembunyikan P',off:'👁 Lihat tekanan'},{k:'for
 missions:[{id:'lift',title:'Angkat mobilnya',desc:'Pompa sampai mobil terangkat ≥ 0,25 m.'}],onParam(){},check(st,api){if(st.phase!=='rekayasa'&&st.sim.h>=.25)api.mark('lift')},
     patterns:[{icon:'💧',title:'Tekanan diteruskan oleh cairan',text:'Dorongan pada piston kecil menghasilkan tekanan yang sama pada cairan tertutup.'},{icon:'💪',title:'Piston lebih luas menghasilkan gaya lebih besar',text:'Tekanan yang sama bekerja pada luas yang lebih besar sehingga gaya keluaran membesar.'},{icon:'🐢',title:'Gaya besar dibayar dengan jarak',text:'Piston besar naik lebih sedikit setiap langkah. Energi tidak muncul gratis.'}],
     formula:{main:'F₁ / A₁ = F₂ / A₂',sec:'F₂ = F₁ · (A₂ / A₁)',note:'Volume cairan berpindah sama: A₁·d₁ = A₂·d₂ → d₂ = d₁·(A₁/A₂). Maka F₁·d₁ = F₂·d₂ (usaha ideal, tanpa gesekan). Keuntungan mekanik KM = A₂/A₁.'},
-hud:(st)=>{const c=calc(st);if(!st.formula)return[['Gaya tangan',fmt(eff(st).F1,0)+' N'],['Mobil',c.canLift?'bisa terangkat':'belum terangkat'],['Tinggi',fmt(st.sim.h,2)+' m'],['Petunjuk','piston besar membantu']];return[['Tekanan P',pr(c.P)+(c.relief?' ⚠':'')],['F₂ ⁄ berat W',kn(c.F2)+' ⁄ '+kn(c.W)],['Rasio luas',fmt(c.ratio,1)+'×'],['Langkah pompa',fmt(st.sim.strokes,0)]]},
+hud:(st)=>{const c=calc(st);if(!st.formula||['lihat','tebak','coba'].includes(st.phase))return[['Gaya tangan',fmt(eff(st).F1,0)+' N'],['Mobil',c.canLift?'bisa terangkat':'belum terangkat'],['Tinggi',fmt(st.sim.h,2)+' m'],['Petunjuk','piston besar membantu']];return[['Tekanan P',pr(c.P)+(c.relief?' ⚠':'')],['F₂ ⁄ berat W',kn(c.F2)+' ⁄ '+kn(c.W)],['Rasio luas',fmt(c.ratio,1)+'×'],['Langkah pompa',fmt(st.sim.strokes,0)]]},
 proof:{title:'Bandingkan dua piston besar.',text:'Pertahankan <b>F₁ dan A₁</b>. Ambil satu bukti dengan A₂ kecil lalu satu lagi dengan A₂ yang jauh lebih besar.',target:['Target','A₂ berubah ≥ 2× · F₂ mengikuti rasio luas'],cols:['A₂','F₁','A₁','F₂','Rasio'],record:(st)=>{const c=calc(st),p=st.params;return{cells:[fmt(p.A2,0)+' cm²',fmt(p.F1,0)+' N',fmt(p.A1,1)+' cm²',kn(c.F2),fmt(c.ratio,1)+'×'],data:{A2:p.A2,A1:p.A1,F1:p.F1,F2:c.F2,car:p.car,label:'A₂ '+fmt(p.A2,0)+' cm²',summary:'F₂ = '+kn(c.F2)}}},evaluate(st){let best=null;for(const a of st.evidence)for(const b of st.evidence){if(a===b||a.data.car!==b.data.car||Math.abs(a.data.F1-b.data.F1)>.1||Math.abs(a.data.A1-b.data.A1)>.01)continue;const ar=Math.max(a.data.A2,b.data.A2)/Math.min(a.data.A2,b.data.A2),fr=Math.max(a.data.F2,b.data.F2)/Math.max(1,Math.min(a.data.F2,b.data.F2));if(ar>=2&&Math.abs(fr/ar-1)<.05)best={ar,fr}}return best?{ok:true,msg:`<b>Bukti cocok.</b> Luas piston besar berubah ${fmt(best.ar,1)}× dan gaya keluar juga sekitar ${fmt(best.fr,1)}×.`}:{ok:false,msg:'Gunakan F₁ dan A₁ yang sama. Ubah hanya A₂, misalnya 70 cm² lalu 210 cm².'}}},
     eng:{eyebrow:'RANCANG · LIFT BENGKEL',title:'Buat lift yang kuat, cepat, dan tidak berlebihan.',
       text:'Sedan 1.200 kg harus naik 1,2 m. Atur dua luas piston sampai tiga indikator hijau: <b>gaya tangan</b>, <b>jumlah pompa</b>, dan <b>tekanan sistem</b>.',
@@ -92,7 +92,7 @@ proof:{title:'Bandingkan dua piston besar.',text:'Pertahankan <b>F₁ dan A₁</
     stage.mesh(new T.BoxGeometry(18,.25,7),std(0x1a232c),-1.5,-2.35,0,root);
     const wall=stage.canvasTex(512,256,(g,w,h)=>{g.fillStyle='#244f7a';g.fillRect(0,0,w,h);g.strokeStyle='#1b3d5f';g.lineWidth=2;for(let i=0;i<=16;i++){g.beginPath();g.moveTo(i*w/16,0);g.lineTo(i*w/16,h);g.stroke()}for(let j=0;j<=8;j++){g.beginPath();g.moveTo(0,j*h/8);g.lineTo(w,j*h/8);g.stroke()}},[2,1]);
     stage.mesh(new T.BoxGeometry(18,6,.2),std(0xffffff,{map:wall,roughness:.55}),-1.5,3,-3.5,root);
-    const sign=stage.sprite('CUCI MOBIL · PILAR',{w:640,h:120,size:56,bg:'rgba(255,211,108,.95)',color:'#1b2736',scale:2.4});sign.position.set(-1.5,5.2,-3.3);root.add(sign);
+    const sign=stage.sprite('CUCI MOBIL · PILAR',{w:640,h:120,size:52,bg:'rgba(255,211,108,.95)',color:'#1b2736',scale:1.55});sign.position.set(-1.5,5.25,-3.3);root.add(sign);
 
     // ----- silinder besar (penopang) -----
     const bigG=new T.Group();root.add(bigG);bigG.position.set(0,0,0);
@@ -162,7 +162,7 @@ proof:{title:'Bandingkan dua piston besar.',text:'Pertahankan <b>F₁ dan A₁</
     // ----- panah gaya, info, panah tekanan -----
     const aF1=new T.ArrowHelper(new T.Vector3(0,-1,0),new T.Vector3(),1,0xff5468,.25,.16),aF2=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(),1,0x63e3a0,.3,.2),aW=new T.ArrowHelper(new T.Vector3(0,-1,0),new T.Vector3(),1,0xffd36c,.3,.2);
     [aF1,aF2,aW].forEach(a=>root.add(a));
-    const infoP=stage.sprite('',{w:520,h:96,size:36,bg:'rgba(6,17,30,.85)',scale:1.2,depthTest:false}),infoL=stage.sprite('',{w:560,h:96,size:36,bg:'rgba(6,17,30,.85)',scale:1.2,depthTest:false}),infoW=stage.sprite('',{w:660,h:96,size:34,bg:'rgba(6,17,30,.88)',scale:1.25,depthTest:false});
+    const infoP=stage.sprite('',{w:460,h:88,size:32,bg:'rgba(6,17,30,.85)',scale:.92,depthTest:false}),infoL=stage.sprite('',{w:520,h:88,size:32,bg:'rgba(6,17,30,.85)',scale:.92,depthTest:false}),infoW=stage.sprite('',{w:600,h:88,size:30,bg:'rgba(6,17,30,.88)',scale:.9,depthTest:false});
     [infoP,infoL,infoW].forEach(s=>{s.renderOrder=9;root.add(s)});
     const presArrows=[];for(let i=0;i<10;i++){const a=new T.ArrowHelper(new T.Vector3(1,0,0),new T.Vector3(),.5,0x7eeeff,.14,.1);root.add(a);presArrows.push(a)}
 
@@ -176,7 +176,7 @@ proof:{title:'Bandingkan dua piston besar.',text:'Pertahankan <b>F₁ dan A₁</
     const STR=PH().pascal.STROKE;let rKey='';
     return{
       update(st,dt){
-        const e=eff(st),c=calc(st),s=st.sim;
+        const e=eff(st),c=calc(st),s=st.sim,theory=st.formula&&!['lihat','tebak','coba'].includes(st.phase);
         const r1=.045*Math.sqrt(e.A1),r2=.045*Math.sqrt(e.A2);
         if(rKey!==r1+'|'+r2){rKey=r1+'|'+r2;rebuild(r1,r2)}
         if(carKey!==e.car)buildCar(e.car);
@@ -197,13 +197,13 @@ proof:{title:'Bandingkan dua piston besar.',text:'Pertahankan <b>F₁ dan A₁</
         aF2.visible=!!st.reveal.force;aF2.position.set(0,pb-.1,0);aF2.setLength(L2,.3,.2);
         aW.visible=!!st.reveal.force;aW.position.set(0,platform.position.y+2.1+LW,0);aW.setLength(LW,.3,.2);
         // info
-        infoP.visible=!!(st.reveal.force||st.reveal.pressure);infoP.position.set(-5.2,2.9,0);
-        stage.setSpriteText(infoP,`P = F₁/A₁ = ${pr(c.Pin)}`);
-        infoL.visible=!!st.reveal.force;infoL.position.set(0,platform.position.y+4.1,0);
-        stage.setSpriteText(infoL,`F₂ = P·A₂ = ${kn(c.F2)}  ${c.canLift?'≥':'<'}  W = ${kn(c.W)}`,c.canLift?'#63e3a0':'#ff8a9b');
-        infoW.visible=!!st.reveal.work;infoW.position.set(-2.6,-.5,1.3);
+        infoP.visible=!!(st.reveal.force||st.reveal.pressure);infoP.position.set(-4.8,2.35,0);
+        stage.setSpriteText(infoP,theory?`P = ${pr(c.Pin)}`:'Tekanan diteruskan oleh oli');
+        infoL.visible=!!st.reveal.force;infoL.position.set(1.0,platform.position.y+2.9,0);
+        stage.setSpriteText(infoL,theory?`F₂ ${kn(c.F2)}  ${c.canLift?'≥':'<'}  W ${kn(c.W)}`:(c.canLift?'Gaya angkat cukup ✓':'Gaya angkat belum cukup'),c.canLift?'#63e3a0':'#ff8a9b');
+        infoW.visible=!!st.reveal.work&&theory;infoW.position.set(2.4,-1.05,1.2);
         const win=c.Fneed*STR*s.strokes,wout=c.W*s.h;
-        stage.setSpriteText(infoW,`Usaha masuk ≈ ${fmt(win,0)} J   |   usaha keluar W·h = ${fmt(wout,0)} J`);
+        stage.setSpriteText(infoW,`W masuk ${fmt(win,0)} J  ·  W keluar ${fmt(wout,0)} J`);
         // panah tekanan di dalam oli (sama panjang)
         const pl=.18+.8*t,pts=[[0,-1.2,'r',r2],[0,-.8,'l',r2],[-5.2,-1.2,'r',r1],[-5.2,-.8,'l',r1],[-1.2,-1.88,'u',.09],[-3.4,-1.88,'u',.09],[-2.6,-1.88,'d',.09],[0,-1.7,'r',r2],[-5.2,-1.7,'l',r1],[-4,-1.88,'d',.09]];
         presArrows.forEach((a,i)=>{const p=pts[i],dir=p[2]==='r'?new T.Vector3(1,0,0):p[2]==='l'?new T.Vector3(-1,0,0):p[2]==='u'?new T.Vector3(0,1,0):new T.Vector3(0,-1,0);

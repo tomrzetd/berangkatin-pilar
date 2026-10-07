@@ -12,7 +12,7 @@
   const naturalUX=()=>spec&&String(spec.studentUX||'').startsWith('natural-');
   const phaseGroup=ph=>ph==='lihat'||ph==='tebak'?'amati':ph==='coba'?'coba':ph==='aha'||ph==='buktikan'?'pahami':'rancang';
   function naturalTarget(step,st){
-    if(step==='amati')return st.locked?'tebak':'lihat';
+    if(step==='amati')return'lihat';
     if(step==='coba')return'coba';
     if(step==='pahami')return st.formula?'buktikan':'aha';
     return'rekayasa';
@@ -115,7 +115,7 @@
     </section>`;
   }
   function panelsHTML(sp){
-    if(sp.studentUX==='natural-solid-v1')return naturalSolidPanels(sp);
+    if(String(sp.studentUX||'').startsWith('natural-'))return naturalSolidPanels(sp);
     const o=sp.predict,pf=sp.proof,eg=sp.eng;
     return `
     <section class="phase-card" data-panel="lihat">
@@ -230,7 +230,7 @@
     if(!st.locked){st.locked=true;st.predCorrect=st.prediction===spec.predict.answer;S.xp+=10}
     go('coba');toast('Tebakan terkunci','Sekarang uji dengan eksperimen.');
   }
-  function revealFormula(){const st=cur();if(!st.aha)return toast('Belum terbuka','Selesaikan tantangan dulu.');st.formula=true;if(naturalUX())spec.reveals.forEach(r=>st.reveal[r.k]=true);S.xp+=15;refresh()}
+  function revealFormula(){const st=cur();if(!st.aha)return toast('Belum terbuka','Selesaikan tantangan dulu.');st.formula=true;S.xp+=15;refresh()}
   function record(){
     const st=cur(),r=spec.proof.record(st);st.seq++;st.evidence.push({id:st.seq,cells:r.cells,data:r.data});
     const ev=spec.proof.evaluate(st);
@@ -263,7 +263,7 @@
     const slot=$(`.control-slot[data-slot="${st.phase}"]`);if(slot&&dock.parentNode!==slot)slot.appendChild(dock);
     $('#xp').textContent=S.xp;
     // tebak
-    $$('#predGrid button').forEach(b=>{b.classList.toggle('selected',b.dataset.pred===st.prediction);b.disabled=st.locked&&st.phase!=='tebak'});
+    $('#predGrid button').forEach(b=>{b.classList.toggle('selected',b.dataset.pred===st.prediction);b.disabled=!!st.locked});const lockBtn=$('#lockPred');if(lockBtn)lockBtn.textContent=st.locked?'Lanjut ke Coba →':'Uji tebakanku →';
     $('#predFeedback').textContent=st.locked?'Tebakan terkunci: '+spec.predict.options.find(o=>o.v===st.prediction).l+'.':st.prediction?'Tebakanmu: '+spec.predict.options.find(o=>o.v===st.prediction).l+' (belum dikunci).':'Belum ada tebakan yang dikunci.';
     // coba
     spec.missions.forEach(m=>{const el=$(`#missionList [data-mission="${m.id}"]`);if(!el)return;el.classList.toggle('done',st.missions[m.id]);$('span',el).textContent=(st.missions[m.id]?'✓ ':'○ ')+m.desc});
@@ -289,7 +289,7 @@
     updateDock(st);
     $('#stageBadge').textContent=spec.icon+' '+spec.title;
     const cta=$('#nextCta');
-    cta.textContent=naturalUX()?{lihat:'Aku punya tebakan →',tebak:'Uji tebakanku →',coba:st.aha?'Apa polanya? →':'Balik baloknya…',aha:st.formula?'Ambil bukti →':'Lihat hubungan angka →',buktikan:st.proofDone?'Rancang sesuatu →':'Ambil bukti 📸',rekayasa:'Uji rancangan ✓'}[st.phase]
+    cta.textContent=naturalUX()?{lihat:'Aku punya tebakan →',tebak:st.locked?'Lanjut ke Coba →':'Uji tebakanku →',coba:st.aha?'Apa polanya? →':(spec.natural?.ctaTry||'Coba sampai polanya terlihat…'),aha:st.formula?'Ambil bukti →':'Lihat hubungan angka →',buktikan:st.proofDone?'Rancang sesuatu →':'Ambil bukti 📸',rekayasa:'Uji rancangan ✓'}[st.phase]
       :{lihat:'Mulai menebak →',tebak:'Kunci tebakan →',coba:st.aha?'Buka AHA →':'Selesaikan misi…',aha:st.formula?'Buktikan dengan data →':'Rumuskan temuan →',buktikan:st.proofDone?'Masuk Rekayasa →':'Catat percobaan',rekayasa:'Rancang sampai ✓'}[st.phase];
   }
   function updateHud(){

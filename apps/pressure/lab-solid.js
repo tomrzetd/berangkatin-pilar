@@ -24,7 +24,7 @@
   const spec={
     id:'padat',icon:'🧱',tab:'Padat',title:'Tekanan pada Zat Padat',tagline:'Balok yang sama, bekas di pasir bisa berbeda.',accent:'#ffd36c',
     studentUX:'natural-solid-v1',
-    natural:{tryTitle:'Balik baloknya. Lihat pasirnya.',tryText:'Berat balok tetap. Ubah hanya posisi bidang yang menyentuh pasir.',ahaTitle:'Mengapa bekas pasir berubah padahal baloknya sama?',ahaToast:'Beratnya sama, tetapi bekas di pasir berubah. Sekarang cari penyebabnya.',proofHint:'Ambil bukti balok TIDUR dan BERDIRI dengan massa yang sama.',recordAgain:'Sekarang balik posisi balok dan ambil bukti kedua.',proofDone:'Dua posisi menunjukkan pola yang sama. Sekarang pakai konsepnya untuk merancang.',reflection:'Hubungkan <strong>luas bidang tekan</strong> dengan <strong>besar tekanan</strong> yang dihasilkan.'},
+    natural:{tryTitle:'Balik baloknya. Lihat pasirnya.',tryText:'Berat balok tetap. Ubah hanya posisi bidang yang menyentuh pasir.',ahaTitle:'Mengapa bekas pasir berubah padahal baloknya sama?',ahaToast:'Beratnya sama, tetapi bekas di pasir berubah. Sekarang cari penyebabnya.',proofHint:'Ambil bukti balok TIDUR dan BERDIRI dengan massa yang sama.',recordAgain:'Sekarang balik posisi balok dan ambil bukti kedua.',proofDone:'Dua posisi menunjukkan pola yang sama. Sekarang pakai konsepnya untuk merancang.',reflection:'Hubungkan <strong>luas bidang tekan</strong> dengan <strong>besar tekanan</strong> yang dihasilkan.',ctaTry:'Balik baloknya…'},
     advancedLabel:'Eksperimen lanjut · benda, massa, dan permukaan',
     defaults:()=>({obj:'balok',orient:'tidur',mass:5,surface:'pasir'}),
     engDefaults:()=>({task:'salju',area:600,done:{}}),
@@ -54,7 +54,7 @@
       {icon:'💡',title:'Akibatnya',text:'Bidang lebih kecil → tekanan lebih besar → pasir melesak lebih dalam.'}],
     formula:{main:'P = F / A',sec:'gaya yang sama ÷ luas lebih kecil = tekanan lebih besar',note:'P adalah tekanan, F gaya tekan, dan A luas bidang yang benar-benar menyentuh permukaan. Angka dipakai setelah polanya terlihat.'},
     hud:(st)=>{const v=view(st),p=st.params,o=PH().solid.OBJECTS[p.obj]?.orients.find(x=>x.id===p.orient),A=v.A*1e4;
-      if(!st.formula)return[['Yang tetap','massa '+fmt(p.mass,0)+' kg'],['Bidang sentuh',A>=150?'lebih lebar':A>=20?'lebih sempit':'sangat kecil'],['Tekanan','cari polanya'],['Bekas di pasir',fmt(v.depth*100,1)+' cm']];
+      if(!st.formula||['lihat','tebak','coba'].includes(st.phase))return[['Yang tetap','massa '+fmt(p.mass,0)+' kg'],['Bidang sentuh',A>=150?'lebih lebar':A>=20?'lebih sempit':'sangat kecil'],['Tekanan','cari polanya'],['Bekas di pasir',fmt(v.depth*100,1)+' cm']];
       return[['Gaya F',fmt(v.F,0)+' N'],['Luas A',A>=1?fmt(A,0)+' cm²':fmt(A,2)+' cm²'],['Tekanan P',kPa(v.P)],['Amblas',fmt(v.depth*100,1)+' cm']]},
     proof:{title:'Ambil dua bukti. Jangan banyak-banyak.',
       text:'Ambil satu bukti saat balok <b>TIDUR</b>, lalu satu lagi saat <b>BERDIRI</b>. Massanya harus tetap sama.',
@@ -208,7 +208,7 @@
         if(Math.abs(curD-prev)>2e-5||dirty||lastHx!==hx||lastHz!==hz){deform(curD,hx,hz);lastHx=hx;lastHz=hz;dirty=false}
         obj.position.y=-curD;
         // indikator: fenomena dulu, angka setelah siswa meminta / memahami polanya
-        const top=H-curD,showNumbers=!!st.reveal.numbers||st.formula||st.phase==='buktikan'||st.phase==='rekayasa';
+        const top=H-curD,early=['lihat','tebak','coba'].includes(st.phase),showNumbers=!!st.reveal.numbers||(!early&&st.formula);
         arrow.visible=showNumbers;arrow.position.set(0,top+.4+Math.min(2.6,.5+v.F/400),0);
         arrow.setLength(.5+Math.min(2.6,v.F/400),.38,.24);
         info.visible=showNumbers;info.position.set(0,top+.4+Math.min(2.6,.5+v.F/400)+.9,0);
