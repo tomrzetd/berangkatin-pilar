@@ -27,7 +27,7 @@
 .quality-control{display:flex;align-items:center;gap:6px;padding:5px 8px;border:1px solid var(--line);border-radius:10px;background:#071321d9;color:#d5e2ef;font-size:12px}
 .quality-control select{background:#0b1726;color:var(--text);border:1px solid #355274;border-radius:8px;padding:5px 7px;min-height:32px}
 .ownership-mark{position:absolute;z-index:4;left:12px;bottom:10px;max-width:46%;font:600 10px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.02em;color:#d7e7f7;opacity:.28;pointer-events:none;user-select:none;text-shadow:0 1px 2px #000}
-@media(max-width:900px){.quality-control{order:9}.ownership-mark{bottom:96px;max-width:70%;font-size:9px}}
+@media(max-width:900px){.quality-control{order:9}.ownership-mark{bottom:96px;max-width:70%;font-size:11px}}
 
 /* v0.5.5 · PILAR Universal Boot Shell */
 .boot-lock{overflow:hidden}
@@ -36,10 +36,10 @@
 .boot-grid{position:absolute;inset:0;opacity:.13;background-image:linear-gradient(rgba(94,233,255,.17) 1px,transparent 1px),linear-gradient(90deg,rgba(94,233,255,.17) 1px,transparent 1px);background-size:38px 38px;mask-image:linear-gradient(to bottom,#000,transparent 90%)}
 .boot-scan{position:absolute;inset:-55% 0 auto;height:52%;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(94,233,255,.07),transparent);animation:pilarScan 8s linear infinite}@keyframes pilarScan{to{transform:translateY(330%)}}
 .boot-card{position:relative;width:min(1020px,96vw);min-height:min(650px,92vh);overflow:hidden;border:1px solid #284561;border-radius:30px;background:linear-gradient(155deg,rgba(10,20,34,.96),rgba(5,9,17,.98));box-shadow:0 38px 120px #000b,inset 0 0 70px rgba(94,233,255,.035)}
-.boot-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 26px;border-bottom:1px solid #1d344d;position:relative;z-index:2}.boot-brand{display:flex;align-items:center;gap:14px}.boot-brand strong{font-size:20px;font-weight:950;letter-spacing:.2em}.boot-brand sup{font-size:9px;color:#91a7bd;letter-spacing:0}.boot-brand small{display:block;color:#91a7bd;font-size:10px;letter-spacing:.09em;margin-top:2px}.boot-mark{display:flex;align-items:flex-end;gap:3px;height:34px}.boot-mark i{display:block;width:6px;border-radius:5px 5px 1px 1px;background:linear-gradient(#d7ff64,#5ee9ff);box-shadow:0 0 14px rgba(94,233,255,.28);animation:bootPulse 2.8s ease-in-out infinite}.boot-mark i:nth-child(1){height:18px}.boot-mark i:nth-child(2){height:27px;animation-delay:.12s}.boot-mark i:nth-child(3){height:34px;animation-delay:.24s}.boot-mark i:nth-child(4){height:23px;animation-delay:.36s}.boot-mark i:nth-child(5){height:30px;animation-delay:.48s}@keyframes bootPulse{50%{filter:brightness(1.35);transform:translateY(-2px)}}
+.boot-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 26px;border-bottom:1px solid #1d344d;position:relative;z-index:2}.boot-brand{display:flex;align-items:center;gap:14px}.boot-brand strong{font-size:20px;font-weight:950;letter-spacing:.2em}.boot-brand sup{font-size:11px;color:#91a7bd;letter-spacing:0}.boot-brand small{display:block;color:#91a7bd;font-size:11px;letter-spacing:.09em;margin-top:2px}.boot-mark{display:flex;align-items:flex-end;gap:3px;height:34px}.boot-mark i{display:block;width:6px;border-radius:5px 5px 1px 1px;background:linear-gradient(#d7ff64,#5ee9ff);box-shadow:0 0 14px rgba(94,233,255,.28);animation:bootPulse 2.8s ease-in-out infinite}.boot-mark i:nth-child(1){height:18px}.boot-mark i:nth-child(2){height:27px;animation-delay:.12s}.boot-mark i:nth-child(3){height:34px;animation-delay:.24s}.boot-mark i:nth-child(4){height:23px;animation-delay:.36s}.boot-mark i:nth-child(5){height:30px;animation-delay:.48s}@keyframes bootPulse{50%{filter:brightness(1.35);transform:translateY(-2px)}}
 .boot-app-meta{text-align:right}.boot-app-meta b{font-size:13px}.boot-app-meta span{display:block;color:#91a7bd;font-size:11px;margin-top:3px}.boot-main{display:grid;grid-template-columns:1.06fr .94fr;min-height:530px;position:relative;z-index:2}.boot-copy{display:flex;flex-direction:column;justify-content:center;padding:48px 38px}.boot-kicker{font-size:11px;letter-spacing:.17em;color:#5ee9ff;font-weight:900}.boot-copy h1{font-size:clamp(38px,5vw,68px);line-height:.96;margin:10px 0 16px;letter-spacing:-.045em}.boot-copy h1 span{background:linear-gradient(90deg,#c9ff42,#5ee9ff,#ff5ea8);background-size:200% 100%;color:transparent;background-clip:text;-webkit-background-clip:text;animation:bootShine 6s linear infinite}@keyframes bootShine{to{background-position:200% 0}}.boot-copy>p{max-width:590px;color:#b4c3d2;line-height:1.65;margin:0;font-size:15px}
-.boot-philosophy{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:25px}.boot-philosophy span{position:relative;font-size:10px;font-weight:850;letter-spacing:.06em;color:#879cb2;padding:7px 10px;border:1px solid #29415f;border-radius:999px;background:#07111d;transition:.25s}.boot-philosophy span.on{color:#07111d;background:#5ee9ff;border-color:#5ee9ff;box-shadow:0 0 22px rgba(94,233,255,.35)}.boot-philosophy span.done{color:#dfffa0;border-color:#5c7b38;background:#132415}.boot-device{margin-top:24px}.boot-device-title{display:block;font-size:10px;color:#728aa2;text-transform:uppercase;letter-spacing:.13em;margin-bottom:8px}.boot-caps{display:flex;flex-wrap:wrap;gap:6px}.boot-cap{font-size:10px;padding:5px 8px;border:1px solid #223d57;border-radius:999px;color:#a9bcd0}.boot-cap.ok{color:#aaf5c8;border-color:#275e45}.boot-cap.warn{color:#ffd98a;border-color:#6d5424}
-.boot-actions{display:flex;flex-direction:column;justify-content:center;padding:34px 30px;border-left:1px solid #1d344d;background:rgba(2,8,14,.34)}.boot-mode-title{font-size:11px;letter-spacing:.13em;color:#91a7bd;font-weight:850;text-transform:uppercase;margin-bottom:12px}.boot-mode{width:100%;display:grid;grid-template-columns:46px 1fr auto;align-items:center;gap:12px;text-align:left;padding:15px 16px;margin-bottom:11px;border:1px solid #2a4663;border-radius:16px;background:#091626;color:#eef8ff;transition:.18s ease}.boot-mode:hover:not(:disabled){transform:translateY(-1px);border-color:#5ee9ff;box-shadow:0 10px 28px #0005}.boot-mode.recommended{border-color:#487230;background:linear-gradient(90deg,rgba(201,255,66,.09),#091626)}.boot-mode:disabled{opacity:.55;cursor:wait}.boot-mode-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:#0d2134;font-size:21px}.boot-mode strong{display:block;font-size:14px}.boot-mode small{display:block;color:#91a7bd;font-size:11px;line-height:1.4;margin-top:3px}.boot-mode em{font-style:normal;font-size:9px;font-weight:900;letter-spacing:.06em;padding:5px 7px;border-radius:999px;background:#1a2e1b;color:#c9ff42;border:1px solid #456335}.boot-privacy{font-size:10px!important;line-height:1.5!important;color:#728aa2!important;margin:2px 0 10px!important}.boot-progress{margin-top:8px;padding:14px;border:1px solid #223b55;border-radius:13px;background:#06111dcc}.boot-progress-top{display:flex;justify-content:space-between;gap:10px;font-size:10px;letter-spacing:.08em}.boot-progress-top span{color:#c9ff42;font-weight:900}.boot-bar{height:6px;margin:10px 0 11px;border:1px solid #29415f;border-radius:99px;background:#132437;overflow:hidden}.boot-bar i{display:block;width:0;height:100%;border-radius:99px;background:linear-gradient(90deg,#c9ff42,#5ee9ff);box-shadow:0 0 16px rgba(94,233,255,.4);transition:width .28s ease}.boot-step-list{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}.boot-step-list i{height:4px;background:#17283a;border-radius:99px}.boot-step-list i.on{background:#5ee9ff}.boot-step-list i.done{background:#c9ff42}.boot-message{min-height:31px;margin-top:10px;color:#8fa5bb;font-size:10px;line-height:1.45}.boot-foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;gap:12px;padding:10px 18px;border-top:1px solid #13283d;background:#050b13dc;color:#637c95;font-size:10px;z-index:3}.boot-foot span:last-child{color:#88a9c7}
+.boot-philosophy{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:25px}.boot-philosophy span{position:relative;font-size:11px;font-weight:850;letter-spacing:.06em;color:#879cb2;padding:7px 10px;border:1px solid #29415f;border-radius:999px;background:#07111d;transition:.25s}.boot-philosophy span.on{color:#07111d;background:#5ee9ff;border-color:#5ee9ff;box-shadow:0 0 22px rgba(94,233,255,.35)}.boot-philosophy span.done{color:#dfffa0;border-color:#5c7b38;background:#132415}.boot-device{margin-top:24px}.boot-device-title{display:block;font-size:11px;color:#728aa2;text-transform:uppercase;letter-spacing:.13em;margin-bottom:8px}.boot-caps{display:flex;flex-wrap:wrap;gap:6px}.boot-cap{font-size:11px;padding:5px 8px;border:1px solid #223d57;border-radius:999px;color:#a9bcd0}.boot-cap.ok{color:#aaf5c8;border-color:#275e45}.boot-cap.warn{color:#ffd98a;border-color:#6d5424}
+.boot-actions{display:flex;flex-direction:column;justify-content:center;padding:34px 30px;border-left:1px solid #1d344d;background:rgba(2,8,14,.34)}.boot-mode-title{font-size:11px;letter-spacing:.13em;color:#91a7bd;font-weight:850;text-transform:uppercase;margin-bottom:12px}.boot-mode{width:100%;display:grid;grid-template-columns:46px 1fr auto;align-items:center;gap:12px;text-align:left;padding:15px 16px;margin-bottom:11px;border:1px solid #2a4663;border-radius:16px;background:#091626;color:#eef8ff;transition:.18s ease}.boot-mode:hover:not(:disabled){transform:translateY(-1px);border-color:#5ee9ff;box-shadow:0 10px 28px #0005}.boot-mode.recommended{border-color:#487230;background:linear-gradient(90deg,rgba(201,255,66,.09),#091626)}.boot-mode:disabled{opacity:.55;cursor:wait}.boot-mode-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:#0d2134;font-size:21px}.boot-mode strong{display:block;font-size:14px}.boot-mode small{display:block;color:#91a7bd;font-size:11px;line-height:1.4;margin-top:3px}.boot-mode em{font-style:normal;font-size:11px;font-weight:900;letter-spacing:.06em;padding:5px 7px;border-radius:999px;background:#1a2e1b;color:#c9ff42;border:1px solid #456335}.boot-privacy{font-size:11px!important;line-height:1.5!important;color:#728aa2!important;margin:2px 0 10px!important}.boot-progress{margin-top:8px;padding:14px;border:1px solid #223b55;border-radius:13px;background:#06111dcc}.boot-progress-top{display:flex;justify-content:space-between;gap:10px;font-size:11px;letter-spacing:.08em}.boot-progress-top span{color:#c9ff42;font-weight:900}.boot-bar{height:6px;margin:10px 0 11px;border:1px solid #29415f;border-radius:99px;background:#132437;overflow:hidden}.boot-bar i{display:block;width:0;height:100%;border-radius:99px;background:linear-gradient(90deg,#c9ff42,#5ee9ff);box-shadow:0 0 16px rgba(94,233,255,.4);transition:width .28s ease}.boot-step-list{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}.boot-step-list i{height:4px;background:#17283a;border-radius:99px}.boot-step-list i.on{background:#5ee9ff}.boot-step-list i.done{background:#c9ff42}.boot-message{min-height:31px;margin-top:10px;color:#8fa5bb;font-size:11px;line-height:1.45}.boot-foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;gap:12px;padding:10px 18px;border-top:1px solid #13283d;background:#050b13dc;color:#637c95;font-size:11px;z-index:3}.boot-foot span:last-child{color:#88a9c7}
 @media(max-width:760px){.pilar-boot{padding:8px;overflow:auto}.boot-card{min-height:96vh;border-radius:20px}.boot-main{grid-template-columns:1fr}.boot-copy{padding:30px 24px 22px}.boot-copy h1{font-size:42px}.boot-actions{border-left:0;border-top:1px solid #1d344d;padding:24px}.boot-foot{position:relative}.boot-app-meta{display:none}}
 @media(prefers-reduced-motion:reduce){.boot-scan,.boot-mark i,.boot-copy h1 span{animation:none!important}.pilar-boot,.boot-mode,.boot-bar i{transition:none!important}}
 
@@ -62,11 +62,11 @@
 
 /* v0.5.5c · PILAR Hub, creator attribution, persistent home */
 .boot-head-right{display:flex;align-items:center;gap:14px}.creator-id{font:700 9px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.035em;color:#7890a8;opacity:.78;padding:5px 8px;border:1px solid #213b55;border-radius:999px;background:#06111c}.boot-foot b{color:#8da6bd;font-weight:650}
-.pilar-library-wrap{margin-top:20px}.pilar-library-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:8px}.pilar-library-title span{font-size:10px;color:#91a7bd;text-transform:uppercase;font-weight:900;letter-spacing:.13em}.pilar-library-title small{font-size:9px;color:#627c96}.pilar-library{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.pilar-app-card{display:grid;grid-template-columns:34px minmax(0,1fr) max-content;gap:9px;align-items:center;width:100%;min-width:0;overflow:hidden;text-align:left;padding:9px 10px;min-height:58px;border:1px solid #263f59;border-radius:12px;background:#071321;color:#e8f3fd}.pilar-app-card>span:nth-child(2){min-width:0;overflow:hidden}.pilar-app-card.current{border-color:#477332;background:linear-gradient(90deg,rgba(201,255,66,.08),#071321)}.pilar-app-card:not(:disabled):hover{border-color:#5ee9ff;transform:translateY(-1px)}.pilar-app-card:disabled{opacity:.48;cursor:not-allowed}.pilar-app-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#0d2134;font-size:17px}.pilar-app-card strong{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}.pilar-app-card small{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;color:#7f97ae;font-size:9px;margin-top:2px}.pilar-app-card em{justify-self:end;align-self:center;flex:none;font-style:normal;font-size:8px;font-weight:900;white-space:nowrap;color:#c9ff42;border:1px solid #456335;border-radius:999px;padding:4px 5px}
+.pilar-library-wrap{margin-top:20px}.pilar-library-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:8px}.pilar-library-title span{font-size:11px;color:#91a7bd;text-transform:uppercase;font-weight:900;letter-spacing:.13em}.pilar-library-title small{font-size:11px;color:#627c96}.pilar-library{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.pilar-app-card{display:grid;grid-template-columns:34px minmax(0,1fr) max-content;gap:9px;align-items:center;width:100%;min-width:0;overflow:hidden;text-align:left;padding:9px 10px;min-height:58px;border:1px solid #263f59;border-radius:12px;background:#071321;color:#e8f3fd}.pilar-app-card>span:nth-child(2){min-width:0;overflow:hidden}.pilar-app-card.current{border-color:#477332;background:linear-gradient(90deg,rgba(201,255,66,.08),#071321)}.pilar-app-card:not(:disabled):hover{border-color:#5ee9ff;transform:translateY(-1px)}.pilar-app-card:disabled{opacity:.48;cursor:not-allowed}.pilar-app-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#0d2134;font-size:17px}.pilar-app-card strong{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}.pilar-app-card small{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;color:#7f97ae;font-size:11px;margin-top:2px}.pilar-app-card em{justify-self:end;align-self:center;flex:none;font-style:normal;font-size:8px;font-weight:900;white-space:nowrap;color:#c9ff42;border:1px solid #456335;border-radius:999px;padding:4px 5px}
 .home-btn{width:38px;height:38px;display:grid;place-items:center;border-radius:10px;border:1px solid #2a405f;background:#0b1726;color:#dceafb;font-size:20px;padding:0}.home-btn:hover{border-color:var(--cyan);color:var(--cyan)}.top-creator{margin-left:auto;margin-right:10px;font:650 9px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.025em;color:#7189a0;white-space:nowrap;opacity:.74}.top-actions{margin-left:0!important}
 @media(max-width:1000px){.top-creator{display:none}.pilar-library{grid-template-columns:1fr}.boot-head-right{margin-left:auto}.creator-id{font-size:8px;max-width:34vw}}
 
-.pilar-app-card .app-subtitle{min-width:0;color:#a8bfd4;font-size:9px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pilar-app-card .app-subtitle{min-width:0;color:#a8bfd4;font-size:11px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* v0.5.5f · Hub card overflow fix */
 @media(max-width:680px){.pilar-library{grid-template-columns:1fr}.pilar-library-title{align-items:center}.pilar-app-card{grid-template-columns:34px minmax(0,1fr) max-content}}
@@ -187,7 +187,7 @@
   display:block;
   margin-bottom:4px;
   color:#5ee9ff;
-  font-size:9px;
+  font-size:11px;
   font-weight:900;
   letter-spacing:.13em;
 }
@@ -216,7 +216,7 @@
   border-radius:999px;
   color:#9eb4c8;
   background:#071421;
-  font-size:9px;
+  font-size:11px;
   font-weight:800;
   letter-spacing:.05em;
 }
@@ -268,29 +268,29 @@
 .tour-top-btn{border:1px solid #35506b;background:#0c1a2a;color:#bfe6ff;border-radius:10px;padding:7px 10px;font-weight:850;cursor:pointer}
 .tour-top-btn:hover{border-color:#5ee9ff;color:#e8fbff}
 .mission-hero{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0 10px;padding:10px 12px;border:1px solid #2d5a68;border-radius:13px;background:linear-gradient(135deg,rgba(25,74,83,.34),rgba(9,23,34,.8))}
-.mission-hero span{display:block;color:#5ee9ff;font-size:9px;font-weight:950;letter-spacing:.12em}.mission-hero b{display:block;font-size:14px;margin-top:2px}.mission-hero small{max-width:48%;text-align:right;color:#91a8ba;font-size:10px;line-height:1.35}
-.unlock-strip{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.unlock-strip span{font-size:9px;font-weight:850;color:#64798d;border:1px solid #263b4f;background:#071321;border-radius:999px;padding:5px 8px;opacity:.55;transition:.18s ease}.unlock-strip span.open{color:#dfffa1;border-color:#587832;background:#102219;opacity:1;box-shadow:0 0 0 1px rgba(201,255,66,.05)}
-.mission-list>div{display:grid;gap:3px}.mission-list>div b{font-size:10px;color:#d9e6f2}.mission-list>div span{font-size:10px;color:#8097ac}.mission-list>div.done b,.mission-list>div.done span{color:#bde885}
+.mission-hero span{display:block;color:#5ee9ff;font-size:11px;font-weight:950;letter-spacing:.12em}.mission-hero b{display:block;font-size:14px;margin-top:2px}.mission-hero small{max-width:48%;text-align:right;color:#91a8ba;font-size:11px;line-height:1.35}
+.unlock-strip{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.unlock-strip span{font-size:11px;font-weight:850;color:#64798d;border:1px solid #263b4f;background:#071321;border-radius:999px;padding:5px 8px;opacity:.55;transition:.18s ease}.unlock-strip span.open{color:#dfffa1;border-color:#587832;background:#102219;opacity:1;box-shadow:0 0 0 1px rgba(201,255,66,.05)}
+.mission-list>div{display:grid;gap:3px}.mission-list>div b{font-size:11px;color:#d9e6f2}.mission-list>div span{font-size:11px;color:#8097ac}.mission-list>div.done b,.mission-list>div.done span{color:#bde885}
 
 /* Engineering Sandbox */
 .motor-sandbox{margin:14px 0;padding:12px;border:1px solid #2c4a5e;border-radius:15px;background:linear-gradient(150deg,rgba(8,28,40,.95),rgba(11,18,29,.95));box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
-.sandbox-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.sandbox-head span{display:block;color:#5ee9ff;font-size:9px;font-weight:950;letter-spacing:.12em}.sandbox-head b{display:block;font-size:13px;margin-top:2px}.sandbox-head em{font-style:normal;font-size:8px;font-weight:950;color:#c9ff42;border:1px solid #4d6c2c;border-radius:999px;padding:4px 7px;white-space:nowrap}
+.sandbox-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.sandbox-head span{display:block;color:#5ee9ff;font-size:11px;font-weight:950;letter-spacing:.12em}.sandbox-head b{display:block;font-size:13px;margin-top:2px}.sandbox-head em{font-style:normal;font-size:8px;font-weight:950;color:#c9ff42;border:1px solid #4d6c2c;border-radius:999px;padding:4px 7px;white-space:nowrap}
 .sandbox-layout{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;align-items:center}.motor-visual{display:grid;place-items:center;gap:5px;min-height:130px}.motor-ring{width:92px;height:92px;border:8px solid #20364a;border-top-color:#5ee9ff;border-right-color:#c9ff42;border-radius:50%;display:grid;place-items:center;box-shadow:0 0 28px rgba(94,233,255,.08),inset 0 0 20px rgba(0,0,0,.28)}.motor-ring i{width:54px;height:10px;border-radius:99px;background:linear-gradient(90deg,#ff6d83,#ffd36c);display:block;box-shadow:0 0 12px rgba(255,211,108,.22);transform-origin:center}.motor-axis{width:12px;height:12px;border-radius:50%;background:#c6d7e5;margin-top:-75px;box-shadow:0 0 0 4px #0d1a27}.motor-visual small{color:#70869b;font-size:8px}
 .motor-sandbox.running .motor-ring i{animation:motorSpin var(--motor-period,.18s) linear infinite}@keyframes motorSpin{to{transform:rotate(360deg)}}
 .component-rack{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}.component-rack span{font-size:8px;color:#62798f;border:1px solid #263b4f;border-radius:999px;padding:4px 6px;opacity:.45}.component-rack span.open{color:#dfffa1;border-color:#52742e;opacity:1;background:#102218}
-.motor-controls label{display:grid;grid-template-columns:1fr max-content;gap:4px;margin:7px 0;color:#9ab0c2;font-size:9px}.motor-controls label b{color:#e6f2fb}.motor-controls input{grid-column:1/-1;width:100%}.motor-controls button{width:100%;margin-top:5px}.motor-readout{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.motor-readout div{padding:8px;border:1px solid #233d51;border-radius:10px;background:#071321}.motor-readout span{display:block;color:#71879a;font-size:8px}.motor-readout b{display:block;margin-top:2px;font-size:12px;color:#e9f6ff}.sandbox-note{font-size:9px!important;line-height:1.45;color:#73899b!important;margin:9px 0 0!important}
+.motor-controls label{display:grid;grid-template-columns:1fr max-content;gap:4px;margin:7px 0;color:#9ab0c2;font-size:11px}.motor-controls label b{color:#e6f2fb}.motor-controls input{grid-column:1/-1;width:100%}.motor-controls button{width:100%;margin-top:5px}.motor-readout{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.motor-readout div{padding:8px;border:1px solid #233d51;border-radius:10px;background:#071321}.motor-readout span{display:block;color:#71879a;font-size:8px}.motor-readout b{display:block;margin-top:2px;font-size:12px;color:#e9f6ff}.sandbox-note{font-size:11px!important;line-height:1.45;color:#73899b!important;margin:9px 0 0!important}
 
 /* Adaptive Coach */
-.adaptive-coach{position:fixed;right:18px;bottom:18px;z-index:140;max-width:360px;display:grid;grid-template-columns:42px 1fr 28px;gap:9px;align-items:start;padding:11px 12px;border-radius:16px;border:1px solid #35566b;background:rgba(6,18,29,.94);backdrop-filter:blur(14px);box-shadow:0 18px 45px rgba(0,0,0,.34)}.adaptive-coach[hidden]{display:none}.coach-avatar{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#12324b,#0b1f31);font-size:20px}.adaptive-coach b{font-size:11px;color:#e9f7ff}.adaptive-coach p{margin:3px 0 0;color:#91a7b8;font-size:10px;line-height:1.4}.adaptive-coach button{border:0;background:transparent;color:#7790a4;font-size:18px;cursor:pointer}
+.adaptive-coach{position:fixed;right:18px;bottom:18px;z-index:140;max-width:360px;display:grid;grid-template-columns:42px 1fr 28px;gap:9px;align-items:start;padding:11px 12px;border-radius:16px;border:1px solid #35566b;background:rgba(6,18,29,.94);backdrop-filter:blur(14px);box-shadow:0 18px 45px rgba(0,0,0,.34)}.adaptive-coach[hidden]{display:none}.coach-avatar{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#12324b,#0b1f31);font-size:20px}.adaptive-coach b{font-size:11px;color:#e9f7ff}.adaptive-coach p{margin:3px 0 0;color:#91a7b8;font-size:11px;line-height:1.4}.adaptive-coach button{border:0;background:transparent;color:#7790a4;font-size:18px;cursor:pointer}
 
 /* Guided Tour */
-.guided-tour{position:fixed;inset:0;z-index:130;pointer-events:none}.guided-tour[hidden]{display:none}.tour-shade{position:absolute;inset:0;background:rgba(1,7,13,.34);backdrop-filter:blur(1px);pointer-events:none}.tour-card{position:fixed;width:min(340px,calc(100vw - 24px));z-index:132;padding:14px;border-radius:17px;border:1px solid #3d6077;background:linear-gradient(155deg,rgba(8,25,38,.98),rgba(7,16,26,.98));box-shadow:0 24px 60px rgba(0,0,0,.38);pointer-events:auto}.tour-step{display:flex;justify-content:space-between;align-items:center;color:#5ee9ff;font-size:9px;font-weight:950;letter-spacing:.1em}.tour-step em{font-style:normal;color:#7e97ab}.tour-card h2{margin:8px 0 4px;font-size:17px}.tour-card p{margin:0;color:#9fb4c4;font-size:11px;line-height:1.5}.tour-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:12px}.tour-actions button{min-width:72px}.tour-focus{position:relative!important;z-index:131!important;box-shadow:0 0 0 3px rgba(94,233,255,.7),0 0 0 9px rgba(94,233,255,.12)!important;border-radius:12px!important}
+.guided-tour{position:fixed;inset:0;z-index:130;pointer-events:none}.guided-tour[hidden]{display:none}.tour-shade{position:absolute;inset:0;background:rgba(1,7,13,.34);backdrop-filter:blur(1px);pointer-events:none}.tour-card{position:fixed;width:min(340px,calc(100vw - 24px));z-index:132;padding:14px;border-radius:17px;border:1px solid #3d6077;background:linear-gradient(155deg,rgba(8,25,38,.98),rgba(7,16,26,.98));box-shadow:0 24px 60px rgba(0,0,0,.38);pointer-events:auto}.tour-step{display:flex;justify-content:space-between;align-items:center;color:#5ee9ff;font-size:11px;font-weight:950;letter-spacing:.1em}.tour-step em{font-style:normal;color:#7e97ab}.tour-card h2{margin:8px 0 4px;font-size:17px}.tour-card p{margin:0;color:#9fb4c4;font-size:11px;line-height:1.5}.tour-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:12px}.tour-actions button{min-width:72px}.tour-focus{position:relative!important;z-index:131!important;box-shadow:0 0 0 3px rgba(94,233,255,.7),0 0 0 9px rgba(94,233,255,.12)!important;border-radius:12px!important}
 
 /* Lightweight celebration */
 .mission-pop{animation:missionPop .45s cubic-bezier(.2,.9,.2,1)}@keyframes missionPop{0%{transform:scale(.98)}55%{transform:scale(1.03)}100%{transform:scale(1)}}
 
 @media(max-width:900px){
-  .sandbox-layout{grid-template-columns:92px minmax(0,1fr);gap:9px}.motor-ring{width:72px;height:72px}.motor-ring i{width:42px}.motor-axis{margin-top:-64px}.adaptive-coach{left:10px;right:10px;bottom:10px;max-width:none}.mission-hero{align-items:flex-start}.mission-hero small{max-width:44%}.motor-readout{gap:5px}.motor-readout b{font-size:10px}
+  .sandbox-layout{grid-template-columns:92px minmax(0,1fr);gap:9px}.motor-ring{width:72px;height:72px}.motor-ring i{width:42px}.motor-axis{margin-top:-64px}.adaptive-coach{left:10px;right:10px;bottom:10px;max-width:none}.mission-hero{align-items:flex-start}.mission-hero small{max-width:44%}.motor-readout{gap:5px}.motor-readout b{font-size:11px}
 }
 @media(max-width:560px){
   .sandbox-layout{grid-template-columns:1fr}.motor-visual{min-height:94px}.motor-ring{width:64px;height:64px}.motor-axis{margin-top:-57px}.component-rack{justify-content:center}.mission-hero{display:block}.mission-hero small{max-width:none;text-align:left;display:block;margin-top:5px}.tour-top-btn{padding:6px 8px}.motor-readout{grid-template-columns:1fr 1fr 1fr}
@@ -299,8 +299,8 @@
 
 /* v0.7 · Engineering 3D + Vision AI */
 .motor3d-shell{position:relative;min-width:0;display:grid;gap:6px}.motor3d-stage{height:240px;border:1px solid #2d5066;border-radius:14px;overflow:hidden;background:radial-gradient(circle at 50% 35%,#153348,#06111d 62%);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-.motor3d-stage:focus-visible{outline:2px solid #5ee9ff;outline-offset:2px}.motor3d-hint{font-size:8px;color:#7891a5;line-height:1.4;text-align:center}.component-rack{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-bottom:8px}.component-rack button{min-height:38px;border:1px solid #29465a;border-radius:10px;background:#081522;color:#8699ab;font-size:9px;display:flex;gap:6px;align-items:center;justify-content:center;opacity:.48;transition:.18s}.component-rack button.open{opacity:1;color:#e8f5ff}.component-rack button.assembled{border-color:#5ee9a6;color:#c9ff42;background:#0a231d;box-shadow:0 0 0 1px rgba(94,233,166,.12)}.component-rack button.next-part{border-color:#5ee9ff;animation:partPulse 1.1s ease-in-out infinite alternate}@keyframes partPulse{to{box-shadow:0 0 18px rgba(94,233,255,.28)}}.motor-action-row{display:grid;grid-template-columns:.8fr 1.2fr;gap:7px;margin-top:5px}.motor-action-row button{width:100%}.motor-sandbox.running .motor3d-stage{box-shadow:0 0 26px rgba(94,233,255,.12),inset 0 1px 0 rgba(255,255,255,.04)}
-.vision-stage-btn.active{border-color:#c9ff42!important;color:#c9ff42!important;box-shadow:0 0 14px rgba(201,255,66,.13)}.vision-dock{position:absolute;z-index:18;right:14px;bottom:146px;width:min(330px,42%);border:1px solid #31536a;border-radius:16px;background:rgba(5,15,25,.92);backdrop-filter:blur(14px);box-shadow:0 24px 70px rgba(0,0,0,.38);overflow:hidden}.vision-dock-head{display:flex;justify-content:space-between;align-items:center;padding:10px 11px;border-bottom:1px solid #20394c}.vision-dock-head b{display:block;font-size:10px;color:#5ee9ff;letter-spacing:.08em}.vision-dock-head small{font-size:8px;color:#8498aa}.vision-dock-head button{min-width:30px;min-height:30px;padding:0;border-radius:9px}.vision-preview{position:relative;aspect-ratio:4/3;background:#02070d;overflow:hidden}.vision-preview video,.vision-preview canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}.vision-preview canvas{pointer-events:none}.vision-readouts{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px}.vision-readouts span{padding:7px;border:1px solid #243f52;border-radius:9px;background:#07131e;color:#7890a3;font-size:8px}.vision-readouts b{display:block;margin-top:2px;color:#eef9ff;font-size:10px}.vision-quest{margin:0 8px 8px;padding:9px;border:1px solid #29465a;border-radius:11px;background:#081724}.vision-quest b{font-size:9px;color:#c9ff42}.vision-quest p{font-size:8px;line-height:1.45;color:#9bb0c1;margin:4px 0 7px}.vision-progress{height:6px;background:#172b3b;border-radius:99px;overflow:hidden}.vision-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5ee9ff,#c9ff42);transition:width .16s}.vision-privacy{display:block;padding:0 10px 10px;color:#6e8394;font-size:7px;line-height:1.4}.vision-dock.loading::after{content:'Memuat model Vision AI…';position:absolute;inset:40px 0 0;display:grid;place-items:center;background:rgba(2,7,13,.72);color:#dff7ff;font-size:10px;font-weight:900;z-index:5}
+.motor3d-stage:focus-visible{outline:2px solid #5ee9ff;outline-offset:2px}.motor3d-hint{font-size:8px;color:#7891a5;line-height:1.4;text-align:center}.component-rack{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-bottom:8px}.component-rack button{min-height:38px;border:1px solid #29465a;border-radius:10px;background:#081522;color:#8699ab;font-size:11px;display:flex;gap:6px;align-items:center;justify-content:center;opacity:.48;transition:.18s}.component-rack button.open{opacity:1;color:#e8f5ff}.component-rack button.assembled{border-color:#5ee9a6;color:#c9ff42;background:#0a231d;box-shadow:0 0 0 1px rgba(94,233,166,.12)}.component-rack button.next-part{border-color:#5ee9ff;animation:partPulse 1.1s ease-in-out infinite alternate}@keyframes partPulse{to{box-shadow:0 0 18px rgba(94,233,255,.28)}}.motor-action-row{display:grid;grid-template-columns:.8fr 1.2fr;gap:7px;margin-top:5px}.motor-action-row button{width:100%}.motor-sandbox.running .motor3d-stage{box-shadow:0 0 26px rgba(94,233,255,.12),inset 0 1px 0 rgba(255,255,255,.04)}
+.vision-stage-btn.active{border-color:#c9ff42!important;color:#c9ff42!important;box-shadow:0 0 14px rgba(201,255,66,.13)}.vision-dock{position:absolute;z-index:18;right:14px;bottom:146px;width:min(330px,42%);border:1px solid #31536a;border-radius:16px;background:rgba(5,15,25,.92);backdrop-filter:blur(14px);box-shadow:0 24px 70px rgba(0,0,0,.38);overflow:hidden}.vision-dock-head{display:flex;justify-content:space-between;align-items:center;padding:10px 11px;border-bottom:1px solid #20394c}.vision-dock-head b{display:block;font-size:11px;color:#5ee9ff;letter-spacing:.08em}.vision-dock-head small{font-size:8px;color:#8498aa}.vision-dock-head button{min-width:30px;min-height:30px;padding:0;border-radius:9px}.vision-preview{position:relative;aspect-ratio:4/3;background:#02070d;overflow:hidden}.vision-preview video,.vision-preview canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}.vision-preview canvas{pointer-events:none}.vision-readouts{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px}.vision-readouts span{padding:7px;border:1px solid #243f52;border-radius:9px;background:#07131e;color:#7890a3;font-size:8px}.vision-readouts b{display:block;margin-top:2px;color:#eef9ff;font-size:11px}.vision-quest{margin:0 8px 8px;padding:9px;border:1px solid #29465a;border-radius:11px;background:#081724}.vision-quest b{font-size:11px;color:#c9ff42}.vision-quest p{font-size:8px;line-height:1.45;color:#9bb0c1;margin:4px 0 7px}.vision-progress{height:6px;background:#172b3b;border-radius:99px;overflow:hidden}.vision-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5ee9ff,#c9ff42);transition:width .16s}.vision-privacy{display:block;padding:0 10px 10px;color:#6e8394;font-size:7px;line-height:1.4}.vision-dock.loading::after{content:'Memuat model Vision AI…';position:absolute;inset:40px 0 0;display:grid;place-items:center;background:rgba(2,7,13,.72);color:#dff7ff;font-size:11px;font-weight:900;z-index:5}
 @media(max-width:900px){.motor3d-stage{height:210px}.vision-dock{right:8px;left:8px;bottom:122px;width:auto}.vision-preview{aspect-ratio:16/9;max-height:220px}.sandbox-layout{grid-template-columns:1fr!important}}
 
 /* v0.8.0 JOY */
@@ -308,7 +308,7 @@
 .boot-mode.pulse{animation:joyPulse 1.1s ease-in-out infinite}@keyframes joyPulse{50%{box-shadow:0 0 0 7px rgba(201,255,66,.22)}}
 .volta{position:fixed;left:14px;bottom:14px;z-index:60;display:flex;gap:9px;align-items:flex-start;max-width:min(340px,86vw);padding:10px 12px;border:1px solid #487230;border-radius:16px;background:rgba(5,15,25,.95);color:#eef8ff;box-shadow:0 14px 40px #0008;transform:translateY(130%);opacity:0;transition:.3s ease;pointer-events:none}.volta.show{transform:none;opacity:1}.v-face{font-size:22px}.volta p{margin:0;font-size:12px;line-height:1.5}
 .joy-burst{position:fixed;bottom:25%;z-index:70;font-size:26px;pointer-events:none;animation:joyBurst 1.2s ease-out forwards}@keyframes joyBurst{to{transform:translate(var(--dx),var(--dy)) rotate(260deg);opacity:0}}
-.joy-quest{margin:12px 0;padding:12px;border:1px solid #487230;border-radius:14px;background:linear-gradient(135deg,rgba(201,255,66,.08),#071524)}.joy-quest.won{border-color:#c9ff42;box-shadow:0 0 22px rgba(201,255,66,.35)}.jq-top{display:flex;justify-content:space-between;align-items:center;gap:8px}.jq-top b{color:#c9ff42;font-size:13px}.jq-top button{min-height:32px;font-size:11px}.joy-quest p{font-size:12px;line-height:1.5;margin:8px 0}.jq-meter{position:relative;height:12px;border-radius:99px;background:#132437;overflow:hidden}.jq-meter i{position:absolute;left:0;top:0;bottom:0;background:#5ee9ff;transition:width .2s}.jq-meter u{position:absolute;top:0;bottom:0;background:rgba(201,255,66,.45);border:1px solid #c9ff42}.jq-chips{display:flex;flex-wrap:wrap;gap:5px;margin:9px 0}.jq-chips span{font-size:10px;padding:4px 8px;border-radius:99px;border:1px solid #29465a;color:#9bb0c1}.joy-quest small{display:block;margin-top:6px;font-size:10px;color:#728aa2}
+.joy-quest{margin:12px 0;padding:12px;border:1px solid #487230;border-radius:14px;background:linear-gradient(135deg,rgba(201,255,66,.08),#071524)}.joy-quest.won{border-color:#c9ff42;box-shadow:0 0 22px rgba(201,255,66,.35)}.jq-top{display:flex;justify-content:space-between;align-items:center;gap:8px}.jq-top b{color:#c9ff42;font-size:13px}.jq-top button{min-height:32px;font-size:11px}.joy-quest p{font-size:12px;line-height:1.5;margin:8px 0}.jq-meter{position:relative;height:12px;border-radius:99px;background:#132437;overflow:hidden}.jq-meter i{position:absolute;left:0;top:0;bottom:0;background:#5ee9ff;transition:width .2s}.jq-meter u{position:absolute;top:0;bottom:0;background:rgba(201,255,66,.45);border:1px solid #c9ff42}.jq-chips{display:flex;flex-wrap:wrap;gap:5px;margin:9px 0}.jq-chips span{font-size:11px;padding:4px 8px;border-radius:99px;border:1px solid #29465a;color:#9bb0c1}.joy-quest small{display:block;margin-top:6px;font-size:11px;color:#728aa2}
 @media(prefers-reduced-motion:reduce){.volta,.boot-mode.pulse{animation:none;transition:none}}
 
 /* v0.8.1 Motor Sandbox: panggung 3D besar, 1 kolom, teks terbaca */
@@ -365,10 +365,10 @@
   display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px 10px;
   background:linear-gradient(180deg,rgba(4,13,22,.96),rgba(4,13,22,.55),transparent);z-index:3
 }
-.engineering-studio-head span{display:block;color:#5ee9ff;font-size:9px;font-weight:950;letter-spacing:.16em}
+.engineering-studio-head span{display:block;color:#5ee9ff;font-size:11px;font-weight:950;letter-spacing:.16em}
 .engineering-studio-head b{display:block;color:#eef8ff;font-size:15px;margin-top:2px}
 .engineering-studio-actions{display:flex;gap:6px}
-.engineering-studio-actions button{min-height:34px;padding:6px 9px;font-size:10px;background:rgba(7,21,33,.86)}
+.engineering-studio-actions button{min-height:34px;padding:6px 9px;font-size:11px;background:rgba(7,21,33,.86)}
 .engineering-studio .motor3d-stage{
   position:relative!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:auto!important;
   border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important
@@ -376,7 +376,7 @@
 .vision-wire-hud{position:absolute;top:72px;right:16px;z-index:7;min-width:220px;padding:10px 11px;border-radius:14px;border:1px solid rgba(94,233,255,.24);background:linear-gradient(180deg,rgba(6,19,31,.88),rgba(4,12,20,.82));backdrop-filter:blur(8px);box-shadow:0 14px 30px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.04)}
 .vision-wire-hud[hidden]{display:none}
 .vision-wire-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px}
-.vision-wire-head b{font-size:10px;letter-spacing:.08em;color:#5ee9ff}
+.vision-wire-head b{font-size:11px;letter-spacing:.08em;color:#5ee9ff}
 .vision-wire-head span{font-size:8px;color:#8fb3c7;text-transform:uppercase;letter-spacing:.08em}
 .vision-wire-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .vision-wire-grid span{padding:8px 9px;border:1px solid rgba(94,233,255,.14);border-radius:10px;background:rgba(8,20,32,.76);font-size:8px;color:#86a1b5}
@@ -391,7 +391,7 @@
 }
 .engineering-studio-hud div{padding:8px 10px;text-align:center;border-right:1px solid rgba(94,233,255,.13)}
 .engineering-studio-hud div:last-child{border-right:0}
-.engineering-studio-hud span{display:block;color:#6f8998;font-size:9px}
+.engineering-studio-hud span{display:block;color:#6f8998;font-size:11px}
 .engineering-studio-hud b{display:block;margin-top:2px;color:#eaf9ff;font-size:14px}
 .engineering-gesture-hud{
   position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:4;
@@ -400,7 +400,7 @@
 }
 .engineering-gesture-hud span,.engineering-gesture-hud b{
   padding:5px 8px;border:1px solid #29475a;border-radius:999px;background:rgba(5,16,25,.78);
-  color:#9bb0be;font-size:9px;font-weight:800;backdrop-filter:blur(8px)
+  color:#9bb0be;font-size:11px;font-weight:800;backdrop-filter:blur(8px)
 }
 .engineering-gesture-hud b{color:#c9ff42;border-color:#4b6930}
 .engineering-gesture-hud.vision-live b{color:#5ee9ff;border-color:#32667a}
@@ -414,8 +414,8 @@
 }
 .motor-stage-callout span{color:#5ee9ff;font-size:8px;font-weight:950;letter-spacing:.12em}
 .motor-stage-callout b{font-size:12px;color:#e9f6ff}
-.motor-stage-callout p{margin:0;color:#7f97a8;font-size:10px;line-height:1.45}
-.motor-stage-callout button{margin-top:5px;min-height:34px;font-size:10px}
+.motor-stage-callout p{margin:0;color:#7f97a8;font-size:11px;line-height:1.45}
+.motor-stage-callout button{margin-top:5px;min-height:34px;font-size:11px}
 .motor3d-side-info{display:block!important}
 
 .engineering-studio.zoomed{
@@ -442,7 +442,7 @@ body.engineering-zoom{overflow:hidden!important}
 
 @media(max-width:900px){
   .engineering-studio-head{padding:10px 9px 7px}.engineering-studio-head b{font-size:12px}
-  .engineering-studio-actions button{min-height:32px;font-size:9px}
+  .engineering-studio-actions button{min-height:32px;font-size:11px}
   .engineering-studio-hud{bottom:72px;width:94%;grid-template-columns:repeat(2,1fr)}
   .engineering-studio-hud div:nth-child(2){border-right:0}.engineering-studio-hud div:nth-child(-n+2){border-bottom:1px solid rgba(94,233,255,.13)}
   .engineering-gesture-hud{bottom:10px;gap:4px}.engineering-gesture-hud span{display:none}.engineering-gesture-hud b{font-size:8px}
@@ -450,7 +450,7 @@ body.engineering-zoom{overflow:hidden!important}
   .vision-dock{z-index:24}
 }
 @media(max-width:560px){
-  .engineering-studio-head{padding-right:8px}.engineering-studio-head div:first-child b{font-size:10px}
+  .engineering-studio-head{padding-right:8px}.engineering-studio-head div:first-child b{font-size:11px}
   .engineering-studio-actions button:not(#motorZoom){display:none}
   .engineering-studio-hud{bottom:54px}
   .engineering-studio-hud span{font-size:8px}.engineering-studio-hud b{font-size:12px}
@@ -459,7 +459,7 @@ body.engineering-zoom{overflow:hidden!important}
 
 .stage.engineering-mode .stage-tools{z-index:28!important}
 
-@media(max-width:900px){.vision-wire-hud{top:62px;right:10px;left:10px;min-width:0}.vision-wire-head span{font-size:7px}.vision-wire-grid b{font-size:10px}}
+@media(max-width:900px){.vision-wire-hud{top:62px;right:10px;left:10px;min-width:0}.vision-wire-head span{font-size:7px}.vision-wire-grid b{font-size:11px}}
 @media(max-width:640px){.vision-wire-hud{top:auto;bottom:138px;padding:8px 9px}.vision-wire-grid{grid-template-columns:1fr 1fr}}
 
 
@@ -468,8 +468,8 @@ body.engineering-zoom{overflow:hidden!important}
 .reveal-row button{width:100%;min-width:0!important;max-width:100%;padding:8px 4px!important;overflow:hidden;display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;column-gap:5px;align-items:center;justify-content:center;line-height:1.05}
 .reveal-row button .reveal-eye{grid-row:1/3;font-size:13px;opacity:.85}.reveal-row button b{font-size:14px}.reveal-row button small{font-size:8px;color:#8299ad;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:82px}.reveal-row button[aria-pressed=true] .reveal-eye{color:#7ef0a8}
 
-.mission-gate{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:18px;isolation:isolate}.mission-gate[hidden]{display:none}.mission-gate-backdrop{position:absolute;inset:0;background:rgba(2,8,14,.88);background-image:radial-gradient(circle at 50% 18%,rgba(94,233,255,.10),transparent 34%),linear-gradient(rgba(38,73,101,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(38,73,101,.10) 1px,transparent 1px);background-size:auto,44px 44px,44px 44px;animation:gateBackdropIn .35s ease both}.mission-gate-card{position:relative;z-index:1;width:min(1180px,96vw);max-height:93vh;overflow:auto;padding:18px;border:1px solid #284b68;border-radius:22px;background:linear-gradient(180deg,rgba(7,19,33,.98),rgba(7,14,25,.99));box-shadow:0 30px 100px rgba(0,0,0,.55);animation:gateCardIn .42s cubic-bezier(.2,.75,.25,1) both}.mission-gate-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.mission-gate-head span{display:block;color:#5ee9ff;font-size:10px;font-weight:900;letter-spacing:.16em}.mission-gate-head h2{margin:6px 0 0;font-size:clamp(22px,2.5vw,34px);line-height:1.05}.mission-gate-head>button{min-height:36px}.mission-gate-lead{max-width:900px;margin:10px 0 12px;color:#a9bbcc}.mission-gate-mode{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.mission-gate-mode button{min-height:38px;padding:7px 11px}.mission-gate-mode button.active{border-color:#59e6a1;background:#103126}.mission-gate-mode span{font-size:11px;color:#8399ad}.gate-progress{height:8px;margin:12px 0 14px;border-radius:999px;border:1px solid #203c55;background:#08131f;overflow:hidden}.gate-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5ee9ff,#83f58b,#ffd45e);box-shadow:0 0 16px rgba(94,233,255,.45);transition:width .28s ease}.gate-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.gate-puzzle{min-width:0;padding:13px;border-radius:15px;border:1px solid #243d58;background:linear-gradient(180deg,#091827,#07121f);display:grid;gap:9px;align-content:start;transition:.2s}.gate-puzzle.solved{border-color:#39795a;box-shadow:inset 0 0 0 1px rgba(94,233,166,.13),0 10px 30px rgba(0,0,0,.18)}.gate-title{display:flex;justify-content:space-between;gap:8px;align-items:center}.gate-title b{font-size:14px}.gate-title span{font-size:10px;padding:3px 7px;border-radius:999px;border:1px solid #294c68;background:#0a2032;color:#6de8ff}.gate-puzzle p{margin:0;color:#8da2b5;font-size:11px}.gate-bank{display:flex;flex-wrap:wrap;gap:7px;min-height:44px}.gate-piece{position:relative;min-width:0;min-height:40px;padding:8px 10px;border-radius:11px;background:#10243a;border-color:#355675;touch-action:none;user-select:none;-webkit-user-select:none}.gate-piece.selected{outline:2px solid #ffd45e;outline-offset:2px}.gate-piece.assigned{opacity:.48}.gate-piece.pole-n{background:linear-gradient(180deg,#7d2534,#4e1721)}.gate-piece.pole-s{background:linear-gradient(180deg,#236084,#173d55)}.gate-slots{display:grid;gap:7px}.gate-slots.cols2{grid-template-columns:repeat(2,minmax(0,1fr))}.gate-slots.cols3{grid-template-columns:repeat(3,minmax(0,1fr))}.gate-slot{min-width:0;min-height:72px;padding:8px 5px;border:1px dashed #42617b;background:#07111d;display:grid;place-items:center;align-content:center;gap:2px;touch-action:none}.gate-slot b{font-size:12px}.gate-slot small{font-size:9px;color:#7f94a7;text-align:center}.gate-slot.hot{border-color:#ffd45e;background:#2a2412;box-shadow:0 0 18px rgba(255,212,94,.14)}.gate-slot.filled{border-style:solid;border-color:#4a7594;background:#0b2032}.gate-slot.correct{border-color:#43a46e;background:#0b2a20}.gate-slot.wrong{animation:gateWrong .32s ease;border-color:#d86b69;background:#351718}.gate-feedback{min-height:38px;padding:8px 9px;border-radius:10px;background:#06101b;border:1px solid #1f3851;color:#a5b7c8;font-size:10px}.mission-gate-foot{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid #1d3349}.mission-gate-foot div{display:grid}.mission-gate-foot b{font-size:12px}.mission-gate-foot span{font-size:10px;color:#8095a8}.mission-gate-foot .primary:disabled{opacity:.5;cursor:not-allowed}.gate-drag-ghost{position:fixed;z-index:100;pointer-events:none;transform:translate(-50%,-50%) scale(1.05);padding:10px 13px;border-radius:12px;border:1px solid #7cecff;background:#0c2235;color:#fff;font-weight:800;box-shadow:0 16px 35px rgba(0,0,0,.45),0 0 22px rgba(94,233,255,.22);white-space:nowrap}.gate-hand-cursor{position:fixed;z-index:110;pointer-events:none;width:52px;height:52px;border-radius:50%;border:2px solid #c9ff42;background:rgba(7,20,30,.70);box-shadow:0 0 25px rgba(201,255,66,.24);transform:translate(-50%,-50%);display:grid;place-items:center}.gate-hand-cursor[hidden]{display:none}.gate-hand-cursor i{width:10px;height:10px;border-radius:50%;background:#c9ff42}.gate-hand-cursor span{position:absolute;top:55px;font-size:8px;font-weight:900;color:#dfffa4;background:#07131e;padding:3px 6px;border-radius:999px}.gate-hand-cursor.pinching{transform:translate(-50%,-50%) scale(.78);border-color:#ffd45e}.gate-cinematic{position:absolute;inset:0;z-index:30;display:grid;place-items:center;pointer-events:none;background:rgba(3,11,18,.0);opacity:0;visibility:hidden}.gate-cinematic i{position:absolute;width:120px;height:120px;border:2px solid #5ee9ff;border-radius:50%;box-shadow:0 0 45px rgba(94,233,255,.28)}.gate-cinematic div{text-align:center;z-index:2;opacity:0;transform:scale(.92)}.gate-cinematic span{display:block;font-size:10px;letter-spacing:.2em;color:#5ee9ff}.gate-cinematic b{display:block;margin-top:7px;font-size:30px;letter-spacing:.05em}.mission-gate.cinematic .mission-gate-card>*:not(.gate-cinematic){animation:gateContentOut .36s ease forwards}.mission-gate.cinematic .gate-cinematic{visibility:visible;animation:gateCineBg .9s ease forwards}.mission-gate.cinematic .gate-cinematic i{animation:gateRing .9s ease forwards}.mission-gate.cinematic .gate-cinematic div{animation:gateCineText .9s ease forwards}
-.stage-arrival{position:absolute;inset:0;z-index:15;display:grid;place-items:center;pointer-events:none;opacity:0;visibility:hidden;background:radial-gradient(circle at 50% 50%,rgba(94,233,255,.08),rgba(3,10,17,.10) 46%,transparent 72%)}.stage-arrival.active{visibility:visible;animation:stageArrival 1.15s ease both}.stage-arrival>div{text-align:center;padding:16px 22px;border:1px solid rgba(94,233,255,.28);border-radius:16px;background:rgba(4,15,24,.82);box-shadow:0 12px 40px rgba(0,0,0,.35)}.stage-arrival span{display:block;font-size:9px;letter-spacing:.18em;color:#5ee9ff}.stage-arrival b{display:block;font-size:24px;margin:4px 0}.stage-arrival small{color:#9fb3c5}.arrival-ring{position:absolute;border:1px solid rgba(94,233,255,.30);border-radius:50%;width:150px;height:150px}.arrival-ring.r2{width:270px;height:270px;opacity:.5}.stage-arrival.active .arrival-ring{animation:arrivalRing 1.15s ease both}.stage-arrival.active .arrival-ring.r2{animation-delay:.08s}.arrival-scan{position:absolute;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,#5ee9ff,transparent);box-shadow:0 0 18px #5ee9ff}.stage-arrival.active .arrival-scan{animation:arrivalScan 1.15s ease both}
+.mission-gate{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:18px;isolation:isolate}.mission-gate[hidden]{display:none}.mission-gate-backdrop{position:absolute;inset:0;background:rgba(2,8,14,.88);background-image:radial-gradient(circle at 50% 18%,rgba(94,233,255,.10),transparent 34%),linear-gradient(rgba(38,73,101,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(38,73,101,.10) 1px,transparent 1px);background-size:auto,44px 44px,44px 44px;animation:gateBackdropIn .35s ease both}.mission-gate-card{position:relative;z-index:1;width:min(1180px,96vw);max-height:93vh;overflow:auto;padding:18px;border:1px solid #284b68;border-radius:22px;background:linear-gradient(180deg,rgba(7,19,33,.98),rgba(7,14,25,.99));box-shadow:0 30px 100px rgba(0,0,0,.55);animation:gateCardIn .42s cubic-bezier(.2,.75,.25,1) both}.mission-gate-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.mission-gate-head span{display:block;color:#5ee9ff;font-size:11px;font-weight:900;letter-spacing:.16em}.mission-gate-head h2{margin:6px 0 0;font-size:clamp(22px,2.5vw,34px);line-height:1.05}.mission-gate-head>button{min-height:36px}.mission-gate-lead{max-width:900px;margin:10px 0 12px;color:#a9bbcc}.mission-gate-mode{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.mission-gate-mode button{min-height:38px;padding:7px 11px}.mission-gate-mode button.active{border-color:#59e6a1;background:#103126}.mission-gate-mode span{font-size:11px;color:#8399ad}.gate-progress{height:8px;margin:12px 0 14px;border-radius:999px;border:1px solid #203c55;background:#08131f;overflow:hidden}.gate-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5ee9ff,#83f58b,#ffd45e);box-shadow:0 0 16px rgba(94,233,255,.45);transition:width .28s ease}.gate-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.gate-puzzle{min-width:0;padding:13px;border-radius:15px;border:1px solid #243d58;background:linear-gradient(180deg,#091827,#07121f);display:grid;gap:9px;align-content:start;transition:.2s}.gate-puzzle.solved{border-color:#39795a;box-shadow:inset 0 0 0 1px rgba(94,233,166,.13),0 10px 30px rgba(0,0,0,.18)}.gate-title{display:flex;justify-content:space-between;gap:8px;align-items:center}.gate-title b{font-size:14px}.gate-title span{font-size:11px;padding:3px 7px;border-radius:999px;border:1px solid #294c68;background:#0a2032;color:#6de8ff}.gate-puzzle p{margin:0;color:#8da2b5;font-size:11px}.gate-bank{display:flex;flex-wrap:wrap;gap:7px;min-height:44px}.gate-piece{position:relative;min-width:0;min-height:40px;padding:8px 10px;border-radius:11px;background:#10243a;border-color:#355675;touch-action:none;user-select:none;-webkit-user-select:none}.gate-piece.selected{outline:2px solid #ffd45e;outline-offset:2px}.gate-piece.assigned{opacity:.48}.gate-piece.pole-n{background:linear-gradient(180deg,#7d2534,#4e1721)}.gate-piece.pole-s{background:linear-gradient(180deg,#236084,#173d55)}.gate-slots{display:grid;gap:7px}.gate-slots.cols2{grid-template-columns:repeat(2,minmax(0,1fr))}.gate-slots.cols3{grid-template-columns:repeat(3,minmax(0,1fr))}.gate-slot{min-width:0;min-height:72px;padding:8px 5px;border:1px dashed #42617b;background:#07111d;display:grid;place-items:center;align-content:center;gap:2px;touch-action:none}.gate-slot b{font-size:12px}.gate-slot small{font-size:11px;color:#7f94a7;text-align:center}.gate-slot.hot{border-color:#ffd45e;background:#2a2412;box-shadow:0 0 18px rgba(255,212,94,.14)}.gate-slot.filled{border-style:solid;border-color:#4a7594;background:#0b2032}.gate-slot.correct{border-color:#43a46e;background:#0b2a20}.gate-slot.wrong{animation:gateWrong .32s ease;border-color:#d86b69;background:#351718}.gate-feedback{min-height:38px;padding:8px 9px;border-radius:10px;background:#06101b;border:1px solid #1f3851;color:#a5b7c8;font-size:11px}.mission-gate-foot{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid #1d3349}.mission-gate-foot div{display:grid}.mission-gate-foot b{font-size:12px}.mission-gate-foot span{font-size:11px;color:#8095a8}.mission-gate-foot .primary:disabled{opacity:.5;cursor:not-allowed}.gate-drag-ghost{position:fixed;z-index:100;pointer-events:none;transform:translate(-50%,-50%) scale(1.05);padding:10px 13px;border-radius:12px;border:1px solid #7cecff;background:#0c2235;color:#fff;font-weight:800;box-shadow:0 16px 35px rgba(0,0,0,.45),0 0 22px rgba(94,233,255,.22);white-space:nowrap}.gate-hand-cursor{position:fixed;z-index:110;pointer-events:none;width:52px;height:52px;border-radius:50%;border:2px solid #c9ff42;background:rgba(7,20,30,.70);box-shadow:0 0 25px rgba(201,255,66,.24);transform:translate(-50%,-50%);display:grid;place-items:center}.gate-hand-cursor[hidden]{display:none}.gate-hand-cursor i{width:10px;height:10px;border-radius:50%;background:#c9ff42}.gate-hand-cursor span{position:absolute;top:55px;font-size:8px;font-weight:900;color:#dfffa4;background:#07131e;padding:3px 6px;border-radius:999px}.gate-hand-cursor.pinching{transform:translate(-50%,-50%) scale(.78);border-color:#ffd45e}.gate-cinematic{position:absolute;inset:0;z-index:30;display:grid;place-items:center;pointer-events:none;background:rgba(3,11,18,.0);opacity:0;visibility:hidden}.gate-cinematic i{position:absolute;width:120px;height:120px;border:2px solid #5ee9ff;border-radius:50%;box-shadow:0 0 45px rgba(94,233,255,.28)}.gate-cinematic div{text-align:center;z-index:2;opacity:0;transform:scale(.92)}.gate-cinematic span{display:block;font-size:11px;letter-spacing:.2em;color:#5ee9ff}.gate-cinematic b{display:block;margin-top:7px;font-size:30px;letter-spacing:.05em}.mission-gate.cinematic .mission-gate-card>*:not(.gate-cinematic){animation:gateContentOut .36s ease forwards}.mission-gate.cinematic .gate-cinematic{visibility:visible;animation:gateCineBg .9s ease forwards}.mission-gate.cinematic .gate-cinematic i{animation:gateRing .9s ease forwards}.mission-gate.cinematic .gate-cinematic div{animation:gateCineText .9s ease forwards}
+.stage-arrival{position:absolute;inset:0;z-index:15;display:grid;place-items:center;pointer-events:none;opacity:0;visibility:hidden;background:radial-gradient(circle at 50% 50%,rgba(94,233,255,.08),rgba(3,10,17,.10) 46%,transparent 72%)}.stage-arrival.active{visibility:visible;animation:stageArrival 1.15s ease both}.stage-arrival>div{text-align:center;padding:16px 22px;border:1px solid rgba(94,233,255,.28);border-radius:16px;background:rgba(4,15,24,.82);box-shadow:0 12px 40px rgba(0,0,0,.35)}.stage-arrival span{display:block;font-size:11px;letter-spacing:.18em;color:#5ee9ff}.stage-arrival b{display:block;font-size:24px;margin:4px 0}.stage-arrival small{color:#9fb3c5}.arrival-ring{position:absolute;border:1px solid rgba(94,233,255,.30);border-radius:50%;width:150px;height:150px}.arrival-ring.r2{width:270px;height:270px;opacity:.5}.stage-arrival.active .arrival-ring{animation:arrivalRing 1.15s ease both}.stage-arrival.active .arrival-ring.r2{animation-delay:.08s}.arrival-scan{position:absolute;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,#5ee9ff,transparent);box-shadow:0 0 18px #5ee9ff}.stage-arrival.active .arrival-scan{animation:arrivalScan 1.15s ease both}
 @keyframes gateBackdropIn{from{opacity:0}to{opacity:1}}@keyframes gateCardIn{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}@keyframes gateWrong{0%,100%{transform:none}35%{transform:translateX(-5px)}70%{transform:translateX(5px)}}@keyframes gateContentOut{to{opacity:0;transform:scale(.985)}}@keyframes gateCineBg{0%{opacity:0;background:rgba(3,11,18,0)}35%,70%{opacity:1;background:rgba(3,11,18,.94)}100%{opacity:0;background:rgba(3,11,18,0)}}@keyframes gateRing{0%{opacity:0;transform:scale(.3)}45%{opacity:1}100%{opacity:0;transform:scale(5.5)}}@keyframes gateCineText{15%{opacity:0;transform:scale(.92)}40%,70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.06)}}@keyframes stageArrival{0%{opacity:0}18%,60%{opacity:1}100%{opacity:0}}@keyframes arrivalRing{0%{opacity:0;transform:scale(.35)}35%{opacity:1}100%{opacity:0;transform:scale(3.4)}}@keyframes arrivalScan{0%{opacity:0;top:15%}20%{opacity:1}80%{opacity:1}100%{opacity:0;top:85%}}
 @media(max-width:980px){.gate-grid{grid-template-columns:1fr}.mission-gate-card{max-height:95vh}.mission-gate{padding:10px}.mission-gate-head h2{font-size:23px}.gate-piece{min-height:44px}.gate-slot{min-height:64px}}
 @media(max-width:640px){.mission-gate-card{padding:13px;border-radius:17px}.gate-slots.cols2,.gate-slots.cols3{grid-template-columns:1fr}.mission-gate-foot{display:grid}.mission-gate-foot .primary{width:100%}.reveal-row button small{font-size:7px;max-width:64px}}
@@ -491,10 +491,33 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
 .gate-hand-cursor{transition:left .05s linear,top .05s linear}
 #missionGate .hover{outline:2px dashed #c9ff42;outline-offset:3px}
 .gate-hand-cursor{background:conic-gradient(rgba(201,255,66,.65) calc(var(--p,0)*1turn),rgba(7,20,30,.70) 0)}
-.gate-hand-cursor span{white-space:nowrap;font-size:9px}
+.gate-hand-cursor span{white-space:nowrap;font-size:11px}
 
 /* v0.9.3D · jangan sisakan transform pada kartu gerbang (membuat elemen fixed relatif ke kartu) */
 .mission-gate-card{animation-fill-mode:backwards}
+/* ===== v2 · tebakan beralasan, refleksi, latihan arah, grafik bukti ===== */
+.chip-row{display:flex;flex-wrap:wrap;gap:6px}
+.chip-row button{min-height:44px;padding:7px 12px;font-size:13px;border-radius:999px}
+.chip-row button[aria-pressed="true"]{background:#153d35;border-color:var(--green);color:#dcfff0;font-weight:800}
+.reason-box{display:grid;gap:8px;margin:10px 0;padding:11px;border:1px solid #223c5b;border-radius:12px;background:#07111e}
+.mini-note{margin:0;font-size:13px;color:#9db2ca}
+.ghost{background:transparent;border-style:dashed;color:#9db2ca}
+.enrich{margin:10px 0;border:1px dashed #355274;border-radius:10px;padding:8px 10px;font-size:13px;color:#9db2ca}
+.enrich summary{cursor:pointer;font-weight:800;color:#a9c1d8}
+.ledger-simple th:nth-child(4),.ledger-simple td:nth-child(4){display:none}
+.mini-check{display:flex;align-items:center;gap:8px;font-size:13px;color:#9db2ca;margin:6px 0}
+.ev-graph-wrap{margin:10px 0;padding:10px;border:1px solid #2b4d6c;border-radius:12px;background:#081725}
+.ev-graph-wrap canvas{display:block;width:100%;height:auto}
+.ev-graph-wrap small{display:block;margin-top:6px;color:#9db2ca;font-size:12px}
+.dir-card{display:grid;gap:10px;margin:12px 0;padding:14px;border:1px solid #395574;border-radius:14px;background:linear-gradient(145deg,#081725,#0c1b2b)}
+.dir-card details{font-size:13px;color:#9db2ca}.dir-card summary{cursor:pointer;font-weight:800;color:#a9c1d8}
+.dir-top{display:flex;justify-content:space-between;font-size:13px;color:#9db2ca}
+.dir-card svg{width:100%;max-width:280px;height:auto;margin:0 auto;display:block;background:#06111e;border-radius:12px}
+.tell-card{display:grid;gap:10px;margin:12px 0;padding:14px;border:1px solid #395574;border-radius:14px;background:linear-gradient(145deg,#081725,#0c1b2b)}
+.tell-card label{display:grid;gap:5px;font-size:13px;font-weight:700;color:#cfe0f2}
+.tell-card textarea{width:100%;resize:vertical;min-height:62px;padding:9px 10px;border-radius:10px;border:1px solid #355274;background:#06111e;color:#eef7ff;font-weight:400;font-size:15px}
+.phase-tabs button,.top-actions button{min-height:44px}
+
 
 
 /* v0.9.3D-fix — tombol B/I/F tidak boleh tertutup overlay & stage tetap terlihat di layar sempit */
@@ -550,7 +573,7 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
           <h1>Gerakkan kawat.<br><span>Tanpa menyentuhnya.</span></h1>
           <p>Coba demo di bawah: klik dan lihat kawatnya bergerak. Lalu temukan sendiri kenapa, dan rakit motormu.</p>
           <div class="boot-philosophy" id="bootPhilosophy" aria-label="Alur eksplorasi">
-            <span>LIHAT</span><span>TEBAK</span><span>COBA</span><span>AHA</span><span>BUKTIKAN</span><span>REKAYASA</span>
+            <span>Amati</span><span>Tebak</span><span>Selidiki</span><span>Pahami</span><span>Bukti</span><span>Terapkan</span>
           </div>
           <div class="pilar-library-wrap">
             <div class="pilar-library-title"><span>LAB TERPILIH</span><small>Gaya Lorentz · satu aplikasi · satu halaman</small></div>
@@ -628,12 +651,12 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
 
     <aside class="side-panel">
       <nav class="phase-tabs" id="phaseTabs" aria-label="Tahap eksplorasi">
-        <button data-phase="lihat">1 Lihat</button>
+        <button data-phase="lihat">1 Amati</button>
         <button data-phase="tebak">2 Tebak</button>
-        <button data-phase="coba">3 Coba</button>
-        <button data-phase="aha">4 AHA</button>
-        <button data-phase="buktikan">5 Buktikan</button>
-        <button data-phase="rekayasa">6 Rekayasa</button>
+        <button data-phase="coba">3 Selidiki</button>
+        <button data-phase="aha">4 Pahami</button>
+        <button data-phase="buktikan">5 Bukti</button>
+        <button data-phase="rekayasa">6 Terapkan</button>
       </nav>
 
       <button class="primary next-cta" id="nextCta" type="button" title="Pintasan keyboard: N">…</button>
@@ -648,17 +671,33 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
           <span>Kalau sakelar ditutup, apa yang mungkin terjadi pada kawat?</span>
         </div>
         <button class="primary" id="toPredict">Mulai menebak</button>
+        <button type="button" class="ghost" id="openGate">Segarkan dulu: konduktor, kutub, fungsi rig (opsional)</button>
       </section>
 
       <section class="phase-card" data-panel="tebak" hidden>
         <div class="eyebrow">INTUISI · PREDIKSI</div>
         <h1>Tebak dulu. Salah justru berguna.</h1>
-        <p>Tampak depan dipakai sebagai acuan arah.</p>
+        <p>Kamu tidak perlu menghafal arah. Bernalarlah dari sebab dan akibat.</p>
+        <div class="prompt-box"><b>Tebakan 1 · arah</b><span>Kalau baterai dibalik, dorongan pada kawat…</span></div>
         <div class="prediction-grid" id="predictionGrid">
-          <button data-pred="kiri">◀ Kiri</button>
-          <button data-pred="diam">● Diam</button>
-          <button data-pred="kanan">Kanan ▶</button>
+          <button data-pred="balik">↔ Arah dorongan berbalik</button>
+          <button data-pred="sama">→ Arah dorongan tetap sama</button>
+          <button data-pred="hilang">● Kawat tidak lagi didorong</button>
         </div>
+        <div class="prompt-box"><b>Tebakan 2 · faktor</b><span>Apa saja yang membuat dorongan lebih kuat? Boleh lebih dari satu.</span></div>
+        <div class="chip-row" id="factorRow">
+          <button type="button" data-factor="B" aria-pressed="false">Magnet lebih kuat</button>
+          <button type="button" data-factor="V" aria-pressed="false">Baterai bertegangan lebih besar</button>
+          <button type="button" data-factor="R" aria-pressed="false">Hambatan lebih kecil</button>
+          <button type="button" data-factor="warna" aria-pressed="false">Kawat dicat warna lain</button>
+          <button type="button" data-factor="sakelar" aria-pressed="false">Sakelar ditutup lebih keras</button>
+        </div>
+        <div class="reason-box"><b>Dari mana tebakanmu?</b><div class="chip-row" id="reasonRow">
+          <button type="button" data-reason="alami" aria-pressed="false">Pernah mengalaminya</button>
+          <button type="button" data-reason="belajar" aria-pressed="false">Dari pelajaran</button>
+          <button type="button" data-reason="logika" aria-pressed="false">Dari logikaku sendiri</button>
+          <button type="button" data-reason="tebak" aria-pressed="false">Menebak saja</button>
+        </div></div>
         <div class="prompt-box" id="predictionFeedback">Belum ada tebakan yang dikunci.</div>
         <button class="primary" id="lockPrediction">Kunci tebakan & mulai eksperimen</button>
       </section>
@@ -718,8 +757,15 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
       </section>
 
       <section class="phase-card" data-panel="aha" hidden>
-        <div class="eyebrow">AHA · POLA MUNCUL</div>
+        <div class="eyebrow">PAHAMI · POLA MUNCUL</div>
         <h1>Bukan rumus dulu. Temukan polanya.</h1>
+        <div class="prompt-box" id="predResult"></div>
+        <div class="prompt-box" id="factorResult"></div>
+        <div class="reason-box"><b>Setelah mencoba, tebakanku…</b><div class="chip-row" id="reviseRow">
+          <button type="button" data-rev="tepat" aria-pressed="false">Sudah tepat</button>
+          <button type="button" data-rev="ubah" aria-pressed="false">Perlu kuubah</button>
+          <button type="button" data-rev="ragu" aria-pressed="false">Belum yakin</button>
+        </div><p class="mini-note" id="reviseNote"></p></div>
         <div class="pattern-cards">
           <article><span>↔</span><div><b>Arah arus dibalik</b><p>Arah gaya ikut berbalik.</p></div></article>
           <article><span>🧲</span><div><b>B diperbesar</b><p>Besar gaya ikut membesar.</p></div></article>
@@ -728,10 +774,21 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
         <button class="primary" id="revealFormula">Rumuskan temuan</button>
         <div class="formula-panel" id="formulaPanel" hidden>
           <div class="formula">F = B · I · L</div>
-          <p>Pada alat ini, arah arus selalu tegak lurus medan magnet, sehingga <b>θ = 90°</b> dan <b>sin θ = 1</b>.</p>
-          <div class="formula secondary">Umum: F = B · I · L · sin θ</div>
-          <div class="angle-note"><b>α</b> = sudut ayunan kawat &nbsp;•&nbsp; <b>θ</b> = sudut antara I dan B. Keduanya berbeda.</div>
+          <p>Makin kuat medan (<b>B</b>), makin besar arus (<b>I</b>), dan makin panjang kawat di dalam medan (<b>L</b>), makin besar gaya Lorentz (<b>F</b>). Pada rig ini arus ditentukan baterai dan hambatan: <b>I = V ÷ R</b>.</p>
+          <details class="enrich"><summary>Pengayaan (SMA): bagaimana kalau arus tidak tegak lurus medan?</summary>
+            <p>Pada alat ini, arah arus selalu tegak lurus medan magnet, sehingga <b>θ = 90°</b> dan <b>sin θ = 1</b>.</p>
+            <div class="formula secondary">Umum: F = B · I · L · sin θ</div>
+            <div class="angle-note"><b>α</b> = sudut ayunan kawat &nbsp;•&nbsp; <b>θ</b> = sudut antara I dan B. Keduanya berbeda.</div>
+          </details>
         </div>
+        <section class="dir-card" id="dirCard" hidden>
+          <b>Latihan arah gaya</b>
+          <details><summary>Aturan tangan kanan (samakan dengan buku kelasmu)</summary>
+            <p>Ibu jari = arah arus (I). Empat jari = arah medan (B). Telapak tangan mendorong ke arah gaya (F).</p>
+            <p>⊙ berarti medan keluar dari layar, menuju kamu. ⊗ berarti medan masuk ke layar.</p>
+          </details>
+          <div id="dirQ"></div>
+        </section>
         <button id="toProof">Lanjut: buktikan dengan data</button>
       </section>
 
@@ -758,14 +815,16 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
           <button class="primary" id="proofSwitch">Jalankan</button>
           <button id="recordNow">Catat percobaan</button>
         </div>
+        <label class="mini-check"><input type="checkbox" id="ledgerFull"> Tampilkan F ideal (pengayaan)</label>
         <div class="ledger-wrap">
-          <table class="ledger">
-            <thead><tr><th>#</th><th>B</th><th>I</th><th>F ideal</th><th>F efektif</th><th>α</th><th>hasil</th></tr></thead>
+          <table class="ledger ledger-simple" id="ledgerTable">
+            <thead><tr><th>#</th><th>B</th><th>I</th><th>F ideal</th><th>F (N)</th><th>α</th><th>hasil</th></tr></thead>
             <tbody id="ledgerBody"></tbody>
           </table>
         </div>
+        <div class="ev-graph-wrap"><canvas id="proofGraph" width="640" height="260" role="img" aria-label="Grafik gaya terhadap medan magnet dari catatanmu"></canvas><small id="proofGraphCap">Titik-titikmu: gaya (F) terhadap medan magnet (B). Warna menandai arus (I) yang sama.</small></div>
         <div class="prompt-box" id="proofHint">Belum ada data yang cukup untuk membandingkan.</div>
-        <div class="control-grid"><button id="copyReport">Salin laporan bukti</button><button id="toEngineering">Lanjut ke rekayasa</button></div>
+        <div class="control-grid"><button id="copyReport">Salin laporan bukti</button><button id="toEngineering">Terapkan konsepnya</button></div>
       </section>
 
       <section class="phase-card" data-panel="rekayasa" hidden>
@@ -809,16 +868,25 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
             <div><span>Torsi</span><b id="motorTorque">0,000 N·m</b></div>
             <div><span>RPM estimasi</span><b id="motorRPM">0</b></div>
           </div>
-          <p class="sandbox-note">Model motor ini bersifat edukatif: torsi dihitung dari <b>τ = N·B·I·A</b> pada sudut 90°, sedangkan RPM memakai model beban + drag linear sederhana. Gunakan untuk membandingkan kecenderungan, bukan memprediksi motor nyata secara presisi.</p>
+          <p class="sandbox-note">Model motor ini bersifat edukatif: torsi dihitung dari <b>τ = N·B·I·A</b> pada sudut 90°, sedangkan RPM memakai model beban + drag linear sederhana. Gunakan untuk membandingkan kecenderungan, bukan memprediksi motor nyata secara presisi. Motor DC sungguhan memakai komutator yang membalik arus tiap setengah putaran agar kumparan tidak berhenti; bagian itu tidak ada sebagai komponen terpisah di sandbox ini.</p>
         </section>
-        <label class="field-label">Kebutuhan masyarakat / lingkungan
+        <label class="field-label">Aku ingin membuat… supaya… (kebutuhan di sekitarmu)
           <textarea id="needInput" placeholder="Contoh: membuka katup kecil otomatis, memberi tanda getar, memutar kipas mini…"></textarea>
         </label>
-        <label class="field-label">Batasan yang jujur
+        <label class="field-label">Batasannya… (apa yang belum bisa dilakukan)
           <textarea id="constraintInput" placeholder="Contoh: tegangan rendah, gaya kecil, bahan murah, aman untuk siswa…"></textarea>
         </label>
-        <button class="primary" id="makeBrief">Buat brief rekayasa</button>
-        <div class="engineering-brief" id="engineeringBrief">Belum ada brief.</div>
+        <button class="primary" id="makeBrief">Susun rancanganku</button>
+        <div class="engineering-brief" id="engineeringBrief">Rancanganmu akan tampil di sini.</div>
+        <div class="tell-card" id="tellCard">
+          <b>Ceritakan temuanmu</b>
+          <p class="mini-note">Tiga kalimat cukup. Pakai kata-katamu sendiri.</p>
+          <label>Aku menemukan bahwa…<textarea id="learnA" rows="2" maxlength="220" placeholder="Contoh: kalau baterai dibalik, kawat bergerak ke arah sebaliknya."></textarea></label>
+          <label>Buktinya…<textarea id="learnB" rows="2" maxlength="220" placeholder="Contoh: pada catatan 1 dan 2, ..."></textarea></label>
+          <label>Rancanganku berhasil / belum karena…<textarea id="learnC" rows="2" maxlength="220" placeholder="Jelaskan sebab–akibat yang membuat rancanganmu bekerja."></textarea></label>
+          <div class="control-grid"><button type="button" id="copyStory">Salin ceritaku</button><button type="button" class="primary" id="makeCard">Unduh kartu temuan</button></div>
+          <button type="button" class="ghost" id="resetAll">Mulai dari awal</button>
+        </div>
         <div class="reflection-box">
           <b>MODEL CHECK</b>
           <p>Simulator ini menyederhanakan medan magnet, hambatan kontak, panas kawat, sag baterai, hambatan udara, dan fleksibilitas tali. Produk nyata harus menguji ulang semuanya.</p>
@@ -926,10 +994,10 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
     <div class="mission-gate-backdrop"></div>
     <article class="mission-gate-card" id="missionGateCard">
       <header class="mission-gate-head">
-        <div><span>MISSION 00 · GERBANG LORENTZ</span><h2>Kenali bahannya. Susun logikanya. Baru nyalakan rig.</h2></div>
+        <div><span>OPSIONAL · SEGARKAN DULU</span><h2>Konduktor, kutub magnet, dan fungsi tiap bagian rig.</h2></div>
         <button type="button" id="gateSkip">Lewati</button>
       </header>
-      <p class="mission-gate-lead">Tiga puzzle singkat ini bukan tes nilai. Tujuannya supaya saat masuk Lab Maya kamu sudah punya gambaran tentang <b>konduktor</b>, <b>kutub magnet</b>, dan <b>susunan dasar rig</b>.</p>
+      <p class="mission-gate-lead">Tiga puzzle singkat untuk menyegarkan ingatan tentang <b>konduktor</b>, <b>kutub magnet</b>, dan <b>fungsi tiap bagian rig</b>. Ini bukan tes nilai dan boleh dilewati kapan saja.</p>
       <div class="mission-gate-mode">
         <button type="button" id="gateTouchMode" class="active">🖐 Touch / Multitouch</button>
         <button type="button" id="gateVisionMode">✋ Vision AI</button>
@@ -964,24 +1032,24 @@ body.gate-lock .vision-dock .vision-quest,body.gate-lock .vision-dock .vision-pr
           <div class="gate-feedback" id="gatePolesFeedback">N–S atau S–N akan saling tarik. Kutub sama justru menolak.</div>
         </section>
         <section class="gate-puzzle" data-puzzle="rig">
-          <div class="gate-title"><b>3 · Susun logika rig mini</b><span id="gateRigCount">0/3</span></div>
-          <p>Urutkan berdasarkan fungsi: sumber energi → penghantar → medan.</p>
+          <div class="gate-title"><b>3 · Cocokkan benda dengan fungsinya</b><span id="gateRigCount">0/3</span></div>
+          <p>Cocokkan setiap benda dengan fungsinya: sumber energi, jalur arus, atau pemberi medan.</p>
           <div class="gate-bank">
             <button class="gate-piece" type="button" data-group="rig" data-piece="battery">🔋 <span>Baterai</span></button>
             <button class="gate-piece" type="button" data-group="rig" data-piece="wire">〰 <span>Kawat</span></button>
             <button class="gate-piece" type="button" data-group="rig" data-piece="magnet">🧲 <span>Magnet</span></button>
           </div>
           <div class="gate-slots cols3">
-            <button class="gate-slot" type="button" data-group="rig" data-slot="1"><b>1</b><small>sumber energi</small></button>
-            <button class="gate-slot" type="button" data-group="rig" data-slot="2"><b>2</b><small>jalur arus</small></button>
-            <button class="gate-slot" type="button" data-group="rig" data-slot="3"><b>3</b><small>medan magnet</small></button>
+            <button class="gate-slot" type="button" data-group="rig" data-slot="1"><b>Sumber energi</b><small>mendorong arus</small></button>
+            <button class="gate-slot" type="button" data-group="rig" data-slot="2"><b>Jalur arus</b><small>arus lewat di sini</small></button>
+            <button class="gate-slot" type="button" data-group="rig" data-slot="3"><b>Pemberi medan</b><small>membuat medan magnet</small></button>
           </div>
-          <div class="gate-feedback" id="gateRigFeedback">Belum perlu rumus. Cukup pikirkan fungsi setiap benda.</div>
+          <div class="gate-feedback" id="gateRigFeedback">Rangkaian arus itu melingkar. Magnet bukan "setelah" kawat: ia membuat medan di sekitar kawat.</div>
         </section>
       </div>
       <footer class="mission-gate-foot">
-        <div><b id="gateSummary">0/3 puzzle selesai</b><span id="gateHint">Selesaikan semuanya untuk membuka brainstorm.</span></div>
-        <button class="primary" type="button" id="gateEnter" disabled>Masuk brainstorm</button>
+        <div><b id="gateSummary">0/3 puzzle selesai</b><span id="gateHint">Selesaikan semuanya, atau lewati kapan saja.</span></div>
+        <button class="primary" type="button" id="gateEnter" disabled>Lanjut ke lab</button>
       </footer>
       <div class="gate-hand-cursor" id="gateHandCursor" hidden><i></i><span>HAND</span></div>
       <div class="gate-cinematic" id="gateCinematic" aria-hidden="true"><i></i><div><span>MISSION 00 COMPLETE</span><b>RIG LORENTZ ONLINE</b></div></div>
@@ -1044,6 +1112,7 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
   const STORAGE_KEY='pilar-lorentz-session-v093d-fix2';
   const state={
     phase:'lihat', xp:0, prediction:null,
+    learn:{reason:null,revision:null,factors:[],a:'',b:'',c:''},
     params:{V:3.7,R:2.0,B:0.30,L:0.10,mass:0.010,length:0.22,damping:1.45},
     circuit:{on:false,targetPolarity:1,actualPolarity:1,batteryRotation:0,batteryRotationTarget:0,currentActual:0,currentTarget:0},
     dynamics:{alpha:0,omega:0,x:0,fIdeal:0,fieldFactor:1,fEffective:0},
@@ -1073,7 +1142,7 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
           phase:state.phase,xp:state.xp,prediction:state.prediction,params:state.params,
           missions:state.missions,unlocks:state.unlocks,aha:state.aha,reveal:state.reveal,
           evidence:state.evidence.slice(-30),trialSeq:state.trialSeq,engineering:state.engineering,
-          collab:state.collab,ui:{...state.ui,quality:state.ui.quality}
+          collab:state.collab,learn:state.learn,ui:{...state.ui,quality:state.ui.quality}
         };
         sessionStorage.setItem(STORAGE_KEY,JSON.stringify(safe));
       }catch(_){/* file:// atau kebijakan browser dapat membatasi storage */}
@@ -1085,7 +1154,12 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
       const raw=sessionStorage.getItem(STORAGE_KEY);if(!raw)return;
       const saved=JSON.parse(raw);if(!saved||typeof saved!=='object')return;
       for(const key of ['phase','xp','prediction','trialSeq']) if(key in saved)state[key]=saved[key];
-      for(const key of ['params','missions','unlocks','aha','engineering','collab','ui']) if(saved[key]&&typeof saved[key]==='object')Object.assign(state[key],saved[key]);
+      for(const key of ['params','missions','unlocks','aha','engineering','collab','learn','ui']) if(saved[key]&&typeof saved[key]==='object')Object.assign(state[key],saved[key]);
+      if(!Array.isArray(state.learn.factors))state.learn.factors=[];
+      if(state.prediction&&!['balik','sama','hilang'].includes(state.prediction)){
+        state.prediction=null;state.ui.predJudged=false;
+        if(state.phase!=='lihat')state.phase='tebak';
+      }
       // B/I/F are transient visual controls. Always start a fresh stage with them OFF.
       // Formula visibility may persist because it represents learning progress, not a renderer toggle.
       if(saved.reveal&&typeof saved.reveal==='object')state.reveal.formula=!!saved.reveal.formula;
@@ -1329,16 +1403,16 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
       const m=s.missions,mo=s.engineering.motor||{},arr=mo.assembled||[];
       switch(s.phase){
         case 'lihat':return {label:'Mulai menebak',act:go('tebak')};
-        case 'tebak':return s.prediction?{label:'Kunci tebakan',act:()=>P.intent.dispatch('LOCK_PREDICTION')}:{label:'Pilih arah tebakanmu',act:null};
+        case 'tebak':return s.prediction?{label:'Kunci tebakan',act:()=>P.intent.dispatch('LOCK_PREDICTION')}:{label:'Pilih tebakanmu',act:null};
         case 'coba':
           if(!m.close)return {label:'Tutup sakelar',act:()=>P.intent.dispatch('TOGGLE_SWITCH')};
           if(!m.flip)return {label:'Balik baterai',act:()=>P.intent.dispatch('FLIP_BATTERY')};
           if(!m.bchange)return {label:'Perkuat magnet (B +0,1)',act:()=>P.intent.dispatch('SET_PARAM',{k:'B',v:Math.min(.5,s.params.B+.1)})};
           if(!s.aha.unlocked)return {label:'Balik lagi untuk pembanding',act:()=>P.intent.dispatch('FLIP_BATTERY')};
-          return {label:'Buka tahap AHA',act:go('aha')};
+          return {label:'Pahami polanya',act:go('aha')};
         case 'aha':return s.reveal.formula?{label:'Buktikan dengan data',act:go('buktikan')}:{label:'Rumuskan temuan',act:()=>$('#revealFormula')?.click()};
         case 'buktikan':
-          if(P.lorentzMissions.proofSuccess())return {label:'Lanjut ke rekayasa',act:go('rekayasa')};
+          if(P.lorentzMissions.proofSuccess())return {label:'Terapkan konsepnya',act:go('rekayasa')};
           return s.circuit.on?{label:'Catat percobaan',act:()=>$('#recordNow')?.click()}:{label:'Jalankan rig',act:()=>P.intent.dispatch('TOGGLE_SWITCH')};
         case 'rekayasa':{
           const part=['battery','magnet','coil','rotor'][arr.length];
@@ -1363,8 +1437,7 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
     // Bandingkan tebakan siswa dengan gerak pertama yang benar-benar terukur.
     judge(s){
       if(!s.prediction||s.ui.predJudged)return null;
-      const e=s.evidence.find(x=>x.on&&x.direction!=='diam');
-      return e?{ok:e.direction===s.prediction,actual:e.direction}:null;
+      return P.learnLogic?P.learnLogic.outcome(s):null;
     }
   };
 })(window);
@@ -2460,8 +2533,8 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
     missionGateActive=true;gatePick=null;gateVisionHeld=null;gateVisionPinch=false;gateVisionMode=false;
     Object.assign(gateAssignments.conduct,{conductive:null,insulator:null});Object.assign(gateAssignments.poles,{left:null,right:null});Object.assign(gateAssignments.rig,{1:null,2:null,3:null});Object.keys(gateSolved).forEach(k=>gateSolved[k]=false);
     $$('#missionGate .gate-piece').forEach(p=>p.classList.remove('assigned','selected','picked'));$$('#missionGate .gate-slot').forEach(s=>{s.classList.remove('hot','filled','correct','wrong');s.innerHTML=gateSlotDefault(s)});$$('#missionGate .gate-puzzle').forEach(p=>p.classList.remove('solved'));
-    $('#gateProgress').style.width='0%';$('#gateEnter').disabled=true;$('#gateConductCount').textContent='0/2';$('#gatePolesCount').textContent='0/2';$('#gateRigCount').textContent='0/3';$('#gateSummary').textContent='0/3 puzzle selesai';$('#gateHint').textContent='Selesaikan semuanya untuk membuka brainstorm.';
-    $('#gateConductFeedback').textContent='Tip: kabel listrik memakai logam pada bagian penghantarnya.';$('#gatePolesFeedback').textContent='N–S atau S–N akan saling tarik. Kutub sama justru menolak.';$('#gateRigFeedback').textContent='Belum perlu rumus. Cukup pikirkan fungsi setiap benda.';
+    $('#gateProgress').style.width='0%';$('#gateEnter').disabled=true;$('#gateConductCount').textContent='0/2';$('#gatePolesCount').textContent='0/2';$('#gateRigCount').textContent='0/3';$('#gateSummary').textContent='0/3 puzzle selesai';$('#gateHint').textContent='Selesaikan semuanya, atau lewati kapan saja.';
+    $('#gateConductFeedback').textContent='Tip: kabel listrik memakai logam pada bagian penghantarnya.';$('#gatePolesFeedback').textContent='N–S atau S–N akan saling tarik. Kutub sama justru menolak.';$('#gateRigFeedback').textContent='Rangkaian arus itu melingkar. Magnet bukan "setelah" kawat: ia membuat medan di sekitar kawat.';
     $('#gateTouchMode').classList.add('active');$('#gateVisionMode').classList.remove('active');$('#gateModeText').textContent='Geser benda dengan satu atau beberapa jari. Dua siswa bisa bekerja bersamaan.';$('#gateHandCursor').hidden=true;$('#missionGate').classList.remove('cinematic');
   }
   function updateGatePieceAssigned(group){
@@ -2485,8 +2558,8 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
     $('[data-puzzle="conduct"]')?.classList.toggle('solved',gateSolved.conduct);$('[data-puzzle="poles"]')?.classList.toggle('solved',gateSolved.poles);$('[data-puzzle="rig"]')?.classList.toggle('solved',gateSolved.rig);
     $('#gateConductFeedback').textContent=gateSolved.conduct?'Pas. Tembaga adalah konduktor; plastik berperan sebagai isolator.':'Coba cek lagi: benda mana yang memang dipakai sebagai penghantar pada kabel?';
     $('#gatePolesFeedback').textContent=gateSolved.poles?'Benar. Kutub berbeda saling tarik; kutub sama saling tolak.':'Belum pas. Pasangan tarik harus terdiri dari dua kutub berbeda.';
-    $('#gateRigFeedback').textContent=gateSolved.rig?'Logikanya siap: sumber energi → penghantar → medan magnet.':'Susun berdasarkan fungsi, bukan bentuk bendanya.';
-    const n=Object.values(gateSolved).filter(Boolean).length;$('#gateProgress').style.width=(n/3*100)+'%';$('#gateSummary').textContent=n+'/3 puzzle selesai';$('#gateHint').textContent=n===3?'Gerbang siap dibuka. Masuk ke tahap LIHAT / brainstorm.':'Selesaikan semuanya untuk membuka brainstorm.';$('#gateEnter').disabled=n!==3;
+    $('#gateRigFeedback').textContent=gateSolved.rig?'Cocok: baterai = sumber energi, kawat = jalur arus, magnet = pemberi medan.':'Cocokkan berdasarkan fungsi, bukan urutan rangkaian.';
+    const n=Object.values(gateSolved).filter(Boolean).length;$('#gateProgress').style.width=(n/3*100)+'%';$('#gateSummary').textContent=n+'/3 puzzle selesai';$('#gateHint').textContent=n===3?'Siap. Lanjut ke lab untuk mengamati.':'Selesaikan semuanya, atau lewati kapan saja.';$('#gateEnter').disabled=n!==3;
   }
   function gateGhost(piece,x,y,id){
     let g=gateDrags.get(id)?.ghost;if(!g){g=document.createElement('div');g.className='gate-drag-ghost';g.textContent=gatePieceLabel(piece);document.body.appendChild(g)}g.style.left=x+'px';g.style.top=y+'px';return g;
@@ -2597,7 +2670,7 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
   const TOUR=[
     {target:'#stage',title:'Putar rig 3D',text:'Seret area 3D. Cari magnet, kawat, baterai, sakelar, dan dua tali penyangga. Coba sentuh area 3D sekarang.',event:'pointerdown'},
     {target:'#toPredict',title:'Berani menebak?',text:'Tekan “Mulai menebak”. Tidak ada penalti untuk tebakan yang salah.',event:'click'},
-    {target:'#predictionGrid',title:'Pilih arah',text:'Sentuh kiri, diam, atau kanan. Prediksi membuat eksperimen berikutnya punya alasan.',event:'click'},
+    {target:'#predictionGrid',title:'Pilih tebakan',text:'Pilih apa yang terjadi jika baterai dibalik. Alasan boleh dari logikamu sendiri.',event:'click'},
     {target:'#lockPrediction',title:'Masuk ke misi',text:'Kunci tebakanmu lalu masuk ke laboratorium.',event:'click'},
     {target:'#switchBtn',title:'Bangunkan rig',text:'Tutup sakelar. Perhatikan kawat dan jangan buru-buru membuka semua petunjuk vektor.',event:'click'}
   ];
@@ -2628,7 +2701,7 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
   }
   function skipTourStep(){
     const st=TOUR[tourIndex];if(st?.target==='#toPredict')go('tebak');
-    if(st?.target==='#predictionGrid'&&!P.state.get().prediction)P.state.patch(s=>{s.prediction='kanan'});
+    if(st?.target==='#predictionGrid'&&!P.state.get().prediction)P.state.patch(s=>{s.prediction='balik'});
     if(st?.target==='#lockPrediction')go('coba');
     showTourStep(tourIndex+1);
   }
@@ -2779,12 +2852,12 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
     $$('#engineeringModes button').forEach(b=>b.onclick=()=>P.state.patch(s=>{s.engineering.motion=b.dataset.motion}));
     $('#makeBrief').onclick=()=>{const motion=P.state.get().engineering.motion,need=$('#needInput').value,constraint=$('#constraintInput').value;if(!motion)return toast('Pilih jenis gerak dulu');const brief=P.engineering.makeBrief(motion,need,constraint);P.state.patch(s=>{s.engineering.need=need;s.engineering.constraint=constraint;s.engineering.brief=brief});P.score.sync();toast('Brief rekayasa dibuat','Sekarang uji ide dengan Engineering Sandbox.')};
     $('#rotateRoles').onclick=()=>P.state.patch(s=>{s.collab.round=(s.collab.round+1)%3});
-    $('#copyReport').onclick=async()=>{const s=P.state.get();const rows=s.evidence.map(r=>`#${r.id} | B=${fmt(r.B,2)} T | I=${fmt(Math.abs(r.current),2)} A | Fideal=${fmt(Math.abs(r.fIdeal),3)} N | Fef=${fmt(Math.abs(r.fEffective),3)} N | α=${fmt(r.alpha,0)}° | ${r.reason}`).join('\n');const report=`LAPORAN BUKTI PILAR LORENTZ\nPrediksi awal: ${s.prediction||'-'}\nAHA reversal: ${s.aha.reversal?'terbukti':'belum'}\nAHA pengaruh B: ${s.aha.bEffect?'terbukti':'belum'}\n\nEVIDENCE LEDGER\n${rows||'Belum ada data'}\n\nBatas model: medan, hambatan kontak, panas kawat, sag baterai, hambatan udara, dan fleksibilitas tali disederhanakan.`;try{await navigator.clipboard.writeText(report);toast('Laporan bukti disalin')}catch(_){toast('Clipboard dibatasi browser','Fitur salin paling stabil lewat localhost/GitHub Pages.')}};
+    $('#copyReport').onclick=async()=>{const s=P.state.get();const rows=s.evidence.map(r=>`#${r.id} | B=${fmt(r.B,2)} T | I=${fmt(Math.abs(r.current),2)} A | Fideal=${fmt(Math.abs(r.fIdeal),3)} N | Fef=${fmt(Math.abs(r.fEffective),3)} N | α=${fmt(r.alpha,0)}° | ${r.reason}`).join('\n');const report=`LAPORAN BUKTI PILAR LORENTZ\nPrediksi awal: ${PRED_LABEL[s.prediction]||s.prediction||'-'}\nAHA reversal: ${s.aha.reversal?'terbukti':'belum'}\nAHA pengaruh B: ${s.aha.bEffect?'terbukti':'belum'}\n\nEVIDENCE LEDGER\n${rows||'Belum ada data'}\n\nBatas model: medan, hambatan kontak, panas kawat, sag baterai, hambatan udara, dan fleksibilitas tali disederhanakan.`;try{await navigator.clipboard.writeText(report);toast('Laporan bukti disalin')}catch(_){toast('Clipboard dibatasi browser','Fitur salin paling stabil lewat localhost/GitHub Pages.')}};
     $('#frontView').onclick=()=>render&&render.setView('front');$('#obliqueView').onclick=()=>render&&render.setView('oblique');
     $('#flowSpeed').oninput=e=>P.state.patch(s=>{s.ui.flowSpeed=+e.target.value});
     $('#rewindBtn').onclick=()=>{render?.rewindCurrent?.();toast('Animasi arus diulang','Fisika dan posisi kawat tidak di-reset.')};
     $('#qualitySelect').onchange=e=>{qualityAutoManaged=false;P.state.patch(s=>{s.ui.quality=e.target.value})};
-    $$('#phaseTabs button').forEach(b=>b.onclick=()=>{const target=b.dataset.phase,s=P.state.get();if(['aha','buktikan','rekayasa'].includes(target)&&!s.aha.unlocked)return toast('Belum terbuka','Selesaikan pola reversal dan pengaruh B terlebih dahulu.');if(['buktikan','rekayasa'].includes(target)&&!s.reveal.formula)return toast('Belum terbuka','Masuk AHA dan rumuskan temuan terlebih dahulu.');if(target==='rekayasa'&&!P.lorentzMissions.proofSuccess())return toast('Belum terbuka','Buktikan dulu: capai target α 35°–45° dan catat hasil.');go(target)});
+    $$('#phaseTabs button').forEach(b=>b.onclick=()=>{const target=b.dataset.phase,s=P.state.get();if(['aha','buktikan','rekayasa'].includes(target)&&!s.aha.unlocked)return toast('Belum terbuka','Selesaikan pola reversal dan pengaruh B di langkah Selidiki dulu.');let tip=null;if(['buktikan','rekayasa'].includes(target)&&!s.reveal.formula)tip='Disarankan: rumuskan temuanmu di langkah Pahami dulu.';else if(target==='rekayasa'&&!P.lorentzMissions.proofSuccess())tip='Disarankan: capai α 35°–45° dan catat hasilnya dulu.';if(tip&&!s.ui['tip_'+target]){P.state.patch(x=>{x.ui['tip_'+target]=true});toast('Saran',tip)}go(target)});
 
     $('#visionToggleBtn').onclick=()=>visionStarted?stopVision():startVision();
     $('#visionClose').onclick=stopVision;
@@ -2827,7 +2900,7 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
     bindGateMultitouch();bindGateTap();$('#gateTouchMode').onclick=disableGateVision;$('#gateVisionMode').onclick=enableGateVision;$('#gateEnter').onclick=()=>enterFromGate(false);$('#gateSkip').onclick=()=>enterFromGate(true);
     addEventListener('resize',()=>{if(!$('#guidedTour').hidden&&tourTarget)positionTour(tourTarget)});
     $('#homeBtn').onclick=()=>{missionGateActive=false;$('#missionGate').hidden=true;document.body.classList.remove('gate-lock');location.href='../../'};
-    P.state.subscribe(updateUI);if(P.ownership)P.ownership.stamp($('#ownershipMark'));updateUI(P.state.get());
+    bindLearnUI();P.state.subscribe(updateUI);if(P.ownership)P.ownership.stamp($('#ownershipMark'));updateUI(P.state.get());
   }
 
   function updateMissionUI(s){
@@ -2853,9 +2926,179 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
     motor3d?.setState?.({assembled,running,rpm:model.rpm,current:model.I,torque:model.torque});
   }
 
+  /* ───── v2 · logika murni (diuji terpisah) ───── */
+  /*LEARN-PURE-START*/
+  const PRED_LABEL={balik:'arah dorongan berbalik',sama:'arah dorongan tetap sama',hilang:'kawat tidak lagi didorong'};
+  const FACTORS={B:'Magnet lebih kuat',V:'Baterai bertegangan lebih besar',R:'Hambatan lebih kecil',warna:'Kawat dicat warna lain',sakelar:'Sakelar ditutup lebih keras'};
+  const FACTOR_TRUE=['B','V','R'];
+  const REASON_LABEL={alami:'Pernah mengalaminya',belajar:'Dari pelajaran',logika:'Dari logikaku sendiri',tebak:'Menebak saja'};
+  const REVISION_LABEL={tepat:'Sudah tepat',ubah:'Perlu kuubah',ragu:'Belum yakin'};
+  const REVISE_NOTE={tepat:'Bagus. Coba jelaskan alasannya di langkah Terapkan.',ubah:'Mengubah pendapat setelah melihat bukti adalah cara kerja ilmuwan.',ragu:'Tidak apa-apa. Baca pola di bawah, lalu catat bukti sendiri.'};
+  const f1=(x,d=1)=>Number(x).toFixed(d).replace('.',',');
+  function outcome(s){
+    const p=s.prediction;if(!['balik','sama','hilang'].includes(p))return null;
+    const e1=s.evidence.find(x=>x.on&&x.direction!=='diam');if(!e1)return null;
+    const e2=s.evidence.find(x=>x.id>e1.id&&x.on&&x.polarity!==e1.polarity&&x.direction!=='diam');if(!e2)return null;
+    const actual=e2.direction!==e1.direction?'balik':'sama';
+    const msg={balik:'Saat baterai dibalik, arus berbalik dan kawat bergerak ke arah sebaliknya.',sama:'Arah dorongan tidak berubah saat baterai dibalik.'}[actual];
+    return{ok:actual===p,actual,msg};
+  }
+  function proofPair(s){
+    const e=s.evidence.filter(x=>x.on&&Math.abs(x.current)>.02&&Math.abs(x.fIdeal)>1e-6);
+    const same=(a,b)=>Math.abs(a-b)<1e-6,ratio=(a,b)=>Math.max(a,b)/Math.min(a,b);let out=null;
+    for(let i=0;i<e.length;i++)for(let j=i+1;j<e.length;j++){
+      const a=e[i],b=e[j],rF=ratio(Math.abs(a.fIdeal),Math.abs(b.fIdeal));
+      if(same(a.V,b.V)&&same(a.R,b.R)&&!same(a.B,b.B)){const r=ratio(a.B,b.B);if(r>=1.4&&Math.abs(rF/r-1)<.06)out='<b>Pola:</b> B dikali '+f1(r)+' → F ikut dikali '+f1(rF)+'. Gaya sebanding dengan medan B.'}
+      else if(same(a.B,b.B)&&same(a.R,b.R)&&!same(a.V,b.V)){const r=ratio(a.V,b.V);if(r>=1.4&&Math.abs(rF/r-1)<.06)out='<b>Pola:</b> V dikali '+f1(r)+' → arus dan F ikut dikali '+f1(rF)+'. Tegangan besar mendorong arus besar.'}
+      else if(same(a.B,b.B)&&same(a.V,b.V)&&!same(a.R,b.R)){const r=ratio(a.R,b.R);if(r>=1.4&&Math.abs(rF/r-1)<.06)out='<b>Pola:</b> R dikali '+f1(r)+' → F menjadi '+f1(r)+' kali lebih kecil. Hambatan besar membuat arus dan gaya mengecil.'}
+    }
+    return out;
+  }
+  function factorReport(s){
+    const ch=(s.learn&&s.learn.factors)||[];
+    if(!ch.length)return'<b>Tebakan faktor</b><span>Kamu belum memilih faktor di langkah Tebak.</span>';
+    const nm=a=>a.map(k=>FACTORS[k]).join('; ');
+    const hit=ch.filter(x=>FACTOR_TRUE.includes(x)),wrong=ch.filter(x=>!FACTOR_TRUE.includes(x)),miss=FACTOR_TRUE.filter(x=>!ch.includes(x));
+    let h='<b>Tebakan faktormu</b><span>';
+    if(hit.length)h+='Tepat memengaruhi gaya: '+nm(hit)+'. ';
+    if(miss.length)h+='Belum kamu duga: '+nm(miss)+'. ';
+    if(wrong.length)h+='Ternyata tidak memengaruhi gaya: '+nm(wrong)+'. ';
+    return h+'V dan R bekerja lewat arus: I = V ÷ R.</span>';
+  }
+  function dirCross(a,b){return[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]]}
+  function dirName(v){return v[1]>0?'atas':v[1]<0?'bawah':v[0]>0?'kanan':'kiri'}
+  function dirQuestion(prev,rnd){
+    rnd=rnd||Math.random;const axes=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0]];let q,guard=0;
+    do{const I=axes[Math.floor(rnd()*4)%4],B=[0,0,rnd()<.5?1:-1],F=dirCross(I,B);q={I,B,F,ans:dirName(F)}}while(prev&&q.I.join()===prev.I.join()&&q.B.join()===prev.B.join()&&++guard<20);
+    return q;
+  }
+  P.learnLogic={outcome,proofPair,factorReport,dirCross,dirName,dirQuestion,PRED_LABEL,FACTORS};
+  /*LEARN-PURE-END*/
+
+  const setText=(el,v)=>{if(el&&el.textContent!==v)el.textContent=v};
+  const setHTML=(el,h)=>{if(el&&el.dataset.h!==h){el.innerHTML=h;el.dataset.h=h}};
+  function updateLearnUI(s){
+    const L=s.learn||{factors:[]};
+    $$('#reasonRow button').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.reason===L.reason);b.disabled=s.phase!=='tebak'});
+    $$('#factorRow button').forEach(b=>{b.setAttribute('aria-pressed',(L.factors||[]).includes(b.dataset.factor));b.disabled=s.phase!=='tebak'});
+    $$('#reviseRow button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.rev===L.revision));
+    const o=outcome(s);
+    setHTML($('#predResult'),s.prediction?(o?'<b>'+(o.ok?'Tebakanmu tepat 🎯':'Tebakanmu perlu direvisi')+'</b><span>'+o.msg+'</span>':'<b>Hasil tebakan belum terlihat</b><span>Balik baterai di langkah Selidiki, lalu bandingkan arahnya.</span>'):'<b>Belum ada tebakan</b><span>Kembali ke langkah Tebak.</span>');
+    setHTML($('#factorResult'),s.aha.unlocked?factorReport(s):'<b>Tebakan faktor</b><span>Hasilnya muncul setelah polanya terbaca.</span>');
+    setText($('#reviseNote'),L.revision?(L.revision==='tepat'&&o&&!o.ok?'Cek lagi: buktimu menunjukkan hal lain.':REVISE_NOTE[L.revision]):'');
+    const dc=$('#dirCard');if(dc)dc.hidden=!s.reveal.formula;
+  }
+  function drawProofGraph(s){
+    const cv=$('#proofGraph');if(!cv||s.phase!=='buktikan')return;
+    const w=cv.clientWidth||320,key=s.evidence.length+':'+(s.evidence.length?s.evidence[s.evidence.length-1].id:0)+':'+w;
+    if(drawProofGraph.k===key)return;drawProofGraph.k=key;
+    const h=Math.round(w*.45),dpr=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);cv.style.height=h+'px';
+    const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);
+    const pts=s.evidence.filter(x=>x.on&&Math.abs(x.current)>.02).map(x=>({x:x.B,y:Math.abs(x.fIdeal),g:f1(Math.abs(x.current),1),id:x.id}));
+    const L=46,Rr=12,T=12,B=36,pw=w-L-Rr,ph=h-T-B;
+    c.font='12px Inter,Segoe UI,system-ui,sans-serif';c.fillStyle='#9db2ca';c.strokeStyle='#28415f';c.lineWidth=1;
+    c.beginPath();c.moveTo(L,T);c.lineTo(L,T+ph);c.lineTo(L+pw,T+ph);c.stroke();
+    c.textAlign='center';c.fillText('Medan magnet B (tesla)',L+pw/2,h-8);
+    c.save();c.translate(12,T+ph/2);c.rotate(-Math.PI/2);c.fillText('Gaya F (N)',0,0);c.restore();
+    if(!pts.length){c.fillStyle='#6f88a2';c.fillText('Catat percobaan pertama untuk mulai menggambar grafik',L+pw/2,T+ph/2);return}
+    const mx=Math.max(...pts.map(p=>p.x))*1.15||1,my=Math.max(...pts.map(p=>p.y))*1.15||1,px=v=>L+(v/mx)*pw,py=v=>T+ph-(v/my)*ph;
+    c.textAlign='right';[0,.5,1].forEach(f=>{c.fillStyle='#9db2ca';c.fillText(String(+(my*f).toPrecision(2)),L-6,py(my*f)+4);c.strokeStyle='#1c3048';c.beginPath();c.moveTo(L,py(my*f));c.lineTo(L+pw,py(my*f));c.stroke()});
+    c.textAlign='center';[0,.5,1].forEach(f=>c.fillText(String(+(mx*f).toPrecision(2)),px(mx*f),T+ph+16));
+    const cols=['#ffd36c','#7eeeff','#63e3a0','#ff9d5c','#d49bff'],groups=[...new Set(pts.map(p=>p.g))];
+    groups.forEach((g,gi)=>{const col=cols[gi%cols.length],gp=pts.filter(p=>p.g===g).sort((a,b)=>a.x-b.x);
+      if(gp.length>1){c.strokeStyle=col;c.globalAlpha=.55;c.setLineDash([5,4]);c.beginPath();gp.forEach((p,i)=>i?c.lineTo(px(p.x),py(p.y)):c.moveTo(px(p.x),py(p.y)));c.stroke();c.setLineDash([]);c.globalAlpha=1}
+      gp.forEach(p=>{c.fillStyle=col;c.beginPath();c.arc(px(p.x),py(p.y),9,0,7);c.fill();c.fillStyle='#07101b';c.font='700 11px Inter,system-ui,sans-serif';c.fillText(String(p.id),px(p.x),py(p.y)+4)});
+      c.fillStyle=col;c.font='12px Inter,system-ui,sans-serif';c.textAlign='left';c.fillText('I = '+g+' A',L+8+gi*92,T+12);c.textAlign='center'});
+    setText($('#proofGraphCap'),groups.length&&pts.length>1?'Titik dengan warna sama punya arus (I) sama. Kalau B naik, F ikut naik.':'Satu titik belum cukup. Ubah satu slider lalu catat lagi.');
+  }
+  function storyText(s){
+    const L=s.learn;return 'CERITA TEMUAN · Gaya Lorentz\nTebakan awal: '+(PRED_LABEL[s.prediction]||'-')+'; alasan: '+(REASON_LABEL[L.reason]||'-')+'\nTebakan faktor: '+((L.factors||[]).map(k=>FACTORS[k]).join(', ')||'-')+'\nSetelah mencoba, tebakanku: '+(REVISION_LABEL[L.revision]||'-')+'\n\nAku menemukan bahwa '+(L.a||'…')+'\nBuktinya '+(L.b||'…')+'\nRancanganku berhasil/belum karena '+(L.c||'…');
+  }
+  async function copyText(txt){
+    try{await navigator.clipboard.writeText(txt)}catch(_){const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();const ok=document.execCommand&&document.execCommand('copy');ta.remove();if(!ok)throw new Error('copy')}
+  }
+  async function copyStory(){
+    const s=P.state.get();if(!(s.learn.a||'').trim())return toast('Tulis dulu satu kalimat','Mulai dari: Aku menemukan bahwa…');
+    try{await copyText(storyText(s));toast('Ceritamu disalin')}catch(_){toast('Salin gagal','Browser memblokir clipboard. Coba lewat localhost atau HTTPS.')}
+  }
+  function wrapLines(ctx,text,maxW){const out=[];String(text||'').split(/\n/).forEach(par=>{let line='';par.split(/\s+/).filter(Boolean).forEach(w=>{const t=line?line+' '+w:w;if(ctx.measureText(t).width>maxW&&line){out.push(line);line=w}else line=t});out.push(line)});return out}
+  function makeCard(){
+    const s=P.state.get(),L=s.learn;if(!(L.a||'').trim())return toast('Tulis dulu satu kalimat','Kartu temuan berisi ceritamu sendiri.');
+    const W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d'),FF='Inter,Segoe UI,system-ui,sans-serif',X=80,MW=W-160;
+    const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'#07101b');g.addColorStop(1,'#10243a');c.fillStyle=g;c.fillRect(0,0,W,H);
+    c.fillStyle='#69baff';c.fillRect(0,0,W,14);let y=110;
+    c.fillStyle='#7eeeff';c.font='700 28px '+FF;c.fillText('PILAR · LAB MAYA · KARTU TEMUAN',X,y);y+=80;
+    c.fillStyle='#eef7ff';c.font='800 58px '+FF;c.fillText('🧲 Gaya Lorentz',X,y);y+=78;
+    const o=outcome(s);c.font='600 30px '+FF;c.fillStyle='#9db2ca';
+    wrapLines(c,'Tebakan awal: '+(PRED_LABEL[s.prediction]||'-')+(o?(o.ok?'  ✓ tepat':'  → direvisi'):''),MW).forEach(l=>{c.fillText(l,X,y);y+=42});y+=24;
+    [['Aku menemukan bahwa',L.a],['Buktinya',L.b],['Rancanganku berhasil/belum karena',L.c]].forEach(b=>{
+      if(!(b[1]||'').trim())return;c.fillStyle='#69baff';c.font='800 30px '+FF;c.fillText(b[0],X,y);y+=44;
+      c.fillStyle='#eef7ff';c.font='500 36px '+FF;wrapLines(c,b[1],MW).slice(0,5).forEach(l=>{c.fillText(l,X,y);y+=50});y+=34});
+    if(y<H-260){c.fillStyle='#0d1a2b';c.fillRect(X-20,y,MW+40,120);c.fillStyle='#ffd36c';c.font='800 44px '+FF;c.fillText('F = B · I · L',X,y+76)}
+    c.fillStyle='#6f88a2';c.font='500 24px '+FF;c.fillText('Dibuat di PILAR · '+new Date().toLocaleDateString('id-ID'),X,H-60);
+    const a=document.createElement('a');a.download='kartu-temuan-lorentz.png';a.href=cv.toDataURL('image/png');document.body.appendChild(a);a.click();a.remove();
+    toast('Kartu temuan diunduh 🎉','Bagikan ke teman atau gurumu.');
+  }
+  /* latihan arah gaya */
+  const DIR={q:null,n:0,ok:0,done:false,answered:false};
+  function dirSVG(q){
+    const cx=120,cy=85,out=q.B[2]>0;let sym='';
+    for(const p of [[40,35],[120,22],[200,35],[40,135],[120,148],[200,135]]){const x=p[0],y=p[1];sym+='<circle cx="'+x+'" cy="'+y+'" r="11" fill="none" stroke="#7eeeff" stroke-width="1.6"/>'+(out?'<circle cx="'+x+'" cy="'+y+'" r="2.6" fill="#7eeeff"/>':'<path d="M'+(x-6)+' '+(y-6)+'L'+(x+6)+' '+(y+6)+'M'+(x+6)+' '+(y-6)+'L'+(x-6)+' '+(y+6)+'" stroke="#7eeeff" stroke-width="1.8"/>')}
+    const dx=q.I[0],dy=-q.I[1],px=-dy,py=dx;
+    return '<svg viewBox="0 0 240 170" role="img" aria-label="Arus ke arah '+dirName(q.I)+', medan '+(out?'keluar layar':'masuk layar')+'">'+sym+
+      '<line x1="'+(cx-dx*30)+'" y1="'+(cy-dy*30)+'" x2="'+(cx+dx*30)+'" y2="'+(cy+dy*30)+'" stroke="#ffd36c" stroke-width="5" stroke-linecap="round"/>'+
+      '<polygon points="'+(cx+dx*46)+','+(cy+dy*46)+' '+(cx+dx*28+px*9)+','+(cy+dy*28+py*9)+' '+(cx+dx*28-px*9)+','+(cy+dy*28-py*9)+'" fill="#ffd36c"/>'+
+      '<text x="'+(cx+dx*58+px*14)+'" y="'+(cy+dy*58+py*14+5)+'" fill="#ffd36c" font-size="16" font-weight="800" text-anchor="middle">I</text></svg>';
+  }
+  function dirRender(){
+    const box=$('#dirQ');if(!box)return;
+    if(!DIR.q){DIR.q=dirQuestion(null)}
+    if(DIR.done){box.innerHTML='<p><b>Selesai: '+DIR.ok+' dari 3 benar.</b> '+(DIR.ok>=2?'Kamu sudah bisa menebak arah gaya di rig baru.':'Coba lagi dengan aturan tangan kanan di atas.')+'</p><button type="button" data-dir="again">Ulangi dengan soal baru</button>';return}
+    const q=DIR.q,out=q.B[2]>0;
+    box.innerHTML='<div class="dir-top"><span>Soal '+(DIR.n+1)+' dari 3</span><span>Benar: '+DIR.ok+'</span></div>'+dirSVG(q)+
+      '<p>Arus <b>I</b> ke arah panah kuning. Medan <b>B</b> '+(out?'⊙ keluar layar':'⊗ masuk layar')+'. Ke mana gaya <b>F</b>?</p>'+
+      '<div class="chip-row">'+[['atas','↑ Atas'],['bawah','↓ Bawah'],['kiri','← Kiri'],['kanan','→ Kanan']].map(a=>'<button type="button" data-ans="'+a[0]+'">'+a[1]+'</button>').join('')+'</div>'+
+      '<div class="mini-note" id="dirFb" aria-live="polite"></div><button type="button" data-dir="next" hidden>Lanjut</button>';
+    DIR.answered=false;
+  }
+  function dirBind(){
+    const box=$('#dirQ');if(!box)return;dirRender();
+    box.onclick=e=>{
+      const a=e.target.closest('[data-ans]'),d=e.target.closest('[data-dir]');
+      if(a&&!DIR.answered){
+        DIR.answered=true;const q=DIR.q,ok=a.dataset.ans===q.ans;if(ok)DIR.ok++;
+        $$('#dirQ [data-ans]').forEach(b=>{b.disabled=true;if(b.dataset.ans===q.ans)b.setAttribute('aria-pressed','true')});
+        $('#dirFb').textContent=(ok?'Benar ✓ ':'Belum tepat. ')+'Ibu jari ke '+dirName(q.I)+', empat jari '+(q.B[2]>0?'keluar layar':'masuk layar')+' → telapak mendorong ke '+q.ans+'.';
+        const nx=$('#dirQ [data-dir="next"]');nx.hidden=false;nx.textContent=DIR.n>=2?'Lihat hasil':'Soal berikutnya';
+      }else if(d){
+        if(d.dataset.dir==='again'){DIR.n=0;DIR.ok=0;DIR.done=false;DIR.q=dirQuestion(DIR.q);dirRender()}
+        else{DIR.n++;if(DIR.n>=3){DIR.done=true;if(DIR.ok>=2)P.joy?.addXP('dir',20,'Arah gaya dikuasai','Kamu bisa menebak arah F dari I dan B.')}else DIR.q=dirQuestion(DIR.q);dirRender()}
+      }
+    };
+  }
+  function bindLearnUI(){
+    $$('#reasonRow button').forEach(b=>b.onclick=()=>P.state.patch(s=>{s.learn.reason=b.dataset.reason}));
+    $$('#factorRow button').forEach(b=>b.onclick=()=>P.state.patch(s=>{const a=s.learn.factors,i=a.indexOf(b.dataset.factor);if(i>=0)a.splice(i,1);else a.push(b.dataset.factor)}));
+    $$('#reviseRow button').forEach(b=>b.onclick=()=>{P.state.patch(s=>{s.learn.revision=b.dataset.rev});P.joy?.addXP('revise',10,'Kamu meninjau ulang tebakanmu','Itu kebiasaan ilmuwan.')});
+    ['A','B','C'].forEach(k=>{const el=$('#learn'+k);if(!el)return;const key=k.toLowerCase();el.value=P.state.get().learn[key]||'';
+      el.oninput=e=>{P.state.patch(s=>{s.learn[key]=e.target.value});const L=P.state.get().learn;if((L.a+L.b+L.c).trim().length>=30)P.joy?.addXP('reflect',10,'Ceritamu tersimpan','Menjelaskan dengan kata sendiri membuat paham lebih kuat.')}});
+    const cs=$('#copyStory');if(cs)cs.onclick=copyStory;const mc=$('#makeCard');if(mc)mc.onclick=makeCard;
+    const ra=$('#resetAll');if(ra)ra.onclick=()=>{if(confirm('Mulai dari awal? Semua tebakan, bukti, dan ceritamu akan dihapus.')){try{P.state.clearSession&&P.state.clearSession()}catch(_){}location.reload()}};
+    const og=$('#openGate');if(og)og.onclick=()=>showMissionGate(false);
+    const lf=$('#ledgerFull');if(lf)lf.onchange=e=>$('#ledgerTable').classList.toggle('ledger-simple',!e.target.checked);
+    dirBind();
+  }
+  function enterLab(visionMode=false){
+    const a=$('#stageArrival');if(a){a.classList.remove('active');void a.offsetWidth;a.classList.add('active');setTimeout(()=>a.classList.remove('active'),1250)}
+    render?.setView?.('oblique');if(P.state.get().phase==='lihat')go('lihat');
+    setTimeout(()=>startTour(false),780);toast('Amati dulu','Tutup sakelar di rig 3D dan lihat apa yang terjadi pada kawat.');
+    if(visionMode)setTimeout(()=>{try{startVision()}catch(_){}},700);
+  }
+
   function updateUI(s){
+    updateLearnUI(s);drawProofGraph(s);
     $$('#phaseTabs button').forEach(b=>b.classList.toggle('active',b.dataset.phase===s.phase));$$('[data-panel]').forEach(p=>p.hidden=p.dataset.panel!==s.phase);$('#xp').textContent=s.xp;
-    $$('#predictionGrid button').forEach(b=>b.classList.toggle('selected',b.dataset.pred===s.prediction));$('#predictionFeedback').textContent=s.prediction?'Tebakan terkunci sementara: '+s.prediction.toUpperCase()+'.':'Belum ada tebakan yang dikunci.';
+    $$('#predictionGrid button').forEach(b=>b.classList.toggle('selected',b.dataset.pred===s.prediction));$('#predictionFeedback').textContent=s.prediction?'Tebakanmu: '+(PRED_LABEL[s.prediction]||s.prediction)+'. Tekan kunci untuk mulai.':'Belum ada tebakan yang dikunci.';
     for(const [k,id,d,u] of [['B','Bout',2,'T'],['V','Vout',1,'V'],['R','Rout',1,'Ω'],['V','proofVout',1,'V'],['R','proofRout',1,'Ω'],['B','proofBout',2,'T']])$('#'+id).textContent=fmt(s.params[k],d)+' '+u;
     for(const [id,k] of [['Bslider','B'],['Vslider','V'],['Rslider','R'],['proofV','V'],['proofR','R'],['proofB','B']])if(Math.abs(+$('#'+id).value-s.params[k])>.0001)$('#'+id).value=s.params[k];
     $('#switchBtn').textContent=s.circuit.on?'Buka sakelar':'Tutup sakelar';$('#proofSwitch').textContent=s.circuit.on?'Hentikan':'Jalankan';
@@ -2864,7 +3107,7 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
     {const waitI=!!s.reveal.current&&!s.circuit.on,waitF=!!s.reveal.force&&!s.circuit.on;
     revealButton('#currentBtn',s.reveal.current,'I','arus listrik',waitI);revealButton('#forceBtn',s.reveal.force,'F','gaya Lorentz',waitF);
     $('#currentBtn').classList.toggle('waiting',waitI);$('#forceBtn').classList.toggle('waiting',waitF)}
-    $('#formulaPanel').hidden=!s.reveal.formula;$('#revealFormula').disabled=!s.aha.unlocked;$('#toProof').disabled=!s.reveal.formula;
+    $('#formulaPanel').hidden=!s.reveal.formula;$('#revealFormula').disabled=!s.aha.unlocked;
     $('#missionList [data-mission="close"]').classList.toggle('done',s.missions.close);$('#missionList [data-mission="flip"]').classList.toggle('done',s.missions.flip);$('#missionList [data-mission="bchange"]').classList.toggle('done',s.missions.bchange);
     if(s.aha.unlocked&&s.phase==='coba')$('#experimentHint').innerHTML='<b>💡 Polanya terbaca.</b> Tahap AHA sudah terbuka.';else if(!s.missions.close)$('#experimentHint').textContent='Misi 01: tutup sakelar dan amati tanpa membuka semua petunjuk.';else if(!s.missions.flip)$('#experimentHint').textContent='Misi 02: balik baterai. Kejar perubahan arah.';else if(!s.missions.bchange)$('#experimentHint').textContent='Misi 03: ubah B cukup jauh dan bandingkan besar respons.';else $('#experimentHint').textContent='Evidence Engine sedang membandingkan percobaanmu…';
     $('#alphaHud').textContent=fmt(Math.abs(s.dynamics.alpha*180/Math.PI),0)+'°';$('#currentHud').textContent=fmt(Math.abs(s.circuit.currentActual),2)+' A';$('#fIdealHud').textContent=fmt(Math.abs(s.dynamics.fIdeal),3)+' N';$('#fEffHud').textContent=fmt(Math.abs(s.dynamics.fEffective),3)+' N';
@@ -2875,8 +3118,8 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
     if($('#qualitySelect').value!==s.ui.quality)$('#qualitySelect').value=s.ui.quality;if(render&&render.quality!==s.ui.quality)render.setQuality(s.ui.quality);
     const lk=s.evidence.length+':'+(s.evidence.length?s.evidence[s.evidence.length-1].id:0);
     if(updateUI.lk!==lk){updateUI.lk=lk;$('#ledgerBody').innerHTML=s.evidence.slice().reverse().map(r=>`<tr><td>${r.id}</td><td>${fmt(r.B,2)}</td><td>${fmt(Math.abs(r.current),2)}</td><td>${fmt(Math.abs(r.fIdeal),3)}</td><td>${fmt(Math.abs(r.fEffective),3)}</td><td>${fmt(r.alpha,0)}°</td><td>${r.reason.replaceAll('_',' ')}</td></tr>`).join('')}
-    const proof=s.evidence.find(x=>x.alpha>=35&&x.alpha<=45);$('#proofHint').innerHTML=proof?'<b>Target tercapai.</b> Percobaan #'+proof.id+' berada pada rentang 35°–45°. Ulangi untuk melihat konsistensi.':'Cari kombinasi V, R, dan B yang membawa α ke rentang target.';
-    $$('#engineeringModes button').forEach(b=>b.classList.toggle('selected',b.dataset.motion===s.engineering.motion));$('#engineeringBrief').textContent=s.engineering.brief||'Belum ada brief.';$$('#collabStrip [data-role]').forEach((el,i)=>el.classList.toggle('active',i===s.collab.round));
+    const proof=s.evidence.find(x=>x.alpha>=35&&x.alpha<=45);{const pair=proofPair(s);$('#proofHint').innerHTML=(pair?pair+'<br>':'')+(proof?'<b>Target tercapai.</b> Percobaan #'+proof.id+' berada pada rentang 35°–45°. Ulangi untuk melihat konsistensi.':'Ubah SATU slider saja, lalu catat lagi dan bandingkan dua catatan. Tantangan: buat α 35°–45°.')}
+    $$('#engineeringModes button').forEach(b=>b.classList.toggle('selected',b.dataset.motion===s.engineering.motion));$('#engineeringBrief').textContent=s.engineering.brief||'Rancanganmu akan tampil di sini.';$$('#collabStrip [data-role]').forEach((el,i)=>el.classList.toggle('active',i===s.collab.round));
     const engineering=s.phase==='rekayasa';
     $('#stage')?.classList.toggle('engineering-mode',engineering);
     if($('#engineeringStudio'))$('#engineeringStudio').hidden=!engineering;
@@ -2889,7 +3132,7 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
     if(cta){const lbl=nx?nx.label:'Misi tuntas ✓';if(cta.textContent!==lbl)cta.textContent=lbl;cta.disabled=!nx||!nx.act;cta._act=nx&&nx.act}
     const cap=$('#liveCaption');if(cap){const t=P.guide.caption(s);if(cap.textContent!==t)cap.textContent=t;cap.hidden=!t}
     const j=P.guide.judge(s);
-    if(j){P.state.patch(st=>{st.ui.predJudged=true});P.joy?.addXP('pred',j.ok?20:10,j.ok?'Tebakanmu tepat!':'Tebakan meleset — itu data berharga!','Kawat bergerak ke arah '+j.actual+'.')}
+    if(j){P.state.patch(st=>{st.ui.predJudged=true});P.joy?.addXP('pred',j.ok?20:10,j.ok?'Tebakanmu tepat!':'Tebakan meleset — itu data berharga!',j.msg)}
     if(s.aha.unlocked&&!['aha','buktikan','rekayasa'].includes(s.phase))$('#engineStatus').textContent='AHA siap dibuka';else $('#engineStatus').textContent='State aman · Evidence aktif · WebGL';
   }
 
@@ -2919,7 +3162,7 @@ window.PILAR_APP_REGISTRY=[{id:'lorentz',title:'Gaya Lorentz',subtitle:'Gerakkan
       P.state.patch(s=>{s.reveal.field=false;s.reveal.current=false;s.reveal.force=false});render?.syncVectors?.(P.state.get());
       $('#stageBadge').textContent='3D siap · drag untuk memutar';await sleep(120);
       for(let i=2;i<steps.length;i++){setBootStep(i,steps.length,steps[i][0],steps[i][1]);await sleep(i===5?100:70)}
-      setBootStep(steps.length,steps.length,'READY','Masuk ke laboratorium…');$('#appShell').setAttribute('aria-hidden','false');startLoop();await sleep(180);$('#pilarBoot').classList.add('is-leaving');$('#pilarBoot').setAttribute('aria-hidden','true');document.body.classList.remove('boot-lock');markAction();setTimeout(()=>showMissionGate(visionMode),360);
+      setBootStep(steps.length,steps.length,'READY','Masuk ke laboratorium…');$('#appShell').setAttribute('aria-hidden','false');startLoop();await sleep(180);$('#pilarBoot').classList.add('is-leaving');$('#pilarBoot').setAttribute('aria-hidden','true');document.body.classList.remove('boot-lock');markAction();setTimeout(()=>enterLab(visionMode),360);
     }catch(e){console.error(e);$('#bootStepTitle').textContent='BOOT TERTAHAN';$('#bootMessage').textContent=e.message||'Terjadi kesalahan saat menyiapkan PILAR.';quick.disabled=false;$('#engineStatus').textContent='Boot membutuhkan perhatian'}
   }
 

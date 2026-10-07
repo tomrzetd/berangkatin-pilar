@@ -15,6 +15,7 @@
   function create(host){
     const THREE=global.THREE;
     if(!THREE)throw new Error('Three.js tidak termuat. Periksa koneksi internet lalu muat ulang.');
+    const REDUCE=!!(global.matchMedia&&global.matchMedia('(prefers-reduced-motion: reduce)').matches);
     const scene=new THREE.Scene();
     scene.background=new THREE.Color(0x10202f);
     const camera=new THREE.PerspectiveCamera(40,1,.05,200);
@@ -37,7 +38,7 @@
     const stage={THREE,scene,camera,renderer,orb,sun,hemi,host,grabbables:[],onGrab:null,root:null,time:0,disposed:false};
 
     function applyCamera(dt){
-      const k=1-Math.exp(-dt*9);
+      const k=REDUCE?1:1-Math.exp(-dt*9);
       orb.az+=(orb.taz-orb.az)*k;orb.el+=(orb.tel-orb.el)*k;orb.r+=(orb.tr-orb.r)*k;
       orb.tx+=(orb.ttx-orb.tx)*k;orb.ty+=(orb.tty-orb.ty)*k;orb.tz+=(orb.ttz-orb.tz)*k;
       const ce=Math.cos(orb.el);

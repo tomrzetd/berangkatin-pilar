@@ -1,0 +1,32 @@
+name: PM v2 verification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/pressure/**'
+      - 'apps/lorentz-lab/**'
+      - 'apps/registry.js'
+      - 'developer/patch-v2-tests/**'
+      - '.github/workflows/pm-v2-verify.yml'
+  pull_request:
+    paths:
+      - 'apps/pressure/**'
+      - 'apps/lorentz-lab/**'
+      - 'apps/registry.js'
+      - 'developer/patch-v2-tests/**'
+      - '.github/workflows/pm-v2-verify.yml'
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Pressure flow tests
+        run: node developer/patch-v2-tests/test_pressure.js .
+      - name: Lorentz flow tests
+        run: node developer/patch-v2-tests/test_lorentz.js .
