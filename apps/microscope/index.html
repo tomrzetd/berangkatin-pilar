@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PILAR™ Microscope Lab v0.8.1 — Instrument HUD · Vision · ML</title>
+    <title>PILAR™ Microscope Lab v0.8.2 — Instrument HUD · Vision · ML</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -1280,7 +1280,7 @@
         }
 
     
-        /* ===== v0.8.1 · PILAR Hub visual alignment ===== */
+        /* ===== v0.8.2 · PILAR Hub visual alignment ===== */
         .dark-mode{
           --primary:#5ee9ff;--primary-dark:#2bb8d6;--secondary:#63e3a0;--accent:#ffd36c;
           --danger:#ff6d83;--dark:#eef8ff;--gray:#91a7bd;--light:#071321;
@@ -1288,13 +1288,12 @@
         }
         .dark-mode body{background:#050913;color:#eef8ff}
         .dark-mode .header{
-          display:grid;grid-template-columns:auto 1fr auto auto;grid-template-areas:"logo spacer pulse owner" "controls controls controls controls";
+          display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:"logo spacer owner" "controls controls controls";
           gap:12px 14px;padding:18px 22px;background:linear-gradient(155deg,#0a1422,#07111e);
           border:1px solid #284561;border-radius:18px;box-shadow:0 22px 70px rgba(0,0,0,.38)
         }
         .dark-mode .logo{grid-area:logo;color:#eef8ff}.header-spacer{grid-area:spacer}
-        .microscope-pulse-dock{grid-area:pulse;display:flex;align-items:center;justify-content:flex-end}
-        .dark-mode .branding-pill{
+                .dark-mode .branding-pill{
           grid-area:owner;justify-self:end;margin:0;max-width:min(42vw,620px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
           color:#8da6bd;background:#06111c;border:1px solid #213b55;box-shadow:none;text-shadow:none;font-size:.72rem
         }
@@ -1330,7 +1329,7 @@
         .camera-view{flex:0 0 auto}
         .controls-panel{align-self:start}
         @media(max-width:768px){
-          .dark-mode .header{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"logo pulse" "owner owner" "controls controls";padding:14px}
+          .dark-mode .header{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"logo logo" "owner owner" "controls controls";padding:14px}
           .dark-mode .branding-pill{justify-self:start;max-width:100%;font-size:.62rem}
           .dark-mode .user-controls{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px}
         }
@@ -1343,12 +1342,11 @@
             <div class="logo">
                 <i class="fas fa-microscope"></i>
                 <div class="logo-text-group">
-                    <div>PILAR™ Microscope Lab <small class="pilar-version">v0.8.1</small></div>
+                    <div>PILAR™ Microscope Lab <small class="pilar-version">v0.8.2</small></div>
                     <div class="tagline">IFP / MPI · Observasi · Vision · ML · Pengukuran · Bukti</div>
                 </div>
             </div>
             <div class="header-spacer" aria-hidden="true"></div>
-            <div class="microscope-pulse-dock" data-pilar-pulse-dock aria-label="PILAR Pulse"></div>
             <div class="branding-pill" id="brandingPill"></div>
             <div class="user-controls">
                 <button class="btn btn-outline pilar-mode-btn" id="modeBtn" aria-label="Mode tampilan"><i class="fas fa-display"></i> AUTO</button>
@@ -1659,7 +1657,7 @@
         </div>
     </div>
 
-    <footer class="pilar-app-footer"><span>PILAR™ Microscope Lab · v0.8.1</span><span>PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span></footer>
+    <footer class="pilar-app-footer"><span>PILAR™ Microscope Lab · v0.8.2</span><span>PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span></footer>
 
     <div class="modal" id="imageModal">
         <img id="modalImage" src="" alt="Preview">

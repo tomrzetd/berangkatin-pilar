@@ -119,18 +119,57 @@
     if(P.vision)P.vision.setEnabled(!!result.enabled);
     return result;
   }
+  const HUB_BASE=new URL('./',location.href);
+  function closeFullscreenAppHost(){
+    const host=document.getElementById('pilarFullscreenAppHost');
+    if(!host)return;
+    const frame=host.querySelector('iframe');
+    if(frame)frame.src='about:blank';
+    host.remove();
+    document.body.classList.remove('pilar-app-host-open');
+    try{window.PILAR_PULSE?.setApp?.('hub')}catch(_){}
+  }
+  function openInFullscreenHost(url,item){
+    if(!document.fullscreenElement)return false;
+    closeFullscreenAppHost();
+    const host=document.createElement('section');
+    host.id='pilarFullscreenAppHost';
+    host.className='pilar-fullscreen-app-host';
+    host.setAttribute('aria-label',(item?.title||'PILAR App')+' · fullscreen');
+    const frame=document.createElement('iframe');
+    frame.className='pilar-fullscreen-app-frame';
+    frame.title=item?.title||'PILAR App';
+    frame.allow='camera; microphone; fullscreen; autoplay; clipboard-read; clipboard-write';
+    frame.allowFullscreen=true;
+    host.appendChild(frame);
+    document.body.appendChild(host);
+    document.body.classList.add('pilar-app-host-open');
+    frame.addEventListener('load',()=>{
+      try{
+        const p=frame.contentWindow.location.pathname;
+        if(p===HUB_BASE.pathname||p===HUB_BASE.pathname+'index.html')closeFullscreenAppHost();
+      }catch(_){}
+    });
+    frame.src=new URL(url,HUB_BASE).href;
+    return true;
+  }
+  function openAppUrl(url,item){
+    if(openInFullscreenHost(url,item))return;
+    location.href=url;
+  }
+
   async function launchSelected(mode){
     const item=selectedApp();
     if(!item||item.status!=='ready')return;
     if(item.id==='lorentz'){
       try{await window.PILAR_PULSE?.track?.('hub_app_launch',{app_id:item.id,entry:mode==='vision'?'vision':'quick'})}catch(_){}
       const sep=item.url.includes('?')?'&':'?';
-      location.href=item.url+sep+'pilarEntry='+(mode==='vision'?'vision':'quick');
+      openAppUrl(item.url+sep+'pilarEntry='+(mode==='vision'?'vision':'quick'),item);
       return;
     }
     if(mode==='standard'){
       try{await window.PILAR_PULSE?.track?.('hub_app_launch',{app_id:item.id,entry:'quick'})}catch(_){}
-      location.href=item.url;
+      openAppUrl(item.url,item);
       return;
     }
     $('#bootQuick').disabled=true;$('#bootVision').disabled=true;
@@ -140,7 +179,7 @@
       if(vr&&vr.enabled){
         try{await window.PILAR_PULSE?.track?.('hub_app_launch',{app_id:item.id,entry:'vision',challenge:vr.challenge||vr.via})}catch(_){}
         const sep=item.url.includes('?')?'&':'?';
-        location.href=item.url+sep+'pilarEntry=vision';
+        openAppUrl(item.url+sep+'pilarEntry=vision',item);
       }else{
         $('#selectedAppNote').textContent='Challenge belum diselesaikan. Pilih Vision Challenge lagi atau gunakan Masuk Cepat.';
         $('#bootQuick').disabled=false;$('#bootVision').disabled=false;
@@ -284,6 +323,8 @@
     if(!bootFullscreenBtn)return;
     bootFullscreenBtn.hidden=!document.fullscreenEnabled;
     const on=!!document.fullscreenElement;
+    try{sessionStorage.setItem('pilar_fullscreen_pref',on?'1':'0')}catch(_){}
+    document.documentElement.dataset.pilarFullscreen=on?'on':'off';
     bootFullscreenBtn.textContent=on?'⤢':'⛶';
     bootFullscreenBtn.setAttribute('aria-pressed',on?'true':'false');
     bootFullscreenBtn.title=on?'Keluar layar penuh':'Layar penuh';

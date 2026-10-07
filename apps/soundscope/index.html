@@ -110,13 +110,13 @@ input[type=range]{width:100%;height:2rem;accent-color:var(--blue)}
 .tunerStrings button.on{border-color:var(--good);background:rgba(56,230,153,.18);box-shadow:0 0 0 1px rgba(56,230,153,.2)}
 @media(max-width:600px){.tunerStrings{grid-template-columns:repeat(4,minmax(0,1fr))}.tunerNote{font-size:4rem}}
 
-.sound-top-actions{display:flex;align-items:center;gap:.55rem;margin-left:auto}.sound-pulse-dock{display:flex;align-items:center}
-@media(max-width:700px){.sound-top-actions{width:100%;justify-content:flex-end}.sound-top-actions .brand{max-width:calc(100% - 3.4rem);overflow:hidden}.sound-top-actions .brand span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+
+@media(min-width:1101px){.panel[aria-label="Tool aktif"]>.pb{padding-bottom:4.8rem}}
 </style><link rel="stylesheet" href="./morse-link.css?v=4.2.0"><link rel="stylesheet" href="./acoustic-physics.css?v=4.5.2"></head>
 <body>
 <div class="top">
   <div class="pilar-top-left"><a class="hubBtn" href="../../" title="Kembali ke PILAR Hub" aria-label="Kembali ke PILAR Hub">←</a><div class="pilar-title"><b>PILAR™ · 🎧 SoundScope Lab — IPA SMP (IFP)</b><small>Acoustic Instrumentation • Spectrum • Sonar • Doppler • Ranging • Position • Communication</small></div></div>
-  <div class="sound-top-actions"><div class="brand"><i></i><span id="brand">…</span></div><span class="sound-pulse-dock" data-pilar-pulse-dock aria-label="PILAR Pulse"></span></div>
+  <div class="brand"><i></i><span id="brand">…</span></div>
 </div>
 <div class="app">
   <section class="panel" aria-label="Kontrol">

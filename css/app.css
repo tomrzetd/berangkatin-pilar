@@ -524,3 +524,10 @@
 .boot-fullscreen-btn:hover,.boot-fullscreen-btn[aria-pressed="true"]{border-color:#5ee9ff;color:#5ee9ff;background:rgba(94,233,255,.1)}
 .boot-pulse-dock{display:flex;align-items:center;justify-content:center}
 @media(max-width:760px){.boot-head-right{gap:8px}.boot-tools{margin-left:auto}.boot-fullscreen-btn{width:36px;height:36px}}
+
+/* v0.6.2 · fullscreen app continuity */
+.pilar-fullscreen-app-host{position:fixed;inset:0;z-index:1250;background:#050913;overflow:hidden}
+.pilar-fullscreen-app-frame{display:block;width:100%;height:100%;border:0;background:#050913}
+body.pilar-app-host-open{overflow:hidden}
+.boot-foot span:last-child{padding-right:58px}
+@media(max-width:760px){.boot-foot span:last-child{padding-right:0}}

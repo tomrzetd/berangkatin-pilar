@@ -49,22 +49,41 @@ function meta(){return{
 function injectUI(){
   if(document.getElementById('pilarPulseBtn'))return;
   const css=document.createElement('style');css.textContent=`
-  #pilarPulseBtn{position:fixed;right:14px;bottom:14px;z-index:1040;width:44px;height:44px;display:grid;place-items:center;border:1px solid #31506d;background:#071321ef;color:#eaf7ff;border-radius:50%;padding:0;font:800 19px/1 Inter,system-ui;box-shadow:0 10px 32px #0007;cursor:pointer}#pilarPulseBtn::after{content:"";position:absolute;right:3px;bottom:4px;width:8px;height:8px;border-radius:50%;background:#718398;border:2px solid #071321}#pilarPulseBtn.on::after{background:#63e3a0;box-shadow:0 0 8px rgba(99,227,160,.7)}[data-pilar-pulse-dock]{display:inline-flex;align-items:center;justify-content:center}[data-pilar-pulse-dock] #pilarPulseBtn{position:relative;right:auto;bottom:auto;z-index:2;box-shadow:none}
-  #pilarPulseBtn.on{border-color:#3c7652;color:#caffdf}#pilarPulseBtn.off{opacity:.7}
-  #pilarPulseDrawer{position:fixed;right:14px;bottom:58px;z-index:1041;width:min(360px,calc(100vw - 28px));max-height:min(560px,72vh);display:none;grid-template-rows:auto 1fr auto;background:#07111df7;color:#edf7ff;border:1px solid #31506d;border-radius:18px;box-shadow:0 22px 70px #000b;overflow:hidden;font:13px/1.4 Inter,system-ui}
+  #pilarPulseBtn{position:fixed;right:16px;bottom:16px;z-index:1040;width:48px;height:48px;display:grid;place-items:center;border:1px solid #31506d;background:linear-gradient(145deg,#0b2033,#071321);color:#eaf7ff;border-radius:50%;padding:0;font:800 20px/1 Inter,system-ui;box-shadow:0 12px 34px #0008,0 0 0 1px rgba(126,238,255,.04) inset;cursor:pointer;opacity:.92;transform:translateX(0) scale(1);transition:right .22s ease,opacity .22s ease,transform .22s ease,border-color .22s ease,box-shadow .22s ease;will-change:transform,opacity}
+  #pilarPulseBtn::before{content:"PILAR Pulse";position:absolute;right:58px;top:50%;transform:translateY(-50%) translateX(6px);padding:7px 10px;border:1px solid #31506d;border-radius:999px;background:#071321f2;color:#dff7ff;font:800 10px/1.1 Inter,system-ui;white-space:nowrap;opacity:0;pointer-events:none;transition:.18s ease;box-shadow:0 8px 24px #0006}
+  #pilarPulseBtn::after{content:"";position:absolute;right:3px;bottom:4px;width:9px;height:9px;border-radius:50%;background:#718398;border:2px solid #071321}
+  #pilarPulseBtn.on{border-color:#3c7652;color:#caffdf}#pilarPulseBtn.on::after{background:#63e3a0;box-shadow:0 0 8px rgba(99,227,160,.75)}#pilarPulseBtn.off::after{background:#718398}
+  #pilarPulseBtn.pulse-idle{opacity:.34;transform:translateX(28px) scale(.9);box-shadow:0 8px 20px #0005}
+  #pilarPulseBtn:hover,#pilarPulseBtn:focus-visible,#pilarPulseBtn.pulse-awake{opacity:1;transform:translateX(0) scale(1);border-color:#5ee9ff;box-shadow:0 14px 38px #0009,0 0 0 3px rgba(94,233,255,.10)}
+  #pilarPulseBtn:hover::before,#pilarPulseBtn:focus-visible::before{opacity:1;transform:translateY(-50%) translateX(0)}
+  @media(hover:none){#pilarPulseBtn::before{display:none}}
+  #pilarPulseDrawer{position:fixed;right:16px;bottom:74px;z-index:1041;width:min(360px,calc(100vw - 28px));max-height:min(560px,72vh);display:none;grid-template-rows:auto 1fr auto;background:#07111df7;color:#edf7ff;border:1px solid #31506d;border-radius:18px;box-shadow:0 22px 70px #000b;overflow:hidden;font:13px/1.4 Inter,system-ui}
   #pilarPulseDrawer.open{display:grid}.pp-head{padding:13px 14px;border-bottom:1px solid #20394f;display:flex;justify-content:space-between;gap:10px}.pp-head b{color:#7eeeff}.pp-head small{display:block;color:#839bb2;margin-top:2px}.pp-head button{min-height:30px;padding:4px 8px;border-radius:9px}.pp-head-actions{display:flex;gap:6px;align-items:flex-start}.pp-clear{border-color:#5b3943!important;color:#ffb7c5!important;background:#21131a!important}
   .pp-msgs{padding:12px;overflow:auto;display:flex;flex-direction:column;gap:8px;min-height:170px}.pp-empty{color:#7f96aa;text-align:center;margin:auto}.pp-msg{max-width:88%;padding:8px 10px;border-radius:12px;background:#102033;white-space:pre-wrap;word-break:break-word}.pp-msg.me{align-self:flex-end;background:#173c31}.pp-msg.dev{align-self:flex-start}.pp-msg time{display:block;font-size:9px;color:#8ba0b5;margin-top:3px}
   .pp-form{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px;border-top:1px solid #20394f}.pp-form input{min-width:0;background:#081725;color:#eef8ff;border:1px solid #2d4965;border-radius:999px;padding:9px 12px}.pp-form button{border-radius:999px;min-height:38px;padding:7px 12px}
   #pilarPulseNotice{position:fixed;left:14px;bottom:14px;z-index:1042;max-width:min(560px,calc(100vw - 28px));padding:10px 12px;border:1px solid #294861;border-radius:13px;background:#071321f4;color:#cfe0ee;font:11px/1.45 Inter,system-ui;box-shadow:0 12px 40px #0008}#pilarPulseNotice button{margin-left:7px;min-height:28px;padding:3px 8px;border-radius:8px}
-  @media(max-width:700px){#pilarPulseBtn{bottom:72px}#pilarPulseDrawer{bottom:116px}}
+  @media(max-width:700px){#pilarPulseBtn{right:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px))}#pilarPulseDrawer{right:12px;bottom:calc(72px + env(safe-area-inset-bottom,0px));width:min(360px,calc(100vw - 24px))}}
   `;document.head.appendChild(css);
   const b=document.createElement('button');b.id='pilarPulseBtn';b.type='button';b.textContent='💬';b.title='PILAR Pulse';b.setAttribute('aria-label','Buka PILAR Pulse');
+  let idleTimer=0;
+  const wakePulse=()=>{clearTimeout(idleTimer);b.classList.remove('pulse-idle');b.classList.add('pulse-awake')};
+  const idlePulse=()=>{clearTimeout(idleTimer);b.classList.remove('pulse-awake');if(!drawer.classList.contains('open'))b.classList.add('pulse-idle')};
+  const scheduleIdle=(ms=4200)=>{clearTimeout(idleTimer);idleTimer=setTimeout(idlePulse,ms)};
   b.onclick=async()=>{
-    if(!enabled()){ await enablePulse(); return; }
+    wakePulse();
+    if(!enabled()){ await enablePulse(); scheduleIdle(6500); return; }
     drawer.classList.toggle('open');
+    drawer.classList.contains('open')?wakePulse():scheduleIdle();
   };
+  b.addEventListener('mouseenter',wakePulse);
+  b.addEventListener('mouseleave',()=>scheduleIdle(900));
+  b.addEventListener('focus',wakePulse);
+  b.addEventListener('blur',()=>scheduleIdle(900));
+  b.addEventListener('pointerdown',wakePulse,{passive:true});
+  new MutationObserver(()=>drawer.classList.contains('open')?wakePulse():scheduleIdle()).observe(drawer,{attributes:true,attributeFilter:['class']});
+  scheduleIdle(5200);
   const drawer=document.createElement('section');drawer.id='pilarPulseDrawer';drawer.innerHTML='<div class="pp-head"><div><b>Chat with Developer</b><small id="ppIdentity">menyambungkan…</small></div><div class="pp-head-actions"><button class="pp-clear" id="ppClear">Clear Chat</button><button id="ppOff">Matikan Pulse</button></div></div><div class="pp-msgs" id="ppMsgs"><div class="pp-empty">Belum ada pesan.</div></div><form class="pp-form" id="ppForm"><input id="ppInput" maxlength="1200" placeholder="Kirim pesan ke developer…" autocomplete="off"><button>Kirim</button></form>';
-  const dock=document.querySelector('[data-pilar-pulse-dock]');if(dock){dock.appendChild(b);document.body.classList.add('pilar-pulse-docked')}else document.body.appendChild(b);document.body.appendChild(drawer);
+  document.body.append(b,drawer);
   drawer.querySelector('#ppOff').onclick=async()=>{
     if(!enabled()){ await enablePulse(); return; }
     if(!confirm('Nonaktifkan PILAR Pulse di browser ini? Kamu bisa mengaktifkannya lagi kapan saja.'))return;
