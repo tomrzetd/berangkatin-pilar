@@ -1,8 +1,23 @@
 name: PM v2 verification
+
 on:
   push:
-    branches: [emod/alur-pm-v2]
+    branches: [main]
+    paths:
+      - 'apps/pressure/**'
+      - 'apps/lorentz-lab/**'
+      - 'apps/registry.js'
+      - 'developer/patch-v2-tests/**'
+      - '.github/workflows/pm-v2-verify.yml'
+  pull_request:
+    paths:
+      - 'apps/pressure/**'
+      - 'apps/lorentz-lab/**'
+      - 'apps/registry.js'
+      - 'developer/patch-v2-tests/**'
+      - '.github/workflows/pm-v2-verify.yml'
   workflow_dispatch:
+
 jobs:
   verify:
     runs-on: ubuntu-latest
