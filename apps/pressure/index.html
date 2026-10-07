@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08111d">
+<title>PILAR™ Lab Maya Tekanan · Padat · Cair · Pascal · Bernoulli</title>
+<link rel="stylesheet" href="pressure.css">
+</head>
+<body>
+<main class="app-shell" id="appShell">
+  <header class="topbar">
+    <div class="brand-wrap">
+      <button class="home-btn" id="homeBtn" title="Kembali ke PILAR Hub" aria-label="Kembali ke PILAR Hub">←</button>
+      <strong class="brand">PILAR</strong>
+      <span class="lab-name" id="labName">Tekanan · Lab Maya</span>
+    </div>
+    <div class="top-creator">by : rizalabdurrahman05@guru.smp.belajar.id</div>
+    <div class="top-actions">
+      <button id="pickerBtn" type="button" title="Pilih simulasi lain">🧪 Ganti lab</button>
+      <span class="status-pill" id="engineStatus">WebGL · 3D</span>
+      <span class="xp-pill">⚡ <b id="xp">0</b> XP</span>
+    </div>
+  </header>
+
+  <aside class="side-panel">
+    <nav class="lab-chips" id="labChips" aria-label="Pilih simulasi"></nav>
+    <nav class="phase-tabs" id="phaseTabs" aria-label="Tahap eksplorasi"></nav>
+    <button class="primary next-cta" id="nextCta" type="button" title="Pintasan keyboard: N">…</button>
+    <small class="kbd-hint">Pintasan: N langkah berikutnya · seret area 3D untuk memutar · cubit / scroll untuk zoom</small>
+    <div id="panelHost"></div>
+  </aside>
+
+  <section class="stage" id="stage">
+    <div class="stage-tools">
+      <span id="viewTools"></span>
+      <label class="quality-control" for="qualitySelect">Render
+        <select id="qualitySelect" aria-label="Kualitas render WebGL"><option value="performance">Hemat</option><option value="standard" selected>Standar</option><option value="realistic">Realistis</option></select>
+      </label>
+    </div>
+    <div class="stage-badge" id="stageBadge">3D memuat…</div>
+    <div class="live-hud" aria-live="off"><div><span>—</span><b>—</b></div><div><span>—</span><b>—</b></div><div><span>—</span><b>—</b></div><div><span>—</span><b>—</b></div></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="ownership-mark" id="ownershipMark"></div>
+    <div class="stage-err" id="stageErr" hidden></div>
+  </section>
+</main>
+
+<section class="picker" id="picker" aria-label="Pilih simulasi Lab Maya Tekanan">
+  <div class="picker-card">
+    <div class="picker-head">
+      <div>
+        <div class="picker-kicker">PILAR · LAB MAYA · IPA</div>
+        <h1>Tekanan itu <span>terlihat</span>, bukan hanya dihafal.</h1>
+        <p>Empat simulasi 3D untuk memahami tekanan pada zat padat, zat cair, hukum Pascal, dan gaya angkat Bernoulli. Setiap lab mengikuti alur PILAR.</p>
+      </div>
+      <button id="pickerClose" type="button" aria-label="Tutup pilihan lab">×</button>
+    </div>
+    <div class="flow" aria-label="Alur eksplorasi"><span>LIHAT</span><span>TEBAK</span><span>COBA</span><span>AHA</span><span>BUKTIKAN</span><span>REKAYASA</span></div>
+    <div class="pick-grid" id="pickerGrid"></div>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="../../core/ownership.js"></script>
+<script src="../../labs/pressure/physics.js"></script>
+<script src="stage.js"></script>
+<script src="lab-solid.js"></script>
+<script src="lab-fluid.js"></script>
+<script src="lab-pascal.js"></script>
+<script src="lab-drone.js"></script>
+<script src="app.js"></script>
+<script src="../../pulse/config.js"></script>
+<script src="../../core/pulse.js"></script>
+<script>window.PILAR_PULSE?.setApp?.('pressure');</script>
+</body>
+</html>
+

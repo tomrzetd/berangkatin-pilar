@@ -23,7 +23,7 @@
     'pak-taro':'Pak Taro punya eksperimen, pola, dan Vision AI internal. Gerbang Vision di Hub tetap opsional.',
     puzzlesnap:'PuzzleSnap mengubah foto atau gambar menjadi puzzle 3×3–5×5, mendukung touch/multitouch IFP dan pinch gesture. Kamera tetap diminta hanya saat fitur foto/gestur dipilih.',
 
-    pressure:'Sedang disiapkan. Dua pintu masuk akan otomatis aktif saat app berstatus ready.'
+    pressure:'Empat simulasi 3D: tekanan zat padat, hidrostatis, lift hidrolik (Pascal), dan gaya angkat drone. Mouse, touch, multitouch/IFP; tanpa kamera. Pilih salah satu dari empat lab di dalam aplikasi.'
   };
   function selectedApp(){
     const apps=window.PILAR_APP_REGISTRY||[];
@@ -44,9 +44,11 @@
       : (item.category||'PILAR App')+' · v'+item.version+' · langsung masuk tanpa challenge kamera.';
     $('#bootVisionDesc').textContent=item.id==='lorentz'?'Masuk langsung ke Mission 00 dengan hand pose + face wireframe opsional.':'Tantangan berganti: pose serius → senyum atau puzzle pinch dengan tangan.';
     $('#selectedAppNote').textContent=inspectorNotes[item.id]||'Dua pintu tersedia: langsung masuk atau selesaikan Vision Challenge.';
-    const ready=item.status==='ready';
+    const ready=item.status==='ready',visionEligible=item.visionGate!==false;
+    $('#launchPrompt').textContent=ready?(visionEligible?'Pilih cara masuk':'Buka aplikasi'):'Dalam pengembangan';
+    $('#bootVision').hidden=!visionEligible;
     $('#bootQuick').disabled=!ready;
-    $('#bootVision').disabled=!ready;
+    $('#bootVision').disabled=!ready||!visionEligible;
   }
   function selectApp(id,{track=true,focus=false}={}){
     const apps=window.PILAR_APP_REGISTRY||[];
@@ -85,7 +87,9 @@
     $('#bootProgress').hidden=true;
     const item=selectedApp();
     $('#bootQuick').disabled=!item||item.status!=='ready';
-    $('#bootVision').disabled=!item||item.status!=='ready';
+    const visionEligible=!!item&&item.visionGate!==false;
+    $('#bootVision').hidden=!visionEligible;
+    $('#bootVision').disabled=!item||item.status!=='ready'||!visionEligible;
     $('#bootBar').style.width='0%';$('#bootPercent').textContent='0%';
     $('#bootStepTitle').textContent='MENYIAPKAN PILAR';$('#bootMessage').textContent='Pilih salah satu pintu masuk.';
     $('#bootStepList').innerHTML='';
@@ -161,6 +165,7 @@
   async function launchSelected(mode){
     const item=selectedApp();
     if(!item||item.status!=='ready')return;
+    if(item.visionGate===false)mode='standard';
     if(item.id==='lorentz'){
       try{await window.PILAR_PULSE?.track?.('hub_app_launch',{app_id:item.id,entry:mode==='vision'?'vision':'quick'})}catch(_){}
       const sep=item.url.includes('?')?'&':'?';

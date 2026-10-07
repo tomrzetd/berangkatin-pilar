@@ -6,7 +6,7 @@ const LS='pilar_pulse_enabled',SS='pilar_pulse_session';
 let db=null,user=null,sessionId=null,appId='hub',channel=null,heartbeat=null,ready=false;
 
 const path=location.pathname.toLowerCase();
-const appMap=[['/apps/microscope','microscope'],['/apps/rubik-orbit','rubik-orbit'],['/apps/mbg-duel','mbg-duel'],['/apps/soundscope','soundscope'],['/apps/air-writing','air-writing'],['/apps/puzzlesnap','puzzlesnap'],['/apps/pak-taro','pak-taro']];
+const appMap=[['/apps/microscope','microscope'],['/apps/rubik-orbit','rubik-orbit'],['/apps/mbg-duel','mbg-duel'],['/apps/soundscope','soundscope'],['/apps/air-writing','air-writing'],['/apps/puzzlesnap','puzzlesnap'],['/apps/pak-taro','pak-taro'],['/apps/pressure','pressure']];
 for(const [p,id] of appMap)if(path.includes(p))appId=id;
 
 function enabled(){try{return localStorage.getItem(LS)==='1'}catch(_){return false}}
