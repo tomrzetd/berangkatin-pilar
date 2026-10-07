@@ -22,11 +22,11 @@
     if(naturalUX()){
       nav.classList.add('natural-flow');
       nav.innerHTML=NATURAL_STEPS.map(p=>`<button data-step="${p[0]}">${p[1]}</button>`).join('');
-      $('button',nav).forEach(b=>b.onclick=()=>go(naturalTarget(b.dataset.step,cur())));
+      $$('button',nav).forEach(b=>b.onclick=()=>go(naturalTarget(b.dataset.step,cur())));
     }else{
       nav.classList.remove('natural-flow');
       nav.innerHTML=PHASES.map(p=>`<button data-phase="${p[0]}">${p[1]}</button>`).join('');
-      $('button',nav).forEach(b=>b.onclick=()=>go(b.dataset.phase));
+      $$('button',nav).forEach(b=>b.onclick=()=>go(b.dataset.phase));
     }
   }
   function makeLab(sp){
@@ -255,9 +255,9 @@
   function refresh(){
     if(!spec)return;const st=cur();
     if(naturalUX()){
-      $('#phaseTabs button').forEach(b=>{const target=naturalTarget(b.dataset.step,st);b.classList.toggle('active',b.dataset.step===phaseGroup(st.phase));b.classList.toggle('locked',!!canGo(st,target))});
+      $$('#phaseTabs button').forEach(b=>{const target=naturalTarget(b.dataset.step,st);b.classList.toggle('active',b.dataset.step===phaseGroup(st.phase));b.classList.toggle('locked',!!canGo(st,target))});
     }else{
-      $('#phaseTabs button').forEach(b=>{b.classList.toggle('active',b.dataset.phase===st.phase);const lock=canGo(st,b.dataset.phase);b.classList.toggle('locked',!!lock)});
+      $$('#phaseTabs button').forEach(b=>{b.classList.toggle('active',b.dataset.phase===st.phase);const lock=canGo(st,b.dataset.phase);b.classList.toggle('locked',!!lock)});
     }
     $$('#panelHost [data-panel]').forEach(p=>p.hidden=p.dataset.panel!==st.phase);
     const slot=$(`.control-slot[data-slot="${st.phase}"]`);if(slot&&dock.parentNode!==slot)slot.appendChild(dock);
