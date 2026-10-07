@@ -1,0 +1,17 @@
+name: PM v2 verification
+on:
+  push:
+    branches: [emod/alur-pm-v2]
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Pressure flow tests
+        run: node developer/patch-v2-tests/test_pressure.js .
+      - name: Lorentz flow tests
+        run: node developer/patch-v2-tests/test_lorentz.js .
