@@ -94,9 +94,10 @@ proof:{title:'Uji hubungan RPM dan gaya.',text:'Ambil dua kondisi dengan <b>sudu
     stage.sun.position.set(-6,14,8);stage.sun.shadow.camera.left=-18;stage.sun.shadow.camera.right=18;stage.sun.shadow.camera.updateProjectionMatrix();
 
     // ----- hanggar -----
-    const gridTex=stage.canvasTex(256,256,(g,w,h)=>{g.fillStyle='#26384a';g.fillRect(0,0,w,h);g.strokeStyle='#3b536b';g.lineWidth=2;for(let i=0;i<=4;i++){g.beginPath();g.moveTo(i*w/4,0);g.lineTo(i*w/4,h);g.stroke();g.beginPath();g.moveTo(0,i*h/4);g.lineTo(w,i*h/4);g.stroke()}},[10,6]);
-    const floor=stage.mesh(new T.BoxGeometry(20,.2,12),std(0xffffff,{map:gridTex,roughness:.8}),0,-.1,0,root,false);floor.receiveShadow=true;
-    stage.mesh(new T.BoxGeometry(20,9,.2),std(0x1e3146,{roughness:.9}),0,4.5,-6,root,false);
+    const gridTex=stage.canvasTex(256,256,(g,w,h)=>{const grad=g.createLinearGradient(0,0,0,h);grad.addColorStop(0,'#2f4357');grad.addColorStop(1,'#223548');g.fillStyle=grad;g.fillRect(0,0,w,h);g.strokeStyle='#3b536b';g.lineWidth=2;for(let i=0;i<=4;i++){g.beginPath();g.moveTo(i*w/4,0);g.lineTo(i*w/4,h);g.stroke();g.beginPath();g.moveTo(0,i*h/4);g.lineTo(w,i*h/4);g.stroke()}g.strokeStyle='rgba(255,255,255,.1)';g.lineWidth=1;for(let i=0;i<=4;i++){g.beginPath();g.moveTo(i*w/4+1,0);g.lineTo(i*w/4+1,h);g.stroke();g.beginPath();g.moveTo(0,i*h/4+1);g.lineTo(w,i*h/4+1);g.stroke()}},[10,6]);
+    const floor=stage.mesh(new T.BoxGeometry(20,.2,12),std(0xffffff,{map:gridTex,bumpMap:gridTex,bumpScale:.02,roughness:.82}),0,-.1,0,root,false);floor.receiveShadow=true;
+    const wallTex=stage.canvasTex(256,256,(g,w,h)=>{const grad=g.createLinearGradient(0,0,0,h);grad.addColorStop(0,'#26384a');grad.addColorStop(1,'#1b2c3e');g.fillStyle=grad;g.fillRect(0,0,w,h);g.strokeStyle='#334b63';g.lineWidth=2;for(let i=0;i<=6;i++){g.beginPath();g.moveTo(i*w/6,0);g.lineTo(i*w/6,h);g.stroke()}for(let j=0;j<=3;j++){g.beginPath();g.moveTo(0,j*h/3);g.lineTo(w,j*h/3);g.stroke()}},[6,2]);
+    stage.mesh(new T.BoxGeometry(20,9,.2),std(0xffffff,{map:wallTex,bumpMap:wallTex,bumpScale:.02,roughness:.88}),0,4.5,-6,root,false);
     const pad=stage.canvasTex(128,128,(g,w,h)=>{g.fillStyle='rgba(255,211,108,.0)';g.clearRect(0,0,w,h);g.strokeStyle='#ffd36c';g.lineWidth=8;g.beginPath();g.arc(64,64,54,0,7);g.stroke();g.fillStyle='#ffd36c';g.font='900 64px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText('H',64,68)});
     const padM=new T.Mesh(new T.CircleGeometry(1.2,40),new T.MeshBasicMaterial({map:pad,transparent:true}));padM.rotation.x=-Math.PI/2;padM.position.y=.005;root.add(padM);
     // tiang ketinggian
@@ -132,10 +133,11 @@ proof:{title:'Uji hubungan RPM dan gaya.',text:'Ambil dua kondisi dengan <b>sudu
 
     // ----- laboratorium penampang bilah (x = AIR_X) -----
     const lab=new T.Group();lab.position.set(AIR_X,2,0);root.add(lab);
-    const panelTex=stage.canvasTex(256,256,(g,w,h)=>{g.fillStyle='#14283b';g.fillRect(0,0,w,h);g.strokeStyle='#24455f';g.lineWidth=1.5;for(let i=0;i<=16;i++){g.beginPath();g.moveTo(i*w/16,0);g.lineTo(i*w/16,h);g.stroke();g.beginPath();g.moveTo(0,i*h/16);g.lineTo(w,i*h/16);g.stroke()}},[5,3]);
-    stage.mesh(new T.PlaneGeometry(10,6),std(0xffffff,{map:panelTex,roughness:.9}),0,0,-1.3,lab,false);
-    [2.2,-2.2].forEach(y=>stage.mesh(new T.BoxGeometry(10,.06,2),std(0x7eeeff,{transparent:true,opacity:.22,roughness:.1}),0,y,0,lab,false));
-    const labTitle=stage.sprite('PENAMPANG BILAH · aliran udara →',{w:620,h:80,size:34,bg:'rgba(6,17,30,.85)',scale:1.0,depthTest:false});labTitle.position.set(0,2.75,0);labTitle.renderOrder=9;lab.add(labTitle);
+    const panelTex=stage.canvasTex(256,256,(g,w,h)=>{g.fillStyle='#13283a';g.fillRect(0,0,w,h);g.strokeStyle='#24455f';g.lineWidth=1.5;for(let i=0;i<=16;i++){g.beginPath();g.moveTo(i*w/16,0);g.lineTo(i*w/16,h);g.stroke();g.beginPath();g.moveTo(0,i*h/16);g.lineTo(w,i*h/16);g.stroke()}},[5,3]);
+    stage.mesh(new T.BoxGeometry(10.6,6.7,.14),std(0x0f1d2b,{roughness:.82,metalness:.18}),0,0,-1.42,lab,false);
+    stage.mesh(new T.PlaneGeometry(10,6),std(0xffffff,{map:panelTex,bumpMap:panelTex,bumpScale:.015,roughness:.92}),0,0,-1.3,lab,false);
+    [2.2,-2.2].forEach(y=>stage.mesh(new T.BoxGeometry(10,.06,2),std(0x7eeeff,{transparent:true,opacity:.2,roughness:.1}),0,y,0,lab,false));
+    const labTitle=stage.sprite('PENAMPANG BILAH\nangin dari kiri →',{w:600,h:120,size:30,bg:'rgba(6,17,30,.86)',scale:1.02,depthTest:false,padY:16,maxLines:3});labTitle.position.set(0,2.7,0);labTitle.renderOrder=9;lab.add(labTitle);
     const C=3,prof=naca(.04,.4,.12,48);
     const toXY=a=>a.map(([x,y])=>new T.Vector2((x-.5)*C,y*C));
     const camXY=toXY(prof.cam),upXY=toXY(prof.up),loXY=toXY(prof.lo);
@@ -148,7 +150,9 @@ proof:{title:'Uji hubungan RPM dan gaya.',text:'Ambil dua kondisi dengan <b>sudu
     const topArrows=sIdx.map(()=>{const a=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(),.5,0x6aa7ff,.12,.1);pitch.add(a);return a});
     const botArrows=sIdx.map(()=>{const a=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(),.5,0xff7a8a,.12,.1);pitch.add(a);return a});
     const aL=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(),1,0x63e3a0,.3,.2);lab.add(aL);
-    const labInfo=stage.sprite('',{w:650,h:104,size:30,bg:'rgba(6,17,30,.88)',scale:1.0,depthTest:false});labInfo.position.set(0,-2.7,0);labInfo.renderOrder=9;lab.add(labInfo);
+    const topNote=stage.sprite('',{w:260,h:92,size:24,bg:'rgba(8,22,38,.82)',scale:.72,depthTest:false,padX:16,padY:12,maxLines:3});topNote.position.set(2.95,1.55,0);topNote.renderOrder=9;lab.add(topNote);
+    const botNote=stage.sprite('',{w:260,h:92,size:24,bg:'rgba(38,14,20,.78)',scale:.72,depthTest:false,padX:16,padY:12,maxLines:3});botNote.position.set(2.95,-1.55,0);botNote.renderOrder=9;lab.add(botNote);
+    const labInfo=stage.sprite('',{w:700,h:132,size:28,bg:'rgba(6,17,30,.88)',scale:1.05,depthTest:false,padX:22,padY:16,maxLines:3});labInfo.position.set(0,-2.72,0);labInfo.renderOrder=9;lab.add(labInfo);
     // garis arus + partikel dalam kerangka angin
     const NL=6,LP=70,UL=-4.4,UR=4.4,lines=[],y0s=[];
     for(let i=0;i<NL;i++)y0s.push(.4+i*.26);for(let i=0;i<NL;i++)y0s.push(-.4-i*.26);
@@ -226,9 +230,11 @@ proof:{title:'Uji hubungan RPM dan gaya.',text:'Ambil dua kondisi dengan <b>sudu
         topArrows.forEach((ar,i)=>{const pt=upXY[sIdx[i]],len=clamp(topP*sc,.12,1.3);ar.visible=showCp;ar.setDirection(new T.Vector3(0,1,0));ar.position.set(pt.x,pt.y,0);ar.setLength(len,.14,.1)});
         botArrows.forEach((ar,i)=>{const pt=loXY[sIdx[i]],len=clamp(botP*sc,.1,1.3);ar.visible=showCp;ar.setDirection(new T.Vector3(0,1,0));ar.position.set(pt.x,pt.y-len,0);ar.setLength(len,.14,.1)});
         aL.visible=showCp;aL.position.set(0,.4,0);aL.setLength(clamp(.5+CL*1.1,.4,2.4),.3,.2);
-        stage.setSpriteText(labInfo,theory?`v atas ${fmt(sp.top,1)} m/s  >  v bawah ${fmt(sp.bottom,1)} m/s  ·  Δp ${fmt(dp,0)} Pa`:'Amati aliran di atas dan bawah bilah. Mana yang lebih cepat?');
+        stage.setSpriteText(topNote,`ATAS\n${fmt(sp.top,1)} m/s\np lebih kecil`,'#8fd1ff');
+        stage.setSpriteText(botNote,`BAWAH\n${fmt(sp.bottom,1)} m/s\np lebih besar`,'#ffb3bd');
+        stage.setSpriteText(labInfo,theory?`Δp = ${fmt(dp,0)} Pa → gaya angkat ke atas\nRPM ${fmt(rpm,0)} · pitch ${fmt(a,1)}°`:'Bandingkan aliran di sisi atas dan bawah bilah.');
       },
-      view(n){activeView=n==='bilah'?'bilah':'drone';lab.visible=activeView==='bilah';stage.setView(n==='bilah'?{az:0,el:.04,r:8.2,t:[AIR_X,2,0]}:n==='atas'?{az:.9,el:.6,r:15,t:[0,3,0]}:{az:.45,el:.2,r:15,t:[0,3,0]})},
+      view(n){activeView=n==='bilah'?'bilah':'drone';lab.visible=activeView==='bilah';stage.setView(n==='bilah'?{az:0,el:.08,r:7.6,t:[AIR_X,1.8,0]}:n==='atas'?{az:.9,el:.6,r:15,t:[0,3,0]}:{az:.45,el:.2,r:15,t:[0,3,0]})},
       views:[{id:'drone',label:'Drone'},{id:'bilah',label:'Bilah'}]
     };
   }

@@ -82,17 +82,17 @@ proof:{title:'Bandingkan dua piston besar.',text:'Pertahankan <b>F₁ dan A₁</
     stage.mount(root,{bg:0x14202c,fog:[28,60],minR:6,maxR:28,view:{az:.5,el:.28,r:15,t:[-1.4,.4,0]}});
     stage.sun.position.set(-4,12,9);
     const oilM=new T.MeshStandardMaterial({color:0xd89a2b,transparent:true,opacity:.78,roughness:.25,emissive:0x2a1500});
-    const glassM=new T.MeshStandardMaterial({color:0xbfe6ff,transparent:true,opacity:.2,roughness:.05,side:T.DoubleSide,depthWrite:false});
+    const glassM=new T.MeshStandardMaterial({color:0xbfe6ff,transparent:true,opacity:.18,roughness:.08,metalness:.05,side:T.DoubleSide,depthWrite:false});
     const steel=std(0xb5c0cb,{metalness:.85,roughness:.3}),dark=std(0x252c34,{metalness:.6,roughness:.5});
 
     // lantai transparan + dinding
-    const tileTex=stage.canvasTex(256,256,(g,w,h)=>{g.fillStyle='#9aa7b2';g.fillRect(0,0,w,h);g.strokeStyle='#7c8995';g.lineWidth=3;for(let i=0;i<=4;i++){g.beginPath();g.moveTo(i*w/4,0);g.lineTo(i*w/4,h);g.stroke();g.beginPath();g.moveTo(0,i*h/4);g.lineTo(w,i*h/4);g.stroke()}},[9,4]);
-    const floor=stage.mesh(new T.BoxGeometry(18,.1,7),std(0xffffff,{map:tileTex,transparent:true,opacity:.42,roughness:.5}),-1.5,-.05,0,root,false);floor.receiveShadow=true;
+    const tileTex=stage.canvasTex(256,256,(g,w,h)=>{const grad=g.createLinearGradient(0,0,0,h);grad.addColorStop(0,'#b7c0c8');grad.addColorStop(1,'#99a6b1');g.fillStyle=grad;g.fillRect(0,0,w,h);g.strokeStyle='#7c8995';g.lineWidth=3;for(let i=0;i<=4;i++){g.beginPath();g.moveTo(i*w/4,0);g.lineTo(i*w/4,h);g.stroke();g.beginPath();g.moveTo(0,i*h/4);g.lineTo(w,i*h/4);g.stroke()}g.strokeStyle='rgba(255,255,255,.18)';g.lineWidth=1;for(let i=0;i<=4;i++){g.beginPath();g.moveTo(i*w/4+1,0);g.lineTo(i*w/4+1,h);g.stroke();g.beginPath();g.moveTo(0,i*h/4+1);g.lineTo(w,i*h/4+1);g.stroke()}},[9,4]);
+    const floor=stage.mesh(new T.BoxGeometry(18,.1,7),std(0xffffff,{map:tileTex,bumpMap:tileTex,bumpScale:.035,transparent:true,opacity:.42,roughness:.52}),-1.5,-.05,0,root,false);floor.receiveShadow=true;
     stage.mesh(new T.BoxGeometry(18,2.2,7),std(0x3b4b59,{transparent:true,opacity:.2,roughness:.8,depthWrite:false}),-1.5,-1.15,0,root,false);
     stage.mesh(new T.BoxGeometry(18,.25,7),std(0x1a232c),-1.5,-2.35,0,root);
-    const wall=stage.canvasTex(512,256,(g,w,h)=>{g.fillStyle='#244f7a';g.fillRect(0,0,w,h);g.strokeStyle='#1b3d5f';g.lineWidth=2;for(let i=0;i<=16;i++){g.beginPath();g.moveTo(i*w/16,0);g.lineTo(i*w/16,h);g.stroke()}for(let j=0;j<=8;j++){g.beginPath();g.moveTo(0,j*h/8);g.lineTo(w,j*h/8);g.stroke()}},[2,1]);
-    stage.mesh(new T.BoxGeometry(18,6,.2),std(0xffffff,{map:wall,roughness:.55}),-1.5,3,-3.5,root);
-    const sign=stage.sprite('CUCI MOBIL · PILAR',{w:640,h:120,size:52,bg:'rgba(255,211,108,.95)',color:'#1b2736',scale:1.55});sign.position.set(-1.5,5.25,-3.3);root.add(sign);
+    const wall=stage.canvasTex(512,256,(g,w,h)=>{const grad=g.createLinearGradient(0,0,0,h);grad.addColorStop(0,'#2c6fae');grad.addColorStop(1,'#215d93');g.fillStyle=grad;g.fillRect(0,0,w,h);g.strokeStyle='#1b3d5f';g.lineWidth=2;for(let i=0;i<=16;i++){g.beginPath();g.moveTo(i*w/16,0);g.lineTo(i*w/16,h);g.stroke()}for(let j=0;j<=8;j++){g.beginPath();g.moveTo(0,j*h/8);g.lineTo(w,j*h/8);g.stroke()}g.strokeStyle='rgba(255,255,255,.12)';g.lineWidth=1;for(let i=0;i<=16;i++){g.beginPath();g.moveTo(i*w/16+1,0);g.lineTo(i*w/16+1,h);g.stroke()}},[2,1]);
+    stage.mesh(new T.BoxGeometry(18,6,.2),std(0xffffff,{map:wall,bumpMap:wall,bumpScale:.03,roughness:.58}),-1.5,3,-3.5,root);
+    const sign=stage.sprite('CUCI MOBIL · PILAR',{w:760,h:130,size:54,bg:'rgba(255,244,214,.96)',color:'#33465c',scale:2.05,depthTest:false,padX:28});sign.position.set(-.75,5.15,-2.95);sign.renderOrder=12;root.add(sign);
 
     // ----- silinder besar (penopang) -----
     const bigG=new T.Group();root.add(bigG);bigG.position.set(0,0,0);
@@ -115,7 +115,7 @@ proof:{title:'Bandingkan dua piston besar.',text:'Pertahankan <b>F₁ dan A₁</
     // pipa + katup + manometer
     const pipe=stage.mesh(new T.CylinderGeometry(.09,.09,5.2,20),oilM,-2.6,-1.88,0,root,false);pipe.rotation.z=Math.PI/2;
     stage.mesh(new T.BoxGeometry(.5,.5,.5),std(0xd94f5c),-2.6,-1.55,0,root);
-    const kv=stage.sprite('katup pengaman · 2,5 MPa',{w:400,h:70,size:30,scale:.72});kv.position.set(-2.6,-1.05,0);root.add(kv);
+    const kv=stage.sprite('katup pengaman · 2,5 MPa',{w:420,h:78,size:30,scale:.72,depthTest:false});kv.position.set(-2.6,-1.02,.1);kv.renderOrder=9;root.add(kv);
     const gaugeCv=document.createElement('canvas');gaugeCv.width=gaugeCv.height=256;const gtex=new T.CanvasTexture(gaugeCv);
     stage.mesh(new T.CylinderGeometry(.54,.54,.1,40),std(0x222a33),-3.6,1.3,.14,root).rotation.x=Math.PI/2;
     const gauge=new T.Mesh(new T.CircleGeometry(.5,48),new T.MeshBasicMaterial({map:gtex}));gauge.position.set(-3.6,1.3,.2);root.add(gauge);
@@ -157,7 +157,7 @@ proof:{title:'Bandingkan dua piston besar.',text:'Pertahankan <b>F₁ dan A₁</
     const handle=new T.Group();root.add(handle);
     stage.mesh(new T.BoxGeometry(1.5,.14,.2),std(0xd94f5c,{roughness:.45}),0,0,0,handle);
     [-.75,.75].forEach(x=>stage.mesh(new T.SphereGeometry(.13,14,12),dark,x,0,0,handle));
-    const pumpTag=stage.sprite('TARIK–DORONG ↓ seret pegangan',{w:480,h:80,size:32,bg:'rgba(6,17,30,.8)',scale:.85,depthTest:false});pumpTag.renderOrder=9;root.add(pumpTag);
+    const pumpTag=stage.sprite('SERET PEGANGAN ↕\n(tarik–dorong)',{w:360,h:110,size:28,bg:'rgba(6,17,30,.82)',scale:.82,depthTest:false,padX:18,padY:14,maxLines:3});pumpTag.renderOrder=10;root.add(pumpTag);
 
     // ----- panah gaya, info, panah tekanan -----
     const aF1=new T.ArrowHelper(new T.Vector3(0,-1,0),new T.Vector3(),1,0xff5468,.25,.16),aF2=new T.ArrowHelper(new T.Vector3(0,1,0),new T.Vector3(),1,0x63e3a0,.3,.2),aW=new T.ArrowHelper(new T.Vector3(0,-1,0),new T.Vector3(),1,0xffd36c,.3,.2);
@@ -190,7 +190,7 @@ proof:{title:'Bandingkan dua piston besar.',text:'Pertahankan <b>F₁ dan A₁</
         const py=.02-s.pump*STR;smPlunger.position.y=py;smRod.scale.y=1.45-py;smRod.position.y=py+.1+smRod.scale.y/2;
         smOil.scale.y=Math.max(.02,py+2);smOil.position.y=-2+smOil.scale.y/2;
         const hy=py+.1+smRod.scale.y;handle.position.set(-5.2,hy,0);
-        pumpTag.position.set(-5.2,hy+.55,0);pumpTag.visible=!s.auto&&s.h<.02;
+        pumpTag.position.set(-4.8,hy+.95,.05);pumpTag.visible=!s.auto&&s.h<.02;
         // panah
         const L1=.35+.3*Math.log10(1+e.F1/15),L2=.35+.3*Math.log10(1+c.F2/15),LW=.35+.3*Math.log10(1+c.W/15);
         aF1.visible=!!st.reveal.force;aF1.position.set(-5.2,hy+.35+L1,0);aF1.setLength(L1,.25,.16);

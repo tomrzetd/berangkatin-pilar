@@ -109,17 +109,50 @@
     /* ---------- utilitas ---------- */
     stage.sprite=(text,o={})=>{
       const cv=document.createElement('canvas');cv.width=o.w||256;cv.height=o.h||96;
-      const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv),transparent:true,depthTest:o.depthTest!==false}));
+      const tex=new THREE.CanvasTexture(cv);tex.encoding=THREE.sRGBEncoding;tex.minFilter=THREE.LinearFilter;tex.magFilter=THREE.LinearFilter;
+      tex.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy?renderer.capabilities.getMaxAnisotropy():1);
+      const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:o.depthTest!==false,depthWrite:!!o.depthWrite,opacity:o.opacity??1}));
       sp.userData.cv=cv;sp.userData.opt=o;stage.setSpriteText(sp,text);
       const s=o.scale||1;sp.scale.set(s*cv.width/96,s*cv.height/96,1);return sp;
     };
     stage.setSpriteText=(sp,text,color)=>{
       const cv=sp.userData.cv,o=sp.userData.opt,g=cv.getContext('2d');
-      if(sp.userData.last===text+(color||''))return;sp.userData.last=text+(color||'');
+      const key=String(text??'')+'|'+(color||'');if(sp.userData.last===key)return;sp.userData.last=key;
+      const padX=o.padX??18,padY=o.padY??12,maxW=cv.width-padX*2,maxH=cv.height-padY*2;
+      const align=o.align||'center',size0=o.size||44,minSize=o.minSize||Math.max(16,Math.round(size0*.58)),maxLines=o.maxLines||4;
+      const font=s=>`${o.weight||700} ${s}px Inter,Segoe UI,sans-serif`;
+      const wrap=(raw,size)=>{
+        g.font=font(size);
+        const out=[];
+        String(raw??'').split(/\n/).forEach(block=>{
+          const words=block.trim()?block.trim().split(/\s+/):[''];
+          let line=words.shift()||'';
+          if(!words.length){out.push(line);return}
+          words.forEach(w=>{
+            const test=line?line+' '+w:w;
+            if(line&&g.measureText(test).width>maxW){out.push(line);line=w}else line=test;
+          });
+          out.push(line);
+        });
+        return out;
+      };
+      let size=size0,lines=wrap(text,size),lineH=Math.round(size*1.15);
+      while(size>minSize&&(lines.length>maxLines||lines.length*lineH>maxH)){size-=2;lines=wrap(text,size);lineH=Math.round(size*1.15)}
+      if(lines.length>maxLines){
+        lines=lines.slice(0,maxLines);
+        let last=lines[maxLines-1];
+        while(last.length>1&&g.measureText(last+'…').width>maxW)last=last.slice(0,-1);
+        lines[maxLines-1]=last+'…';
+      }
       g.clearRect(0,0,cv.width,cv.height);
-      if(o.bg){g.fillStyle=o.bg;const r=14;g.beginPath();g.moveTo(r,6);g.arcTo(cv.width-4,6,cv.width-4,cv.height-6,r);g.arcTo(cv.width-4,cv.height-6,4,cv.height-6,r);g.arcTo(4,cv.height-6,4,6,r);g.arcTo(4,6,cv.width-4,6,r);g.fill()}
-      g.fillStyle=color||o.color||'#eaf6ff';g.font=`${o.weight||700} ${o.size||44}px Inter,Segoe UI,sans-serif`;g.textAlign='center';g.textBaseline='middle';
-      g.fillText(text,cv.width/2,cv.height/2+2);sp.material.map.needsUpdate=true;
+      if(o.bg){const bgPad=o.bgPad??4,r=o.radius??14;g.fillStyle=o.bg;g.beginPath();g.moveTo(r,bgPad+2);g.arcTo(cv.width-bgPad,bgPad+2,cv.width-bgPad,cv.height-bgPad,r);g.arcTo(cv.width-bgPad,cv.height-bgPad,bgPad,cv.height-bgPad,r);g.arcTo(bgPad,cv.height-bgPad,bgPad,bgPad+2,r);g.arcTo(bgPad,bgPad+2,cv.width-bgPad,bgPad+2,r);g.fill()}
+      g.fillStyle=color||o.color||'#eaf6ff';g.font=font(size);g.textAlign=align;g.textBaseline='middle';
+      g.lineJoin='round';g.lineWidth=Math.max(2,Math.round(size*.12));g.strokeStyle=o.stroke||'rgba(5,10,16,.45)';
+      g.shadowColor='rgba(0,0,0,.18)';g.shadowBlur=4;
+      const x=align==='left'?padX:align==='right'?cv.width-padX:cv.width/2;
+      const y0=(cv.height-(lines.length-1)*lineH)/2+(o.yOffset||1);
+      lines.forEach((line,i)=>{const y=y0+i*lineH;g.strokeText(line,x,y);g.fillText(line,x,y)});
+      sp.material.map.needsUpdate=true;
     };
     stage.canvasTex=(w,h,draw,repeat)=>{
       const cv=document.createElement('canvas');cv.width=w;cv.height=h;draw(cv.getContext('2d'),w,h);

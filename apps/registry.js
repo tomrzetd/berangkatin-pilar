@@ -9,6 +9,6 @@
     {id:'pak-taro',title:'Lab Misteri Pak Taro',subtitle:'Pola · eksperimen · bukti · Vision AI',category:'Game / MPI',icon:'🧪',url:'apps/pak-taro/',version:'2.0',status:'ready'},
     {id:'air-writing',title:'Air Writing Lab',subtitle:'Laser draw · Trace Quest · fixed Face Feature · gesture',category:'Tools / Vision / MPI',icon:'✍️',url:'apps/air-writing/',version:'3.2',status:'ready'},
     {id:'puzzlesnap',title:'PuzzleSnap',subtitle:'Foto jadi puzzle · multitouch · pinch gesture · Vision AI',category:'Game / Vision / MPI',icon:'🧩',url:'apps/puzzlesnap/',version:'2.1',status:'ready'},
-    {id:'pressure',title:'Lab Maya Tekanan',subtitle:'Padat · Cair · Pascal · Drone bonus · natural discovery 3D',category:'Simulasi / Lab Maya',icon:'🫧',url:'apps/pressure/',version:'1.2.2',status:'ready',visionGate:false}
+    {id:'pressure',title:'Lab Maya Tekanan',subtitle:'Padat · Cair · Pascal · Drone bonus · natural discovery 3D',category:'Simulasi / Lab Maya',icon:'🫧',url:'apps/pressure/',version:'1.2.3',status:'ready',visionGate:false}
   ];
 })(window);

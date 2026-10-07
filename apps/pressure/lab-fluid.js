@@ -22,7 +22,7 @@
 {k:'fluid',type:'seg',label:'Jenis cairan',adv:true,options:()=>Object.values(PH().fluid.FLUIDS).map(f=>({v:f.id,l:f.name}))},
 {k:'width',type:'range',label:'Lebar wadah',unit:'m',adv:true,min:()=>4,max:()=>12,step:()=>1,dec:()=>0}],
 reveals:[{k:'arrows',on:'🙈 Sembunyikan panah',off:'👁 Lihat arah tekanan'},{k:'wall',on:'🙈 Sembunyikan profil',off:'👁 Lihat profil tekanan'}],
-missions:[{id:'dive',title:'Bandingkan dua kedalaman',desc:'Bawa telinga perenang hingga kedalaman ≥ 2,5 m.'}],
+missions:[{id:'dive',title:'Bandingkan dua kedalaman',desc:'Turunkan perenang hingga posisi telinganya mencapai kedalaman ≥ 2,5 m.'}],
 onParam(k,v,old,st,api){if(k==='depth'&&+v>=2.5)api.mark('dive')},check(){},
     patterns:[{icon:'⬇',title:'Lebih dalam → tekanan lebih besar',text:'Pada cairan yang sama, tekanan bertambah sebanding dengan kedalaman.'},{icon:'↔',title:'Tekanan bekerja ke segala arah',text:'Di satu titik dalam cairan diam, dorongan tidak hanya ke bawah.'},{icon:'💧',title:'Jenis cairan juga berpengaruh',text:'Pada kedalaman sama, cairan yang lebih rapat memberi tekanan lebih besar.'}],
     formula:{main:'p = ρ · g · h',sec:'p total = p₀ + ρ · g · h',note:'ρ = massa jenis cairan (kg/m³), g = 9,81 m/s², h = kedalaman dari permukaan. p₀ ≈ 101.325 Pa (tekanan udara). Gaya pada permukaan: F = p · A.'},
@@ -59,8 +59,8 @@ evaluate(st){let best=null;for(const a of st.evidence)for(const b of st.evidence
     stage.sun.position.set(5,12,9);
 
     // ----- kolam -----
-    const tile=stage.canvasTex(256,256,(g,w,h)=>{g.fillStyle='#bfe3ee';g.fillRect(0,0,w,h);g.strokeStyle='#8fc3d4';g.lineWidth=3;for(let i=0;i<=8;i++){g.beginPath();g.moveTo(i*w/8,0);g.lineTo(i*w/8,h);g.stroke();g.beginPath();g.moveTo(0,i*h/8);g.lineTo(w,i*h/8);g.stroke()}},[6,4]);
-    const tileM=std(0xffffff,{map:tile,roughness:.45});
+    const tile=stage.canvasTex(256,256,(g,w,h)=>{const grad=g.createLinearGradient(0,0,0,h);grad.addColorStop(0,'#d5edf6');grad.addColorStop(1,'#b9dce8');g.fillStyle=grad;g.fillRect(0,0,w,h);g.strokeStyle='#8fc3d4';g.lineWidth=3;for(let i=0;i<=8;i++){g.beginPath();g.moveTo(i*w/8,0);g.lineTo(i*w/8,h);g.stroke();g.beginPath();g.moveTo(0,i*h/8);g.lineTo(w,i*h/8);g.stroke()}g.strokeStyle='rgba(255,255,255,.35)';g.lineWidth=1;for(let i=0;i<=8;i++){g.beginPath();g.moveTo(i*w/8+1,0);g.lineTo(i*w/8+1,h);g.stroke();g.beginPath();g.moveTo(0,i*h/8+1);g.lineTo(w,i*h/8+1);g.stroke()}},[6,4]);
+    const tileM=std(0xffffff,{map:tile,bumpMap:tile,bumpScale:.025,roughness:.48});
     const wallL=stage.mesh(new T.BoxGeometry(.3,H+.8,L+.6),tileM,0,-H/2+.15,0,root),wallR=stage.mesh(new T.BoxGeometry(.3,H+.8,L+.6),tileM,0,-H/2+.15,0,root);
     const wallB=stage.mesh(new T.BoxGeometry(1,H+.8,.3),tileM,0,-H/2+.15,-L/2-.15,root),floor=stage.mesh(new T.BoxGeometry(1,.3,L+.6),tileM,0,-H-.15,0,root);
     const ground=stage.mesh(new T.PlaneGeometry(80,80),std(0x20384a,{roughness:1}),0,-H-.31,0,root,false);ground.rotation.x=-Math.PI/2;
