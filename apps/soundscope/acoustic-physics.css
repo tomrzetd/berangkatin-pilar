@@ -29,3 +29,6 @@ body.acoustic-mode .stage{overflow:hidden}.acoustic-stage{height:100%;padding:cl
 .acp-runtime{display:grid;grid-template-columns:1fr minmax(9rem,13rem);gap:.45rem;align-items:center;padding:.4rem .5rem;border:1px solid var(--line);border-radius:.75rem;background:rgba(0,0,0,.14)}
 .acp-runtime span{font-size:.62rem;color:var(--cyan);font-weight:900;letter-spacing:.04em}.acp-runtime select{height:2.25rem;min-height:2.25rem;padding:.25rem .55rem;font-size:.68rem}
 @media(max-width:650px){.acp-actions.tri{grid-template-columns:1fr}.acp-runtime{grid-template-columns:1fr}}
+
+/* v4.5.2 · fullscreen-safe canvases */
+.acp-radar-wrap canvas,.acp-corr-wrap canvas{max-width:100%;max-height:100%;transform:none}

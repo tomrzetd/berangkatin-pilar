@@ -1,4 +1,4 @@
-/* PILAR SoundScope v4.5.1 — Acoustic Physics */
+/* PILAR SoundScope v4.5.2 — Acoustic Physics */
 (function(){
 'use strict';
 const A=window.SOUNDSCOPE_MORSE_AUDIO,C=window.PilarAcousticCore,E=window.PilarAcousticEngine,$=id=>document.getElementById(id);
@@ -111,5 +111,16 @@ function drawPosition(){if(!mc||!xc)return;const [W,H]=setup(main,mc),xs=anchors
 function tick(now){if(!S.active)return;if(S.mode==='doppler')dopplerTick(now);if(now-lastDraw<PERF.frameMs)return;lastDraw=now;if(S.mode==='sonar'){drawSonar(now);drawCorr()}else if(S.mode==='doppler')drawDoppler();else if(S.mode==='ranging')drawRanging();else drawPosition()}
 function activate(on){S.active=!!on;document.body.classList.toggle('acoustic-mode',S.active);$('acousticStage').hidden=!S.active;if(on){renderControls();renderStage();requestAnimationFrame(fit);$('selWave').value='off';$('selWave').dispatchEvent(new Event('change'))}else stopActivities()}function micStopped(){stopActivities();E.detach();if(S.active)live(false,'MIC OFF')}
 E.on(m=>{if(m.type==='anchor-trigger'&&S.mode==='ranging'&&S.range.armed){$('apStatus').textContent='Poll terdeteksi · reply sample-accurate.';live(true,'REPLYING')}if(m.type==='anchor-rearmed'&&S.range.armed)live(true,'ANCHOR '+S.range.selected)});
+let fitRAF=0;
+function scheduleFit(){
+  cancelAnimationFrame(fitRAF);
+  fitRAF=requestAnimationFrame(()=>{fit();requestAnimationFrame(fit)});
+}
+window.addEventListener('resize',scheduleFit,{passive:true});
+document.addEventListener('fullscreenchange',()=>{scheduleFit();setTimeout(scheduleFit,120)});
+if(typeof ResizeObserver==='function'){
+  const ro=new ResizeObserver(()=>scheduleFit());
+  ro.observe($('acousticStage'));
+}
 setMode('sonar');window.SoundScopeAcoustic={activate,tick,micStopped,state:S,setMode};
 })();

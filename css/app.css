@@ -517,3 +517,10 @@
     padding-bottom:max(9px,env(safe-area-inset-bottom));
   }
 }
+
+/* v0.6.1 · launcher utilities */
+.boot-tools{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.boot-fullscreen-btn{width:38px;height:38px;display:grid;place-items:center;border:1px solid #294861;border-radius:12px;background:#081725;color:#dceafb;font:900 18px/1 system-ui;cursor:pointer}
+.boot-fullscreen-btn:hover,.boot-fullscreen-btn[aria-pressed="true"]{border-color:#5ee9ff;color:#5ee9ff;background:rgba(94,233,255,.1)}
+.boot-pulse-dock{display:flex;align-items:center;justify-content:center}
+@media(max-width:760px){.boot-head-right{gap:8px}.boot-tools{margin-left:auto}.boot-fullscreen-btn{width:36px;height:36px}}

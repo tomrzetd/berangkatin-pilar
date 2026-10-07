@@ -272,6 +272,23 @@
 
   drawBootCaps();
   renderLibrary();
+  const bootFullscreenBtn=$('#bootFullscreenBtn');
+  async function toggleBootFullscreen(){
+    if(!bootFullscreenBtn)return;
+    try{
+      if(document.fullscreenElement)await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    }catch(e){console.warn('Fullscreen tidak tersedia',e)}
+  }
+  function syncBootFullscreen(){
+    if(!bootFullscreenBtn)return;
+    bootFullscreenBtn.hidden=!document.fullscreenEnabled;
+    const on=!!document.fullscreenElement;
+    bootFullscreenBtn.textContent=on?'⤢':'⛶';
+    bootFullscreenBtn.setAttribute('aria-pressed',on?'true':'false');
+    bootFullscreenBtn.title=on?'Keluar layar penuh':'Layar penuh';
+  }
+  if(bootFullscreenBtn){bootFullscreenBtn.onclick=toggleBootFullscreen;document.addEventListener('fullscreenchange',syncBootFullscreen);syncBootFullscreen()}
   $('#bootQuick').onclick=()=>launchSelected('standard');
   $('#bootVision').onclick=()=>launchSelected('vision');
   if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('service-worker.js').catch(()=>{});

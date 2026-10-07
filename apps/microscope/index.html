@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PILAR™ Microscope Lab v0.8 — Instrument HUD · Vision · ML</title>
+    <title>PILAR™ Microscope Lab v0.8.1 — Instrument HUD · Vision · ML</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -1279,7 +1279,63 @@
           #hudLiveChip b{max-width:55px;overflow:hidden;text-overflow:ellipsis}
         }
 
-    </style>
+    
+        /* ===== v0.8.1 · PILAR Hub visual alignment ===== */
+        .dark-mode{
+          --primary:#5ee9ff;--primary-dark:#2bb8d6;--secondary:#63e3a0;--accent:#ffd36c;
+          --danger:#ff6d83;--dark:#eef8ff;--gray:#91a7bd;--light:#071321;
+          --shadow-sm:0 2px 10px rgba(0,0,0,.28);--shadow-md:0 8px 24px rgba(0,0,0,.34);--shadow-lg:0 20px 60px rgba(0,0,0,.42)
+        }
+        .dark-mode body{background:#050913;color:#eef8ff}
+        .dark-mode .header{
+          display:grid;grid-template-columns:auto 1fr auto auto;grid-template-areas:"logo spacer pulse owner" "controls controls controls controls";
+          gap:12px 14px;padding:18px 22px;background:linear-gradient(155deg,#0a1422,#07111e);
+          border:1px solid #284561;border-radius:18px;box-shadow:0 22px 70px rgba(0,0,0,.38)
+        }
+        .dark-mode .logo{grid-area:logo;color:#eef8ff}.header-spacer{grid-area:spacer}
+        .microscope-pulse-dock{grid-area:pulse;display:flex;align-items:center;justify-content:flex-end}
+        .dark-mode .branding-pill{
+          grid-area:owner;justify-self:end;margin:0;max-width:min(42vw,620px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+          color:#8da6bd;background:#06111c;border:1px solid #213b55;box-shadow:none;text-shadow:none;font-size:.72rem
+        }
+        .dark-mode .user-controls{grid-area:controls;justify-content:flex-start;flex-wrap:wrap}
+        .dark-mode .btn-outline{border-color:#284561;color:#dceafb;background:#0b1726}
+        .dark-mode .btn-outline:hover{border-color:#5ee9ff;background:rgba(94,233,255,.1)}
+        .dark-mode .btn-primary{background:#dff7ff;color:#0a2030}
+        .dark-mode .pilar-flow{background:#071321;border-color:#284561;box-shadow:0 12px 34px rgba(0,0,0,.26)}
+        .dark-mode .pilar-flow button{background:#0b1726;border-color:#284561;color:#eef8ff}
+        .dark-mode .pilar-flow button.active{border-color:#5ee9ff;background:linear-gradient(135deg,rgba(94,233,255,.13),rgba(99,227,160,.08))}
+        .dark-mode .camera-section,.dark-mode .controls-panel,.dark-mode .gallery-section{
+          background:#071321;color:#eef8ff;border:1px solid #284561;box-shadow:0 18px 52px rgba(0,0,0,.34)
+        }
+        .dark-mode .camera-header{background:#0b1726;border-bottom:1px solid #284561}
+        .dark-mode .camera-selector,.dark-mode .pilar-source-row{border-color:#284561!important;background:#081421}
+        .dark-mode .camera-select,.dark-mode .pilar-ai-input,.dark-mode .control-btn,.dark-mode .tool-item{
+          background:#0b1726;border-color:#284561;color:#eef8ff
+        }
+        .dark-mode .control-btn:hover,.dark-mode .tool-item:hover{background:#102236;border-color:#5ee9ff}
+        .dark-mode .control-btn.active,.dark-mode .tool-item.active{background:linear-gradient(135deg,rgba(94,233,255,.24),rgba(43,184,214,.3));border-color:#5ee9ff}
+        .dark-mode .panel-title{border-color:#5ee9ff}.dark-mode .zoom-slider{background:#29415f}
+        .dark-mode .camera-view{
+          background:
+            linear-gradient(45deg,#20344a 25%,transparent 25%),
+            linear-gradient(-45deg,#20344a 25%,transparent 25%),
+            linear-gradient(45deg,transparent 75%,#20344a 75%),
+            linear-gradient(-45deg,transparent 75%,#20344a 75%);
+          background-color:#08131f
+        }
+        /* Camera column stops exactly after camera-view; it no longer stretches to the tall controls column. */
+        .main-content{min-height:0;align-items:start}
+        .camera-section{align-self:start;height:auto;min-height:0}
+        .camera-view{flex:0 0 auto}
+        .controls-panel{align-self:start}
+        @media(max-width:768px){
+          .dark-mode .header{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"logo pulse" "owner owner" "controls controls";padding:14px}
+          .dark-mode .branding-pill{justify-self:start;max-width:100%;font-size:.62rem}
+          .dark-mode .user-controls{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px}
+        }
+
+</style>
 </head>
 <body>
     <div class="app-container">
@@ -1287,11 +1343,13 @@
             <div class="logo">
                 <i class="fas fa-microscope"></i>
                 <div class="logo-text-group">
-                    <div>PILAR™ Microscope Lab <small class="pilar-version">v0.8</small></div>
+                    <div>PILAR™ Microscope Lab <small class="pilar-version">v0.8.1</small></div>
                     <div class="tagline">IFP / MPI · Observasi · Vision · ML · Pengukuran · Bukti</div>
                 </div>
-                <div class="branding-pill" id="brandingPill"></div>
             </div>
+            <div class="header-spacer" aria-hidden="true"></div>
+            <div class="microscope-pulse-dock" data-pilar-pulse-dock aria-label="PILAR Pulse"></div>
+            <div class="branding-pill" id="brandingPill"></div>
             <div class="user-controls">
                 <button class="btn btn-outline pilar-mode-btn" id="modeBtn" aria-label="Mode tampilan"><i class="fas fa-display"></i> AUTO</button>
                 <a class="btn btn-outline pilar-home-btn" id="pilarHomeBtn" href="../../" title="Kembali ke PILAR Hub"><i class="fas fa-arrow-left"></i> PILAR Hub</a>
@@ -1601,7 +1659,7 @@
         </div>
     </div>
 
-    <footer class="pilar-app-footer"><span>PILAR™ Microscope Lab · v0.8</span><span>PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span></footer>
+    <footer class="pilar-app-footer"><span>PILAR™ Microscope Lab · v0.8.1</span><span>PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span></footer>
 
     <div class="modal" id="imageModal">
         <img id="modalImage" src="" alt="Preview">
@@ -1752,7 +1810,7 @@
             releaseGalleryUrls() { this.galleryObjectUrls.forEach(url=>URL.revokeObjectURL(url)); this.galleryObjectUrls.clear(); }
 
             restorePreferences() {
-                const theme=localStorage.getItem('pilarMicroscopeTheme'); if(theme==='dark')document.body.classList.add('dark-mode');
+                const theme=localStorage.getItem('pilarMicroscopeTheme')||'dark'; if(theme==='dark')document.body.classList.add('dark-mode');
                 const isDark=document.body.classList.contains('dark-mode');document.getElementById('themeToggle').innerHTML=isDark?'<i class="fas fa-sun"></i> Light Mode':'<i class="fas fa-moon"></i> Dark Mode';
             }
 

@@ -49,7 +49,7 @@ function meta(){return{
 function injectUI(){
   if(document.getElementById('pilarPulseBtn'))return;
   const css=document.createElement('style');css.textContent=`
-  #pilarPulseBtn{position:fixed;right:14px;bottom:14px;z-index:1040;border:1px solid #31506d;background:#071321eF;color:#eaf7ff;border-radius:999px;padding:9px 12px;font:800 11px/1.2 Inter,system-ui;box-shadow:0 10px 32px #0007;cursor:pointer}
+  #pilarPulseBtn{position:fixed;right:14px;bottom:14px;z-index:1040;width:44px;height:44px;display:grid;place-items:center;border:1px solid #31506d;background:#071321ef;color:#eaf7ff;border-radius:50%;padding:0;font:800 19px/1 Inter,system-ui;box-shadow:0 10px 32px #0007;cursor:pointer}#pilarPulseBtn::after{content:"";position:absolute;right:3px;bottom:4px;width:8px;height:8px;border-radius:50%;background:#718398;border:2px solid #071321}#pilarPulseBtn.on::after{background:#63e3a0;box-shadow:0 0 8px rgba(99,227,160,.7)}[data-pilar-pulse-dock]{display:inline-flex;align-items:center;justify-content:center}[data-pilar-pulse-dock] #pilarPulseBtn{position:relative;right:auto;bottom:auto;z-index:2;box-shadow:none}
   #pilarPulseBtn.on{border-color:#3c7652;color:#caffdf}#pilarPulseBtn.off{opacity:.7}
   #pilarPulseDrawer{position:fixed;right:14px;bottom:58px;z-index:1041;width:min(360px,calc(100vw - 28px));max-height:min(560px,72vh);display:none;grid-template-rows:auto 1fr auto;background:#07111df7;color:#edf7ff;border:1px solid #31506d;border-radius:18px;box-shadow:0 22px 70px #000b;overflow:hidden;font:13px/1.4 Inter,system-ui}
   #pilarPulseDrawer.open{display:grid}.pp-head{padding:13px 14px;border-bottom:1px solid #20394f;display:flex;justify-content:space-between;gap:10px}.pp-head b{color:#7eeeff}.pp-head small{display:block;color:#839bb2;margin-top:2px}.pp-head button{min-height:30px;padding:4px 8px;border-radius:9px}.pp-head-actions{display:flex;gap:6px;align-items:flex-start}.pp-clear{border-color:#5b3943!important;color:#ffb7c5!important;background:#21131a!important}
@@ -58,13 +58,13 @@ function injectUI(){
   #pilarPulseNotice{position:fixed;left:14px;bottom:14px;z-index:1042;max-width:min(560px,calc(100vw - 28px));padding:10px 12px;border:1px solid #294861;border-radius:13px;background:#071321f4;color:#cfe0ee;font:11px/1.45 Inter,system-ui;box-shadow:0 12px 40px #0008}#pilarPulseNotice button{margin-left:7px;min-height:28px;padding:3px 8px;border-radius:8px}
   @media(max-width:700px){#pilarPulseBtn{bottom:72px}#pilarPulseDrawer{bottom:116px}}
   `;document.head.appendChild(css);
-  const b=document.createElement('button');b.id='pilarPulseBtn';b.textContent='● PILAR Pulse';
+  const b=document.createElement('button');b.id='pilarPulseBtn';b.type='button';b.textContent='💬';b.title='PILAR Pulse';b.setAttribute('aria-label','Buka PILAR Pulse');
   b.onclick=async()=>{
     if(!enabled()){ await enablePulse(); return; }
     drawer.classList.toggle('open');
   };
   const drawer=document.createElement('section');drawer.id='pilarPulseDrawer';drawer.innerHTML='<div class="pp-head"><div><b>Chat with Developer</b><small id="ppIdentity">menyambungkan…</small></div><div class="pp-head-actions"><button class="pp-clear" id="ppClear">Clear Chat</button><button id="ppOff">Matikan Pulse</button></div></div><div class="pp-msgs" id="ppMsgs"><div class="pp-empty">Belum ada pesan.</div></div><form class="pp-form" id="ppForm"><input id="ppInput" maxlength="1200" placeholder="Kirim pesan ke developer…" autocomplete="off"><button>Kirim</button></form>';
-  document.body.append(b,drawer);
+  const dock=document.querySelector('[data-pilar-pulse-dock]');if(dock){dock.appendChild(b);document.body.classList.add('pilar-pulse-docked')}else document.body.appendChild(b);document.body.appendChild(drawer);
   drawer.querySelector('#ppOff').onclick=async()=>{
     if(!enabled()){ await enablePulse(); return; }
     if(!confirm('Nonaktifkan PILAR Pulse di browser ini? Kamu bisa mengaktifkannya lagi kapan saja.'))return;
@@ -80,7 +80,7 @@ function notice(){
   n.querySelector('[data-off]').onclick=()=>{setEnabled(false);try{localStorage.setItem('pilar_pulse_notice','1')}catch(_){}n.remove()};
 }
 function setButton(state,label){
-  const b=document.getElementById('pilarPulseBtn');if(!b)return;b.classList.remove('on','off');b.classList.add(state);b.textContent=label;
+  const b=document.getElementById('pilarPulseBtn');if(!b)return;b.classList.remove('on','off');b.classList.add(state);b.textContent='💬';b.title=label||'PILAR Pulse';b.setAttribute('aria-label',label||'PILAR Pulse');
 }
 function syncInlineIdentity(text,state=''){
   const el=document.getElementById('pilarPulseInlineId');if(!el)return;
