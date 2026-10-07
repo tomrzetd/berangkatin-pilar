@@ -4,10 +4,31 @@
   const P=window.PILAR,$=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
   const fmt=(x,d=1)=>Number(x).toFixed(d).replace('.',',');
   const PHASES=[['lihat','1 Lihat'],['tebak','2 Tebak'],['coba','3 Coba'],['aha','4 AHA'],['buktikan','5 Buktikan'],['rekayasa','6 Rekayasa']];
+  const NATURAL_STEPS=[['amati','1 Amati'],['coba','2 Coba'],['pahami','3 Pahami'],['rancang','4 Rancang']];
   const S={labId:null,labs:{},xp:0,quality:'standard'};
   let stage=null,scene=null,spec=null,panelEls=null,dock=null,lastKey='',loopOn=false,lastT=0,lastUi=0,lastChk=0;
 
   const cur=()=>S.labs[S.labId];
+  const naturalUX=()=>spec&&spec.studentUX==='natural-solid-v1';
+  const phaseGroup=ph=>ph==='lihat'||ph==='tebak'?'amati':ph==='coba'?'coba':ph==='aha'||ph==='buktikan'?'pahami':'rancang';
+  function naturalTarget(step,st){
+    if(step==='amati')return st.locked?'tebak':'lihat';
+    if(step==='coba')return'coba';
+    if(step==='pahami')return st.formula?'buktikan':'aha';
+    return'rekayasa';
+  }
+  function renderPhaseTabs(){
+    const nav=$('#phaseTabs');if(!nav)return;
+    if(naturalUX()){
+      nav.classList.add('natural-flow');
+      nav.innerHTML=NATURAL_STEPS.map(p=>`<button data-step="${p[0]}">${p[1]}</button>`).join('');
+      $('button',nav).forEach(b=>b.onclick=()=>go(naturalTarget(b.dataset.step,cur())));
+    }else{
+      nav.classList.remove('natural-flow');
+      nav.innerHTML=PHASES.map(p=>`<button data-phase="${p[0]}">${p[1]}</button>`).join('');
+      $('button',nav).forEach(b=>b.onclick=()=>go(b.dataset.phase));
+    }
+  }
   function makeLab(sp){
     const missions={};sp.missions.forEach(m=>missions[m.id]=false);
     return{id:sp.id,phase:'lihat',prediction:null,locked:false,predCorrect:null,params:sp.defaults(),reveal:{},missions,aha:false,formula:false,
@@ -23,7 +44,7 @@
       const st=cur();if(st.missions[id]!==false)return;
       st.missions[id]=true;S.xp+=5;
       const m=spec.missions.find(x=>x.id===id);toast('Misi selesai ✓',m?m.title.replace(/^\d+ · /,''):'');
-      if(Object.values(st.missions).every(Boolean)&&!st.aha){st.aha=true;S.xp+=10;setTimeout(()=>toast('💡 Pola sudah cukup kuat','Tahap AHA terbuka. Lanjut ke tab 4.'),900)}
+      if(Object.values(st.missions).every(Boolean)&&!st.aha){st.aha=true;S.xp+=10;setTimeout(()=>toast('💡 Ada pola!',naturalUX()?'Beratnya sama, tetapi bekas di pasir berubah. Sekarang pahami penyebabnya.':'Tahap AHA terbuka. Lanjut ke tab 4.'),900)}
       refresh();
     },
     setParam(k,v){
@@ -39,7 +60,62 @@
   };
 
   /* ───────── panel fase ───────── */
+  function naturalSolidPanels(sp){
+    const o=sp.predict,pf=sp.proof,eg=sp.eng;
+    return `
+    <section class="phase-card natural-card" data-panel="lihat">
+      <div class="eyebrow">AMATI · FENOMENA</div>
+      <h1>${sp.look.title}</h1><p>${sp.look.text}</p>
+      <div class="big-question"><span>Aku ingin tahu</span><b>${sp.look.question}</b></div>
+      <button class="primary wide-cta" data-go="tebak">Aku punya tebakan →</button>
+    </section>
+    <section class="phase-card natural-card" data-panel="tebak" hidden>
+      <div class="eyebrow">AMATI · PREDIKSI 1 TAP</div>
+      <h1>${o.title}</h1><p>${o.text}</p>
+      <div class="prediction-grid natural-pred" id="predGrid">${o.options.map(x=>`<button data-pred="${x.v}">${x.l}</button>`).join('')}</div>
+      <div class="prompt-box soft" id="predFeedback">Pilih satu. Tidak apa-apa kalau salah.</div>
+      <button class="primary wide-cta" id="lockPred">Uji tebakanku →</button>
+    </section>
+    <section class="phase-card natural-card" data-panel="coba" hidden>
+      <div class="eyebrow">COBA · UBAH SATU HAL</div>
+      <h1>Balik baloknya. Lihat pasirnya.</h1>
+      <p>Berat balok tetap. Ubah hanya posisi bidang yang menyentuh pasir.</p>
+      <div class="control-slot" data-slot="coba"></div>
+      <div class="mission-list natural-mission" id="missionList">${sp.missions.map(m=>`<div data-mission="${m.id}"><b>${m.title}</b><span>○ ${m.desc}</span></div>`).join('')}</div>
+      <div class="reveal-row natural-reveal" id="revealRow">${sp.reveals.map(r=>`<button data-reveal="${r.k}" aria-pressed="false">${r.off}</button>`).join('')}</div>
+      <div class="prompt-box soft" id="experimentHint"></div>
+    </section>
+    <section class="phase-card natural-card" data-panel="aha" hidden>
+      <div class="eyebrow">PAHAMI · AHA</div>
+      <h1>Apa yang sebenarnya berubah?</h1>
+      <div class="prompt-box" id="predResult"></div>
+      <div class="pattern-cards natural-patterns">${sp.patterns.map(x=>`<article><span>${x.icon}</span><div><b>${x.title}</b><p>${x.text}</p></div></article>`).join('')}</div>
+      <button class="primary wide-cta" id="revealFormula">Lihat hubungan angkanya</button>
+      <div class="formula-panel" id="formulaPanel" hidden><div class="formula">${sp.formula.main}</div><div class="formula secondary">${sp.formula.sec}</div><p class="angle-note">${sp.formula.note}</p></div>
+      <button class="wide-cta" id="toProof" data-go="buktikan">Ambil bukti dari percobaan →</button>
+    </section>
+    <section class="phase-card natural-card" data-panel="buktikan" hidden>
+      <div class="eyebrow">PAHAMI · BUKTI</div>
+      <h1>${pf.title}</h1><p>${pf.text}</p>
+      <div class="target-meter natural-target"><span>${pf.target[0]}</span><b>${pf.target[1]}</b></div>
+      <div class="control-slot" data-slot="buktikan"></div>
+      <div class="control-grid"><button class="primary" id="recordNow">📸 Ambil bukti</button><button id="clearLedger">Ulang bukti</button></div>
+      <div class="evidence-snapshots" id="evidenceSnapshots"><div class="empty-evidence">Belum ada bukti. Ambil kondisi pertama.</div></div>
+      <table hidden><tbody id="ledgerBody"></tbody></table>
+      <div class="prompt-box soft" id="proofHint">Bandingkan balok tidur dan berdiri dengan massa yang sama.</div>
+      <div class="control-grid"><button id="copyReport">Salin data</button><button class="primary" id="toEng" data-go="rekayasa">Pakai konsepnya →</button></div>
+    </section>
+    <section class="phase-card natural-card" data-panel="rekayasa" hidden>
+      <div class="eyebrow">RANCANG · KONSEP JADI FUNGSI</div>
+      <h1>${eg.title}</h1><p>${eg.text}</p>
+      <div class="eng-status"><span>STATUS RANCANGAN</span><b id="engStatus">—</b></div>
+      <div id="engPanelHost">${eg.html}</div>
+      <div class="reflection-box natural-reflect"><b>Kenapa desainmu bekerja?</b><p>Hubungkan <strong>luas bidang tekan</strong> dengan <strong>besar tekanan</strong> yang dihasilkan.</p></div>
+      <details class="model-details"><summary>Tentang model simulasi</summary><p>${sp.model}</p></details>
+    </section>`;
+  }
   function panelsHTML(sp){
+    if(sp.studentUX==='natural-solid-v1')return naturalSolidPanels(sp);
     const o=sp.predict,pf=sp.proof,eg=sp.eng;
     return `
     <section class="phase-card" data-panel="lihat">
@@ -93,7 +169,7 @@
   /* ───────── kontrol dinamis (dipindah antara tab Coba & Buktikan) ───────── */
   function buildDock(){
     dock=document.createElement('div');dock.className='control-dock';
-    const main=document.createElement('div'),adv=document.createElement('details');adv.className='advanced';adv.innerHTML='<summary>Kontrol engineering awal</summary>';
+    const main=document.createElement('div'),adv=document.createElement('details');adv.className='advanced';adv.innerHTML='<summary>'+(spec.advancedLabel||'Kontrol engineering awal')+'</summary>';
     spec.controls.forEach((c,i)=>{
       const w=document.createElement('div');w.className='ctl';w.dataset.i=i;
       if(c.type==='actions'){w.innerHTML='<div class="control-grid">'+c.items.map(a=>`<button class="${a.primary?'primary':''}" data-act="${a.id}">${a.label}</button>`).join('')+'</div>';
@@ -154,11 +230,11 @@
     if(!st.locked){st.locked=true;st.predCorrect=st.prediction===spec.predict.answer;S.xp+=10}
     go('coba');toast('Tebakan terkunci','Sekarang uji dengan eksperimen.');
   }
-  function revealFormula(){const st=cur();if(!st.aha)return toast('Belum terbuka','Selesaikan misi dulu.');st.formula=true;S.xp+=15;refresh()}
+  function revealFormula(){const st=cur();if(!st.aha)return toast('Belum terbuka','Selesaikan misi dulu.');st.formula=true;if(naturalUX())st.reveal.numbers=true;S.xp+=15;refresh()}
   function record(){
     const st=cur(),r=spec.proof.record(st);st.seq++;st.evidence.push({id:st.seq,cells:r.cells,data:r.data});
     const ev=spec.proof.evaluate(st);
-    if(ev.ok&&!st.proofDone){st.proofDone=true;S.xp+=20;toast('Bukti terpenuhi ✓','Tahap Rekayasa terbuka.')}else toast('Data dicatat','Percobaan #'+st.seq+' masuk Evidence Ledger.');
+    if(ev.ok&&!st.proofDone){st.proofDone=true;S.xp+=20;toast('Bukti cocok ✓',naturalUX()?'Dua kondisi menunjukkan pola yang sama. Sekarang pakai konsepnya untuk merancang.':'Tahap Rekayasa terbuka.')}else toast(naturalUX()?'Bukti tersimpan 📸':'Data dicatat',naturalUX()?'Sekarang ubah posisi balok dan ambil satu bukti lagi.':'Percobaan #'+st.seq+' masuk Evidence Ledger.');
     refresh();
   }
   function makeBrief(){
@@ -178,7 +254,11 @@
   /* ───────── refresh UI ───────── */
   function refresh(){
     if(!spec)return;const st=cur();
-    $$('#phaseTabs button').forEach(b=>{b.classList.toggle('active',b.dataset.phase===st.phase);const lock=canGo(st,b.dataset.phase);b.classList.toggle('locked',!!lock)});
+    if(naturalUX()){
+      $('#phaseTabs button').forEach(b=>{const target=naturalTarget(b.dataset.step,st);b.classList.toggle('active',b.dataset.step===phaseGroup(st.phase));b.classList.toggle('locked',!!canGo(st,target))});
+    }else{
+      $('#phaseTabs button').forEach(b=>{b.classList.toggle('active',b.dataset.phase===st.phase);const lock=canGo(st,b.dataset.phase);b.classList.toggle('locked',!!lock)});
+    }
     $$('#panelHost [data-panel]').forEach(p=>p.hidden=p.dataset.panel!==st.phase);
     const slot=$(`.control-slot[data-slot="${st.phase}"]`);if(slot&&dock.parentNode!==slot)slot.appendChild(dock);
     $('#xp').textContent=S.xp;
@@ -197,14 +277,20 @@
     if(st.ledgerLen!==st.evidence.length||st.ledgerFlag!==String(st.proofDone)){
       st.ledgerLen=st.evidence.length;st.ledgerFlag=String(st.proofDone);
       $('#ledgerBody').innerHTML=st.evidence.slice().reverse().map(r=>`<tr><td>${r.id}</td>${r.cells.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('');
+      const snaps=$('#evidenceSnapshots');
+      if(snaps){
+        snaps.innerHTML=st.evidence.length?st.evidence.slice(-2).map((r,i)=>`<article><span>Bukti ${i+1}</span><b>${r.data.label||r.cells[0]}</b><small>${r.data.areaLabel||''} · ${r.data.pressureLabel||''}</small></article>`).join(''):'<div class="empty-evidence">Belum ada bukti. Ambil kondisi pertama.</div>';
+      }
       const ev=spec.proof.evaluate(st);$('#proofHint').innerHTML=st.evidence.length?ev.msg:'Belum ada data yang cukup untuk membandingkan.';
     }
     $('#toEng').disabled=!st.proofDone;
     // rekayasa
-    if(st.phase==='rekayasa'){spec.eng.update(engCtx());const bb=$('#briefBox');bb.textContent=st.brief||'Belum ada brief.'}
+    if(st.phase==='rekayasa'){spec.eng.update(engCtx());const bb=$('#briefBox');if(bb)bb.textContent=st.brief||'Belum ada brief.'}
     updateDock(st);
     $('#stageBadge').textContent=spec.icon+' '+spec.title;
-    const cta=$('#nextCta');cta.textContent={lihat:'Mulai menebak →',tebak:'Kunci tebakan →',coba:st.aha?'Buka AHA →':'Selesaikan misi…',aha:st.formula?'Buktikan dengan data →':'Rumuskan temuan →',buktikan:st.proofDone?'Masuk Rekayasa →':'Catat percobaan',rekayasa:'Rancang sampai ✓'}[st.phase];
+    const cta=$('#nextCta');
+    cta.textContent=naturalUX()?{lihat:'Aku punya tebakan →',tebak:'Uji tebakanku →',coba:st.aha?'Apa polanya? →':'Balik baloknya…',aha:st.formula?'Ambil bukti →':'Lihat hubungan angka →',buktikan:st.proofDone?'Rancang sesuatu →':'Ambil bukti 📸',rekayasa:'Uji rancangan ✓'}[st.phase]
+      :{lihat:'Mulai menebak →',tebak:'Kunci tebakan →',coba:st.aha?'Buka AHA →':'Selesaikan misi…',aha:st.formula?'Buktikan dengan data →':'Rumuskan temuan →',buktikan:st.proofDone?'Masuk Rekayasa →':'Catat percobaan',rekayasa:'Rancang sampai ✓'}[st.phase];
   }
   function updateHud(){
     const st=cur(),h=spec.hud(st);$$('.live-hud div').forEach((d,i)=>{$('span',d).textContent=h[i][0];$('b',d).textContent=h[i][1]});
@@ -216,6 +302,8 @@
     if(!stage){try{stage=P.pressureStage.create($('#stage'));stage.setQuality(S.quality)}catch(e){return showError(e)}}
     spec=sp;S.labId=id;if(!S.labs[id])S.labs[id]=makeLab(sp);
     const st=cur();
+    document.body.classList.toggle('natural-solid',sp.studentUX==='natural-solid-v1');
+    renderPhaseTabs();
     $('#panelHost').innerHTML=panelsHTML(sp);buildDock();bindPanels();
     $$('#labChips button').forEach(b=>b.classList.toggle('active',b.dataset.lab===id));
     stage.unmount();
@@ -234,19 +322,20 @@
     if(fromPicker)toast(sp.icon+' '+sp.tab,sp.tagline);
   }
   function bindPanels(){
-    const H=$('#panelHost');
+    const H=$('#panelHost'),click=(sel,fn)=>{const el=$(sel,H);if(el)el.onclick=fn};
     $$('[data-go]',H).forEach(b=>b.onclick=()=>go(b.dataset.go));
     $$('#predGrid button',H).forEach(b=>b.onclick=()=>{const st=cur();if(st.locked)return;st.prediction=b.dataset.pred;refresh()});
-    $('#lockPred').onclick=lockPrediction;
-    $('#rotateRoles').onclick=()=>{const st=cur();st.role=(st.role+1)%3;refresh()};
+    click('#lockPred',lockPrediction);
+    click('#rotateRoles',()=>{const st=cur();st.role=(st.role+1)%3;refresh()});
     $$('#revealRow button',H).forEach(b=>b.onclick=()=>{const st=cur(),k=b.dataset.reveal;st.reveal[k]=!st.reveal[k];refresh()});
-    $('#revealFormula').onclick=revealFormula;
-    $('#recordNow').onclick=record;
-    $('#clearLedger').onclick=()=>{const st=cur();st.evidence=[];refresh()};
-    $('#copyReport').onclick=copyReport;
-    $('#makeBrief').onclick=makeBrief;
-    $('#needInput').value=cur().need;$('#constraintInput').value=cur().constraint;
-    $('#needInput').oninput=e=>cur().need=e.target.value;$('#constraintInput').oninput=e=>cur().constraint=e.target.value;
+    click('#revealFormula',revealFormula);
+    click('#recordNow',record);
+    click('#clearLedger',()=>{const st=cur();st.evidence=[];st.proofDone=false;st.ledgerLen=-1;refresh()});
+    click('#copyReport',copyReport);
+    click('#makeBrief',makeBrief);
+    const need=$('#needInput',H),constraint=$('#constraintInput',H);
+    if(need){need.value=cur().need;need.oninput=e=>cur().need=e.target.value}
+    if(constraint){constraint.value=cur().constraint;constraint.oninput=e=>cur().constraint=e.target.value}
   }
   function showError(e){
     console.error(e);const el=$('#stageErr');el.hidden=false;
@@ -276,8 +365,7 @@
     $$('#pickerGrid .pick-card').forEach(b=>b.onclick=()=>openLab(b.dataset.lab,{fromPicker:true}));
     $('#labChips').innerHTML=P.pressureLabs.list.map(s=>`<button data-lab="${s.id}" title="${s.title}">${s.icon} ${s.tab}</button>`).join('');
     $$('#labChips button').forEach(b=>b.onclick=()=>openLab(b.dataset.lab,{fromPicker:true}));
-    $('#phaseTabs').innerHTML=PHASES.map(p=>`<button data-phase="${p[0]}">${p[1]}</button>`).join('');
-    $$('#phaseTabs button').forEach(b=>b.onclick=()=>go(b.dataset.phase));
+    $('#phaseTabs').innerHTML='';
     $('#nextCta').onclick=nextStep;
     $('#pickerBtn').onclick=()=>$('#picker').classList.remove('hide');
     $('#pickerClose').onclick=()=>{if(spec)$('#picker').classList.add('hide')};

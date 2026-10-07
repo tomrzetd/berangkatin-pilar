@@ -7,9 +7,9 @@
   const kPa=v=>v>=1e6?fmt(v/1e6,2)+' MPa':v>=1e4?fmt(v/1e3,0)+' kPa':fmt(v/1e3,2)+' kPa';
 
   const TASKS={
-    salju:{id:'salju',name:'❄ Sepatu salju',F:60*9.81,surface:'salju',need:'Siswa 60 kg harus berjalan di salju lembut tanpa amblas lebih dari 2 cm.',min:200,max:4000,step:50,def:600,unit:'cm²',
+    salju:{id:'salju',name:'❄ Jangan tenggelam',F:60*9.81,surface:'salju',need:'Siswa 60 kg harus berjalan di salju lembut tanpa amblas lebih dari 2 cm.',min:200,max:4000,step:50,def:600,unit:'cm²',
       goal:'amblas ≤ 2 cm dan luas ≤ 3.000 cm² (masih bisa dipakai berjalan)'},
-    tajam:{id:'tajam',name:'📌 Ujung penusuk',F:40,surface:'tanah',need:'Dorongan tangan 40 N harus bisa menembus bahan keras (butuh tekanan ≥ 1 MPa).',min:.02,max:2,step:.01,def:1.2,unit:'cm²',
+    tajam:{id:'tajam',name:'📌 Harus menembus',F:40,surface:'tanah',need:'Dorongan tangan 40 N harus bisa menembus bahan keras (butuh tekanan ≥ 1 MPa).',min:.02,max:2,step:.01,def:1.2,unit:'cm²',
       goal:'tekanan ≥ 1 MPa dan luas ujung ≥ 0,05 cm² (supaya tidak patah)'}
   };
   function view(st){ // nilai turunan yang dipakai HUD + scene
@@ -22,52 +22,55 @@
   }
 
   const spec={
-    id:'padat',icon:'🧱',tab:'Padat',title:'Tekanan pada Zat Padat',tagline:'Mengapa paku menembus, sepatu salju tidak?',accent:'#ffd36c',
+    id:'padat',icon:'🧱',tab:'Padat',title:'Tekanan pada Zat Padat',tagline:'Balok yang sama, bekas di pasir bisa berbeda.',accent:'#ffd36c',
+    studentUX:'natural-solid-v1',
+    advancedLabel:'Eksperimen lanjut · benda, massa, dan permukaan',
     defaults:()=>({obj:'balok',orient:'tidur',mass:5,surface:'pasir'}),
     engDefaults:()=>({task:'salju',area:600,done:{}}),
     view,
-    look:{title:'Lihat bendanya dulu. Jangan buru-buru cari rumus.',
-      text:'Sebuah balok kayu diletakkan di atas kotak pasir. Ada panah merah (gaya berat), menara pengukur tekanan, dan permukaan pasir yang bisa melesak.',
-      question:'Kalau balok yang sama diletakkan tidur lalu berdiri, apakah dasar pasirnya melesak sama dalam?'},
-    predict:{title:'Tebak dulu. Salah justru berguna.',text:'Beratnya tetap sama. Hanya posisi balok yang diubah dari TIDUR menjadi BERDIRI.',
-      options:[{v:'tidur',l:'Tidur lebih dalam'},{v:'sama',l:'Sama dalam'},{v:'berdiri',l:'Berdiri lebih dalam'}],answer:'berdiri',
-      why:'Beratnya sama, tetapi luas bidang tekan berdiri hanya 50 cm² (tidur 200 cm²). Gaya yang sama tersebar pada luas lebih kecil → tekanan 4× lebih besar.'},
+    look:{title:'Balok yang sama. Pasir yang sama.',
+      text:'Kita tidak akan mulai dari rumus. Perhatikan saja bekas balok pada pasir ketika posisinya diubah.',
+      question:'Kalau balok 5 kg dibalik dari tidur menjadi berdiri, mana yang membuat pasir lebih dalam?'},
+    predict:{title:'Menurutmu, mana yang lebih dalam?',text:'Massanya tetap 5 kg. Yang berubah hanya bidang balok yang menyentuh pasir.',
+      options:[{v:'tidur',l:'▰ Tidur lebih dalam'},{v:'sama',l:'═ Sama saja'},{v:'berdiri',l:'▮ Berdiri lebih dalam'}],answer:'berdiri',
+      why:'Beratnya tetap. Saat berdiri, bidang yang menyentuh pasir lebih kecil sehingga gaya yang sama terkonsentrasi pada area lebih sempit.'},
     controls:[
-      {k:'obj',type:'seg',label:'Benda',options:()=>Object.values(PH().solid.OBJECTS).map(o=>({v:o.id,l:o.icon+' '+o.name}))},
-      {k:'orient',type:'seg',label:'Posisi / bidang tekan',options:p=>PH().solid.OBJECTS[p.obj].orients.map(o=>({v:o.id,l:o.label}))},
-      {k:'mass',type:'range',label:'Massa benda (m)',unit:'kg',min:p=>PH().solid.OBJECTS[p.obj].mass[0],max:p=>PH().solid.OBJECTS[p.obj].mass[1],step:p=>PH().solid.OBJECTS[p.obj].mass[1]>10?1:.1,dec:p=>PH().solid.OBJECTS[p.obj].mass[1]>10?0:1},
-      {k:'surface',type:'seg',label:'Permukaan',options:()=>Object.values(PH().solid.SURFACES).map(s=>({v:s.id,l:s.name}))}
+      {k:'obj',type:'seg',label:'Benda',adv:true,options:()=>Object.values(PH().solid.OBJECTS).map(o=>({v:o.id,l:o.icon+' '+o.name}))},
+      {k:'orient',type:'seg',label:'Balik posisi balok',options:p=>PH().solid.OBJECTS[p.obj].orients.map(o=>({v:o.id,l:o.label.replace(/\s*\([^)]*\)/,'')}))},
+      {k:'mass',type:'range',label:'Massa benda',unit:'kg',adv:true,min:p=>PH().solid.OBJECTS[p.obj].mass[0],max:p=>PH().solid.OBJECTS[p.obj].mass[1],step:p=>PH().solid.OBJECTS[p.obj].mass[1]>10?1:.1,dec:p=>PH().solid.OBJECTS[p.obj].mass[1]>10?0:1},
+      {k:'surface',type:'seg',label:'Permukaan',adv:true,options:()=>Object.values(PH().solid.SURFACES).map(s=>({v:s.id,l:s.name}))}
     ],
-    reveals:[{k:'force',label:'Gaya F',on:'Sembunyikan F',off:'Lihat gaya F'},{k:'area',label:'Luas A',on:'Sembunyikan A',off:'Lihat luas A'},{k:'tower',label:'Menara P',on:'Sembunyikan P',off:'Lihat tekanan P'}],
-    missions:[
-      {id:'flip',title:'01 · Balik Posisinya',desc:'Ubah posisi / bidang tekan benda dan amati amblasnya.'},
-      {id:'heavy',title:'02 · Tambah Beban',desc:'Perbesar massa dan bandingkan kedalaman.'},
-      {id:'deep',title:'03 · Hampir Menembus',desc:'Buat benda amblas ≥ 7,5 cm (petunjuk: bidang tekan sangat sempit).'}],
+    reveals:[{k:'numbers',label:'Angka',on:'🙈 Sembunyikan angka',off:'👁 Lihat angkanya'}],
+    missions:[{id:'flip',title:'Bandingkan dua posisi',desc:'Pindahkan balok dari TIDUR ke BERDIRI dan lihat perubahan bekasnya.'}],
     onParam(k,v,old,st,api){
       if(k==='orient'&&v!==old)api.mark('flip');
-      if(k==='mass'&&+v>+old)api.mark('heavy');
       if(k==='obj'){const o=PH().solid.OBJECTS[v];st.params.orient=o.orients[0].id;st.params.mass=o.mass[2]}
     },
-    check(st,api){if(st.phase!=='rekayasa'&&view(st).depth>=.075)api.mark('deep')},
+    check(){},
     patterns:[
-      {icon:'🔻',title:'Gaya sama, luas lebih kecil',text:'Tekanan jadi lebih besar dan benda amblas lebih dalam.'},
-      {icon:'⚖',title:'Luas sama, gaya lebih besar',text:'Tekanan ikut membesar — benda lebih berat menekan lebih kuat.'},
-      {icon:'❄',title:'Permukaan lunak',text:'Tekanan yang sama membuat salju amblas lebih dalam daripada tanah keras.'}],
-    formula:{main:'P = F / A',sec:'F = m · g   →   P = m·g / A',note:'1 Pa = 1 N/m². Contoh: 49 N pada 0,005 m² → 9.810 Pa ≈ 9,8 kPa. A adalah luas bidang yang BENAR-BENAR menyentuh permukaan.'},
-    hud:(st)=>{const v=view(st);return[['Gaya F',fmt(v.F,0)+' N'],['Luas A',v.A>=.001?fmt(v.A*1e4,0)+' cm²':fmt(v.A*1e4,2)+' cm²'],['Tekanan P',kPa(v.P)],['Amblas',fmt(v.depth*100,1)+' cm']]},
-    proof:{title:'Bisakah hasilmu diulang?',
-      text:'Targetmu: <b>gaya (berat) yang sama</b> tetapi <b>tekanan berbeda ≥ 10×</b>. Catat dua percobaan dengan massa yang sama (selisih gaya < 3%).',
-      target:['Target','ΔP ≥ 10× pada F sama'],
-      cols:['Benda','Bidang','F (N)','A (cm²)','P (kPa)','Amblas'],
-      record:(st)=>{const v=view(st),p=st.params,o=PH().solid.OBJECTS[p.obj].orients.find(x=>x.id===p.orient);
-        return{cells:[PH().solid.OBJECTS[p.obj].name,o.label,fmt(v.F,0),fmt(v.A*1e4,v.A*1e4<1?2:0),fmt(v.P/1e3,1),fmt(v.depth*100,1)+' cm'],data:{F:v.F,P:v.P}}},
+      {icon:'⚖️',title:'Yang sama: berat balok',text:'Balok tetap 5 kg. Gaya tekan ke pasir tidak berubah.'},
+      {icon:'↔️',title:'Yang berubah: luas sentuh',text:'Saat berdiri, bidang sentuh lebih kecil. Gaya yang sama terkumpul pada area yang lebih sempit.'},
+      {icon:'💡',title:'Akibatnya',text:'Bidang lebih kecil → tekanan lebih besar → pasir melesak lebih dalam.'}],
+    formula:{main:'P = F / A',sec:'gaya yang sama ÷ luas lebih kecil = tekanan lebih besar',note:'P adalah tekanan, F gaya tekan, dan A luas bidang yang benar-benar menyentuh permukaan. Angka dipakai setelah polanya terlihat.'},
+    hud:(st)=>{const v=view(st),p=st.params,o=PH().solid.OBJECTS[p.obj]?.orients.find(x=>x.id===p.orient),A=v.A*1e4;
+      if(!st.formula)return[['Yang tetap','massa '+fmt(p.mass,0)+' kg'],['Bidang sentuh',A>=150?'lebih lebar':A>=20?'lebih sempit':'sangat kecil'],['Tekanan','cari polanya'],['Bekas di pasir',fmt(v.depth*100,1)+' cm']];
+      return[['Gaya F',fmt(v.F,0)+' N'],['Luas A',A>=1?fmt(A,0)+' cm²':fmt(A,2)+' cm²'],['Tekanan P',kPa(v.P)],['Amblas',fmt(v.depth*100,1)+' cm']]},
+    proof:{title:'Ambil dua bukti. Jangan banyak-banyak.',
+      text:'Ambil satu bukti saat balok <b>TIDUR</b>, lalu satu lagi saat <b>BERDIRI</b>. Massanya harus tetap sama.',
+      target:['Target','2 kondisi · massa sama · tekanan berubah ≥ 3,5×'],
+      cols:['Posisi','A (cm²)','P (kPa)','Amblas'],
+      record:(st)=>{const v=view(st),p=st.params,o=PH().solid.OBJECTS[p.obj].orients.find(x=>x.id===p.orient),A=v.A*1e4;
+        const label=o.label.replace(/\s*\([^)]*\)/,'');
+        return{cells:[label,fmt(A,A<1?2:0),fmt(v.P/1e3,1),fmt(v.depth*100,1)+' cm'],data:{obj:p.obj,mass:p.mass,orient:p.orient,A:v.A,P:v.P,label,areaLabel:'A '+fmt(A,A<1?2:0)+' cm²',pressureLabel:'P '+fmt(v.P/1e3,1)+' kPa'}}},
       evaluate(st){
-        const e=st.evidence;let best=0;
-        for(const a of e)for(const b of e){if(a===b)continue;if(Math.abs(a.data.F-b.data.F)/Math.max(a.data.F,b.data.F)<.03)best=Math.max(best,a.data.P/b.data.P)}
-        return best>=10?{ok:true,msg:`<b>Target tercapai.</b> Dengan gaya yang sama, tekanan berbeda ${fmt(best,0)}×. Ulangi dengan benda lain untuk memastikan polanya konsisten.`}
-          :{ok:false,msg:best>1?`Perbedaan tekanan baru ${fmt(best,1)}×. Coba bandingkan bidang LEBAR vs bidang RUNCING pada benda yang sama (kerucut, paku, atau sepatu).`:'Catat minimal dua percobaan dengan massa sama tetapi bidang tekan berbeda.'}}},
-    eng:{eyebrow:'AKSI REKAYASA · PRODUK',title:'Ubah tekanan menjadi fungsi.',
-      text:'Pilih kebutuhan: ada yang harus <b>memperkecil</b> tekanan (jangan tenggelam), ada yang harus <b>memperbesar</b> tekanan (menembus).',
+        const e=st.evidence;let best=0,pair=null;
+        for(const a of e)for(const b of e){if(a===b||a.data.obj!==b.data.obj)continue;if(Math.abs(a.data.mass-b.data.mass)/Math.max(a.data.mass,b.data.mass,.001)>.01)continue;
+          const r=Math.max(a.data.P,b.data.P)/Math.max(1,Math.min(a.data.P,b.data.P));if(r>best){best=r;pair=[a,b]}}
+        return best>=3.5?{ok:true,msg:`<b>Bukti cocok.</b> Dengan massa yang sama, tekanan berubah ${fmt(best,1)}× hanya karena luas bidang sentuh berubah.`}
+          :{ok:false,msg:e.length<2?'Ambil kondisi pertama, ubah posisi balok, lalu ambil kondisi kedua.':'Gunakan balok yang sama dan massa yang sama. Bandingkan TIDUR dengan BERDIRI.'}
+      }},
+    eng:{eyebrow:'RANCANG · PAKAI KONSEPNYA',title:'Sekarang tekanan harus berguna.',
+      text:'Pilih satu masalah nyata. Atur <b>luas bidang tekan</b> sampai benda melakukan fungsi yang kita inginkan.',
       hypothesis:'tekanan P = F/A dikendalikan dengan mengubah luas bidang tekan A pada gaya F tertentu.',
       html:`<div class="eng-seg" id="solidTask"></div>
         <div class="eng-need" id="solidNeed"></div>
@@ -203,18 +206,18 @@
         const prev=curD;curD+=(targetD-curD)*k;
         if(Math.abs(curD-prev)>2e-5||dirty||lastHx!==hx||lastHz!==hz){deform(curD,hx,hz);lastHx=hx;lastHz=hz;dirty=false}
         obj.position.y=-curD;
-        // indikator
-        const top=H-curD;
-        arrow.visible=!!st.reveal.force;arrow.position.set(0,top+.4+Math.min(2.6,.5+v.F/400),0);
+        // indikator: fenomena dulu, angka setelah siswa meminta / memahami polanya
+        const top=H-curD,showNumbers=!!st.reveal.numbers||st.formula||st.phase==='buktikan'||st.phase==='rekayasa';
+        arrow.visible=showNumbers;arrow.position.set(0,top+.4+Math.min(2.6,.5+v.F/400),0);
         arrow.setLength(.5+Math.min(2.6,v.F/400),.38,.24);
-        info.position.set(0,top+.4+Math.min(2.6,.5+v.F/400)+.9,0);
+        info.visible=showNumbers;info.position.set(0,top+.4+Math.min(2.6,.5+v.F/400)+.9,0);
         const Acm=v.A*1e4;
-        stage.setSpriteText(info,st.reveal.area||st.reveal.force?`F ${fmt(v.F,0)} N ÷ A ${Acm>=1?fmt(Acm,0):fmt(Acm,2)} cm²`:`P = ${kPa(v.P)}`);
-        areaBox.visible=!!st.reveal.area;areaBox.scale.set(Math.max(.06,hx*2),1,Math.max(.06,hz*2));areaBox.position.set(0,.05,0);
+        stage.setSpriteText(info,`F ${fmt(v.F,0)} N ÷ A ${Acm>=1?fmt(Acm,0):fmt(Acm,2)} cm²`);
+        areaBox.visible=showNumbers;areaBox.scale.set(Math.max(.06,hx*2),1,Math.max(.06,hz*2));areaBox.position.set(0,.05,0);
         // menara tekanan (log)
         const t=Math.max(0,Math.min(1,(Math.log10(Math.max(v.P,1))-2)/5)),hgt=Math.max(.05,t*3.6);
         bar.scale.y=hgt;bar.position.y=hgt/2;bar.material.color.setHSL(.36-.36*t,.75,.55);bar.material.emissive.setHSL(.36-.36*t,.7,.14);
-        tower.visible=!!st.reveal.tower;
+        tower.visible=showNumbers;
         stage.setSpriteText(tlabel,'P = '+kPa(v.P));
       },
       view(name){stage.setView(name==='samping'?{az:.0,el:.1,r:9,t:[0,.7,0]}:{az:.7,el:.5,r:11.5,t:[0,.5,0]})},

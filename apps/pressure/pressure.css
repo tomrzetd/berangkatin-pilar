@@ -90,3 +90,36 @@ textarea{min-height:70px;background:#07111e;color:var(--text);border:1px solid v
   .pick-grid{grid-template-columns:1fr}.reveal-row{grid-template-columns:1fr}
 }
 
+
+/* v1.1 · naturalisasi Tekanan Zat Padat */
+.natural-solid .app-shell{grid-template-columns:min(390px,34vw) 1fr}
+.natural-solid .phase-tabs{grid-template-columns:repeat(4,1fr);gap:5px}
+.natural-solid .phase-tabs button{min-height:38px;padding:6px 4px;font-size:12px}
+.natural-solid .phase-tabs button.active{background:linear-gradient(135deg,#ffd36c,#ffb85c);color:#10151d;border-color:#ffd36c}
+.natural-solid .kbd-hint{display:none}
+.natural-solid .side-panel{padding:10px}
+.natural-card{padding:17px}
+.natural-card h1{font-size:clamp(20px,1.8vw,27px);letter-spacing:-.02em}
+.big-question{display:grid;gap:5px;margin:13px 0;padding:14px;border:1px solid #395574;border-radius:14px;background:linear-gradient(145deg,#081725,#0c1b2b)}
+.big-question span{font-size:10px;letter-spacing:.13em;color:var(--cyan);font-weight:900;text-transform:uppercase}
+.big-question b{font-size:17px;line-height:1.35}
+.wide-cta{width:100%;margin-top:8px}
+.prompt-box.soft{background:#091826;border-style:dashed;color:#c7d9ea}
+.natural-pred button{min-height:52px;font-size:15px;font-weight:800}
+.natural-mission{margin:8px 0}.natural-mission div{background:#081725}
+.natural-reveal{grid-template-columns:1fr;margin-top:8px}
+.natural-reveal button{min-height:42px;font-size:13px}
+.natural-patterns article{grid-template-columns:34px 1fr;padding:9px}.natural-patterns article span{font-size:21px}
+.natural-target{margin-bottom:8px}
+.evidence-snapshots{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.evidence-snapshots article{display:grid;gap:3px;padding:10px;border:1px solid #2b4d6c;border-radius:12px;background:#081725}
+.evidence-snapshots article span{font-size:10px;letter-spacing:.1em;color:var(--cyan);font-weight:900;text-transform:uppercase}
+.evidence-snapshots article b{font-size:15px}.evidence-snapshots article small{color:var(--muted)}
+.empty-evidence{grid-column:1/-1;padding:12px;border:1px dashed #355274;border-radius:12px;color:var(--muted);text-align:center;font-size:13px}
+.natural-reflect{margin-top:12px}
+.model-details{margin-top:10px;border:1px dashed #355274;border-radius:10px;padding:9px 10px;color:var(--muted);font-size:12px}
+.model-details summary{cursor:pointer;color:#a9c1d8;font-weight:800}
+.natural-solid .advanced{background:#081522}.natural-solid .advanced summary{color:#9cc8e9;font-size:13px}
+.natural-solid .live-hud{width:min(700px,90%);background:#06111edb}
+@media(max-width:900px){.natural-solid .app-shell{grid-template-columns:1fr}.natural-solid .phase-tabs{position:sticky;top:0;z-index:8;background:#091423;padding:4px 0}.evidence-snapshots{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.evidence-snapshots{grid-template-columns:1fr}.natural-solid .phase-tabs button{font-size:11px}}
