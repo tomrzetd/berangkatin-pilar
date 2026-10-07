@@ -6,7 +6,7 @@ const LS='pilar_pulse_enabled',SS='pilar_pulse_session';
 let db=null,user=null,sessionId=null,appId='hub',channel=null,heartbeat=null,ready=false;
 
 const path=location.pathname.toLowerCase();
-const appMap=[['/apps/microscope','microscope'],['/apps/rubik-orbit','rubik-orbit'],['/apps/mbg-duel','mbg-duel'],['/apps/soundscope','soundscope'],['/apps/pak-taro','pak-taro']];
+const appMap=[['/apps/microscope','microscope'],['/apps/rubik-orbit','rubik-orbit'],['/apps/mbg-duel','mbg-duel'],['/apps/soundscope','soundscope'],['/apps/air-writing','air-writing'],['/apps/puzzlesnap','puzzlesnap'],['/apps/pak-taro','pak-taro']];
 for(const [p,id] of appMap)if(path.includes(p))appId=id;
 
 function enabled(){try{return localStorage.getItem(LS)==='1'}catch(_){return false}}
@@ -65,6 +65,7 @@ function injectUI(){
   @media(max-width:700px){#pilarPulseBtn{right:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px))}#pilarPulseDrawer{right:12px;bottom:calc(72px + env(safe-area-inset-bottom,0px));width:min(360px,calc(100vw - 24px))}}
   `;document.head.appendChild(css);
   const b=document.createElement('button');b.id='pilarPulseBtn';b.type='button';b.textContent='💬';b.title='PILAR Pulse';b.setAttribute('aria-label','Buka PILAR Pulse');
+  const drawer=document.createElement('section');drawer.id='pilarPulseDrawer';drawer.innerHTML='<div class="pp-head"><div><b>Chat with Developer</b><small id="ppIdentity">menyambungkan…</small></div><div class="pp-head-actions"><button class="pp-clear" id="ppClear">Clear Chat</button><button id="ppOff">Matikan Pulse</button></div></div><div class="pp-msgs" id="ppMsgs"><div class="pp-empty">Belum ada pesan.</div></div><form class="pp-form" id="ppForm"><input id="ppInput" maxlength="1200" placeholder="Kirim pesan ke developer…" autocomplete="off"><button>Kirim</button></form>';
   let idleTimer=0;
   const wakePulse=()=>{clearTimeout(idleTimer);b.classList.remove('pulse-idle');b.classList.add('pulse-awake')};
   const idlePulse=()=>{clearTimeout(idleTimer);b.classList.remove('pulse-awake');if(!drawer.classList.contains('open'))b.classList.add('pulse-idle')};
@@ -82,7 +83,6 @@ function injectUI(){
   b.addEventListener('pointerdown',wakePulse,{passive:true});
   new MutationObserver(()=>drawer.classList.contains('open')?wakePulse():scheduleIdle()).observe(drawer,{attributes:true,attributeFilter:['class']});
   scheduleIdle(5200);
-  const drawer=document.createElement('section');drawer.id='pilarPulseDrawer';drawer.innerHTML='<div class="pp-head"><div><b>Chat with Developer</b><small id="ppIdentity">menyambungkan…</small></div><div class="pp-head-actions"><button class="pp-clear" id="ppClear">Clear Chat</button><button id="ppOff">Matikan Pulse</button></div></div><div class="pp-msgs" id="ppMsgs"><div class="pp-empty">Belum ada pesan.</div></div><form class="pp-form" id="ppForm"><input id="ppInput" maxlength="1200" placeholder="Kirim pesan ke developer…" autocomplete="off"><button>Kirim</button></form>';
   document.body.append(b,drawer);
   drawer.querySelector('#ppOff').onclick=async()=>{
     if(!enabled()){ await enablePulse(); return; }

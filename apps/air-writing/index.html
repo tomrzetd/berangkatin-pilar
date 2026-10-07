@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07101b">
-<title>PILAR™ Air Writing v3.1 · Crimson Face Vision</title>
+<title>PILAR™ Air Writing v3.2 · Crimson Face Vision</title>
 <style>
 :root{
   --bg:#07101b;--bg2:#050b13;--panel:#0d1a2b;--panel2:#091423;--line:#28415f;
@@ -238,6 +238,37 @@ body[data-ui=ifp] .brand{font-size:21px}
 @media(prefers-reduced-motion:reduce){
   *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+/* v3.2 · fixed Face Feature Line below Vision AI */
+.face-stack{
+  position:absolute;z-index:10;right:12px;top:58px;width:min(270px,28vw);
+  display:grid;gap:8px;pointer-events:none
+}
+.face-stack .face-hud{
+  position:relative;z-index:auto;right:auto;top:auto;width:100%;
+}
+.face-feature-fixed{
+  overflow:hidden;border:1px solid rgba(126,238,255,.34);border-radius:15px;
+  background:linear-gradient(155deg,rgba(7,17,29,.96),rgba(8,10,18,.98));
+  box-shadow:0 16px 46px #0008,inset 0 0 34px rgba(126,238,255,.025)
+}
+.face-feature-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 9px;border-bottom:1px solid #20394f;font-size:8px;letter-spacing:.09em}
+.face-feature-head span{font-weight:950;color:var(--cyan)}.face-feature-head b{color:#a7ffc9;font-size:8px}
+#faceFeatureView{display:block;width:100%;aspect-ratio:16/9.5;background:radial-gradient(circle at 50% 48%,rgba(255,54,91,.07),transparent 48%),#050912}
+.face-feature-note{padding:5px 8px 7px;color:#71879a;font-size:7.5px;line-height:1.35}
+@media(max-width:980px){
+  .face-stack{width:min(190px,34vw);top:54px;right:8px;gap:6px}
+  .face-stack .face-hud{width:100%;top:auto;right:auto}
+  .face-feature-note{display:none}
+}
+@media(max-width:620px){
+  .face-stack{width:145px;top:52px}
+  .face-stack .face-hud{width:100%;top:auto}
+  .face-feature-head b{display:none}
+}
+body[data-ui=ifp] .face-stack{width:320px;top:70px}
+body[data-ui=ifp] .face-stack .face-hud{width:100%;top:auto;right:auto}
+
 </style>
 </head>
 <body data-ui="desk" class="theme-crimson">
@@ -246,7 +277,7 @@ body[data-ui=ifp] .brand{font-size:21px}
     <div class="brand-wrap">
       <button class="home-btn" id="homeBtn" aria-label="Kembali ke PILAR Hub" title="Kembali ke PILAR Hub">←</button>
       <div class="brand-block">
-        <div class="brand-line"><strong class="brand">PILAR</strong><span class="app-name">Air Writing · Crimson Vision v3.1</span></div>
+        <div class="brand-line"><strong class="brand">PILAR</strong><span class="app-name">Air Writing · Crimson Vision v3.2</span></div>
         <small>TOUCH · MOUSE · PEN · HAND + FACE AI · TRACE QUEST</small>
       </div>
     </div>
@@ -284,11 +315,18 @@ body[data-ui=ifp] .brand{font-size:21px}
         </div>
       </div>
 
-      <div class="face-hud" id="faceHud" hidden aria-label="Face expression detector">
-        <div class="face-head"><span>FACE EDGE · LOCAL AI</span><b id="faceEmotion">🙂 NETRAL</b></div>
-        <canvas id="faceView" width="320" height="240"></canvas>
-        <div class="face-foot"><b id="faceConfidence">0%</b><em id="facePerf">FACE OFF</em></div>
-        <div class="face-note">Ekspresi = perkiraan visual dari blendshape, bukan pembacaan emosi/diagnosis.</div>
+      <div class="face-stack" id="faceStack" hidden aria-label="Face Vision panels">
+        <div class="face-hud" id="faceHud" aria-label="Face expression detector">
+          <div class="face-head"><span>FACE EDGE · LOCAL AI</span><b id="faceEmotion">🙂 NETRAL</b></div>
+          <canvas id="faceView" width="320" height="240"></canvas>
+          <div class="face-foot"><b id="faceConfidence">0%</b><em id="facePerf">FACE OFF</em></div>
+          <div class="face-note">Ekspresi = perkiraan visual dari blendshape, bukan pembacaan emosi/diagnosis.</div>
+        </div>
+        <div class="face-feature-fixed" id="faceFeatureFixed" aria-label="Face feature line fixed">
+          <div class="face-feature-head"><span>FACE FEATURE LINE</span><b>POSITION LOCK</b></div>
+          <canvas id="faceFeatureView" width="320" height="190"></canvas>
+          <div class="face-feature-note">Posisi dan skala dikunci. Hanya pose/fitur wajah yang diperbarui real time.</div>
+        </div>
       </div>
 
       <div class="stage-bottom">
@@ -1012,7 +1050,7 @@ function stopVision(){
   state.visionOn=false;
   if(visionStream){visionStream.getTracks().forEach(t=>t.stop());visionStream=null}
   video.srcObject=null;visionResult=null;faceResult=null;lastGesture='IDLE';smoothVisionPt=null;palmStart=0;palmProgress=0;palmLastCenter=null;clearGestureConsumed=false;pinchLatched=false;
-  state.faceExpression='NETRAL';state.faceConfidence=0;$('#faceHud').hidden=true;
+  state.faceExpression='NETRAL';state.faceConfidence=0;$('#faceStack').hidden=true;
   state.input='pointer';state.interaction='IDLE';$('#cameraInfo').textContent='off';$('#engineState').textContent='QUICK READY';
   syncInputUI();setModeUI('IDLE');
 }
@@ -1058,15 +1096,39 @@ function drawFacePaths(targetCtx,lm,mapPoint,alpha=.88,lineWidth=1.35){
   targetCtx.restore();
 }
 function drawFaceMain(){
-  if(!state.visionOn||!state.showFace||!faceResult?.faceLandmarks?.[0])return;
-  drawFacePaths(ctx,faceResult.faceLandmarks[0],m=>pxPoint([1-m.x,m.y]),.76,state.ui==='ifp'?2:1.35);
+  // v3.2: landmark wajah tidak lagi digambar di kanvas utama.
+  // Stage tetap bersih; feature line hidup di panel fixed di bawah Vision AI.
 }
 const faceCanvas=$('#faceView'),faceCtx=faceCanvas.getContext('2d',{alpha:false,desynchronized:true});
+const faceFeatureCanvas=$('#faceFeatureView'),faceFeatureCtx=faceFeatureCanvas.getContext('2d',{alpha:false,desynchronized:true});
+const FACE_USED_IDS=[...new Set(FACE_PATHS.flat().concat([1]))];
+function drawFaceFeatureFixed(lm){
+  const W=faceFeatureCanvas.width,H=faceFeatureCanvas.height;
+  faceFeatureCtx.clearRect(0,0,W,H);
+  faceFeatureCtx.fillStyle='#050912';faceFeatureCtx.fillRect(0,0,W,H);
+  faceFeatureCtx.strokeStyle='rgba(126,238,255,.08)';faceFeatureCtx.lineWidth=1;
+  faceFeatureCtx.beginPath();faceFeatureCtx.moveTo(W/2,10);faceFeatureCtx.lineTo(W/2,H-10);faceFeatureCtx.moveTo(12,H/2);faceFeatureCtx.lineTo(W-12,H/2);faceFeatureCtx.stroke();
+  if(!lm){
+    faceFeatureCtx.fillStyle='#647b90';faceFeatureCtx.font='700 12px Inter,system-ui';faceFeatureCtx.textAlign='center';
+    faceFeatureCtx.fillText('FACE SEARCH',W/2,H/2+4);return;
+  }
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+  for(const id of FACE_USED_IDS){
+    const p=lm[id];if(!p)continue;const x=1-p.x,y=p.y;
+    minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);
+  }
+  if(!Number.isFinite(minX))return;
+  const cx=(minX+maxX)/2,cy=(minY+maxY)/2,bw=Math.max(.001,maxX-minX),bh=Math.max(.001,maxY-minY),pad=18;
+  const scale=Math.min((W-pad*2)/bw,(H-pad*2)/bh);
+  const map=m=>[W/2+((1-m.x)-cx)*scale,H/2+(m.y-cy)*scale];
+  drawFacePaths(faceFeatureCtx,lm,map,.98,1.8);
+}
 function drawFaceHud(){
-  const hud=$('#faceHud');if(!state.visionOn||!state.showFace){hud.hidden=true;return}hud.hidden=false;
+  const stack=$('#faceStack');if(!state.visionOn||!state.showFace){stack.hidden=true;return}stack.hidden=false;
   const W=faceCanvas.width,H=faceCanvas.height;faceCtx.clearRect(0,0,W,H);faceCtx.fillStyle='#05070b';faceCtx.fillRect(0,0,W,H);
   if(video.readyState>=2){faceCtx.save();faceCtx.translate(W,0);faceCtx.scale(-1,1);faceCtx.drawImage(video,0,0,W,H);faceCtx.restore();faceCtx.fillStyle='rgba(12,3,8,.25)';faceCtx.fillRect(0,0,W,H)}
   const lm=faceResult?.faceLandmarks?.[0];if(lm)drawFacePaths(faceCtx,lm,m=>[(1-m.x)*W,m.y*H],.95,1.45);
+  drawFaceFeatureFixed(lm);
   $('#faceEmotion').textContent=`${expressionIcon(state.faceExpression)} ${state.faceExpression}`;
   $('#faceConfidence').textContent=lm?`${Math.round(state.faceConfidence*100)}%`:'—';
   $('#facePerf').textContent=lm?`${state.faceBackend} · ${state.lastFaceMs.toFixed(0)}ms`:'FACE SEARCH';
@@ -1175,7 +1237,6 @@ function render(now){
   if(currentStroke.length>1)drawLaser(currentStroke);
   drawParticles();
   if(visionResult?.landmarks?.[0])drawSkeleton(visionResult.landmarks[0]);
-  drawFaceMain();
   drawFaceHud();
   drawCursor();
   drawFlash();
