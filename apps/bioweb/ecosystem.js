@@ -1,35 +1,36 @@
 (function(global){
 'use strict';
-global.BIOWEB_DATA={
-  nodes:[
-    {id:'air',name:'Air',icon:'💧',role:'abiotik',x:.17,y:.30,info:'Air membantu padi dan kehidupan sawah tetap tumbuh.'},
-    {id:'tanah',name:'Tanah',icon:'🌱',role:'abiotik',x:.23,y:.70,info:'Tanah menyimpan air dan unsur hara yang dibutuhkan tumbuhan.'},
-    {id:'padi',name:'Padi',icon:'🌾',role:'produsen',x:.43,y:.50,info:'Padi adalah produsen dan sumber energi bagi banyak organisme sawah.'},
-    {id:'wereng',name:'Wereng',icon:'🦗',role:'herbivora',x:.61,y:.35,info:'Wereng memanfaatkan padi sebagai sumber makanan.'},
-    {id:'katak',name:'Katak',icon:'🐸',role:'predator',x:.72,y:.53,info:'Katak membantu memangsa serangga dan ikut menjaga keseimbangan.'},
-    {id:'ular',name:'Ular',icon:'🐍',role:'predator',x:.84,y:.69,info:'Ular adalah predator yang memengaruhi jumlah beberapa hewan sawah.'},
-    {id:'tikus',name:'Tikus',icon:'🐀',role:'konsumen',x:.58,y:.75,info:'Tikus memakan bagian tanaman padi dan juga menjadi mangsa predator.'},
-    {id:'burung',name:'Burung',icon:'🐦',role:'predator',x:.79,y:.25,info:'Burung dapat memakan serangga dan menjadi bagian dari jejaring sawah.'},
-    {id:'pengurai',name:'Pengurai',icon:'🍄',role:'pengurai',x:.38,y:.82,info:'Pengurai membantu mengembalikan unsur dari sisa makhluk hidup ke tanah.'}
-  ],
-  links:[
-    {a:'air',b:'padi',type:'support',strength:.65,label:'mendukung pertumbuhan'},
-    {a:'tanah',b:'padi',type:'support',strength:.55,label:'menyediakan unsur hara'},
-    {a:'padi',b:'wereng',type:'consume',strength:.65,label:'dimakan'},
-    {a:'padi',b:'tikus',type:'consume',strength:.48,label:'dimakan'},
-    {a:'wereng',b:'katak',type:'consume',strength:.58,label:'dimangsa'},
-    {a:'wereng',b:'burung',type:'consume',strength:.34,label:'dimangsa'},
-    {a:'katak',b:'ular',type:'consume',strength:.42,label:'dimangsa'},
-    {a:'tikus',b:'ular',type:'consume',strength:.56,label:'dimangsa'},
-    {a:'pengurai',b:'tanah',type:'cycle',strength:.62,label:'mengembalikan unsur'},
-    {a:'wereng',b:'padi',type:'pressure',strength:.46,label:'menekan kondisi padi'},
-    {a:'tikus',b:'padi',type:'pressure',strength:.38,label:'menekan kondisi padi'}
-  ],
-  events:{
-    kemarau:{name:'Kemarau',icon:'☀',color:'#ffd36c',days:8,effects:{air:-4.1,padi:-1.0,pengurai:-.35},trail:['Air berkurang','Padi tertekan','Organisme lain ikut menyesuaikan']},
-    pestisida:{name:'Pestisida',icon:'🧴',color:'#ff9b56',days:7,effects:{wereng:-5.2,katak:-1.0,burung:-.65,pengurai:-.35},trail:['Wereng turun cepat','Sebagian pemangsa ikut turun','Jejaring berubah']},
-    predator:{name:'Predator berkurang',icon:'🐍',color:'#ff6f7d',days:9,effects:{ular:-4.6,katak:-1.2,tikus:1.3,wereng:1.0},trail:['Predator turun','Mangsa lebih bebas','Tekanan pada padi dapat meningkat']},
-    organik:{name:'Bahan organik',icon:'🌱',color:'#7be495',days:8,effects:{pengurai:2.1,tanah:1.6,padi:.55},trail:['Pengurai meningkat','Tanah mendapat dukungan','Padi mendapat kondisi lebih baik']}
-  }
-};
+global.BIOWEB_DATA=(function(){
+const ZC={puncak:0xcfe8ff,hutan:0x7ee08a,air:0x5ad1e6,sawah:0xe8d36a};
+const ZN={puncak:'Puncak',hutan:'Hutan hujan',air:'Air & tanah',sawah:'Sawah & desa'};
+const NODES=[
+['cantigi','Cantigi & edelweis','🌼',2800,'puncak','Tumbuhan tangguh di puncak. Ia menangkap embun dan menahan tanah di tempat yang dingin.'],
+['elang','Elang jawa','🦅',2000,'hutan','Elang jawa adalah predator penting di Ciremai dan memangsa berbagai hewan kecil.'],
+['macan','Macan tutul','🐆',1900,'hutan','Pemangsa besar yang membutuhkan habitat hutan yang masih mampu menopang rantai makanan yang kompleks.'],
+['owa','Owa jawa','🐒',1700,'hutan','Owa makan buah lalu menyebarkan bijinya. Ia ikut menanam hutan.'],
+['pohon','Pohon hutan','🌳',1600,'hutan','Akar pohon menahan tanah dan menyimpan air hujan seperti spons.'],
+['serangga','Lebah & kupu','🐝',1300,'hutan','Mereka membantu bunga menjadi buah dan biji.'],
+['air','Mata air','💧',1100,'air','Hutan dan tanah pegunungan membantu menyimpan air hujan; mata air penting bagi desa dan sawah di bawah.'],
+['pengurai','Jamur pengurai','🍄',900,'air','Jamur dan cacing mengubah daun busuk menjadi makanan bagi tanah.'],
+['tanah','Tanah','🟤',700,'air','Tanah subur menyimpan air dan zat hara untuk tumbuhan.'],
+['padi','Padi','🌾',600,'sawah','Padi adalah makanan manusia dan makanan banyak hewan sawah.'],
+['wereng','Wereng','🦗',650,'sawah','Serangga kecil pemakan padi. Terlalu banyak, padi rusak.'],
+['tikus','Tikus','🐀',550,'sawah','Memakan padi, tetapi juga makanan elang dan ular.'],
+['katak','Katak','🐸',520,'sawah','Katak memakan wereng. Ia petani tanpa gaji.'],
+['ular','Ular sawah','🐍',500,'sawah','Ular menjaga tikus tidak berlebihan.'],
+['warga','Warga desa','🧑‍🌾',350,'sawah','Manusia bisa menjaga, bisa juga menekan. Pilihan kitalah yang menentukan.']
+].map(a=>({id:a[0],name:a[1],icon:a[2],alt:a[3],zone:a[4],info:a[5]}));
+// jenis: s=menopang, e=dimakan, c=daur unsur, p=tekanan
+const LINKS=[['air','pohon','s'],['air','padi','s'],['air','warga','s'],['tanah','pohon','s'],['tanah','padi','s'],['pohon','air','s'],['cantigi','air','s'],['pohon','owa','s'],['owa','pohon','s'],['pohon','serangga','s'],['serangga','pohon','s'],['padi','wereng','e'],['padi','tikus','e'],['wereng','katak','e'],['katak','ular','e'],['tikus','ular','e'],['tikus','elang','e'],['owa','macan','e'],['pengurai','tanah','c'],['padi','warga','s'],['warga','pohon','p'],['wereng','padi','p'],['tikus','padi','p']].map(a=>({a:a[0],b:a[1],t:a[2]}));
+const TC={s:0x7ee08a,e:0xff8a3d,c:0x5ad1e6,p:0xff5d6c},TN={all:'Semua',e:'Makan–dimakan',s:'Saling menopang',p:'Tekanan'};
+const EVT={
+kemarau:['☀ Kemarau panjang',0xffd36c,8,{air:-4,tanah:-.8,padi:-1},'Mata air mengecil, lalu padi dan warga ikut kesulitan.'],
+api:['🔥 Hutan terbakar',0xff5d6c,8,{pohon:-5,cantigi:-3,owa:-3,elang:-1.5,air:-1.5},'Pohon hilang, air tak tertahan, hewan kehilangan rumah.'],
+racun:['🧴 Pestisida berlebihan',0xff8a3d,7,{wereng:-5,katak:-1.5,serangga:-3,pengurai:-.6,tanah:-.5},'Hama turun, tetapi pemangsa dan lebah ikut terkena.'],
+buru:['🎯 Perburuan liar',0xc78bff,8,{elang:-3.5,macan:-3,ular:-2},'Pemangsa hilang, hewan kecil jadi tak terkendali.'],
+tanam:['🌱 Tanam pohon',0x7be495,9,{pohon:3,air:1,tanah:1,owa:.8},'Akar baru menahan air; hutan pulih pelan-pelan.'],
+organik:['🍂 Pupuk kompos',0x9be36f,8,{pengurai:2,tanah:1.5,padi:.5},'Pengurai bertambah, tanah subur tanpa racun.']};
+
+return{ZC,ZN,NODES,LINKS,TC,TN,EVT};
+})();
 })(window);
