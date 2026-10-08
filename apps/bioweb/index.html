@@ -3,104 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07130f">
-<title>PILAR BioWeb · Sawah Ku — Ekosistem Hidup Lereng Ciremai</title>
+<meta name="theme-color" content="#050a09">
+<title>PILAR BioWeb · Ciremai — Jejaring Hidup 3D</title>
 <link rel="stylesheet" href="bioweb.css">
 </head>
 <body>
-<section class="intro" id="intro" aria-label="Pembuka BioWeb Sawah Ku">
-  <div class="intro-sky"></div>
-  <div class="mountain mountain-back"></div>
-  <div class="mountain mountain-front"></div>
-  <div class="rice-terraces" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-  <canvas id="introNet" aria-hidden="true"></canvas>
-  <div class="intro-vignette"></div>
+<section class="intro" id="intro" aria-label="Pembuka BioWeb Ciremai">
   <div class="intro-copy">
     <div class="intro-kicker">PILAR · BIOWEB · IPA</div>
-    <h1><span>Sawah Ku</span><br>Ekosistem Hidup di Lereng Ciremai</h1>
-    <p class="tagline">Satu sawah. Banyak kehidupan. Semua saling terhubung.</p>
-    <p class="context">Di lereng Gunung Ciremai, sawah bukan hanya tempat padi tumbuh. Air, tanah, cuaca, tumbuhan, hewan, pengurai, dan manusia saling memengaruhi. Saat satu bagian berubah, bagian lain ikut merasakan.</p>
+    <h1>BioWeb <span>Ciremai</span></h1>
+    <p class="intro-tagline">Jejaring hidup dari puncak sampai sawah.</p>
+    <p class="intro-context">Gunung Ciremai bukan hanya puncak yang kita lihat dari jauh. Hutan, mata air, tanah, sawah, hewan, tumbuhan, dan manusia saling terhubung. Perubahan pada satu bagian dapat terasa hingga bagian lain.</p>
     <blockquote>Apa yang kita jaga hari ini menentukan apa yang tetap hidup esok.</blockquote>
-    <div class="intro-actions">
-      <button class="enter-btn" id="enterBtn">Masuk ke Sawah <span>→</span></button>
-      <small>Lihat kehidupan yang sering tidak terlihat dari permukaan.</small>
-    </div>
+    <button id="introEnter" class="intro-enter">Masuk ke jejaring →</button>
   </div>
-  <div class="intro-foot"><span>Gunung Ciremai · sawah · air · tanah · kehidupan</span><b>BioWeb 0.1</b></div>
+  <div class="intro-foot">Ciremai · hutan · air · tanah · sawah · kehidupan</div>
 </section>
-
-<main class="app" id="app" hidden>
-  <header class="topbar">
-    <div class="brand-wrap">
-      <button class="home-btn" id="homeBtn" aria-label="Kembali ke PILAR Hub">←</button>
-      <strong>PILAR</strong>
-      <span>BioWeb · Sawah Ku</span>
-    </div>
-    <div class="top-context">EKOSISTEM LERENG CIREMAI</div>
-    <div class="top-actions">
-      <span class="live-dot">● <b id="simStatus">DIAMATI</b></span>
-      <span class="day-pill">Hari <b id="dayNow">1</b></span>
-    </div>
-  </header>
-
-  <aside class="learning-panel">
-    <nav class="phase-tabs" id="phaseTabs" aria-label="Alur pembelajaran">
-      <button data-phase="amati" class="active">1 Amati</button>
-      <button data-phase="selidiki">2 Selidiki</button>
-      <button data-phase="pahami">3 Pahami</button>
-      <button data-phase="terapkan">4 Terapkan</button>
-      <button data-phase="ceritakan">5 Ceritakan</button>
-    </nav>
-    <div id="learningHost"></div>
-  </aside>
-
-  <section class="stage">
-    <canvas id="webCanvas" aria-label="Jejaring interaksi ekosistem sawah"></canvas>
-    <div class="stage-head">
-      <div><span class="eyebrow">JEJARING HIDUP</span><b id="stageTitle">Sawah dalam keadaan awal</b></div>
-      <div class="view-switch">
-        <button data-view="semua" class="active">Semua</button>
-        <button data-view="makan">Makan-dimakan</button>
-        <button data-view="lingkungan">Lingkungan</button>
-        <button data-view="jejak">Jejak dampak</button>
-      </div>
-    </div>
-    <div class="legend">
-      <span><i class="support"></i>mendukung</span>
-      <span><i class="consume"></i>makan / memangsa</span>
-      <span><i class="pressure"></i>menekan</span>
-      <span><i class="cycle"></i>daur unsur</span>
-    </div>
-    <div class="insight" id="nodeInsight">
-      <small>KLIK NODE</small>
-      <b>Lihat satu komponen</b>
-      <p>Sentuh organisme atau faktor lingkungan untuk menyorot hubungannya.</p>
-    </div>
-    <div class="status-strip">
-      <div><span>🌾 Padi</span><b id="mPadi">100%</b></div>
-      <div><span>🕸 Keseimbangan</span><b id="mStability">100%</b></div>
-      <div><span>💧 Air</span><b id="mAir">100%</b></div>
-      <div><span>🌱 Kehidupan</span><b id="mLife">100%</b></div>
-    </div>
-    <div class="toast" id="toast" role="status"></div>
-  </section>
-
-  <section class="timeline">
-    <div class="timeline-main">
-      <button id="playBtn" class="play">▶</button>
-      <button id="resetBtn">↺</button>
-      <div class="time-track"><div class="time-fill" id="timeFill"></div><div class="event-marks" id="eventMarks"></div></div>
-      <span>Hari <b id="dayBottom">1</b> / 30</span>
-    </div>
-    <div class="event-deck" id="eventDeck">
-      <button data-event="kemarau">☀ Kemarau</button>
-      <button data-event="pestisida">🧴 Pestisida</button>
-      <button data-event="predator">🐍 Predator berkurang</button>
-      <button data-event="organik">🌱 Bahan organik</button>
-    </div>
-  </section>
-</main>
-
+<div class="app">
+<header class="top"><button class="home" id="homeBtn" aria-label="Kembali ke PILAR Hub">←</button><b>PILAR · BioWeb Ciremai</b><span>Jejaring hidup dari puncak sampai sawah</span><i class="sp"></i><span class="pill">Hari <b id="dn">1</b>/30</span></header>
+<aside class="side"><input id="q" type="search" placeholder="Cari penghuni…  ( / )" aria-label="Cari penghuni"><h3>Tampilkan hubungan</h3><div id="flt"></div><h3>Penghuni gunung</h3><div id="ent"></div></aside>
+<section class="stage"><canvas id="cv" role="img" aria-label="Jejaring hidup Gunung Ciremai dalam 3D. Seret untuk memutar."></canvas><div id="lb" aria-hidden="true"></div>
+<div class="hud"><button id="rot" class="on">Putar otomatis</button><button id="rst">Pusatkan</button></div>
+<div class="hint">Spasi jalan/jeda · 1–6 kejadian · ←→ ganti hari · / cari · O putar</div><div class="toast" id="ts" role="status"></div><div class="tip" id="tip"></div><div id="coach" hidden></div></section>
+<aside class="info"><div class="card"><h2 id="it">Pilih satu penghuni</h2><p id="ib" aria-live="polite">Ketuk bola di gunung. Garis yang terhubung dengannya akan menyala.</p></div><div id="ms"></div></aside>
+<footer class="bot"><div class="ctl"><button id="pl">▶ Jalankan waktu</button><button id="rs">↺ Ulang</button><button id="sv" title="Simpan hasil ini sebagai Skenario A, lalu coba kejadian lain">⚑ Simpan sebagai A</button><span class="sp"></span><span style="color:var(--mu)">Uji satu kejadian:</span><span id="evs" class="ctl"></span></div>
+<div class="hist" id="hs" title="Indeks kestabilan model per langkah waktu"></div></footer></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="ecosystem.js"></script>
 <script src="app.js"></script>
 <script src="../../pulse/config.js"></script>
