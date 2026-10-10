@@ -116,7 +116,7 @@ function syncPulseUI(on){
   if(send)send.disabled=!on;
 }
 async function auth(){
-  const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+  const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm');
   db=createClient(CFG.SUPABASE_URL,CFG.SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'pilar-pulse-visitor-auth'}});
   let s=(await db.auth.getSession()).data.session;
   if(!s){const r=await db.auth.signInAnonymously();if(r.error)throw r.error;s=r.data.session}

@@ -137,8 +137,15 @@
       const Phover=drone.power(W),minutes=BATT[p.batt].Wh*USABLE/Phover*60;
       return{m,W,Tmax,twr,hoverThrottle:thr,Phover,minutes,stallRisk:p.alpha>BL.aStall};
     },
-    // satu langkah dinamika (vertikal + horizontal) — state s: {y,vy,x,vx,rpm,batt}
+    /* Langkah dinamika dengan sub-langkah tetap ≤ 1/240 s → hasil sama di 15, 30, atau 60 fps
+       (sebelumnya dt dijepit 0,033 s sehingga di IFP yang drop ke 20 fps simulasi berjalan lambat). */
     step(s,p,dt){
+      const H=1/240;let left=Math.max(0,Math.min(dt,.25));
+      while(left>1e-9){const h=Math.min(H,left);drone.stepOnce(s,p,h);left-=h}
+      return s;
+    },
+    // satu sub-langkah (semi-implicit Euler) — state s: {y,vy,x,vx,rpm,batt}
+    stepOnce(s,p,dt){
       const m=drone.mass(p.batt,p.payload);
       const alive=s.battWh>0;
       const target=alive?p.throttle*BL.rpmMax:0;

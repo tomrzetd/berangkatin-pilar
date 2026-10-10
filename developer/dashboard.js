@@ -10,7 +10,7 @@ function esc(s){return String(s??'')}
 function time(v){return new Date(v).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}
 function dateTime(v){return new Date(v).toLocaleString('id-ID',{dateStyle:'short',timeStyle:'short'})}
 
-const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm');
 db=createClient(CFG.SUPABASE_URL,CFG.SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,storageKey:'pilar-pulse-admin-auth'}});
 
 async function session(){

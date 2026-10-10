@@ -483,7 +483,7 @@
     (function frame(now){
       requestAnimationFrame(frame);
       if(!stage||!scene||document.hidden)return;
-      const raw=(now-lastT)/1000,dt=Math.min(.033,raw);lastT=now;const st=cur();
+      const raw=(now-lastT)/1000,dt=Math.min(.1,raw);lastT=now;const st=cur();stage.adapt&&stage.adapt(raw,now); // dt hingga 0,1 s: fisika memecah sendiri ke sub-langkah tetap (frame-rate independent)
       if(raw<.25)perf.ema=perf.ema*.96+raw*.04;
       if(!perf.next)perf.next=now+4000;
       if(now>perf.next&&perf.ema>.036&&S.quality!=='performance'&&!perf.userQ){S.quality=S.quality==='realistic'?'standard':'performance';stage.setQuality(S.quality);$('#qualitySelect').value=S.quality;perf.ema=.016;perf.next=now+6000;toast('Grafik dihemat otomatis','Supaya simulasi tetap lancar di perangkat ini.')}
