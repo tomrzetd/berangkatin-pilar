@@ -10,6 +10,6 @@
     {id:'air-writing',title:'Air Writing Lab',subtitle:'Laser draw · Trace Quest · fixed Face Feature · gesture',category:'Tools / Vision / MPI',icon:'✍️',url:'apps/air-writing/',version:'3.2',status:'ready'},
     {id:'puzzlesnap',title:'PuzzleSnap',subtitle:'Foto jadi puzzle · multitouch · pinch gesture · Vision AI',category:'Game / Vision / MPI',icon:'🧩',url:'apps/puzzlesnap/',version:'2.1',status:'ready'},
     {id:'pressure',title:'Lab Maya Tekanan',subtitle:'Amati · Selidiki · Pahami · Terapkan · Ceritakan · 3D',category:'Simulasi / Lab Maya',icon:'🫧',url:'apps/pressure/',version:'2.0',status:'ready',visionGate:false},
-    {id:'bioweb',title:'BioWeb · Ciremai',subtitle:'Jejaring hidup Gunung Ciremai 3D · cincin waktu · skenario · keberlanjutan',category:'Simulasi / Lab Maya / IPA',icon:'🌋',url:'apps/bioweb/',version:'0.2',status:'ready',visionGate:false}
+    {id:'bioweb',title:'BioWeb · Ciremai',subtitle:'Jejaring hidup Gunung Ciremai 3D · cincin waktu · skenario · keberlanjutan',category:'Simulasi / Lab Maya / IPA',icon:'🌋',url:'apps/bioweb/',version:'0.3',status:'ready',visionGate:false}
   ];
 })(window);
