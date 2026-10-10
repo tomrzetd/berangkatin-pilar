@@ -7,6 +7,9 @@ on:
       - 'apps/pressure/**'
       - 'apps/lorentz-lab/**'
       - 'apps/registry.js'
+      - 'apps/soundscope/**'
+      - 'labs/**'
+      - 'core/**'
       - 'developer/patch-v2-tests/**'
       - '.github/workflows/pm-v2-verify.yml'
   pull_request:
@@ -14,6 +17,9 @@ on:
       - 'apps/pressure/**'
       - 'apps/lorentz-lab/**'
       - 'apps/registry.js'
+      - 'apps/soundscope/**'
+      - 'labs/**'
+      - 'core/**'
       - 'developer/patch-v2-tests/**'
       - '.github/workflows/pm-v2-verify.yml'
   workflow_dispatch:
@@ -30,3 +36,13 @@ jobs:
         run: node developer/patch-v2-tests/test_pressure.js .
       - name: Lorentz flow tests
         run: node developer/patch-v2-tests/test_lorentz.js .
+      - name: Pressure physics unit tests
+        run: node labs/pressure/test/physics.test.js
+      - name: Pressure scene smoke test
+        run: node labs/pressure/test/smoke-scenes.js
+      - name: SoundScope DSP tests
+        run: |
+          node apps/soundscope/test/fsk-core.test.js
+          node apps/soundscope/test/acoustic-core.test.js
+      - name: Frame-rate independence (physics)
+        run: node labs/pressure/test/fps-independence.test.js

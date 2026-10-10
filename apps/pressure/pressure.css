@@ -1,7 +1,7 @@
 :root{--bg:#07101b;--panel:#0d1a2b;--panel2:#0a1524;--line:#28415f;--text:#eef7ff;--muted:#9db2ca;--accent:#69baff;--cyan:#7eeeff;--yellow:#ffd36c;--green:#63e3a0;--red:#ff6d83;--orange:#e88b4a;--lab:#ffd36c}
 *{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:16px/1.45 Inter,Segoe UI,system-ui,sans-serif}
 button,input,textarea{font:inherit}
-.app-shell{height:100vh;display:grid;grid-template-columns:min(440px,40vw) 1fr;grid-template-rows:58px 1fr;overflow:hidden}
+.app-shell{height:calc(var(--lvh,1vh)*100);display:grid;grid-template-columns:min(440px,calc(var(--lvw,1vw)*40)) 1fr;grid-template-rows:58px 1fr;overflow:hidden}
 .topbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 16px;background:#050c15;border-bottom:1px solid var(--line)}
 .brand-wrap{display:flex;align-items:center;gap:10px;min-width:0}.brand{letter-spacing:.16em;color:var(--cyan);font-size:18px}.lab-name{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .home-btn{width:38px;min-height:38px;padding:0}.top-creator{font:600 10px/1.2 ui-monospace,Consolas,monospace;color:#7189a0}
@@ -72,9 +72,9 @@ textarea{min-height:70px;background:#07111e;color:var(--text);border:1px solid v
 /* picker */
 .picker{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:18px;background:radial-gradient(circle at 50% 0,#12304b,#050913 70%);transition:opacity .35s,visibility .35s;overflow:auto}
 .picker.hide{opacity:0;visibility:hidden;pointer-events:none}
-.picker-card{width:min(980px,96vw);border:1px solid #284561;border-radius:28px;padding:26px;background:linear-gradient(155deg,rgba(10,20,34,.97),rgba(5,9,17,.98));box-shadow:0 38px 120px #000b}
+.picker-card{width:min(980px,calc(var(--lvw,1vw)*96));border:1px solid #284561;border-radius:28px;padding:26px;background:linear-gradient(155deg,rgba(10,20,34,.97),rgba(5,9,17,.98));box-shadow:0 38px 120px #000b}
 .picker-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.picker-kicker{font-size:12px;letter-spacing:.17em;color:var(--cyan);font-weight:900}
-.picker-card h1{font-size:clamp(28px,4.4vw,48px);line-height:1;margin:8px 0 8px;letter-spacing:-.03em}.picker-card h1 span{background:linear-gradient(90deg,#c9ff42,#5ee9ff,#ff5ea8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.picker-card h1{font-size:clamp(28px,calc(var(--lvw,1vw)*4.4),48px);line-height:1;margin:8px 0 8px;letter-spacing:-.03em}.picker-card h1 span{background:linear-gradient(90deg,#c9ff42,#5ee9ff,#ff5ea8);-webkit-background-clip:text;background-clip:text;color:transparent}
 .picker-card p{color:var(--muted);margin:0 0 16px;max-width:640px}
 .flow{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 18px}.flow span{font-size:12px;font-weight:800;letter-spacing:.08em;padding:5px 9px;border:1px solid #2b4866;border-radius:999px;color:#bcd2e8}
 .pick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
@@ -82,24 +82,19 @@ textarea{min-height:70px;background:#07111e;color:var(--text);border:1px solid v
 .pick-card::after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:var(--c);opacity:.12}
 .pick-card:hover{border-color:var(--c);transform:translateY(-2px);transition:.15s}
 .pick-ico{font-size:34px}.pick-card b{font-size:18px}.pick-card small{color:var(--muted);font-size:13px}.pick-card em{font-style:normal;font-size:12px;font-weight:900;letter-spacing:.1em;color:var(--c)}
-@media(max-width:900px){
-  .app-shell{grid-template-columns:1fr;grid-template-rows:58px 52vh auto;overflow:auto;height:auto;min-height:100vh}
-  .stage{grid-row:2;min-height:52vh}.side-panel{grid-row:3;border-right:0;border-top:1px solid var(--line);overflow:visible}
-  .live-hud{grid-template-columns:repeat(2,1fr)}.live-hud div:nth-child(2){border-right:0}.live-hud div:nth-child(-n+2){border-bottom:1px solid #1f3550}
-  .top-creator,.status-pill,.drag-hint,.ownership-mark{display:none}.stage-tools{max-width:100%;left:12px;top:48px;justify-content:flex-start}.stage-badge{max-width:60%}
-  .pick-grid{grid-template-columns:1fr}.reveal-row{grid-template-columns:1fr}
+@media(max-width:900px){html:not([data-fit]) .app-shell{grid-template-columns:1fr;grid-template-rows:58px calc(var(--lvh,1vh)*52) auto;overflow:auto;height:auto;min-height:calc(var(--lvh,1vh)*100)}html:not([data-fit]) .stage{grid-row:2;min-height:calc(var(--lvh,1vh)*52)}html:not([data-fit]) .side-panel{grid-row:3;border-right:0;border-top:1px solid var(--line);overflow:visible}html:not([data-fit]) .live-hud{grid-template-columns:repeat(2,1fr)}html:not([data-fit]) .live-hud div:nth-child(2){border-right:0}html:not([data-fit]) .live-hud div:nth-child(-n+2){border-bottom:1px solid #1f3550}html:not([data-fit]) .top-creator,html:not([data-fit]) .status-pill,html:not([data-fit]) .drag-hint,html:not([data-fit]) .ownership-mark{display:none}html:not([data-fit]) .stage-tools{max-width:100%;left:12px;top:48px;justify-content:flex-start}html:not([data-fit]) .stage-badge{max-width:60%}html:not([data-fit]) .pick-grid{grid-template-columns:1fr}html:not([data-fit]) .reveal-row{grid-template-columns:1fr}
 }
 
 
 /* v1.1 · naturalisasi Tekanan Zat Padat */
-.natural-pressure .app-shell{grid-template-columns:min(390px,34vw) 1fr}
+.natural-pressure .app-shell{grid-template-columns:min(390px,calc(var(--lvw,1vw)*34)) 1fr}
 .natural-pressure .phase-tabs{grid-template-columns:repeat(4,1fr);gap:5px}
 .natural-pressure .phase-tabs button{min-height:38px;padding:6px 4px;font-size:12px}
 .natural-pressure .phase-tabs button.active{background:linear-gradient(135deg,#ffd36c,#ffb85c);color:#10151d;border-color:#ffd36c}
 .natural-pressure .kbd-hint{display:none}
 .natural-pressure .side-panel{padding:10px}
 .natural-card{padding:17px}
-.natural-card h1{font-size:clamp(20px,1.8vw,27px);letter-spacing:-.02em}
+.natural-card h1{font-size:clamp(20px,calc(var(--lvw,1vw)*1.8),27px);letter-spacing:-.02em}
 .big-question{display:grid;gap:5px;margin:13px 0;padding:14px;border:1px solid #395574;border-radius:14px;background:linear-gradient(145deg,#081725,#0c1b2b)}
 .big-question span{font-size:12px;letter-spacing:.13em;color:var(--cyan);font-weight:900;text-transform:uppercase}
 .big-question b{font-size:17px;line-height:1.35}
@@ -121,8 +116,8 @@ textarea{min-height:70px;background:#07111e;color:var(--text);border:1px solid v
 .model-details summary{cursor:pointer;color:#a9c1d8;font-weight:800}
 .natural-pressure .advanced{background:#081522}.natural-pressure .advanced summary{color:#9cc8e9;font-size:13px}
 .natural-pressure .live-hud{width:min(700px,90%);background:#06111edb}
-@media(max-width:900px){.natural-pressure .app-shell{grid-template-columns:1fr}.natural-pressure .phase-tabs{position:sticky;top:0;z-index:8;background:#091423;padding:4px 0}.evidence-snapshots{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.evidence-snapshots{grid-template-columns:1fr}.natural-pressure .phase-tabs button{font-size:12px}}
+@media(max-width:900px){html:not([data-fit]) .natural-pressure .app-shell{grid-template-columns:1fr}html:not([data-fit]) .natural-pressure .phase-tabs{position:sticky;top:0;z-index:8;background:#091423;padding:4px 0}html:not([data-fit]) .evidence-snapshots{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){html:not([data-fit]) .evidence-snapshots{grid-template-columns:1fr}html:not([data-fit]) .natural-pressure .phase-tabs button{font-size:12px}}
 
 
 /* ===== v2 · alur Amati→Selidiki→Pahami→Terapkan→Ceritakan ===== */
@@ -143,10 +138,6 @@ textarea{min-height:70px;background:#07111e;color:var(--text);border:1px solid v
 .ghost{background:transparent;border-style:dashed;color:var(--muted)}
 .phase-tabs button,.lab-chips button,.top-actions button,.natural-reveal button,.seg button{min-height:44px}
 .home-btn{width:44px;min-height:44px}
-@media(max-width:900px){
-  .app-shell{grid-template-rows:58px 42vh auto;overflow:visible}
-  .topbar{position:sticky;top:0;z-index:20}
-  .stage{position:sticky;top:58px;z-index:10;min-height:42vh;height:42vh}
-  .natural-pressure .phase-tabs{top:calc(58px + 42vh)}
+@media(max-width:900px){html:not([data-fit]) .app-shell{grid-template-rows:58px calc(var(--lvh,1vh)*42) auto;overflow:visible}html:not([data-fit]) .topbar{position:sticky;top:0;z-index:20}html:not([data-fit]) .stage{position:sticky;top:58px;z-index:10;min-height:calc(var(--lvh,1vh)*42);height:calc(var(--lvh,1vh)*42)}html:not([data-fit]) .natural-pressure .phase-tabs{top:calc(58px + calc(var(--lvh,1vh)*42))}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}

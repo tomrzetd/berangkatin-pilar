@@ -1168,28 +1168,35 @@ log("P2 ∩ P3 =", irisan(percobaan[1], percobaan[2]));
 // Tantangan: gelas mana yang muncul di dua percobaan? Apa efek bunganya?`;
 $("codeBtn").addEventListener("click",()=>{if(!$("codeArea").value)$("codeArea").value=STARTER;$("codeModal").hidden=false});
 $("codeClose").addEventListener("click",()=>{$("codeModal").hidden=true});
+/* Sandbox berlapis: iframe sandbox="allow-scripts" (origin "null") → Worker di dalamnya.
+   Kode siswa TIDAK bisa menyentuh localStorage/sesi Supabase, Cache Storage service worker,
+   cookie, atau DOM PILAR, dan seluruhnya dimatikan dengan menghapus iframe saat timeout. */
+const SANDBOX_DOC=`<!doctype html><meta charset="utf-8"><script>
+onmessage=function(ev){
+  if(ev.source!==parent)return;
+  var src='self.onmessage=function(e){var d=e.data,out=[];function safe(v){try{return typeof v==="string"?v:JSON.stringify(v)}catch(_){return String(v)}}'+
+    'function log(){out.push([].slice.call(arguments).map(safe).join(" "));if(out.length>500)throw new Error("Keluaran terlalu banyak (>500 baris)")}'+
+    'try{var fn=new Function("log","percobaan",\\'"use strict";\\'+String.fromCharCode(10)+d.code);fn(log,d.experiments);postMessage({ok:true,out:out})}'+
+    'catch(err){postMessage({ok:false,out:out.concat(["⚠ "+(err&&err.message||String(err))])})}}';
+  var w=new Worker(URL.createObjectURL(new Blob([src],{type:"text/javascript"})));
+  w.onmessage=function(m){parent.postMessage({pilarSandbox:1,res:m.data},"*")};
+  w.onerror=function(er){parent.postMessage({pilarSandbox:1,res:{ok:false,out:["⚠ "+(er.message||"Kesalahan Worker")]}},"*")};
+  w.postMessage(ev.data);
+};
+<\/script>`;
 function runStudentCode(code,experiments){
   return new Promise(resolve=>{
-    const workerSource=`
-      self.onmessage = (e) => {
-        const {code, experiments} = e.data;
-        const out = [];
-        const safe = v => { try { return typeof v === "string" ? v : JSON.stringify(v); } catch { return String(v); } };
-        const log = (...a) => out.push(a.map(safe).join(" "));
-        try {
-          try { self.fetch=undefined; self.XMLHttpRequest=undefined; self.WebSocket=undefined; self.importScripts=undefined; } catch {}
-          const fn = new Function("log","percobaan","fetch","XMLHttpRequest","WebSocket","importScripts",
-            '"use strict";\\n' + code);
-          fn(log, Object.freeze(experiments.map(x=>Object.freeze([...x]))), undefined, undefined, undefined, undefined);
-          self.postMessage({ok:true,out});
-        } catch(err) { self.postMessage({ok:false,out:[...out,"⚠ "+(err?.message||String(err))]}); }
-      };`;
-    const url=URL.createObjectURL(new Blob([workerSource],{type:"text/javascript"}));
-    const w=new Worker(url);let done=false;
-    const finish=res=>{if(done)return;done=true;clearTimeout(timer);w.terminate();URL.revokeObjectURL(url);resolve(res)};
-    const timer=setTimeout(()=>finish({ok:false,out:["⏱ Program dihentikan setelah 600 ms. Cek kemungkinan loop tanpa akhir."]}),600);
-    w.onmessage=e=>finish(e.data);w.onerror=e=>finish({ok:false,out:["⚠ "+(e.message||"Kesalahan Worker")]});
-    w.postMessage({code,experiments});
+    if(String(code).length>20000)return resolve({ok:false,out:["⚠ Kode terlalu panjang (maks 20.000 karakter)."]});
+    const f=document.createElement('iframe');
+    f.setAttribute('sandbox','allow-scripts');f.setAttribute('aria-hidden','true');f.tabIndex=-1;
+    f.style.cssText='position:absolute;width:0;height:0;border:0;visibility:hidden';
+    f.srcdoc=SANDBOX_DOC;let done=false,timer=0;
+    const finish=res=>{if(done)return;done=true;clearTimeout(timer);removeEventListener('message',onMsg);f.remove();resolve(res)};
+    const onMsg=e=>{if(e.source===f.contentWindow&&e.data&&e.data.pilarSandbox)finish(e.data.res)};
+    addEventListener('message',onMsg);
+    f.onload=()=>{f.contentWindow.postMessage({code:String(code),experiments:experiments.map(x=>[...x])},'*');
+      timer=setTimeout(()=>finish({ok:false,out:["⏱ Program dihentikan setelah 600 ms. Cek kemungkinan loop tanpa akhir."]}),600)};
+    document.body.appendChild(f);
   });
 }
 $("codeRun").addEventListener("click",async()=>{
