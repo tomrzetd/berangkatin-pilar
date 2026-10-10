@@ -40,3 +40,12 @@ h3{font-size:11px;color:var(--mu);font-weight:600;margin:12px 0 6px}h3:first-chi
 #coach{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);width:min(320px,90%);background:#0d1a15;border:1px solid var(--moss);border-radius:12px;padding:12px}#coach p{color:#b9d3c5}
 @media(pointer:coarse){button{min-height:44px}.row{min-height:44px}.hud button{min-height:44px}}
 @media(min-width:1600px){html,body{font-size:16px}.app{grid-template-rows:64px 1fr 180px;grid-template-columns:280px 1fr 360px}.top b{font-size:19px}.nl{font-size:15px}.nl small{font-size:13px}.row{min-height:44px;padding:7px 9px}.card h2{font-size:19px}.hint{font-size:13px}.hud button{font-size:14px}.intro-context{max-width:820px}}
+/* v0.3 · diorama: label chip + legenda */
+.nl{padding:2px 9px 3px;border-radius:999px;background:rgba(5,12,10,.66);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(3px);font-weight:600;line-height:1.25}
+.nl small{font-weight:500}
+.legend3d{position:absolute;left:12px;bottom:34px;display:grid;gap:4px;padding:8px 10px;border-radius:12px;background:rgba(5,12,10,.7);border:1px solid rgba(255,255,255,.08);font-size:11px;color:var(--mu);pointer-events:none}
+.legend3d b{color:#e8f3ec;font-size:11px;letter-spacing:.04em}
+.legend3d span{display:flex;align-items:center;gap:6px}.legend3d i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.legend3d .ring i{background:none;border:3px solid currentColor}
+@media(min-width:1600px){.legend3d{font-size:13px}.legend3d b{font-size:13px}}
+.nl{font-size:10.5px;padding:1px 7px 2px}.nl small:empty{display:none}.nl.sel{border-color:#fff6;background:rgba(10,24,18,.9);font-size:12px}
