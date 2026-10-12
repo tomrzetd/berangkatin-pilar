@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050c1f">
+<meta name="description" content="Frost Breakout — arcade pemecah balok es neon, mendukung mouse, keyboard, touch dan IFP.">
+<title>PILAR™ · Frost Breakout</title>
+<style>
+:root{--bg:#020717;--panel:#08162b;--edge:#23518e;--ice:#4ee7ff;--blue:#006eff;--ink:#eaf8ff;--muted:#9db8d9;--hot:#b4f7ff}
+body[data-theme="aurora"]{--bg:#071521;--panel:#102734;--edge:#407b80;--ice:#9dffde;--blue:#23bfa6;--hot:#fbffbb;--muted:#b4d8d2}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;color:var(--ink);background:var(--bg);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
+body{background:radial-gradient(ellipse at 50% 35%,color-mix(in srgb,var(--blue) 12%,transparent),transparent 58%),var(--bg)}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px max(12px,env(safe-area-inset-right));border-bottom:1px solid var(--edge);background:rgba(3,11,27,.8);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.home{display:inline-grid;place-items:center;width:43px;height:43px;background:var(--panel);border:1px solid var(--edge);border-radius:13px;text-decoration:none;color:var(--ink);font-size:24px}
+h1{margin:0;font-size:clamp(18px,2.5vw,25px);letter-spacing:.07em;text-shadow:0 0 16px var(--blue)}
+.subtitle{font-size:11px;color:var(--muted)}
+.actions{display:flex;gap:7px}
+.btn{min-height:43px;padding:8px 13px;border-radius:12px;background:var(--panel);border:1px solid var(--edge);font-size:13px;font-weight:750}
+.btn:hover{border-color:var(--ice)}
+main{min-height:calc(100dvh - 72px);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;justify-content:center;gap:clamp(12px,3vw,50px);padding:10px 24px 18px}
+aside{justify-self:end;max-width:330px;line-height:1.65}
+aside.right{justify-self:start}
+aside h2{font-size:clamp(17px,2vw,25px);margin:0 0 12px;color:var(--ice)}
+aside p{color:var(--muted);font-size:14px}
+.stat{border:1px solid var(--edge);padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--panel) 90%,transparent);margin:12px 0}
+.stat small{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em}
+.stat b{font-size:26px;font-variant-numeric:tabular-nums}
+.stage{position:relative;height:min(80dvh,860px);aspect-ratio:440/720;max-width:94vw;border:2px solid var(--blue);border-radius:8px;box-shadow:0 0 12px var(--ice),0 0 45px color-mix(in srgb,var(--blue) 60%,transparent),inset 0 0 20px var(--blue);overflow:hidden;background:#02071a;isolation:isolate}
+canvas{display:block;width:100%;height:100%;touch-action:none;user-select:none}
+.modal{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;padding:20px;background:rgba(0,9,27,.70);backdrop-filter:blur(5px);text-align:center;z-index:3}
+.modal[hidden]{display:none}
+.modal-card{max-width:340px;width:100%;padding:25px 20px;border-radius:20px;background:linear-gradient(155deg,#0d2750,#031022);border:1px solid var(--ice);box-shadow:0 0 40px #008cff65}
+.modal h2{font-size:30px;line-height:1.1;color:#e7fdff;letter-spacing:.1em;text-shadow:0 0 18px #48caff;margin:0 0 12px}
+.modal p{font-size:14px;line-height:1.55;color:#c6e6ff}
+.play{display:block;width:100%;padding:15px;margin-top:20px;background:linear-gradient(110deg,#0067de,#00bdec);border:1px solid #95ffff;border-radius:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;box-shadow:0 8px 22px #0078fc70}
+.caption{text-align:center;color:var(--muted);font-size:11px;margin:8px 0 0}
+.creator{font-size:10px;opacity:.7;letter-spacing:.02em;word-break:break-word}
+kbd{border:1px solid var(--edge);padding:2px 6px;border-radius:5px;font:inherit;color:var(--ink)}
+@media(max-width:950px){main{grid-template-columns:1fr;gap:6px;padding:12px;min-height:0}aside{display:none}.stage{height:min(79dvh,820px);margin:auto}}
+@media(max-height:670px){.stage{height:min(74dvh,670px)}.top{padding-top:5px;padding-bottom:5px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}
+</style>
+</head>
+<body data-theme="ice">
+<header class="top">
+ <div class="brand"><a class="home" href="../../" aria-label="Kembali ke PILAR Hub">←</a><div><h1>Frost Breakout ❄</h1><div class="subtitle">PILAR™ ARCADE · NEON ICE · v1.0</div></div></div>
+ <div class="actions"><button class="btn" id="themeBtn">🌌 Aurora</button><button class="btn" id="soundBtn" aria-pressed="false">🔇 Suara</button><button class="btn" id="pauseBtn">⏸ Jeda</button><button class="btn" id="restartBtn">↻ Ulang</button></div>
+</header>
+<main>
+ <aside><h2>BREAK THE ICE</h2><p>Arahkan bola dengan paddle. Hancurkan seluruh balok es untuk naik level. Bola yang lolos ke bawah mengurangi nyawa.</p><div class="stat"><small>Skor terbaik perangkat</small><b id="best">0</b></div><div class="stat"><small>Balok tersisa</small><b id="left">0</b></div></aside>
+ <section aria-label="Arena Frost Breakout"><div class="stage" id="stage"><canvas id="game" width="440" height="720" aria-label="Game brick breaker. Gerakkan paddle dengan sentuhan, mouse atau tombol panah."></canvas>
+   <div class="modal" id="modal"><div class="modal-card"><h2 id="modalTitle">FROST<br>BREAKOUT</h2><p id="modalDesc">Pecahkan balok es dengan bola neon. Gerakkan paddle memakai mouse, sentuhan, atau tombol panah.</p><button class="play" id="modalAction">▶ MULAI MAIN</button></div></div>
+ </div><p class="caption">Geser jari / mouse untuk menggerakkan paddle · <kbd>←</kbd> <kbd>→</kbd> · <kbd>Spasi</kbd> jeda</p></section>
+ <aside class="right"><h2>FROST SYSTEM</h2><div class="stat"><small>Level saat ini</small><b id="level">1</b></div><div class="stat"><small>Nyawa</small><b id="lives">♥ ♥ ♥</b></div><p><strong>Bonus:</strong> tangkap kristal yang jatuh untuk memperlebar paddle atau memunculkan bola tambahan.</p><p class="creator">by : rizalabdurrahman05@guru.smp.belajar.id</p></aside>
+</main>
+<script>
+(function(){
+"use strict";
+var W=440,H=720,L=26,R=414,TOP=68,PY=678,TAU=Math.PI*2;
+var canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
+var $=function(id){return document.getElementById(id)};
+var state={mode:"ready",level:1,score:0,lives:3,best:0,bricks:[],balls:[],drops:[],sparks:[],paddle:{x:220,w:80},wideUntil:0,t:0,last:0,shake:0,sound:false,theme:"ice",keys:{left:false,right:false}};
+var audio=null,stars=[];
+try{state.best=Number(localStorage.getItem("pilar_frost_best")||0)||0;state.theme=localStorage.getItem("pilar_frost_theme")||"ice"}catch(_){}
+document.body.dataset.theme=state.theme;
+for(var i=0;i<85;i++)stars.push({x:32+Math.random()*376,y:74+Math.random()*608,r:.3+Math.random()*.9,a:.13+Math.random()*.26});
+function color(){return state.theme==="ice"?"#35c9ff":"#88ffdd"}
+function tone(f,d){if(!state.sound)return;try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();if(audio.state==="suspended")audio.resume();var o=audio.createOscillator(),g=audio.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(.045,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}catch(_){}}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function hud(){$("best").textContent=state.best;$("left").textContent=state.bricks.length;$("level").textContent=state.level;$("lives").textContent="♥ ".repeat(Math.max(0,state.lives));$("pauseBtn").textContent=state.mode==="paused"?"▶ Lanjut":"⏸ Jeda";$("soundBtn").textContent=state.sound?"🔊 Suara":"🔇 Suara";$("soundBtn").setAttribute("aria-pressed",String(state.sound));$("themeBtn").textContent=state.theme==="ice"?"🌌 Aurora":"❄ Es Biru"}
+function makeBall(x,y,vx,vy){return{x:x,y:y,vx:vx,vy:vy,r:6,trail:[]}}
+function buildLevel(){state.bricks=[];state.balls=[];state.drops=[];state.sparks=[];state.paddle={x:220,w:80};state.wideUntil=0;var cols=9,rows=Math.min(5+state.level,9),gap=4,bw=(368-(cols-1)*gap)/cols,bh=18;
+ for(var row=0;row<rows;row++)for(var col=0;col<cols;col++){if(state.level>1&&row%4===3&&(col===2||col===6))continue;var hp=(state.level>=2&&row<2)?2:1;state.bricks.push({x:36+col*(bw+gap),y:98+row*22,w:bw,h:bh,hp:hp,max:hp})}
+ var speed=310+Math.min(120,(state.level-1)*27);state.balls.push(makeBall(220,641,105,-speed));hud()}
+function reset(){state.level=1;state.score=0;state.lives=3;state.t=0;buildLevel();state.mode="playing";hideModal();hud()}
+function showModal(title,desc,action){$("modalTitle").innerHTML=title;$("modalDesc").textContent=desc;$("modalAction").textContent=action;$("modal").hidden=false}
+function hideModal(){$("modal").hidden=true}
+function next(){state.level++;buildLevel();state.mode="playing";hideModal();hud()}
+function lose(){state.lives--;tone(180,.22);state.shake=9;if(state.lives<=0){state.mode="over";showModal("GAME OVER","Skor akhir: "+state.score+" · Level "+state.level+". Coba pecahkan rekor!", "↻ MAIN LAGI")}else{state.mode="readyball";state.balls=[makeBall(state.paddle.x,641,100,-(310+state.level*20))];showModal("ES RETAK!","Satu nyawa hilang. Masih ada "+state.lives+" nyawa.","▶ LANJUTKAN")}hud()}
+function complete(){if(state.mode!=="playing")return;state.mode="leveldone";tone(840,.22);showModal("LEVEL "+state.level+" CLEAR!","Hebat! Skor sementara "+state.score+". Tantangan es berikutnya menanti.","❄ LEVEL BERIKUTNYA");hud()}
+function score(n){state.score+=n;if(state.score>state.best){state.best=state.score;try{localStorage.setItem("pilar_frost_best",String(state.best))}catch(_){}}hud()}
+function burst(x,y,n){for(var i=0;i<n;i++){var a=Math.random()*TAU,s=45+Math.random()*180;state.sparks.push({x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:.35+Math.random()*.48,max:.83})}state.shake=Math.max(state.shake,2.5)}
+function destroyBrick(idx){var b=state.bricks[idx];burst(b.x+b.w/2,b.y+b.h/2,12);state.bricks.splice(idx,1);score(15*state.level);tone(390+Math.random()*260,.07);if(Math.random()<.095)state.drops.push({x:b.x+b.w/2,y:b.y+b.h,kind:Math.random()<.55?"wide":"multi",vy:118});if(!state.bricks.length)complete()}
+function hitBrick(b,brick){return b.x+b.r>brick.x&&b.x-b.r<brick.x+brick.w&&b.y+b.r>brick.y&&b.y-b.r<brick.y+brick.h}
+function physics(dt){if(state.keys.left)state.paddle.x-=420*dt;if(state.keys.right)state.paddle.x+=420*dt;
+ state.paddle.w=state.t<state.wideUntil?118:80;state.paddle.x=clamp(state.paddle.x,L+state.paddle.w/2,R-state.paddle.w/2);
+ state.t+=dt;
+ for(var di=state.drops.length-1;di>=0;di--){var drop=state.drops[di];drop.y+=drop.vy*dt;if(drop.y>=PY-8&&drop.y<PY+18&&Math.abs(drop.x-state.paddle.x)<state.paddle.w/2+10){if(drop.kind==="wide"){state.wideUntil=state.t+12;state.paddle.w=118}else if(state.balls.length<5){var orig=state.balls[0];if(orig){state.balls.push(makeBall(orig.x,orig.y,-orig.vx*.88,orig.vy));state.balls.push(makeBall(orig.x,orig.y,orig.vx*.88,orig.vy))}}burst(drop.x,drop.y,17);tone(960,.14);score(25);state.drops.splice(di,1)}else if(drop.y>H)state.drops.splice(di,1)}
+ var sub=3,st=dt/sub;
+ for(var step=0;step<sub;step++){
+  for(var bi=state.balls.length-1;bi>=0;bi--){var b=state.balls[bi],px=b.x,py=b.y;b.x+=b.vx*st;b.y+=b.vy*st;
+   b.trail.push({x:b.x,y:b.y});if(b.trail.length>12)b.trail.shift();
+   if(b.x<L+b.r){b.x=L+b.r;b.vx=Math.abs(b.vx);tone(300,.035)}else if(b.x>R-b.r){b.x=R-b.r;b.vx=-Math.abs(b.vx);tone(300,.035)}
+   if(b.y<TOP+b.r){b.y=TOP+b.r;b.vy=Math.abs(b.vy);tone(300,.035)}
+   if(b.vy>0&&py+b.r<=PY+11&&b.y+b.r>=PY-3&&Math.abs(b.x-state.paddle.x)<state.paddle.w/2+b.r){b.y=PY-b.r-4;var a=clamp((b.x-state.paddle.x)/(state.paddle.w/2),-.94,.94)*1.15;var sp=Math.min(610,Math.hypot(b.vx,b.vy)*1.012+1);b.vx=Math.sin(a)*sp;b.vy=-Math.cos(a)*sp;tone(510,.055);burst(b.x,PY,5)}
+   if(b.y>H+12){state.balls.splice(bi,1);continue}
+   for(var j=0;j<state.bricks.length;j++){var brick=state.bricks[j];if(!hitBrick(b,brick))continue;
+    var fromLeft=px+b.r<=brick.x,fromRight=px-b.r>=brick.x+brick.w;
+    if(fromLeft||fromRight)b.vx*=-1;else b.vy*=-1;
+    brick.hp--;if(brick.hp<=0)destroyBrick(j);else{burst(b.x,b.y,5);score(5);tone(430,.06)}
+    break;
+   }
+  }
+  if(state.mode!=="playing")break;
+ }
+ if(state.mode==="playing"&&!state.balls.length)lose();
+}
+function roundRect(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
+function glowBox(x,y,w,h,c,blur){ctx.shadowColor=c;ctx.shadowBlur=blur;ctx.strokeStyle=c;ctx.lineWidth=1;ctx.strokeRect(x,y,w,h);ctx.shadowBlur=0}
+function draw(){var cyan=color(),g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,"#020b26");g.addColorStop(.6,"#02071b");g.addColorStop(1,"#03091d");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ ctx.save();if(state.shake>0){ctx.translate((Math.random()-.5)*state.shake,(Math.random()-.5)*state.shake);state.shake*=.85;if(state.shake<.2)state.shake=0}
+ stars.forEach(function(s){ctx.globalAlpha=s.a;ctx.fillStyle="#c9edff";ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,TAU);ctx.fill()});ctx.globalAlpha=1;
+ glowBox(L,TOP,R-L,H-TOP-10,cyan,10);
+ var rg=ctx.createRadialGradient(220,390,0,220,390,82);rg.addColorStop(0,"#037cfa30");rg.addColorStop(1,"#037cfa00");ctx.fillStyle=rg;ctx.beginPath();ctx.arc(220,390,82,0,TAU);ctx.fill();ctx.shadowColor=cyan;ctx.shadowBlur=20;ctx.fillStyle="#0878e6";ctx.beginPath();ctx.arc(220,390,11+Math.sin(performance.now()/600)*2,0,TAU);ctx.fill();ctx.shadowBlur=0;
+ ctx.fillStyle="#d9f9ff";ctx.font="bold 17px monospace";ctx.textAlign="left";ctx.fillText(String(state.score).padStart(6,"0"),36,89);ctx.textAlign="right";ctx.font="bold 12px monospace";ctx.fillText("LVL "+state.level+"  ♥ "+state.lives,405,88);
+ for(var i=0;i<state.bricks.length;i++){var b=state.bricks[i],bg=ctx.createLinearGradient(b.x,b.y,b.x,b.y+b.h);if(b.hp>1){bg.addColorStop(0,"#c3fbff");bg.addColorStop(1,"#248dcd")}else{bg.addColorStop(0,state.theme==="ice"?"#28daff":"#72ffcf");bg.addColorStop(1,state.theme==="ice"?"#004fdf":"#008e94")}ctx.shadowColor=cyan;ctx.shadowBlur=6;ctx.fillStyle=bg;ctx.fillRect(b.x,b.y,b.w,b.h);ctx.shadowBlur=0;ctx.fillStyle="#e2faff48";ctx.fillRect(b.x+2,b.y+2,b.w-4,3)}
+ for(var p=0;p<state.drops.length;p++){var d=state.drops[p];ctx.save();ctx.translate(d.x,d.y);ctx.rotate(Math.PI/4);ctx.shadowColor="#d9f9ff";ctx.shadowBlur=13;ctx.fillStyle=d.kind==="wide"?"#a9ffdf":"#edb8ff";ctx.fillRect(-9,-9,18,18);ctx.restore();ctx.textAlign="center";ctx.font="bold 11px monospace";ctx.fillStyle="#041327";ctx.fillText(d.kind==="wide"?"W":"M",d.x,d.y+4)}
+ for(var k=0;k<state.sparks.length;k++){var sp=state.sparks[k];ctx.globalAlpha=Math.max(0,sp.life/sp.max);ctx.fillStyle="#c8faff";ctx.fillRect(sp.x,sp.y,3,3)}ctx.globalAlpha=1;
+ var pad=state.paddle;ctx.shadowColor=cyan;ctx.shadowBlur=20;var pg=ctx.createLinearGradient(0,PY-7,0,PY+9);pg.addColorStop(0,"#b9ffff");pg.addColorStop(.45,cyan);pg.addColorStop(1,"#005dd0");ctx.fillStyle=pg;roundRect(pad.x-pad.w/2,PY-6,pad.w,12,4);ctx.fill();ctx.shadowBlur=0;
+ for(var z=0;z<state.balls.length;z++){var ball=state.balls[z];for(var q=0;q<ball.trail.length;q++){var tr=ball.trail[q];ctx.fillStyle="rgba(58,181,255,"+((q+1)/ball.trail.length*.36)+")";ctx.beginPath();ctx.arc(tr.x,tr.y,2+(q/ball.trail.length)*2,0,TAU);ctx.fill()}ctx.shadowBlur=20;ctx.shadowColor="#0aaaff";ctx.fillStyle="#b8fbff";ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,TAU);ctx.fill();ctx.shadowBlur=0}
+ ctx.restore()}
+function frame(ts){if(!state.last)state.last=ts;var dt=Math.min(.034,(ts-state.last)/1000);state.last=ts;if(state.mode==="playing")physics(dt);for(var i=state.sparks.length-1;i>=0;i--){var p=state.sparks[i];p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=190*dt;if(p.life<=0)state.sparks.splice(i,1)}draw();requestAnimationFrame(frame)}
+function movePaddle(e){var rect=canvas.getBoundingClientRect();var x=(e.clientX-rect.left)/rect.width*W;if(Number.isFinite(x))state.paddle.x=clamp(x,L+state.paddle.w/2,R-state.paddle.w/2)}
+canvas.addEventListener("pointerdown",function(e){e.preventDefault();movePaddle(e);try{canvas.setPointerCapture(e.pointerId)}catch(_){}});
+canvas.addEventListener("pointermove",function(e){if(e.pointerType==="mouse"||e.buttons||e.pressure>0)movePaddle(e)});
+window.addEventListener("keydown",function(e){if(["ArrowLeft","ArrowRight","Space","KeyA","KeyD"].includes(e.code)){e.preventDefault();if(e.code==="Space"&&!e.repeat)togglePause();if(e.code==="ArrowLeft"||e.code==="KeyA")state.keys.left=true;if(e.code==="ArrowRight"||e.code==="KeyD")state.keys.right=true}});
+window.addEventListener("keyup",function(e){if(e.code==="ArrowLeft"||e.code==="KeyA")state.keys.left=false;if(e.code==="ArrowRight"||e.code==="KeyD")state.keys.right=false});
+function togglePause(){if(state.mode==="playing"){state.mode="paused";showModal("JEDA","Permainan sedang dijeda. Ambil ancang-ancang lagi!","▶ LANJUT MAIN")}else if(state.mode==="paused"){state.mode="playing";hideModal()}hud()}
+$("modalAction").onclick=function(){if(state.mode==="ready"||state.mode==="over")reset();else if(state.mode==="readyball"||state.mode==="paused"){state.mode="playing";hideModal();hud()}else if(state.mode==="leveldone")next()};
+$("pauseBtn").onclick=togglePause;
+$("restartBtn").onclick=function(){reset()};
+$("soundBtn").onclick=function(){state.sound=!state.sound;hud();if(state.sound)tone(740,.09)};
+$("themeBtn").onclick=function(){state.theme=state.theme==="ice"?"aurora":"ice";document.body.dataset.theme=state.theme;try{localStorage.setItem("pilar_frost_theme",state.theme)}catch(_){}hud()};
+window.addEventListener("blur",function(){if(state.mode==="playing")togglePause()});
+try{window.PILAR_PULSE?.setApp?.("frost-breakout")}catch(_){}
+buildLevel();hud();requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
