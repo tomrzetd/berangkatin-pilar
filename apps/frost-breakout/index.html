@@ -41,30 +41,84 @@ canvas{display:block;width:100%;height:100%;touch-action:none;user-select:none}
 .caption{text-align:center;color:var(--muted);font-size:11px;margin:8px 0 0}
 .creator{font-size:10px;opacity:.7;letter-spacing:.02em;word-break:break-word}
 kbd{border:1px solid var(--edge);padding:2px 6px;border-radius:5px;font:inherit;color:var(--ink)}
-@media(max-width:950px){main{grid-template-columns:1fr;gap:6px;padding:12px;min-height:0}aside{display:none}.stage{height:min(79dvh,820px);margin:auto}}
+/* ── Mode Debug ── */
+.btn[aria-pressed="true"]{background:#173a2c;border-color:#5fe3a1;color:#d9ffe9}
+.dbg{display:none;align-self:stretch;flex-direction:column;gap:10px;min-width:0;max-height:min(88dvh,900px);padding:14px;border:1px solid var(--edge);border-radius:18px;background:linear-gradient(170deg,#081a33f2,#050f22f2);box-shadow:0 18px 50px #0008;font-size:14px}
+body.debug .dbg{display:flex}body.debug aside.right{display:none}
+body.debug main{grid-template-columns:minmax(0,.7fr) auto minmax(360px,1.3fr)}
+.dbg-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.dbg-head b{font-size:16px;letter-spacing:.04em}.dbg-head small{color:var(--muted);font-size:11px}
+.dbg-ctrl{display:grid;grid-template-columns:repeat(4,1fr) auto;gap:6px}
+.dbg-ctrl button,.dbg-ctrl select{min-height:44px;border-radius:11px;border:1px solid var(--edge);background:var(--panel);font-size:12.5px;font-weight:750;color:var(--ink);padding:4px 6px}
+.dbg-ctrl button.on{background:#0e3b5c;border-color:var(--ice)}
+.dbg-status{padding:10px 12px;border-radius:12px;background:#020a18;border:1px solid #17365c;font-size:13px;line-height:1.45;min-height:60px}
+.dbg-status b{color:var(--ice)}.dbg-status .why{display:block;color:#d9ecff;margin-top:3px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid #17365c}.tabs button{flex:1;min-height:40px;border:0;border-bottom:3px solid transparent;background:none;color:var(--muted);font-weight:750;font-size:13px}.tabs button.on{color:var(--ink);border-color:var(--ice)}
+.pane{overflow:auto;min-height:0;flex:1}.pane[hidden]{display:none}
+.fsm{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 10px}.fsm span{padding:4px 8px;border-radius:999px;border:1px solid #1d3d63;font-size:11px;color:var(--muted);font-weight:700}.fsm span.on{background:var(--ice);color:#04142a;border-color:var(--ice)}.fsm i{font-style:normal;color:#456;align-self:center;font-size:11px}
+.code{margin:0;padding:6px 0;list-style:none;border-radius:12px;background:#020a18;border:1px solid #17365c;font:13px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace}
+.code li{display:grid;grid-template-columns:24px 22px minmax(0,1fr) auto;align-items:center;gap:4px;padding:4px 8px 4px 2px;border-left:3px solid transparent;transition:background .25s}
+.code li .bp{width:22px;height:22px;border:0;background:none;padding:0;display:grid;place-items:center}.code li .bp::before{content:"";width:11px;height:11px;border-radius:50%;border:2px solid #2b4f78}
+.code li.has-bp .bp::before{background:#ff5d75;border-color:#ff5d75;box-shadow:0 0 8px #ff5d75}
+.code li .ln{color:#4c6f96;font-size:11px;text-align:right}.code li .tx{white-space:pre-wrap;color:#cfe4ff}.code li .tx em{font-style:normal;color:#ffd36c}.code li .tx kw{color:#ff9ad5;font-weight:700}
+.code li .hit{font-size:10.5px;color:#5c7fa6;min-width:42px;text-align:right}
+.code li.ran{background:#0b2440}.code li.cur{background:#0e3b5c;border-left-color:var(--ice)}.code li.cur .tx{color:#fff}.code li.new{background:#1a2f1f}.code li.new .tx::after{content:"  ← rancanganmu";color:#7be6a6;font-size:11px}
+.missions{margin-top:10px;display:grid;gap:6px}.missions div{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--muted);padding:7px 9px;border-radius:10px;border:1px solid #17365c}.missions div.ok{color:#bff5d6;border-color:#2f7a55;background:#0d2a1d}.missions div::before{content:"○";color:#4c6f96}.missions div.ok::before{content:"✓";color:#5fe3a1}
+.mem{width:100%;border-collapse:collapse;font:12.5px ui-monospace,Consolas,monospace}.mem td{padding:5px 6px;border-bottom:1px solid #12294a;vertical-align:top}.mem td:first-child{color:#7ea3cc;white-space:nowrap}.mem td:last-child{color:#eaf8ff;text-align:right}.mem tr.chg td:last-child{color:#ffd36c}
+.mem .grp td{color:var(--ice);font-weight:800;padding-top:10px;font-family:Inter,system-ui}
+.design label{display:grid;grid-template-columns:1fr auto;gap:4px 10px;margin:10px 0;font-size:13px}.design label b{color:var(--ice);font-variant-numeric:tabular-nums}.design input[type=range]{grid-column:1/-1;width:100%;accent-color:#4ee7ff;min-height:28px}
+.design .tog{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:10px;border:1px solid #17365c;margin:6px 0}.design .tog input{width:22px;height:22px;accent-color:#5fe3a1}
+.design .row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px}.design .row .btn{min-height:44px}
+.design h4{margin:14px 0 2px;font-size:12px;letter-spacing:.1em;color:var(--muted)}
+.xray-tog{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+@media(max-width:950px){main{grid-template-columns:1fr;gap:6px;padding:12px;min-height:0}aside{display:none}.stage{height:min(79dvh,820px);margin:auto}
+ body.debug main{grid-template-columns:1fr}body.debug .stage{height:min(58dvh,620px)}.dbg{max-height:none}.pane{max-height:none}}
 @media(max-height:670px){.stage{height:min(74dvh,670px)}.top{padding-top:5px;padding-bottom:5px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}
 </style>
 </head>
 <body data-theme="ice">
 <header class="top">
- <div class="brand"><a class="home" href="../../" aria-label="Kembali ke PILAR Hub">←</a><div><h1>Frost Breakout ❄</h1><div class="subtitle">PILAR™ ARCADE · NEON ICE · v1.0</div></div></div>
- <div class="actions"><button class="btn" id="themeBtn">🌌 Aurora</button><button class="btn" id="soundBtn" aria-pressed="false">🔇 Suara</button><button class="btn" id="pauseBtn">⏸ Jeda</button><button class="btn" id="restartBtn">↻ Ulang</button></div>
+ <div class="brand"><a class="home" href="../../" aria-label="Kembali ke PILAR Hub">←</a><div><h1>Frost Breakout ❄</h1><div class="subtitle">PILAR™ ARCADE · NEON ICE · v1.1 · Mode Debug</div></div></div>
+ <div class="actions"><button class="btn" id="debugBtn" aria-pressed="false" title="Mode Debug (G)">🧠 Debug</button><button class="btn" id="themeBtn">🌌 Aurora</button><button class="btn" id="soundBtn" aria-pressed="false">🔇 Suara</button><button class="btn" id="pauseBtn">⏸ Jeda</button><button class="btn" id="restartBtn">↻ Ulang</button></div>
 </header>
 <main>
  <aside><h2>BREAK THE ICE</h2><p>Arahkan bola dengan paddle. Hancurkan seluruh balok es untuk naik level. Bola yang lolos ke bawah mengurangi nyawa.</p><div class="stat"><small>Skor terbaik perangkat</small><b id="best">0</b></div><div class="stat"><small>Balok tersisa</small><b id="left">0</b></div></aside>
  <section aria-label="Arena Frost Breakout"><div class="stage" id="stage"><canvas id="game" width="440" height="720" aria-label="Game brick breaker. Gerakkan paddle dengan sentuhan, mouse atau tombol panah."></canvas>
    <div class="modal" id="modal"><div class="modal-card"><h2 id="modalTitle">FROST<br>BREAKOUT</h2><p id="modalDesc">Pecahkan balok es dengan bola neon. Gerakkan paddle memakai mouse, sentuhan, atau tombol panah.</p><button class="play" id="modalAction">▶ MULAI MAIN</button></div></div>
- </div><p class="caption">Geser jari / mouse untuk menggerakkan paddle · <kbd>←</kbd> <kbd>→</kbd> · <kbd>Spasi</kbd> jeda</p></section>
+ </div><p class="caption">Geser jari / mouse untuk menggerakkan paddle · <kbd>←</kbd> <kbd>→</kbd> · <kbd>Spasi</kbd> jeda · <kbd>G</kbd> debug · <kbd>N</kbd> baris · <kbd>F</kbd> frame</p></section>
  <aside class="right"><h2>FROST SYSTEM</h2><div class="stat"><small>Level saat ini</small><b id="level">1</b></div><div class="stat"><small>Nyawa</small><b id="lives">♥ ♥ ♥</b></div><p><strong>Bonus:</strong> tangkap kristal yang jatuh untuk memperlebar paddle atau memunculkan bola tambahan.</p><p class="creator">by : rizalabdurrahman05@guru.smp.belajar.id</p></aside>
+ <section class="dbg" id="dbg" aria-label="Mode Debug Frost Breakout">
+  <div class="dbg-head"><div><b>🧠 MODE DEBUG</b><br><small>Lihat isi "otak" game saat berjalan</small></div><label class="xray-tog"><input type="checkbox" id="xray" checked> Sinar-X</label></div>
+  <div class="dbg-ctrl"><button id="dRun" title="Jalan">▶ Jalan</button><button id="dPause" title="Jeda">⏸ Jeda</button><button id="dLine" title="Langkah 1 baris (N)">⤵ Baris</button><button id="dFrame" title="Langkah 1 frame (F)">⏭ Frame</button>
+   <select id="dSpeed" aria-label="Kecepatan"><option value="1">1×</option><option value=".5">½×</option><option value=".25">¼×</option><option value=".1">0,1×</option></select></div>
+  <div class="dbg-status" id="dStatus" aria-live="polite"></div>
+  <div class="tabs" role="tablist"><button class="on" data-pane="flow">Alur kode</button><button data-pane="mem">Memori</button><button data-pane="design">Rancang versimu</button></div>
+  <div class="pane" id="pane-flow"><div class="fsm" id="fsm"></div><ol class="code" id="code"></ol>
+   <div class="missions" id="missions"></div></div>
+  <div class="pane" id="pane-mem" hidden><table class="mem" id="mem"></table></div>
+  <div class="pane design" id="pane-design" hidden></div>
+ </section>
 </main>
 <script>
 (function(){
 "use strict";
-var W=440,H=720,L=26,R=414,TOP=68,PY=678,TAU=Math.PI*2;
+/* ═══════════════════════════════════════════════════════════════════
+   FROST BREAKOUT · arsitektur
+   1. STATE   : semua data game di satu objek `state` (memori game)
+   2. CFG     : aturan & angka rancangan (bisa diubah siswa di tab Rancang)
+   3. UPDATE  : generator `update(dt)` — satu frame logika. Setiap `yield "id"`
+                = satu baris pseudo-kode, sehingga Mode Debug bisa berhenti
+                tepat di baris itu (Langkah baris / breakpoint).
+   4. RENDER  : draw() menggambar state ke canvas; drawXray() untuk debug.
+   5. LOOP    : frame() ≈ 60× per detik: hitung Δt → update → gambar.
+   ═══════════════════════════════════════════════════════════════════ */
+var W=440,H=720,L=26,R=414,TOP=68,PY=678,TAU=Math.PI*2,SUB=3,FIXED_DT=1/60;
 var canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
 var $=function(id){return document.getElementById(id)};
-var state={mode:"ready",level:1,score:0,lives:3,best:0,bricks:[],balls:[],drops:[],sparks:[],paddle:{x:220,w:80},wideUntil:0,t:0,last:0,shake:0,sound:false,theme:"ice",keys:{left:false,right:false}};
+var DEFAULT_CFG={speed0:310,speedUp:27,paddleW:80,rows:5,dropPct:9.5,maxAngle:62,accel:1.2,lives:3,fireball:false,gravity:0};
+var CFG=Object.assign({},DEFAULT_CFG);
+try{var savedCfg=JSON.parse(localStorage.getItem("pilar_frost_cfg")||"null");if(savedCfg)CFG=Object.assign({},DEFAULT_CFG,savedCfg)}catch(_){}
+var state={mode:"ready",level:1,score:0,lives:CFG.lives,best:0,bricks:[],balls:[],drops:[],sparks:[],paddle:{x:220,w:CFG.paddleW},wideUntil:0,t:0,last:0,shake:0,sound:false,theme:"ice",keys:{left:false,right:false}};
 var audio=null,stars=[];
 try{state.best=Number(localStorage.getItem("pilar_frost_best")||0)||0;state.theme=localStorage.getItem("pilar_frost_theme")||"ice"}catch(_){}
 document.body.dataset.theme=state.theme;
@@ -72,48 +126,84 @@ for(var i=0;i<85;i++)stars.push({x:32+Math.random()*376,y:74+Math.random()*608,r
 function color(){return state.theme==="ice"?"#35c9ff":"#88ffdd"}
 function tone(f,d){if(!state.sound)return;try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();if(audio.state==="suspended")audio.resume();var o=audio.createOscillator(),g=audio.createGain();o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(.045,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}catch(_){}}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function startSpeed(){return CFG.speed0+Math.min(120,(state.level-1)*CFG.speedUp)}
 function hud(){$("best").textContent=state.best;$("left").textContent=state.bricks.length;$("level").textContent=state.level;$("lives").textContent="♥ ".repeat(Math.max(0,state.lives));$("pauseBtn").textContent=state.mode==="paused"?"▶ Lanjut":"⏸ Jeda";$("soundBtn").textContent=state.sound?"🔊 Suara":"🔇 Suara";$("soundBtn").setAttribute("aria-pressed",String(state.sound));$("themeBtn").textContent=state.theme==="ice"?"🌌 Aurora":"❄ Es Biru"}
 function makeBall(x,y,vx,vy){return{x:x,y:y,vx:vx,vy:vy,r:6,trail:[]}}
-function buildLevel(){state.bricks=[];state.balls=[];state.drops=[];state.sparks=[];state.paddle={x:220,w:80};state.wideUntil=0;var cols=9,rows=Math.min(5+state.level,9),gap=4,bw=(368-(cols-1)*gap)/cols,bh=18;
- for(var row=0;row<rows;row++)for(var col=0;col<cols;col++){if(state.level>1&&row%4===3&&(col===2||col===6))continue;var hp=(state.level>=2&&row<2)?2:1;state.bricks.push({x:36+col*(bw+gap),y:98+row*22,w:bw,h:bh,hp:hp,max:hp})}
- var speed=310+Math.min(120,(state.level-1)*27);state.balls.push(makeBall(220,641,105,-speed));hud()}
-function reset(){state.level=1;state.score=0;state.lives=3;state.t=0;buildLevel();state.mode="playing";hideModal();hud()}
+function buildLevel(){state.bricks=[];state.balls=[];state.drops=[];state.sparks=[];state.paddle={x:220,w:CFG.paddleW};state.wideUntil=0;var cols=9,rows=Math.min(CFG.rows+state.level,9),gap=4,bw=(368-(cols-1)*gap)/cols,bh=18;
+ for(var row=0;row<rows;row++)for(var col=0;col<cols;col++){if(state.level>1&&row%4===3&&(col===2||col===6))continue;var hp=(state.level>=2&&row<2)?2:1;state.bricks.push({x:36+col*(bw+gap),y:98+row*22,w:bw,h:bh,hp:hp,max:hp,row:row+1,col:col+1})}
+ state.balls.push(makeBall(220,641,105,-startSpeed()));hud()}
+function reset(){state.level=1;state.score=0;state.lives=CFG.lives;state.t=0;dbg.pending=null;buildLevel();state.mode="playing";hideModal();hud()}
 function showModal(title,desc,action){$("modalTitle").innerHTML=title;$("modalDesc").textContent=desc;$("modalAction").textContent=action;$("modal").hidden=false}
 function hideModal(){$("modal").hidden=true}
-function next(){state.level++;buildLevel();state.mode="playing";hideModal();hud()}
-function lose(){state.lives--;tone(180,.22);state.shake=9;if(state.lives<=0){state.mode="over";showModal("GAME OVER","Skor akhir: "+state.score+" · Level "+state.level+". Coba pecahkan rekor!", "↻ MAIN LAGI")}else{state.mode="readyball";state.balls=[makeBall(state.paddle.x,641,100,-(310+state.level*20))];showModal("ES RETAK!","Satu nyawa hilang. Masih ada "+state.lives+" nyawa.","▶ LANJUTKAN")}hud()}
+function next(){state.level++;dbg.pending=null;buildLevel();state.mode="playing";hideModal();hud()}
+function lose(){state.lives--;tone(180,.22);state.shake=9;if(state.lives<=0){state.mode="over";showModal("GAME OVER","Skor akhir: "+state.score+" · Level "+state.level+". Coba pecahkan rekor!", "↻ MAIN LAGI")}else{state.mode="readyball";state.balls=[makeBall(state.paddle.x,641,100,-(CFG.speed0+state.level*20))];showModal("ES RETAK!","Satu nyawa hilang. Masih ada "+state.lives+" nyawa.","▶ LANJUTKAN")}hud()}
 function complete(){if(state.mode!=="playing")return;state.mode="leveldone";tone(840,.22);showModal("LEVEL "+state.level+" CLEAR!","Hebat! Skor sementara "+state.score+". Tantangan es berikutnya menanti.","❄ LEVEL BERIKUTNYA");hud()}
 function score(n){state.score+=n;if(state.score>state.best){state.best=state.score;try{localStorage.setItem("pilar_frost_best",String(state.best))}catch(_){}}hud()}
 function burst(x,y,n){for(var i=0;i<n;i++){var a=Math.random()*TAU,s=45+Math.random()*180;state.sparks.push({x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:.35+Math.random()*.48,max:.83})}state.shake=Math.max(state.shake,2.5)}
-function destroyBrick(idx){var b=state.bricks[idx];burst(b.x+b.w/2,b.y+b.h/2,12);state.bricks.splice(idx,1);score(15*state.level);tone(390+Math.random()*260,.07);if(Math.random()<.095)state.drops.push({x:b.x+b.w/2,y:b.y+b.h,kind:Math.random()<.55?"wide":"multi",vy:118});if(!state.bricks.length)complete()}
 function hitBrick(b,brick){return b.x+b.r>brick.x&&b.x-b.r<brick.x+brick.w&&b.y+b.r>brick.y&&b.y-b.r<brick.y+brick.h}
-function physics(dt){if(state.keys.left)state.paddle.x-=420*dt;if(state.keys.right)state.paddle.x+=420*dt;
- state.paddle.w=state.t<state.wideUntil?118:80;state.paddle.x=clamp(state.paddle.x,L+state.paddle.w/2,R-state.paddle.w/2);
+function mark(kind,x,y){dbg.marks.push({kind:kind,x:x,y:y,t:performance.now()});if(dbg.marks.length>12)dbg.marks.shift()}
+
+/* ═════ UPDATE: satu frame logika, dipecah per baris pseudo-kode ═════ */
+function* update(dt){
+ var c=dbg.ctx;c.dt=dt;
+ if(state.keys.left)state.paddle.x-=420*dt;if(state.keys.right)state.paddle.x+=420*dt;
+ state.paddle.w=state.t<state.wideUntil?Math.round(CFG.paddleW*1.48):CFG.paddleW;state.paddle.x=clamp(state.paddle.x,L+state.paddle.w/2,R-state.paddle.w/2);
+ yield "input";
+ if(state.mode!=="playing"){yield "gate";return}
  state.t+=dt;
- for(var di=state.drops.length-1;di>=0;di--){var drop=state.drops[di];drop.y+=drop.vy*dt;if(drop.y>=PY-8&&drop.y<PY+18&&Math.abs(drop.x-state.paddle.x)<state.paddle.w/2+10){if(drop.kind==="wide"){state.wideUntil=state.t+12;state.paddle.w=118}else if(state.balls.length<5){var orig=state.balls[0];if(orig){state.balls.push(makeBall(orig.x,orig.y,-orig.vx*.88,orig.vy));state.balls.push(makeBall(orig.x,orig.y,orig.vx*.88,orig.vy))}}burst(drop.x,drop.y,17);tone(960,.14);score(25);state.drops.splice(di,1)}else if(drop.y>H)state.drops.splice(di,1)}
- var sub=3,st=dt/sub;
- for(var step=0;step<sub;step++){
-  for(var bi=state.balls.length-1;bi>=0;bi--){var b=state.balls[bi],px=b.x,py=b.y;b.x+=b.vx*st;b.y+=b.vy*st;
+ if(state.drops.length){
+  for(var di=state.drops.length-1;di>=0;di--){var drop=state.drops[di];drop.y+=drop.vy*dt;
+   if(drop.y>=PY-8&&drop.y<PY+18&&Math.abs(drop.x-state.paddle.x)<state.paddle.w/2+10){
+    c.drop=drop;
+    if(drop.kind==="wide"){state.wideUntil=state.t+12;state.paddle.w=Math.round(CFG.paddleW*1.48)}else if(state.balls.length<5){var orig=state.balls[0];if(orig){state.balls.push(makeBall(orig.x,orig.y,-orig.vx*.88,orig.vy));state.balls.push(makeBall(orig.x,orig.y,orig.vx*.88,orig.vy))}}
+    burst(drop.x,drop.y,17);tone(960,.14);score(25);state.drops.splice(di,1);mark("bonus",drop.x,PY);yield "dropCatch";
+   }else if(drop.y>H)state.drops.splice(di,1)}
+  c.nDrops=state.drops.length;yield "drops";
+ }
+ var st=dt/SUB;
+ for(var step=0;step<SUB;step++){
+  c.sub=step;yield "sub";
+  for(var bi=state.balls.length-1;bi>=0;bi--){var b=state.balls[bi],px=b.x,py=b.y;
+   c.ball=b;c.bi=bi;c.nBalls=state.balls.length;c.px=px;c.py=py;
+   if(dbg.on)yield "ball";
+   b.x+=b.vx*st;b.y+=b.vy*st;
    b.trail.push({x:b.x,y:b.y});if(b.trail.length>12)b.trail.shift();
-   if(b.x<L+b.r){b.x=L+b.r;b.vx=Math.abs(b.vx);tone(300,.035)}else if(b.x>R-b.r){b.x=R-b.r;b.vx=-Math.abs(b.vx);tone(300,.035)}
-   if(b.y<TOP+b.r){b.y=TOP+b.r;b.vy=Math.abs(b.vy);tone(300,.035)}
-   if(b.vy>0&&py+b.r<=PY+11&&b.y+b.r>=PY-3&&Math.abs(b.x-state.paddle.x)<state.paddle.w/2+b.r){b.y=PY-b.r-4;var a=clamp((b.x-state.paddle.x)/(state.paddle.w/2),-.94,.94)*1.15;var sp=Math.min(610,Math.hypot(b.vx,b.vy)*1.012+1);b.vx=Math.sin(a)*sp;b.vy=-Math.cos(a)*sp;tone(510,.055);burst(b.x,PY,5)}
-   if(b.y>H+12){state.balls.splice(bi,1);continue}
+   yield "move";
+   if(CFG.gravity>0){b.vy+=CFG.gravity*st;yield "grav"}
+   if(b.x<L+b.r){b.x=L+b.r;b.vx=Math.abs(b.vx);tone(300,.035);c.side="kiri";mark("dinding",b.x,b.y);yield "wall"}
+   else if(b.x>R-b.r){b.x=R-b.r;b.vx=-Math.abs(b.vx);tone(300,.035);c.side="kanan";mark("dinding",b.x,b.y);yield "wall"}
+   if(b.y<TOP+b.r){b.y=TOP+b.r;b.vy=Math.abs(b.vy);tone(300,.035);mark("atap",b.x,b.y);yield "roof"}
+   if(b.vy>0&&py+b.r<=PY+11&&b.y+b.r>=PY-3&&Math.abs(b.x-state.paddle.x)<state.paddle.w/2+b.r){
+    b.y=PY-b.r-4;var rel=clamp((b.x-state.paddle.x)/(state.paddle.w/2),-.94,.94);var a=rel/.94*CFG.maxAngle*Math.PI/180;
+    var sp=Math.min(610,Math.hypot(b.vx,b.vy)*(1+CFG.accel/100)+1);b.vx=Math.sin(a)*sp;b.vy=-Math.cos(a)*sp;tone(510,.055);burst(b.x,PY,5);
+    c.rel=rel;c.angle=a*180/Math.PI;c.speed=sp;mark("paddle",b.x,PY);yield "paddle";
+   }
+   if(b.y>H+12){state.balls.splice(bi,1);c.fallen=bi;yield "fall";continue}
    for(var j=0;j<state.bricks.length;j++){var brick=state.bricks[j];if(!hitBrick(b,brick))continue;
-    var fromLeft=px+b.r<=brick.x,fromRight=px-b.r>=brick.x+brick.w;
-    if(fromLeft||fromRight)b.vx*=-1;else b.vy*=-1;
-    brick.hp--;if(brick.hp<=0)destroyBrick(j);else{burst(b.x,b.y,5);score(5);tone(430,.06)}
-    break;
+    c.brick=brick;mark("balok",b.x,b.y);yield "brickHit";
+    var fromLeft=px+b.r<=brick.x,fromRight=px-b.r>=brick.x+brick.w;c.fromSide=fromLeft?"kiri":fromRight?"kanan":(py<brick.y?"atas":"bawah");
+    if(!CFG.fireball){if(fromLeft||fromRight)b.vx*=-1;else b.vy*=-1}
+    yield "bounce";
+    brick.hp--;c.hpLeft=brick.hp;
+    if(brick.hp<=0){c.destroyed=true;var idx=j;burst(brick.x+brick.w/2,brick.y+brick.h/2,12);state.bricks.splice(idx,1);score(15*state.level);tone(390+Math.random()*260,.07);
+     if(Math.random()<CFG.dropPct/100)state.drops.push({x:brick.x+brick.w/2,y:brick.y+brick.h,kind:Math.random()<.55?"wide":"multi",vy:118});}
+    else{c.destroyed=false;burst(b.x,b.y,5);score(5);tone(430,.06)}
+    yield "hp";
+    if(!state.bricks.length){complete();yield "win";return}
+    if(!CFG.fireball)break;
    }
   }
   if(state.mode!=="playing")break;
  }
- if(state.mode==="playing"&&!state.balls.length)lose();
+ if(state.mode==="playing"&&!state.balls.length){lose();yield "lose";return}
+ yield "draw";
 }
-function roundRect(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
+
+/* ═════ RENDER ═════ */
+function roundRect(x,y,w,h,r){ctx.beginPath();ctx.roundRect?ctx.roundRect(x,y,w,h,r):ctx.rect(x,y,w,h)}
 function glowBox(x,y,w,h,c,blur){ctx.shadowColor=c;ctx.shadowBlur=blur;ctx.strokeStyle=c;ctx.lineWidth=1;ctx.strokeRect(x,y,w,h);ctx.shadowBlur=0}
 function draw(){var cyan=color(),g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,"#020b26");g.addColorStop(.6,"#02071b");g.addColorStop(1,"#03091d");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
- ctx.save();if(state.shake>0){ctx.translate((Math.random()-.5)*state.shake,(Math.random()-.5)*state.shake);state.shake*=.85;if(state.shake<.2)state.shake=0}
+ ctx.save();if(state.shake>0&&!(dbg.on&&dbg.halted)){ctx.translate((Math.random()-.5)*state.shake,(Math.random()-.5)*state.shake);state.shake*=.85;if(state.shake<.2)state.shake=0}
  stars.forEach(function(s){ctx.globalAlpha=s.a;ctx.fillStyle="#c9edff";ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,TAU);ctx.fill()});ctx.globalAlpha=1;
  glowBox(L,TOP,R-L,H-TOP-10,cyan,10);
  var rg=ctx.createRadialGradient(220,390,0,220,390,82);rg.addColorStop(0,"#037cfa30");rg.addColorStop(1,"#037cfa00");ctx.fillStyle=rg;ctx.beginPath();ctx.arc(220,390,82,0,TAU);ctx.fill();ctx.shadowColor=cyan;ctx.shadowBlur=20;ctx.fillStyle="#0878e6";ctx.beginPath();ctx.arc(220,390,11+Math.sin(performance.now()/600)*2,0,TAU);ctx.fill();ctx.shadowBlur=0;
@@ -122,13 +212,140 @@ function draw(){var cyan=color(),g=ctx.createLinearGradient(0,0,0,H);g.addColorS
  for(var p=0;p<state.drops.length;p++){var d=state.drops[p];ctx.save();ctx.translate(d.x,d.y);ctx.rotate(Math.PI/4);ctx.shadowColor="#d9f9ff";ctx.shadowBlur=13;ctx.fillStyle=d.kind==="wide"?"#a9ffdf":"#edb8ff";ctx.fillRect(-9,-9,18,18);ctx.restore();ctx.textAlign="center";ctx.font="bold 11px monospace";ctx.fillStyle="#041327";ctx.fillText(d.kind==="wide"?"W":"M",d.x,d.y+4)}
  for(var k=0;k<state.sparks.length;k++){var sp=state.sparks[k];ctx.globalAlpha=Math.max(0,sp.life/sp.max);ctx.fillStyle="#c8faff";ctx.fillRect(sp.x,sp.y,3,3)}ctx.globalAlpha=1;
  var pad=state.paddle;ctx.shadowColor=cyan;ctx.shadowBlur=20;var pg=ctx.createLinearGradient(0,PY-7,0,PY+9);pg.addColorStop(0,"#b9ffff");pg.addColorStop(.45,cyan);pg.addColorStop(1,"#005dd0");ctx.fillStyle=pg;roundRect(pad.x-pad.w/2,PY-6,pad.w,12,4);ctx.fill();ctx.shadowBlur=0;
- for(var z=0;z<state.balls.length;z++){var ball=state.balls[z];for(var q=0;q<ball.trail.length;q++){var tr=ball.trail[q];ctx.fillStyle="rgba(58,181,255,"+((q+1)/ball.trail.length*.36)+")";ctx.beginPath();ctx.arc(tr.x,tr.y,2+(q/ball.trail.length)*2,0,TAU);ctx.fill()}ctx.shadowBlur=20;ctx.shadowColor="#0aaaff";ctx.fillStyle="#b8fbff";ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,TAU);ctx.fill();ctx.shadowBlur=0}
+ for(var z=0;z<state.balls.length;z++){var ball=state.balls[z];for(var q=0;q<ball.trail.length;q++){var tr=ball.trail[q];ctx.fillStyle="rgba(58,181,255,"+((q+1)/ball.trail.length*.36)+")";ctx.beginPath();ctx.arc(tr.x,tr.y,2+(q/ball.trail.length)*2,0,TAU);ctx.fill()}ctx.shadowBlur=20;ctx.shadowColor=CFG.fireball?"#ff7a2a":"#0aaaff";ctx.fillStyle=CFG.fireball?"#ffd2a8":"#b8fbff";ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,TAU);ctx.fill();ctx.shadowBlur=0}
  ctx.restore()}
-function frame(ts){if(!state.last)state.last=ts;var dt=Math.min(.034,(ts-state.last)/1000);state.last=ts;if(state.mode==="playing")physics(dt);for(var i=state.sparks.length-1;i>=0;i--){var p=state.sparks[i];p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=190*dt;if(p.life<=0)state.sparks.splice(i,1)}draw();requestAnimationFrame(frame)}
+
+/* Sinar-X: memperlihatkan apa yang "dilihat" kode, bukan yang dilihat mata */
+function arrow(x1,y1,x2,y2,c){ctx.strokeStyle=c;ctx.fillStyle=c;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();var a=Math.atan2(y2-y1,x2-x1);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-9*Math.cos(a-.4),y2-9*Math.sin(a-.4));ctx.lineTo(x2-9*Math.cos(a+.4),y2-9*Math.sin(a+.4));ctx.fill()}
+function drawXray(){if(!$("xray").checked)return;ctx.save();ctx.font="10px monospace";ctx.textAlign="center";
+ // kotak tabrakan balok diperbesar jari-jari bola: bola cukup dianggap satu titik
+ ctx.setLineDash([3,3]);ctx.lineWidth=1;
+ state.bricks.forEach(function(b){ctx.strokeStyle="rgba(255,211,108,.35)";ctx.strokeRect(b.x-6,b.y-6,b.w+12,b.h+12);ctx.fillStyle="#ffd36c";if(b.max>1)ctx.fillText("hp"+b.hp,b.x+b.w/2,b.y+b.h/2+3)});
+ ctx.setLineDash([]);
+ // zona sudut paddle
+ var pad=state.paddle,n=5;for(var z=0;z<n;z++){var rel=((z+.5)/n*2-1),deg=Math.round(rel*CFG.maxAngle);var x0=pad.x-pad.w/2+z*pad.w/n;ctx.fillStyle=["#ff5d75","#ffb35c","#5fe3a1","#ffb35c","#ff5d75"][z];ctx.globalAlpha=.55;ctx.fillRect(x0,PY+9,pad.w/n-1,5);ctx.globalAlpha=1;if(z%2===0){ctx.fillStyle="#cfe4ff";ctx.fillText((deg>0?"+":"")+deg+"°",x0+pad.w/n/2,PY+26)}}
+ // bola: panah kecepatan + koordinat
+ state.balls.forEach(function(b,i){arrow(b.x,b.y,b.x+b.vx*.12,b.y+b.vy*.12,"#ffd36c");ctx.strokeStyle="#ff9ad5";ctx.beginPath();ctx.arc(b.x,b.y,b.r+3,0,TAU);ctx.stroke();ctx.fillStyle="#ffffff";ctx.textAlign="left";ctx.fillText("#"+(i+1)+" ("+Math.round(b.x)+","+Math.round(b.y)+")",b.x+12,b.y-8)});
+ // penanda tabrakan terakhir
+ var now=performance.now();dbg.marks.forEach(function(m){var age=(now-m.t)/1000;if(age>1.6&&!dbg.halted)return;var a=dbg.halted?1:1-age/1.6;ctx.globalAlpha=a;ctx.strokeStyle="#ff5d75";ctx.lineWidth=2;ctx.beginPath();ctx.arc(m.x,m.y,10+age*14,0,TAU);ctx.stroke();ctx.fillStyle="#ffb3c0";ctx.textAlign="center";ctx.fillText(m.kind,m.x,m.y-16-age*14)});ctx.globalAlpha=1;
+ // sumbu koordinat
+ ctx.fillStyle="#4c6f96";ctx.textAlign="left";ctx.fillText("x=0",L+2,H-14);ctx.textAlign="right";ctx.fillText("x="+W,R-2,H-14);ctx.fillText("y="+PY+" (paddle)",R-2,PY-12);
+ ctx.restore()}
+
+/* ═════ MODE DEBUG ═════ */
+var dbg={on:false,halted:false,pending:null,frameNo:0,speed:1,cur:null,trace:[],bps:new Set(),hits:{},rate:{},rateT:0,marks:[],ctx:{},missions:{line:false,bp:false,design:false},lastUi:0,prevMem:{}};
+var f1=function(v){return Math.round(v)},sgn=function(v){return(v>=0?"+":"−")+Math.abs(Math.round(v))};
+function LINES(){var a=[
+ ["input",0,'<kw>BACA INPUT</kw>: paddle.x ikut jari / mouse / panah',function(c){return"paddle.x = "+f1(state.paddle.x)+", lebar = "+state.paddle.w+" px"}],
+ ["gate",0,'<kw>JIKA</kw> mode ≠ MAIN → lewati update',function(){return'mode = "'+MODE_NAME[state.mode]+'" → bola tidak digerakkan'}],
+ ["drops",0,'<kw>UNTUK</kw> setiap kristal: y += 118 × Δt',function(c){return c.nDrops+" kristal sedang jatuh"}],
+ ["dropCatch",1,'<kw>JIKA</kw> kristal kena paddle → beri bonus',function(c){return c.drop?"kristal "+(c.drop.kind==="wide"?"W tertangkap → paddle melebar 12 detik":"M tertangkap → +2 bola"):""}],
+ ["sub",0,'<kw>ULANGI</kw> 3× (sub-langkah, Δt ÷ 3):',function(c){return"sub-langkah "+(c.sub+1)+"/3 · Δt kecil = "+(c.dt/SUB*1000).toFixed(1)+" ms agar bola tidak menembus balok"}],
+ ["ball",1,'<kw>UNTUK</kw> setiap bola:',function(c){return"bola #"+(c.bi+1)+" dari "+c.nBalls}],
+ ["move",2,'posisi += kecepatan × Δt',function(c){var b=c.ball;return b?"x: "+f1(c.px)+" → "+f1(b.x)+",  y: "+f1(c.py)+" → "+f1(b.y)+"  (v = "+sgn(b.vx)+", "+sgn(b.vy)+" px/dtk)":""}],
+ ["grav",2,'vy += gravitasi × Δt   <em>(g = '+CFG.gravity+')</em>',function(c){return c.ball?"vy sekarang "+sgn(c.ball.vy)+" px/dtk — bola makin cepat jatuh":""},true],
+ ["wall",2,'<kw>JIKA</kw> kena dinding kiri/kanan → vx = −vx',function(c){return c.ball?"kena dinding "+c.side+" → vx menjadi "+sgn(c.ball.vx):""}],
+ ["roof",2,'<kw>JIKA</kw> kena atap → vy = −vy',function(c){return c.ball?"kena atap → vy menjadi "+sgn(c.ball.vy)+" (sekarang turun)":""}],
+ ["paddle",2,'<kw>JIKA</kw> kena paddle → sudut = posisi kena × <em>'+CFG.maxAngle+'°</em>',function(c){return c.rel==null?"":"kena "+Math.abs(Math.round(c.rel*100))+"% "+(c.rel<0?"kiri":"kanan")+" dari tengah → sudut "+sgn(c.angle)+"°, kecepatan "+f1(c.speed)+" px/dtk"}],
+ ["fall",2,'<kw>JIKA</kw> bola lewat bawah layar → hapus bola',function(c){return"bola #"+(c.fallen+1)+" lolos (y > "+H+") → dihapus dari daftar bola"}],
+ ["brickHit",2,'<kw>UNTUK</kw> setiap balok: <kw>JIKA</kw> bola menyentuh →',function(c){return c.brick?"menyentuh balok baris "+c.brick.row+" kolom "+c.brick.col+" (hp "+c.brick.hp+")":""}],
+ ["bounce",3,CFG.fireball?'bola api → <em>tidak memantul</em>, tembus terus':'dari samping? vx = −vx : vy = −vy',function(c){return CFG.fireball?"bola api: arah tetap, terus menembus":"datang dari "+c.fromSide+" → "+(c.fromSide==="kiri"||c.fromSide==="kanan"?"balik vx":"balik vy")},CFG.fireball],
+ ["hp",3,'hp −1; <kw>JIKA</kw> hp = 0 → hapus balok, skor + 15 × level',function(c){return c.destroyed?"hp 0 → balok dihapus, skor +"+(15*state.level)+" (total "+state.score+"), sisa "+state.bricks.length+" balok":"hp tinggal "+c.hpLeft+" → balok retak, skor +5"}],
+ ["lose",0,'<kw>JIKA</kw> tidak ada bola tersisa → nyawa −1',function(){return"bola habis → nyawa tinggal "+state.lives+(state.lives<=0?" → GAME OVER":"")}],
+ ["win",0,'<kw>JIKA</kw> balok habis → LEVEL SELESAI',function(){return"semua balok pecah → level "+state.level+" selesai!"}],
+ ["draw",0,'<kw>GAMBAR</kw>: latar → balok → kristal → paddle → bola',function(){return"frame #"+dbg.frameNo+" selesai · "+state.bricks.length+" balok, "+state.balls.length+" bola digambar"}]
+];return a.filter(function(l){return l[0]!=="grav"||CFG.gravity>0})}
+var MODE_NAME={ready:"SIAP",playing:"MAIN",paused:"JEDA",readyball:"BOLA HILANG",leveldone:"LEVEL SELESAI",over:"GAME OVER"};
+var lineDefs=[],lineEls={};
+function buildCode(){lineDefs=LINES();var ol=$("code");ol.innerHTML="";lineEls={};
+ lineDefs.forEach(function(l,i){var li=document.createElement("li");li.dataset.id=l[0];if(l[4])li.classList.add("new");if(dbg.bps.has(l[0]))li.classList.add("has-bp");
+  li.innerHTML='<button class="bp" aria-label="Breakpoint baris '+(i+1)+'"></button><span class="ln">'+(i+1)+'</span><span class="tx" style="padding-left:'+(l[1]*14)+'px">'+l[2]+'</span><span class="hit"></span>';
+  li.querySelector(".bp").onclick=function(){if(dbg.bps.has(l[0]))dbg.bps.delete(l[0]);else dbg.bps.add(l[0]);li.classList.toggle("has-bp",dbg.bps.has(l[0]));status()};
+  ol.appendChild(li);lineEls[l[0]]=li})}
+function lineNo(id){for(var i=0;i<lineDefs.length;i++)if(lineDefs[i][0]===id)return i+1;return"?"}
+function explain(id){for(var i=0;i<lineDefs.length;i++)if(lineDefs[i][0]===id){try{return lineDefs[i][3](dbg.ctx)}catch(_){return""}}return""}
+
+/* Menjalankan generator: berhenti di breakpoint (bila Debug aktif) */
+function advance(dt,stopAtFirst){
+ if(!dbg.pending){dbg.pending=update(dt);dbg.trace=[];dbg.ctx={}}
+ for(;;){var r=dbg.pending.next();
+  if(r.done){dbg.pending=null;dbg.frameNo++;return"done"}
+  var id=r.value;dbg.cur=id;dbg.trace.push(id);dbg.hits[id]=(dbg.hits[id]||0)+1;
+  if(stopAtFirst)return"line";
+  if(dbg.on&&dbg.bps.has(id)){dbg.halted=true;if(id==="hp"&&dbg.ctx.destroyed)dbg.missions.bp=true;return"bp"}}
+}
+function halt(){dbg.halted=true;ui(true)}
+function stepLine(){dbg.halted=true;var res=advance(FIXED_DT,true);if(res==="done")advance(FIXED_DT,true);   // frame selesai → langsung ke baris pertama frame berikutnya
+ if(dbg.cur==="bounce")dbg.missions.line=true;ui(true)}
+function stepFrame(){dbg.halted=true;var keep=dbg.pending?dbg.trace.slice():[];
+ var res;do{res=advance(FIXED_DT,true)}while(res!=="done");dbg.trace=keep.concat(dbg.trace);dbg.cur="draw";ui(true)}
+function run(){dbg.halted=false;if(state.mode==="paused"){state.mode="playing";hideModal();hud()}ui(true)}
+function toast(t){dbg.note={t:t,until:performance.now()+3500};ui(true)}
+function status(){var s=$("dStatus"),bp=dbg.bps.size;
+ if(dbg.note&&performance.now()<dbg.note.until){s.innerHTML="<b>ℹ</b> "+dbg.note.t;return}
+ if(dbg.halted&&dbg.cur){s.innerHTML="<b>⏸ Berhenti di baris "+lineNo(dbg.cur)+"</b> · frame #"+dbg.frameNo+(bp?" · "+bp+" breakpoint":"")+'<span class="why">'+explain(dbg.cur)+"</span>"}
+ else s.innerHTML="<b>▶ Berjalan</b> "+(dbg.speed<1?"(lambat "+dbg.speed+"×)":"")+" · frame #"+dbg.frameNo+(bp?" · "+bp+" breakpoint aktif":" · ketuk ● di kiri baris untuk memasang breakpoint")+'<span class="why">Angka di kanan = berapa kali baris itu dijalankan per detik.</span>'}
+function renderFsm(){var order=["ready","playing","paused","readyball","leveldone","over"],html="";
+ order.forEach(function(m,i){html+='<span class="'+(state.mode===m?"on":"")+'">'+MODE_NAME[m]+"</span>"+(i===0?"<i>→</i>":i===1?"<i>⇄</i>":"")});$("fsm").innerHTML='<span style="border:0;padding-left:0">Keadaan:</span>'+html}
+function renderLines(){var ran=new Set(dbg.trace);
+ lineDefs.forEach(function(l){var el=lineEls[l[0]];if(!el)return;el.classList.toggle("cur",dbg.halted&&dbg.cur===l[0]);el.classList.toggle("ran",ran.has(l[0])&&!(dbg.halted&&dbg.cur===l[0]));
+  var r=dbg.rate[l[0]];el.querySelector(".hit").textContent=dbg.halted?"":(r?"×"+r+"/dtk":"")})}
+function renderMem(){var b=state.balls[0],rows=[
+  ["grp","Game"],["mode",'"'+state.mode+'"  ('+MODE_NAME[state.mode]+")"],["level",state.level],["skor",state.score],["nyawa",state.lives],["frame #",dbg.frameNo],["Δt",(dbg.ctx.dt?dbg.ctx.dt*1000:0).toFixed(1)+" ms"],
+  ["grp","Paddle"],["paddle.x",f1(state.paddle.x)],["paddle.w",state.paddle.w+(state.t<state.wideUntil?" (bonus "+Math.ceil(state.wideUntil-state.t)+" dtk)":"")],
+  ["grp","Bola ("+state.balls.length+")"]];
+ state.balls.slice(0,3).forEach(function(b,i){rows.push(["bola"+(i+1)+".x, y",f1(b.x)+", "+f1(b.y)]);rows.push(["bola"+(i+1)+".vx, vy",sgn(b.vx)+", "+sgn(b.vy)]);rows.push(["bola"+(i+1)+" laju",f1(Math.hypot(b.vx,b.vy))+" px/dtk"])});
+ rows.push(["grp","Dunia"],["balok tersisa",state.bricks.length],["balok hp 2",state.bricks.filter(function(x){return x.hp>1}).length],["kristal jatuh",state.drops.length],["percikan",state.sparks.length]);
+ var html="";rows.forEach(function(r){if(r[0]==="grp"){html+='<tr class="grp"><td colspan="2">'+r[1]+"</td></tr>";return}var v=String(r[1]),chg=dbg.prevMem[r[0]]!==undefined&&dbg.prevMem[r[0]]!==v;dbg.prevMem[r[0]]=v;html+="<tr"+(chg?' class="chg"':"")+"><td>"+r[0]+"</td><td>"+v+"</td></tr>"});$("mem").innerHTML=html}
+function renderMissions(){var m=dbg.missions,list=[["line","Tekan ⤵ Baris berulang kali sampai bola memantul dari balok (baris \"dari samping?\")."],["bp","Pasang breakpoint ● di baris \"hp −1 …\", tekan ▶ Jalan, tunggu sampai game berhenti tepat saat balok hancur."],["design","Ubah satu aturan di tab Rancang versimu, terapkan, lalu lihat baris kodenya berubah."]];
+ $("missions").innerHTML='<b style="font-size:12px;letter-spacing:.08em;color:var(--muted)">MISI DEBUG · '+list.filter(function(x){return m[x[0]]}).length+'/3</b>'+list.map(function(x){return'<div class="'+(m[x[0]]?"ok":"")+'">'+x[1]+"</div>"}).join("")}
+function ui(force){if(!dbg.on)return;var now=performance.now();if(!force&&now-dbg.lastUi<120)return;dbg.lastUi=now;
+ status();renderFsm();renderLines();if(!$("pane-mem").hidden)renderMem();renderMissions();
+ $("dRun").classList.toggle("on",!dbg.halted);$("dPause").classList.toggle("on",dbg.halted)}
+
+/* ═════ Rancang versimu ═════ */
+var DESIGN=[["speed0","Kecepatan awal bola",180,520,10,"px/dtk"],["paddleW","Lebar paddle",50,150,5,"px"],["rows","Baris balok (level 1 = +1)",2,8,1,"baris"],["dropPct","Peluang kristal bonus",0,50,.5,"%"],["maxAngle","Sudut pantul maksimum",20,75,1,"°"],["accel","Percepatan tiap kena paddle",0,5,.1,"%"],["lives","Nyawa awal",1,9,1,""],["gravity","Gravitasi (0 = mati)",0,400,10,"px/dtk²"]];
+var draft=Object.assign({},CFG);
+function buildDesign(){var h='<p style="color:var(--muted);font-size:12.5px;margin:2px 0 6px">Ubah angka & aturan, lalu tekan <b>Terapkan</b>. Baris pseudo-kode yang berubah ditandai hijau.</p><h4>ANGKA</h4>';
+ DESIGN.forEach(function(d){h+='<label>'+d[1]+' <b id="v-'+d[0]+'"></b><input type="range" id="r-'+d[0]+'" min="'+d[2]+'" max="'+d[3]+'" step="'+d[4]+'"></label>'});
+ h+='<h4>ATURAN</h4><label class="tog">🔥 Bola api — menembus balok tanpa memantul<input type="checkbox" id="r-fireball"></label>';
+ h+='<div class="row"><button class="btn" id="dApply">✓ Terapkan & mulai</button><button class="btn" id="dReset">↺ Aturan asli</button></div><div class="row"><button class="btn" id="dCopy" style="grid-column:1/-1">📋 Salin lembar rancangan</button></div>';
+ $("pane-design").innerHTML=h;
+ DESIGN.forEach(function(d){var el=$("r-"+d[0]);el.value=draft[d[0]];var show=function(){$("v-"+d[0]).textContent=(+el.value).toLocaleString("id-ID")+" "+d[5]};show();el.oninput=function(){draft[d[0]]=+el.value;show()}});
+ $("r-fireball").checked=!!draft.fireball;$("r-fireball").onchange=function(e){draft.fireball=e.target.checked};
+ $("dApply").onclick=function(){CFG=Object.assign({},draft);try{localStorage.setItem("pilar_frost_cfg",JSON.stringify(CFG))}catch(_){}
+  if(JSON.stringify(CFG)!==JSON.stringify(DEFAULT_CFG))dbg.missions.design=true;buildCode();reset();dbg.halted=false;ui(true);switchPane("flow");
+  try{window.PILAR_PULSE?.track?.("frost_design_apply",{changed:Object.keys(CFG).filter(function(k){return CFG[k]!==DEFAULT_CFG[k]}).join(",").slice(0,60)})}catch(_){}};
+ $("dReset").onclick=function(){draft=Object.assign({},DEFAULT_CFG);buildDesign()};
+ $("dCopy").onclick=function(){var t="LEMBAR RANCANGAN · FROST BREAKOUT versiku\n\nANGKA\n"+DESIGN.map(function(d){var ch=draft[d[0]]!==DEFAULT_CFG[d[0]];return"- "+d[1]+": "+draft[d[0]]+" "+d[5]+(ch?"  (asli "+DEFAULT_CFG[d[0]]+")":"")}).join("\n")+"\n\nATURAN\n- Bola api: "+(draft.fireball?"YA":"tidak")+
+  "\n\nPSEUDO-KODE SETIAP FRAME\n"+LINES().map(function(l,i){return(i+1+".").padEnd(4)+"  ".repeat(l[1])+l[2].replace(/<[^>]+>/g,"")}).join("\n")+
+  "\n\nPERTANYAAN DESAIN\n1. Apa yang berubah saat dimainkan?\n2. Lebih seru atau lebih sulit? Mengapa?\n3. Baris kode mana yang paling berpengaruh?";
+  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){toast("Lembar rancangan disalin — tempel di dokumen tugasmu.")},function(){toast("Browser menolak salin otomatis.")})}}
+function switchPane(id){document.querySelectorAll(".tabs button").forEach(function(b){b.classList.toggle("on",b.dataset.pane===id)});["flow","mem","design"].forEach(function(p){$("pane-"+p).hidden=p!==id});if(id==="design"){draft=Object.assign({},CFG);buildDesign()}ui(true)}
+document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){switchPane(b.dataset.pane)}});
+
+function setDebug(on){dbg.on=on;document.body.classList.toggle("debug",on);$("debugBtn").setAttribute("aria-pressed",String(on));
+ if(on){buildCode();dbg.halted=false;ui(true);try{window.PILAR_PULSE?.track?.("frost_debug_on",{})}catch(_){}}
+ else{dbg.halted=false}}
+$("debugBtn").onclick=function(){setDebug(!dbg.on)};
+$("dRun").onclick=run;$("dPause").onclick=halt;$("dLine").onclick=stepLine;$("dFrame").onclick=stepFrame;
+$("dSpeed").onchange=function(e){dbg.speed=+e.target.value;ui(true)};
+
+/* ═════ LOOP ═════ */
+function frame(ts){if(!state.last)state.last=ts;var raw=(ts-state.last)/1000,dt=Math.min(.034,raw);state.last=ts;
+ var slow=dbg.on?dbg.speed:1;
+ if(dbg.on?!dbg.halted:state.mode==="playing")advance(dt*slow,false);   // saat Debug aktif, baris "JIKA mode ≠ MAIN" juga terlihat berjalan
+ if(!(dbg.on&&dbg.halted))for(var i=state.sparks.length-1;i>=0;i--){var p=state.sparks[i];p.life-=dt*slow;p.x+=p.vx*dt*slow;p.y+=p.vy*dt*slow;p.vy+=190*dt*slow;if(p.life<=0)state.sparks.splice(i,1)}
+ draw();if(dbg.on)drawXray();
+ if(ts-dbg.rateT>1000){dbg.rate=dbg.hits;dbg.hits={};dbg.rateT=ts}
+ ui(false);requestAnimationFrame(frame)}
 function movePaddle(e){var rect=canvas.getBoundingClientRect();var x=(e.clientX-rect.left)/rect.width*W;if(Number.isFinite(x))state.paddle.x=clamp(x,L+state.paddle.w/2,R-state.paddle.w/2)}
 canvas.addEventListener("pointerdown",function(e){e.preventDefault();movePaddle(e);try{canvas.setPointerCapture(e.pointerId)}catch(_){}});
 canvas.addEventListener("pointermove",function(e){if(e.pointerType==="mouse"||e.buttons||e.pressure>0)movePaddle(e)});
-window.addEventListener("keydown",function(e){if(["ArrowLeft","ArrowRight","Space","KeyA","KeyD"].includes(e.code)){e.preventDefault();if(e.code==="Space"&&!e.repeat)togglePause();if(e.code==="ArrowLeft"||e.code==="KeyA")state.keys.left=true;if(e.code==="ArrowRight"||e.code==="KeyD")state.keys.right=true}});
+window.addEventListener("keydown",function(e){if(e.target.matches&&e.target.matches("input,select,textarea"))return;
+ if(["ArrowLeft","ArrowRight","Space","KeyA","KeyD"].includes(e.code)){e.preventDefault();if(e.code==="Space"&&!e.repeat){if(dbg.on)(dbg.halted?run:halt)();else togglePause()}if(e.code==="ArrowLeft"||e.code==="KeyA")state.keys.left=true;if(e.code==="ArrowRight"||e.code==="KeyD")state.keys.right=true}
+ if(e.code==="KeyG"&&!e.repeat)setDebug(!dbg.on);
+ if(dbg.on&&e.code==="KeyN")stepLine();if(dbg.on&&e.code==="KeyF")stepFrame()});
 window.addEventListener("keyup",function(e){if(e.code==="ArrowLeft"||e.code==="KeyA")state.keys.left=false;if(e.code==="ArrowRight"||e.code==="KeyD")state.keys.right=false});
 function togglePause(){if(state.mode==="playing"){state.mode="paused";showModal("JEDA","Permainan sedang dijeda. Ambil ancang-ancang lagi!","▶ LANJUT MAIN")}else if(state.mode==="paused"){state.mode="playing";hideModal()}hud()}
 $("modalAction").onclick=function(){if(state.mode==="ready"||state.mode==="over")reset();else if(state.mode==="readyball"||state.mode==="paused"){state.mode="playing";hideModal();hud()}else if(state.mode==="leveldone")next()};
@@ -136,8 +353,10 @@ $("pauseBtn").onclick=togglePause;
 $("restartBtn").onclick=function(){reset()};
 $("soundBtn").onclick=function(){state.sound=!state.sound;hud();if(state.sound)tone(740,.09)};
 $("themeBtn").onclick=function(){state.theme=state.theme==="ice"?"aurora":"ice";document.body.dataset.theme=state.theme;try{localStorage.setItem("pilar_frost_theme",state.theme)}catch(_){}hud()};
-window.addEventListener("blur",function(){if(state.mode==="playing")togglePause()});
+window.addEventListener("blur",function(){if(state.mode==="playing"&&!dbg.on)togglePause()});
 try{window.PILAR_PULSE?.setApp?.("frost-breakout")}catch(_){}
+window.PILAR_FROST={state:state,get cfg(){return CFG},debug:dbg};   // bisa diintip lewat Console browser: PILAR_FROST.state.balls
+if(/[?&]debug=1/.test(location.search))setDebug(true);
 buildLevel();hud();requestAnimationFrame(frame);
 })();
 </script>
