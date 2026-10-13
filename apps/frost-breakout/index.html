@@ -75,6 +75,8 @@ body.debug main{grid-template-columns:minmax(0,.7fr) auto minmax(360px,1.3fr)}
 @media(max-height:670px){.stage{height:min(74dvh,670px)}.top{padding-top:5px;padding-bottom:5px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}
 </style>
+<link rel="stylesheet" href="../../css/pilar-perf.css">
+<script src="../../core/device-profile.js"></script>
 </head>
 <body data-theme="ice">
 <header class="top">
@@ -114,6 +116,11 @@ body.debug main{grid-template-columns:minmax(0,.7fr) auto minmax(360px,1.3fr)}
    ═══════════════════════════════════════════════════════════════════ */
 var W=440,H=720,L=26,R=414,TOP=68,PY=678,TAU=Math.PI*2,SUB=3,FIXED_DT=1/60;
 var canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
+/* IFP: kanvas 440×720 dulu di-upscale ±3× ke layar 4K → buram. Sekarang resolusi kanvas mengikuti ukuran tampil
+   (dibatasi), dan efek glow dikurangi di mode ringan karena shadowBlur kanvas 2D sangat mahal di Mali-G52. */
+var LITE=document.documentElement.dataset.fx==="lite",SB=LITE?.55:1,CK=1;
+function fitCanvas(){var r=canvas.getBoundingClientRect();if(!r.width)return;var k=Math.min((window.devicePixelRatio||1)*r.width/440,LITE?2:3);k=Math.max(1,Math.round(k*4)/4);if(k===CK&&canvas.width===Math.round(440*k))return;CK=k;canvas.width=Math.round(440*k);canvas.height=Math.round(720*k);ctx.setTransform(k,0,0,k,0,0)}
+window.addEventListener("resize",fitCanvas);document.addEventListener("fullscreenchange",function(){setTimeout(fitCanvas,100)});if(window.ResizeObserver)new ResizeObserver(fitCanvas).observe(canvas);
 var $=function(id){return document.getElementById(id)};
 var DEFAULT_CFG={speed0:310,speedUp:27,paddleW:80,rows:5,dropPct:9.5,maxAngle:62,accel:1.2,lives:3,fireball:false,gravity:0};
 var CFG=Object.assign({},DEFAULT_CFG);
@@ -201,18 +208,18 @@ function* update(dt){
 
 /* ═════ RENDER ═════ */
 function roundRect(x,y,w,h,r){ctx.beginPath();ctx.roundRect?ctx.roundRect(x,y,w,h,r):ctx.rect(x,y,w,h)}
-function glowBox(x,y,w,h,c,blur){ctx.shadowColor=c;ctx.shadowBlur=blur;ctx.strokeStyle=c;ctx.lineWidth=1;ctx.strokeRect(x,y,w,h);ctx.shadowBlur=0}
+function glowBox(x,y,w,h,c,blur){ctx.shadowColor=c;ctx.shadowBlur=blur;ctx.strokeStyle=c;ctx.lineWidth=1;ctx.strokeRect(x,y,w,h);ctx.shadowBlur=0*SB*CK}
 function draw(){var cyan=color(),g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,"#020b26");g.addColorStop(.6,"#02071b");g.addColorStop(1,"#03091d");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
  ctx.save();if(state.shake>0&&!(dbg.on&&dbg.halted)){ctx.translate((Math.random()-.5)*state.shake,(Math.random()-.5)*state.shake);state.shake*=.85;if(state.shake<.2)state.shake=0}
  stars.forEach(function(s){ctx.globalAlpha=s.a;ctx.fillStyle="#c9edff";ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,TAU);ctx.fill()});ctx.globalAlpha=1;
  glowBox(L,TOP,R-L,H-TOP-10,cyan,10);
- var rg=ctx.createRadialGradient(220,390,0,220,390,82);rg.addColorStop(0,"#037cfa30");rg.addColorStop(1,"#037cfa00");ctx.fillStyle=rg;ctx.beginPath();ctx.arc(220,390,82,0,TAU);ctx.fill();ctx.shadowColor=cyan;ctx.shadowBlur=20;ctx.fillStyle="#0878e6";ctx.beginPath();ctx.arc(220,390,11+Math.sin(performance.now()/600)*2,0,TAU);ctx.fill();ctx.shadowBlur=0;
+ var rg=ctx.createRadialGradient(220,390,0,220,390,82);rg.addColorStop(0,"#037cfa30");rg.addColorStop(1,"#037cfa00");ctx.fillStyle=rg;ctx.beginPath();ctx.arc(220,390,82,0,TAU);ctx.fill();ctx.shadowColor=cyan;ctx.shadowBlur=20*SB*CK;ctx.fillStyle="#0878e6";ctx.beginPath();ctx.arc(220,390,11+Math.sin(performance.now()/600)*2,0,TAU);ctx.fill();ctx.shadowBlur=0*SB*CK;
  ctx.fillStyle="#d9f9ff";ctx.font="bold 17px monospace";ctx.textAlign="left";ctx.fillText(String(state.score).padStart(6,"0"),36,89);ctx.textAlign="right";ctx.font="bold 12px monospace";ctx.fillText("LVL "+state.level+"  ♥ "+state.lives,405,88);
- for(var i=0;i<state.bricks.length;i++){var b=state.bricks[i],bg=ctx.createLinearGradient(b.x,b.y,b.x,b.y+b.h);if(b.hp>1){bg.addColorStop(0,"#c3fbff");bg.addColorStop(1,"#248dcd")}else{bg.addColorStop(0,state.theme==="ice"?"#28daff":"#72ffcf");bg.addColorStop(1,state.theme==="ice"?"#004fdf":"#008e94")}ctx.shadowColor=cyan;ctx.shadowBlur=6;ctx.fillStyle=bg;ctx.fillRect(b.x,b.y,b.w,b.h);ctx.shadowBlur=0;ctx.fillStyle="#e2faff48";ctx.fillRect(b.x+2,b.y+2,b.w-4,3)}
- for(var p=0;p<state.drops.length;p++){var d=state.drops[p];ctx.save();ctx.translate(d.x,d.y);ctx.rotate(Math.PI/4);ctx.shadowColor="#d9f9ff";ctx.shadowBlur=13;ctx.fillStyle=d.kind==="wide"?"#a9ffdf":"#edb8ff";ctx.fillRect(-9,-9,18,18);ctx.restore();ctx.textAlign="center";ctx.font="bold 11px monospace";ctx.fillStyle="#041327";ctx.fillText(d.kind==="wide"?"W":"M",d.x,d.y+4)}
+ for(var i=0;i<state.bricks.length;i++){var b=state.bricks[i],bg=ctx.createLinearGradient(b.x,b.y,b.x,b.y+b.h);if(b.hp>1){bg.addColorStop(0,"#c3fbff");bg.addColorStop(1,"#248dcd")}else{bg.addColorStop(0,state.theme==="ice"?"#28daff":"#72ffcf");bg.addColorStop(1,state.theme==="ice"?"#004fdf":"#008e94")}ctx.shadowColor=cyan;ctx.shadowBlur=6*SB*CK;ctx.fillStyle=bg;ctx.fillRect(b.x,b.y,b.w,b.h);ctx.shadowBlur=0*SB*CK;ctx.fillStyle="#e2faff48";ctx.fillRect(b.x+2,b.y+2,b.w-4,3)}
+ for(var p=0;p<state.drops.length;p++){var d=state.drops[p];ctx.save();ctx.translate(d.x,d.y);ctx.rotate(Math.PI/4);ctx.shadowColor="#d9f9ff";ctx.shadowBlur=13*SB*CK;ctx.fillStyle=d.kind==="wide"?"#a9ffdf":"#edb8ff";ctx.fillRect(-9,-9,18,18);ctx.restore();ctx.textAlign="center";ctx.font="bold 11px monospace";ctx.fillStyle="#041327";ctx.fillText(d.kind==="wide"?"W":"M",d.x,d.y+4)}
  for(var k=0;k<state.sparks.length;k++){var sp=state.sparks[k];ctx.globalAlpha=Math.max(0,sp.life/sp.max);ctx.fillStyle="#c8faff";ctx.fillRect(sp.x,sp.y,3,3)}ctx.globalAlpha=1;
- var pad=state.paddle;ctx.shadowColor=cyan;ctx.shadowBlur=20;var pg=ctx.createLinearGradient(0,PY-7,0,PY+9);pg.addColorStop(0,"#b9ffff");pg.addColorStop(.45,cyan);pg.addColorStop(1,"#005dd0");ctx.fillStyle=pg;roundRect(pad.x-pad.w/2,PY-6,pad.w,12,4);ctx.fill();ctx.shadowBlur=0;
- for(var z=0;z<state.balls.length;z++){var ball=state.balls[z];for(var q=0;q<ball.trail.length;q++){var tr=ball.trail[q];ctx.fillStyle="rgba(58,181,255,"+((q+1)/ball.trail.length*.36)+")";ctx.beginPath();ctx.arc(tr.x,tr.y,2+(q/ball.trail.length)*2,0,TAU);ctx.fill()}ctx.shadowBlur=20;ctx.shadowColor=CFG.fireball?"#ff7a2a":"#0aaaff";ctx.fillStyle=CFG.fireball?"#ffd2a8":"#b8fbff";ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,TAU);ctx.fill();ctx.shadowBlur=0}
+ var pad=state.paddle;ctx.shadowColor=cyan;ctx.shadowBlur=20*SB*CK;var pg=ctx.createLinearGradient(0,PY-7,0,PY+9);pg.addColorStop(0,"#b9ffff");pg.addColorStop(.45,cyan);pg.addColorStop(1,"#005dd0");ctx.fillStyle=pg;roundRect(pad.x-pad.w/2,PY-6,pad.w,12,4);ctx.fill();ctx.shadowBlur=0*SB*CK;
+ for(var z=0;z<state.balls.length;z++){var ball=state.balls[z];for(var q=0;q<ball.trail.length;q++){var tr=ball.trail[q];ctx.fillStyle="rgba(58,181,255,"+((q+1)/ball.trail.length*.36)+")";ctx.beginPath();ctx.arc(tr.x,tr.y,2+(q/ball.trail.length)*2,0,TAU);ctx.fill()}ctx.shadowBlur=20*SB*CK;ctx.shadowColor=CFG.fireball?"#ff7a2a":"#0aaaff";ctx.fillStyle=CFG.fireball?"#ffd2a8":"#b8fbff";ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,TAU);ctx.fill();ctx.shadowBlur=0*SB*CK}
  ctx.restore()}
 
 /* Sinar-X: memperlihatkan apa yang "dilihat" kode, bukan yang dilihat mata */
@@ -357,7 +364,7 @@ window.addEventListener("blur",function(){if(state.mode==="playing"&&!dbg.on)tog
 try{window.PILAR_PULSE?.setApp?.("frost-breakout")}catch(_){}
 window.PILAR_FROST={state:state,get cfg(){return CFG},debug:dbg};   // bisa diintip lewat Console browser: PILAR_FROST.state.balls
 if(/[?&]debug=1/.test(location.search))setDebug(true);
-buildLevel();hud();requestAnimationFrame(frame);
+fitCanvas();buildLevel();hud();requestAnimationFrame(frame);
 })();
 </script>
 </body>

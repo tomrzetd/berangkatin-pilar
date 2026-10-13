@@ -531,3 +531,11 @@
 body.pilar-app-host-open{overflow:hidden}
 .boot-foot span:last-child{padding-right:58px}
 @media(max-width:760px){.boot-foot span:last-child{padding-right:0}}
+/* v0.7 · IFP smooth: shell Lorentz lama tidak dipakai Hub → jangan di-layout/paint */
+#appShell[aria-hidden="true"]{display:none!important}
+/* saat app dibuka di host layar penuh, Hub di belakangnya berhenti menggambar & beranimasi */
+body.pilar-app-host-open .pilar-boot{visibility:hidden}
+body.pilar-app-host-open .pilar-boot *{animation-play-state:paused!important}
+.boot-tools{display:flex;gap:6px;align-items:center}
+.boot-fx-btn{min-height:38px;padding:0 10px;border:1px solid #294861;border-radius:12px;background:#081725;color:#dceafb;font:800 12px/1 Inter,system-ui;cursor:pointer;white-space:nowrap}
+.boot-fx-btn:hover{border-color:#5ee9ff;color:#5ee9ff}

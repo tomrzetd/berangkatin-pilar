@@ -1,0 +1,22 @@
+/* PILAR · Performance Kit untuk IFP/MPI (Mali-G52, 4K)
+   Aktif bila <html data-fx="lite"> (otomatis di IFP; bisa diubah dari Hub).
+   Alasan teknis:
+   - backdrop-filter: blur harus menghitung ulang blur SETIAP frame bila ada animasi/3D di belakangnya.
+     Di 4K itu jutaan piksel per frame → patah-patah & kedip saat masuk layar penuh.
+   - animasi dekoratif tanpa henti membuat layer besar terus di-raster ulang; saat ukuran layar berubah
+     (fullscreen) tile GPU belum siap → tampak kedip/hitam sesaat. */
+html[data-fx="lite"] *,html[data-fx="lite"] *::before,html[data-fx="lite"] *::after{
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+/* elemen yang tadinya transparan-blur diberi latar padat agar tetap terbaca */
+html[data-fx="lite"] .topbar,html[data-fx="lite"] .backdrop,html[data-fx="lite"] .vision-gate,
+html[data-fx="lite"] .modal,html[data-fx="lite"] .nl,html[data-fx="lite"] .tour-shade{background-color:rgba(4,10,18,.94)!important}
+/* animasi dekoratif Hub/Lorentz */
+html[data-fx="lite"] .boot-scan,html[data-fx="lite"] .boot-grid{display:none!important}
+html[data-fx="lite"] .boot-mark i,html[data-fx="lite"] .boot-card,html[data-fx="lite"] .boot-mode,
+html[data-fx="lite"] .cta-pulse,html[data-fx="lite"] [class*="pulse"]{animation:none!important}
+/* bayangan raksasa: di-raster ulang tiap kali ukuran berubah */
+html[data-fx="lite"] .boot-card,html[data-fx="lite"] .modal,html[data-fx="lite"] .teamCard,html[data-fx="lite"] .login-card{box-shadow:0 8px 24px rgba(0,0,0,.45)!important}
+/* sentuhan: tanpa jeda ketuk-ganda & tanpa sorotan abu-abu */
+html[data-fx="lite"] button,html[data-fx="lite"] a,html[data-fx="lite"] canvas{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+/* isolasi area 3D supaya perubahan teks di panel tidak me-raster ulang kanvas */
+html[data-fx="lite"] .stage{contain:layout paint}

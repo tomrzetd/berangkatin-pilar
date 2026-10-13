@@ -43,10 +43,14 @@ button:disabled{opacity:.45;cursor:not-allowed}.hidden,[hidden]{display:none!imp
 /* ===== UI profiles ===== */
 body[data-ui="ifp"]{--btn:54px;--cell:clamp(56px,3.45vw,84px)}body[data-ui="ifp"] .topbar{padding:12px 18px}body[data-ui="ifp"] .brandtext strong{font-size:21px}body[data-ui="ifp"] .teamTitle h2{font-size:20px}body[data-ui="ifp"] .stat b{font-size:17px}body[data-ui="ifp"] .msg{font-size:13px;min-height:50px}body[data-ui="ifp"] .actionBtn{font-size:14px}
 body[data-ui="desktop"]{--cell:clamp(38px,3.15vw,66px)}
+body[data-ui="ifp"] .controlStrip{margin-top:6px}body[data-ui="ifp"] .main{padding-top:6px;padding-bottom:6px}body[data-ui="ifp"] .stats{padding:6px 10px}body[data-ui="ifp"] .teamTop{padding:8px 14px}
+.cell{font-size:calc(var(--cell)*.32)!important}
 body[data-ui="mobile"]{--cell:min(8.2vw,40px)}body[data-ui="mobile"] .topbar{grid-template-columns:1fr auto;padding:7px 8px}body[data-ui="mobile"] .creator{display:none}body[data-ui="mobile"] .topActions{grid-column:1/-1;justify-content:flex-start;overflow:auto;flex-wrap:nowrap;padding-bottom:2px}body[data-ui="mobile"] .controlStrip{grid-template-columns:1fr;padding:0 8px}body[data-ui="mobile"] .modeControls{justify-content:flex-start}body[data-ui="mobile"] .main{padding:8px}body[data-ui="mobile"] .gridWrap{grid-template-columns:1fr}body[data-ui="mobile"] .mobileTabs{display:flex}body[data-ui="mobile"] .teamCard.mobileOff{display:none}body[data-ui="mobile"] .stats{grid-template-columns:repeat(3,1fr)}body[data-ui="mobile"] .stat:nth-child(4),body[data-ui="mobile"] .stat:nth-child(5){display:none}body[data-ui="mobile"] .visionPanel{width:min(94vw,350px);right:3vw;top:auto;bottom:10px}body[data-ui="mobile"] .visionGuide::before{content:"AREA KONTROL"}body[data-ui="mobile"] .visionGuide::after{display:none}
 @media(max-width:1180px){body:not([data-ui="ifp"]) .gridWrap{grid-template-columns:1fr}.creator{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
+<link rel="stylesheet" href="../../css/pilar-perf.css">
+<script src="../../core/device-profile.js"></script>
 </head>
 <body data-ui="desktop">
 <header class="topbar">
@@ -189,8 +193,8 @@ function resetRound(){stopTimer();timer=TOTAL_TIME;$('timer').textContent=fmtTim
 function showWinner(){const L=TEAM.left,R=TEAM.right;if(!L.finished&&L.score===0)L.score=partialScore(L);if(!R.finished&&R.score===0)R.score=partialScore(R);updateStats(L);updateStats(R);const win=L.score===R.score?'SERI':L.score>R.score?'Tim Biru':'Tim Merah';$('winnerSummary').innerHTML=`<b>${win}</b> · peta sama · porsi sama (${matchLoad}) · par rute ${parRoute} langkah · sisa waktu ${fmtTime(timer)}.`;$('winnerTable').innerHTML=`<thead><tr><th>Tim</th><th>Skor</th><th>Langkah</th><th>Efisiensi</th><th>Energi</th><th>Bonus waktu</th></tr></thead><tbody><tr><td style="color:var(--blue)"><b>Tim Biru</b></td><td><b>${L.score}</b></td><td>${L.steps}</td><td>${efficiency(L)}</td><td>${L.energy}%</td><td>${L.timeBonus}</td></tr><tr><td style="color:var(--red)"><b>Tim Merah</b></td><td><b>${R.score}</b></td><td>${R.steps}</td><td>${efficiency(R)}</td><td>${R.energy}%</td><td>${R.timeBonus}</td></tr></tbody>`;$('winnerBackdrop').classList.add('show')}
 
 /* ===== UI profile ===== */
-function inferUI(){const w=innerWidth,h=innerHeight,coarse=matchMedia('(pointer:coarse)').matches,tp=navigator.maxTouchPoints||0;if(w<760||h<520&&w<900)return'mobile';if(w>=1900&&coarse&&tp>=2)return'ifp';return'desktop'}
-function applyUI(mode=ui.mode){ui.mode=mode;ui.resolved=mode==='auto'?inferUI():mode;document.body.dataset.ui=ui.resolved;document.querySelectorAll('#uiSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ui===ui.mode));applyMobileSide();try{localStorage.setItem('pilar-mbg-ui',ui.mode)}catch(_){}}
+function inferUI(){if(window.PILAR&&PILAR.device&&PILAR.device.tier==='ifp')return'ifp';const w=innerWidth,h=innerHeight,coarse=matchMedia('(pointer:coarse)').matches,tp=navigator.maxTouchPoints||0;if(w<760||h<520&&w<900)return'mobile';if(w>=1900&&coarse&&tp>=2)return'ifp';return'desktop'}
+function applyUI(mode=ui.mode){ui.mode=mode;ui.resolved=mode==='auto'?inferUI():mode;document.body.dataset.ui=ui.resolved;document.body.style.removeProperty('--cell');requestAnimationFrame(()=>typeof fitBoards==='function'&&fitBoards());document.querySelectorAll('#uiSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ui===ui.mode));applyMobileSide();try{localStorage.setItem('pilar-mbg-ui',ui.mode)}catch(_){}}
 function applyMobileSide(){if(ui.resolved!=='mobile'){for(const id of ['cardLeft','cardRight'])$(id).classList.remove('mobileOff');return}$('cardLeft').classList.toggle('mobileOff',ui.mobileSide!=='left');$('cardRight').classList.toggle('mobileOff',ui.mobileSide!=='right');document.querySelectorAll('#mobileTabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.side===ui.mobileSide))}
 
 /* ===== Vision AI Hand Landmarker ===== */
@@ -217,7 +221,24 @@ $('touchMode').onclick=()=>stopVision();$('visionMode').onclick=startVision;$('v
 document.querySelectorAll('#uiSeg button').forEach(b=>b.onclick=()=>applyUI(b.dataset.ui));document.querySelectorAll('#mobileTabs button').forEach(b=>b.onclick=()=>{ui.mobileSide=b.dataset.side;applyMobileSide()});
 $('closeWinnerBtn').onclick=()=>$('winnerBackdrop').classList.remove('show');$('playAgainBtn').onclick=()=>{$('winnerBackdrop').classList.remove('show');resetRound()};$('newMatchBtn').onclick=()=>{$('winnerBackdrop').classList.remove('show');setupMatch(true,true)};
 document.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat){e.preventDefault();toggleStart()}if(e.key.toLowerCase()==='r')resetRound();if(e.key.toLowerCase()==='m')setupMatch(true,false);if(e.key.toLowerCase()==='v')startVision()});
-window.addEventListener('resize',()=>{if(ui.mode==='auto')applyUI('auto')});
+window.addEventListener('resize',()=>{if(ui.mode==='auto')applyUI('auto');fitBoards()});
+/* Papan selalu muat SATU layar: ukuran sel dihitung dari ruang yang benar-benar tersisa
+   (lebar kartu tim & tinggi layar di bawah papan), bukan dari lebar layar saja.
+   Versi lama: --cell = 3,45vw → di IFP 1920×1080 papan ±700 px + panel lain > tinggi layar → harus scroll. */
+function fitBoards(){
+  const L=$('gridLeft'),Rg=$('gridRight');const ref=L&&L.offsetParent?L:Rg;if(!ref||!ref.offsetParent)return;
+  const rect=ref.getBoundingClientRect(),top=rect.top+scrollY;
+  const msg=ref.nextElementSibling,msgH=msg?msg.getBoundingClientRect().height+8:0;
+  const cs=getComputedStyle(ref),gap=parseFloat(cs.columnGap)||3,pad=(parseFloat(cs.paddingLeft)||8)*2+2;
+  const availW=ref.parentElement.clientWidth-pad,availH=innerHeight-top-msgH-14-pad;
+  let cell=Math.floor(Math.min((availW-9*gap)/10,(availH-9*gap)/10));
+  const min=ui.resolved==='mobile'?24:34,max=ui.resolved==='ifp'?96:72;
+  cell=Math.max(min,Math.min(max,cell));
+  document.body.style.setProperty('--cell',cell+'px');
+}
+document.addEventListener('fullscreenchange',()=>setTimeout(fitBoards,120));
+if(window.ResizeObserver)new ResizeObserver(()=>fitBoards()).observe(document.querySelector('.gridWrap'));
+requestAnimationFrame(fitBoards);
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&gameRunning){gameRunning=false;stopTimer();setStatus('Pause');$('startBtn').textContent='▶ Lanjut'}});
 try{ui.mode=localStorage.getItem('pilar-mbg-ui')||'auto'}catch(_){}applyUI(ui.mode);setupMatch(true,true);
 })();

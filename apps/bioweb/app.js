@@ -146,7 +146,15 @@ fl.geometry.setAttribute('color',new THREE.Float32BufferAttribute(new Float32Arr
 const rings=[];for(let d=1;d<=30;d++){const pts=[],rr=RP+.35+d*.11;for(let k=0;k<=128;k++){const a=k/128*6.2832;pts.push(new THREE.Vector3(Math.cos(a)*rr,Y0+.02,Math.sin(a)*rr))}
   const r=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x7ee08a,transparent:true,opacity:.08}));sc.add(r);rings.push(r)}
 const rl=[1,5,10,15,20,25,30].map(d=>{const e=document.createElement('div');e.className='rl';e.textContent='Hari '+d;$('#lb').appendChild(e);return{d,e}});
-function size(){const r=cv.parentNode.getBoundingClientRect();R.setPixelRatio(Math.min(devicePixelRatio,(navigator.maxTouchPoints>=10&&/Android/.test(navigator.userAgent))?1.25:2));R.setSize(r.width,r.height,false);cm.aspect=r.width/r.height;cm.updateProjectionMatrix()}
+let resK=1,bioQ='standard';
+function size(){const r=cv.parentNode.getBoundingClientRect(),D=window.PILAR&&PILAR.device;
+ // resolusi = layar fisik, dibatasi anggaran piksel perangkat (IFP Mali: ±3,7 MP) × skala dinamis
+ const pr=D?D.pixelRatio(r.width,r.height,bioQ,1)*resK:Math.min(devicePixelRatio,2);
+ R.setPixelRatio(Math.max(.6,pr));R.setSize(r.width,r.height,false);cm.aspect=r.width/r.height;cm.updateProjectionMatrix()}
+// resolusi dinamis: turun sedikit bila frame > 22 ms, naik lagi bila longgar (lantai 0,75 agar tidak buram)
+let fEma=1/60,fLast=0,fNext=0;function adaptRes(t){if(fLast){const d=(t-fLast)/1000;if(d<.25)fEma=fEma*.93+d*.07}fLast=t;if(t<fNext)return;fNext=t+1500;
+ const o=resK;if(fEma>1/45&&resK>.75)resK=Math.max(.75,resK-.08);else if(fEma<1/57&&resK<1)resK=Math.min(1,resK+.05);if(o!==resK)size()}
+document.addEventListener('visibilitychange',()=>{fLast=0});
 addEventListener('resize',size);size();
 {const lg=document.createElement('div');lg.className='legend3d';lg.setAttribute('aria-hidden','true');
  lg.innerHTML='<b>CINCIN = POPULASI</b>'+[['#63e3a0','sehat ≥ 85%'],['#ffd36c','tertekan 60–85%'],['#ff5d6c','kritis &lt; 60%'],['#ff9a4d','berlebih &gt; 115%']].map(x=>`<span class="ring" style="color:${x[0]}"><i></i>${x[1]}</span>`).join('')
@@ -166,7 +174,7 @@ function hit(e){const r=cv.getBoundingClientRect(),rc=new THREE.Raycaster();rc.s
 function hover(e){if(pts.size)return;const id=hit(e),tp=$('#tip');cv.style.cursor=id?'pointer':'grab';if(!id){tp.style.opacity=0;return}const n=NODES.find(x=>x.id===id),r=cv.getBoundingClientRect(),v=S.pop[id];tp.textContent=n.icon+' '+n.name+' · '+Math.round(v)+'% · '+STATUS(v).t+' · ketuk untuk detail';tp.style.left=e.clientX-r.left+14+'px';tp.style.top=e.clientY-r.top+14+'px';tp.style.opacity=1}
 cv.addEventListener('pointerleave',()=>$('#tip').style.opacity=0);
 const vis=l=>S.flt==='all'||l.t===S.flt||(S.flt==='s'&&l.t==='c'),tmpV=new THREE.Vector3(),tmpC=new THREE.Color();
-function frame(t){requestAnimationFrame(frame);
+function frame(t){requestAnimationFrame(frame);if(document.hidden)return;adaptRes(t);
 if(!drag||!pts.size){if(S.auto)cam.th+=.0022;cam.th+=cam.vt*.92;cam.vt*=.92}
 T.lerp(goal,.08);if(gd){cam.d+=(gd-cam.d)*.06;if(Math.abs(gd-cam.d)<.1)gd=0}
 cm.position.set(T.x+cam.d*Math.sin(cam.ph)*Math.cos(cam.th),T.y+cam.d*Math.cos(cam.ph),T.z+cam.d*Math.sin(cam.ph)*Math.sin(cam.th));cm.lookAt(T);
@@ -179,7 +187,7 @@ NODES.forEach(n=>{const o=meshes[n.id],v=S.pop[n.id],sel=S.sel===n.id,dim=rel&&!
   const s=(sel?1.12:.86)*(1+(sel?.05*Math.sin(t*.006):0));o.m.scale.setScalar(s);
   o.m.material.opacity=dim?.28:back?.45:1;o.stem.material.opacity=dim?.08:.35;o.dot.material.opacity=dim?.25:.9;
   const st=STATUS(v);o.halo.material.color.set(st.c);o.halo.material.opacity=dim?0:(v<60||v>115)?.35+.25*Math.sin(t*.008):sel?.3:0; // denyut hanya saat kritis/berlebih
-  tmpV.copy(o.m.position).project(cm);o.l.style.left=(tmpV.x*.5+.5)*W+'px';o.l.style.top=(-tmpV.y*.5+.5)*H+26*s+'px';o.l.style.opacity=tmpV.z>1?0:dim?.22:back?.4:1;o.l.querySelector('small').textContent=(sel||(rel&&rel.has(n.id))||v<85||v>115)?Math.round(v)+'% · '+st.t:'';o.l.classList.toggle('sel',sel)});
+  tmpV.copy(o.m.position).project(cm);o.l.style.transform=`translate3d(${((tmpV.x*.5+.5)*W).toFixed(1)}px,${((-tmpV.y*.5+.5)*H+26*s).toFixed(1)}px,0) translateX(-50%)`;o.l.style.opacity=tmpV.z>1?0:dim?.22:back?.4:1;o.l.querySelector('small').textContent=(sel||(rel&&rel.has(n.id))||v<85||v>115)?Math.round(v)+'% · '+st.t:'';o.l.classList.toggle('sel',sel)});
 const fp=fl.geometry.attributes.position,fc=fl.geometry.attributes.color;
 LINKS.forEach((l,i)=>{const ok=vis(l),f=!S.sel||l.a===S.sel||l.b===S.sel,A=arcs[i];A.ln.material.opacity=ok?(f?(S.sel?.9:.5):.06):.02;A.ln.material.color.setHex(TC[l.t]);
   tmpC.setHex(TC[l.t]);for(let k=0;k<FPL;k++){const q=(t*.00035+i*.13+k/FPL)%1,j=i*FPL+k;if(ok&&f){A.curve.getPoint(q,tmpV);fp.setXYZ(j,tmpV.x,tmpV.y,tmpV.z)}else fp.setXYZ(j,999,999,999);fc.setXYZ(j,tmpC.r,tmpC.g,tmpC.b)}});
@@ -187,7 +195,7 @@ fp.needsUpdate=true;fc.needsUpdate=true;
 riverMat.opacity=.25+.7*clamp(S.pop.air/100,0,1);
 clouds.forEach((c,k)=>{const u=c.userData,a=u.a+t*.00004*(k%2?1:-1);c.position.set(Math.cos(a)*u.r,u.y,Math.sin(a)*u.r)});
 rings.forEach((r,i)=>{const d=i+1,h=S.hist.find(x=>x.day===d);r.material.color.setHex(h?h.col:0x7ee08a);r.material.opacity=d<S.day?.4:d===S.day?.6+.4*Math.sin(t*.005):.06});
-rl.forEach(x=>{tmpV.set(RP+.35+x.d*.11,Y0,0).project(cm);x.e.style.left=(tmpV.x*.5+.5)*W+'px';x.e.style.top=(-tmpV.y*.5+.5)*H+'px';x.e.style.opacity=tmpV.z>1?0:x.d<=S.day?1:.35});
+rl.forEach(x=>{tmpV.set(RP+.35+x.d*.11,Y0,0).project(cm);x.e.style.transform=`translate3d(${((tmpV.x*.5+.5)*W).toFixed(1)}px,${((-tmpV.y*.5+.5)*H).toFixed(1)}px,0) translate(-50%,-50%)`;x.e.style.opacity=tmpV.z>1?0:x.d<=S.day?1:.35});
 R.render(sc,cm)}
 // ---------- UX tambahan: pelatuk, pencarian, papan ketik, panduan awal ----------
 const STEPS=[['Putar gunungnya','Seret dengan jari atau mouse. Gulir atau cubit untuk zoom.'],['Ketuk satu penghuni','Garis yang menyala menunjukkan siapa bergantung pada siapa.'],['Uji satu kejadian','Pilih di bawah, tekan Jalankan waktu, lalu lihat cincin melebar tiap hari. Ketuk batang di bawah untuk kembali ke hari lain.']];
