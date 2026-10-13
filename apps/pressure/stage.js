@@ -126,7 +126,8 @@
       if(frameSec>.25)return;ema=ema*.93+frameSec*.07;
       if(now<nextAdapt)return;nextAdapt=now+1500;
       const old=resScale;
-      if(ema>1/45&&resScale>.6)resScale=Math.max(.6,resScale-.1);
+      if(quality==='realistic')return ema;                                   // pilihan "Realistis" = tajam, tanpa penurunan otomatis
+      if(ema>1/45&&resScale>.75)resScale=Math.max(.75,resScale-.08);          // lantai .75: tidak pernah seburam versi lama (.6)
       else if(ema<1/58&&resScale<1)resScale=Math.min(1,resScale+.05);
       if(old!==resScale)resize();
       return ema;

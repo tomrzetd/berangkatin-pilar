@@ -6,7 +6,8 @@
   const fmt=(x,d=2)=>Number(x).toFixed(d).replace('.',',');
   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-  function webglReady(){try{const c=document.createElement('canvas');return !!(c.getContext('webgl2')||c.getContext('webgl'));}catch(_){return false}}
+  // Pakai hasil device-profile (sekali per sesi). Versi lama membuat 2 konteks WebGL baru setiap Hub dibuka — mahal & bisa memicu kedip di Mali-G52.
+  function webglReady(){if(P.device)return P.device.webgl>0;try{const c=document.createElement('canvas'),gl=c.getContext('webgl2')||c.getContext('webgl');gl&&gl.getExtension('WEBGL_lose_context')?.loseContext();return !!gl}catch(_){return false}}
   const checks={WebGL:webglReady,Touch:()=>('ontouchstart' in window)||navigator.maxTouchPoints>0,Pointer:()=>('PointerEvent' in window),WASM:()=>typeof WebAssembly==='object',Kamera:()=>!!navigator.mediaDevices?.getUserMedia};
   function drawBootCaps(){
     const box=$('#bootCaps'); if(!box)return;
@@ -335,6 +336,10 @@
     bootFullscreenBtn.title=on?'Keluar layar penuh':'Layar penuh';
   }
   if(bootFullscreenBtn){bootFullscreenBtn.onclick=toggleBootFullscreen;document.addEventListener('fullscreenchange',syncBootFullscreen);syncBootFullscreen()}
+  // Tombol mode efek: Auto (IFP → ringan) · Ringan · Penuh. Disimpan & dipakai semua app PILAR.
+  const fxBtn=$('#bootFxBtn');
+  function syncFx(){if(!fxBtn||!P.device)return;const m=P.device.fxMode,label={auto:'Auto',lite:'Ringan',full:'Penuh'}[m];fxBtn.textContent='⚡ '+label;fxBtn.title='Mode efek: '+label+(m==='auto'?' (sekarang '+(P.device.fx==='lite'?'ringan':'penuh')+')':'')+' · ketuk untuk ganti';fxBtn.setAttribute('aria-label',fxBtn.title)}
+  if(fxBtn){if(!P.device)fxBtn.hidden=true;else{fxBtn.onclick=()=>{const order=['auto','lite','full'],m=order[(order.indexOf(P.device.fxMode)+1)%3];P.device.setFx(m);syncFx()};syncFx()}}
   $('#bootQuick').onclick=()=>launchSelected('standard');
   $('#bootVision').onclick=()=>launchSelected('vision');
   if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('service-worker.js').catch(()=>{});

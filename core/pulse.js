@@ -219,7 +219,8 @@ if(!enabled()){
   setButton('off','○ Aktifkan Pulse');syncPulseUI(false);
   syncInlineIdentity('Pulse · OFF','off');
   const id=document.getElementById('ppIdentity');if(id)id.textContent='Pulse nonaktif · klik Aktifkan Pulse';
-  notice();
+  // IFP kelas = perangkat bersama: jangan tawarkan Pulse ke setiap siswa; guru tetap bisa mengaktifkan dari tombol 💬.
+  if(!(global.PILAR&&global.PILAR.device&&global.PILAR.device.tier==='ifp'))notice();
   return
 }
 auth().then(startSession).catch(err=>{console.warn('[PILAR Pulse]',err);setButton('off','○ Pulse setup');const id=document.getElementById('ppIdentity');if(id)id.textContent='Backend belum siap / Anonymous Auth belum aktif'});
