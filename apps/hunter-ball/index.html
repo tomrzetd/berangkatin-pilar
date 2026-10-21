@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05080d">
+<meta name="description" content="Bola Sang Pemburu · Duel — percobaan Monyet & Pemburu: dua tim adu tebak gerak jatuh bebas dan gerak parabola di IFP.">
+<title>PILAR™ · Bola Sang Pemburu · Duel</title>
+<style>
+:root{--bg:#05080d;--panel:#0b131d;--panel2:#0f1a27;--line:#1f3247;--line2:#2b4560;--text:#eef6ff;--muted:#8aa1b7;--dim:#5d7287;
+ --blue:#4fa8ff;--red:#ff5d75;--gold:#ffcf5a;--green:#5fe3a1;--cyan:#67e8f9;--btn:48px}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:15px/1.4 Inter,Segoe UI,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+body{display:flex;flex-direction:column;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible,[role=slider]:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+/* topbar */
+.topbar{flex:none;display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--line);background:#070c13}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.homeBtn{width:44px;height:44px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);font-size:22px}
+.brand b{display:block;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand small{display:block;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border:1px solid var(--line2);border-radius:999px;background:var(--panel);font-size:13px;color:#b9cbdc;white-space:nowrap}.pill b{color:var(--text);font-variant-numeric:tabular-nums}
+.act{min-height:var(--btn);padding:0 14px;border-radius:12px;border:1px solid var(--line2);background:var(--panel2);font-weight:800;font-size:14px;white-space:nowrap}
+.act.primary{background:linear-gradient(135deg,#1b789e,#31c4df);color:#04131b;border-color:#5ee9ff}
+.act.on{border-color:var(--cyan);color:var(--cyan)}
+.seg{display:flex;gap:3px;padding:3px;border:1px solid var(--line2);border-radius:13px;background:#070f18}.seg button{min-height:40px;padding:0 12px;border:0;border-radius:10px;background:none;font-weight:800;font-size:13px;color:var(--muted)}.seg button[aria-pressed=true]{background:#15304a;color:var(--text)}
+.tools{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+/* round bar */
+.roundBar{flex:none;display:flex;align-items:center;gap:12px;margin:8px 14px 0;padding:9px 14px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.roundBar .ico{font-size:26px}.roundBar h2{margin:0;font-size:16px}.roundBar p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.roundBar .grow{flex:1;min-width:0}.planet{font-size:13px}
+.latihanBar{display:none;gap:8px;align-items:center;flex-wrap:wrap}.mode-latihan .latihanBar{display:flex}.mode-latihan .duelOnly{display:none!important}
+.latihanBar select{min-height:40px;border-radius:10px;border:1px solid var(--line2);background:#070f18;color:var(--text);padding:0 8px;font:inherit;font-size:13px}
+/* arenas */
+.arenas{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:10px 14px 12px}
+.team{min-width:0;min-height:0;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:18px;background:var(--panel);overflow:hidden}
+.team.left{--tc:var(--blue)}.team.right{--tc:var(--red)}
+.thead{flex:none;display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,color-mix(in srgb,var(--tc) 14%,transparent),transparent)}
+.team.right .thead{flex-direction:row-reverse;text-align:right;background:linear-gradient(270deg,color-mix(in srgb,var(--tc) 14%,transparent),transparent)}
+.badge{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--tc);color:#06111d;font-weight:900}
+.thead h3{margin:0;font-size:17px}.thead small{color:var(--muted);font-size:12px}.tname{flex:1;min-width:0}
+.score{text-align:center}.score b{display:block;font-size:30px;line-height:1;color:var(--tc);font-variant-numeric:tabular-nums}.score small{font-size:10px;color:var(--muted);letter-spacing:.1em}
+.arena{position:relative;flex:1;min-height:120px}
+.arena canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.banner{position:absolute;left:50%;top:12px;transform:translateX(-50%);padding:8px 14px;border-radius:12px;background:rgba(5,10,16,.88);border:1px solid var(--line2);font-weight:800;font-size:14px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .25s}
+.banner.show{opacity:1}.banner.good{border-color:#2f7a55;color:#bff5d6}.banner.bad{border-color:#7a3445;color:#ffc2cc}
+.ctrl{flex:none;display:grid;grid-template-columns:1fr auto;gap:8px 10px;align-items:center;padding:9px 12px 11px;border-top:1px solid var(--line)}
+.team.right .ctrl{grid-template-columns:auto 1fr}.team.right .ctrl .fire{order:-1}
+.sl{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;min-width:0}
+.sl label{font-size:12px;color:var(--muted);font-weight:700;min-width:62px}.sl output{font-weight:900;font-variant-numeric:tabular-nums;min-width:74px;text-align:right}
+.slider{position:relative;height:44px;touch-action:none;cursor:pointer}
+.slider .trk{position:absolute;left:14px;right:14px;top:50%;height:8px;margin-top:-4px;border-radius:8px;background:#17283a}
+.slider .fill{position:absolute;left:0;top:0;bottom:0;border-radius:8px;background:var(--tc)}
+.slider .th{position:absolute;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:#eef6ff;border:4px solid var(--tc);box-shadow:0 2px 8px #0008}
+.slider.locked{opacity:.45;pointer-events:none}
+.sliders{display:grid;gap:4px;min-width:0}
+.fire{min-height:64px;min-width:118px;border-radius:16px;border:2px solid var(--tc);background:color-mix(in srgb,var(--tc) 22%,#081321);font-weight:900;font-size:16px;letter-spacing:.04em}
+.fire.ready{background:var(--tc);color:#06111d}
+.fire:disabled{opacity:.4}
+.mobileTabs{display:none}
+/* modals */
+.modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.72)}
+.modal[hidden]{display:none}
+.card{width:min(860px,96vw);max-height:92vh;overflow:auto;border:1px solid var(--line2);border-radius:22px;background:#08111b;box-shadow:0 30px 90px #000a}
+.card .hd{padding:16px 20px;border-bottom:1px solid var(--line)}.card .hd h2{margin:0;font-size:22px}.card .hd p{margin:6px 0 0;color:var(--muted)}
+.card .bd{padding:16px 20px}.card .ft{padding:12px 20px 18px;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.guess{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.guess section{border:1px solid var(--line2);border-radius:16px;padding:12px}
+.guess h3{margin:0 0 8px;font-size:16px}.guess .left h3{color:var(--blue)}.guess .right h3{color:var(--red)}
+.guess button{display:block;width:100%;min-height:56px;margin:6px 0;border-radius:12px;border:1px solid var(--line2);background:var(--panel2);font-weight:800;font-size:15px;text-align:left;padding:0 14px}
+.guess button[aria-pressed=true]{background:#e8f6ff;color:#06101b}
+.big-q{display:flex;gap:16px;align-items:center;margin-bottom:14px}.big-q svg{flex:none}
+table.res{width:100%;border-collapse:collapse;font-size:14px}table.res th,table.res td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left}table.res th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+table.res td.b{color:var(--blue);font-weight:800}table.res td.r{color:var(--red);font-weight:800}
+.count{position:fixed;inset:0;z-index:40;display:grid;place-items:center;pointer-events:none;font-size:min(30vh,240px);font-weight:900;color:#fff;text-shadow:0 0 40px #000}
+.count[hidden]{display:none}
+.creator{font:600 9px ui-monospace,Consolas,monospace;color:#5f7890}
+@media(max-width:820px){
+ .arenas{grid-template-columns:1fr;padding:8px}.mobileTabs{display:flex;gap:6px;padding:6px 8px 0}.mobileTabs button{flex:1;min-height:42px;border-radius:11px;border:1px solid var(--line2);background:var(--panel)}.mobileTabs button[aria-pressed=true]{border-color:var(--cyan)}
+ .team.off{display:none}.brand small,.creator{display:none}.topbar{flex-wrap:wrap}.tools{width:100%;justify-content:flex-start;overflow:auto;flex-wrap:nowrap}
+ .guess{grid-template-columns:1fr}.roundBar{margin:6px 8px 0;flex-wrap:wrap;gap:6px 10px;padding:8px 10px}.roundBar .ico{display:none}.roundBar h2{font-size:15px}.roundBar p{font-size:12px}.roundBar .grow{flex-basis:100%}
+ .latihanBar{width:100%}.latihanBar select{flex:1 1 140px;min-width:0;max-width:100%}
+ .banner{white-space:normal;width:max-content;max-width:calc(100% - 16px);text-align:center;font-size:13px}
+ .ctrl,.team.right .ctrl{grid-template-columns:1fr}.team.right .ctrl .fire{order:0}.fire{width:100%;min-height:52px}.sl label{min-width:0}.sl output{min-width:64px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<link rel="stylesheet" href="../../css/pilar-perf.css">
+<script src="../../core/device-profile.js"></script>
+</head>
+<body class="mode-duel">
+<header class="topbar">
+ <div class="brand"><button class="homeBtn" id="homeBtn" aria-label="Kembali ke PILAR Hub">←</button>
+  <div style="min-width:0"><b>🎯 Bola Sang Pemburu · Duel</b><small>Monyet &amp; Pemburu · gerak jatuh bebas · gerak parabola · 2 tim IFP</small></div></div>
+ <span class="creator">by : rizalabdurrahman05@guru.smp.belajar.id</span>
+ <div class="tools">
+  <div class="seg" aria-label="Mode"><button id="mDuel" aria-pressed="true">⚔ Tanding</button><button id="mLatihan" aria-pressed="false">🧪 Latihan</button></div>
+  <span class="pill duelOnly">Ronde <b id="roundNo">0/5</b></span>
+  <span class="pill duelOnly">⏱ <b id="timer">--</b></span>
+  <button class="act primary duelOnly" id="nextBtn">▶ Mulai</button>
+  <button class="act" id="xrayBtn" aria-pressed="true" title="Sinar-X: garis bidik & penggaris jatuh">🔍 Sinar-X</button>
+  <button class="act" id="slowBtn" aria-pressed="false" title="Gerak lambat">🐢 Lambat</button>
+  <button class="act" id="soundBtn" aria-pressed="false" aria-label="Suara">🔇</button>
+  <button class="act" id="fullBtn" aria-label="Layar penuh">⛶</button>
+ </div>
+</header>
+<section class="roundBar">
+ <span class="ico" id="rIco">🎯</span>
+ <div class="grow"><h2 id="rTitle">Siap bertanding?</h2><p id="rText">Tekan <b>Mulai</b>. Kedua tim mendapat target yang sama.</p></div>
+ <span class="pill planet" id="rPlanet">🌍 Bumi · g = 9,8 m/s²</span>
+ <div class="latihanBar">
+  <select id="lPlanet" aria-label="Planet"></select>
+  <select id="lRelease" aria-label="Pelepasan target"><option value="0">Target dilepas saat menembak</option><option value="0.25">Dilepas terlambat 0,25 s</option><option value="off">Target TIDAK dilepas</option></select>
+  <button class="act" id="lRandom">🔀 Acak target</button><button class="act" id="lClear">🧹 Hapus jejak</button>
+ </div>
+</section>
+<div class="mobileTabs" id="mTabs"><button data-side="left" aria-pressed="true">🔵 Tim Biru</button><button data-side="right" aria-pressed="false">🔴 Tim Merah</button></div>
+<main class="arenas">
+ <section class="team left" id="team-left"></section>
+ <section class="team right" id="team-right"></section>
+</main>
+<div class="count" id="count" hidden></div>
+
+<div class="modal" id="introModal" hidden><div class="card">
+ <div class="hd"><h2>🎯 Tebakan Besar</h2><p>Meriam dibidik <b>lurus</b> ke target. Tepat saat meriam menembak, magnet <b>melepas</b> target sehingga target jatuh.</p></div>
+ <div class="bd">
+  <div class="big-q"><svg width="190" height="110" viewBox="0 0 190 110" aria-hidden="true"><line x1="10" y1="104" x2="186" y2="104" stroke="#2b4560"/><g transform="translate(22 96) rotate(-34)"><rect x="-4" y="-7" width="34" height="14" rx="3" fill="#8b9bb0"/></g><line x1="44" y1="80" x2="160" y2="20" stroke="#8aa1b7" stroke-dasharray="4 4"/><rect x="150" y="2" width="22" height="9" rx="2" fill="#8b9bb0"/><line x1="160" y1="11" x2="160" y2="16" stroke="#8aa1b7"/><circle cx="160" cy="24" r="9" fill="#ffcf5a"/><circle cx="160" cy="24" r="4" fill="#fff"/><path d="M160 40v40" stroke="#ffcf5a" stroke-dasharray="2 4"/><text x="66" y="40" fill="#eef6ff" font-size="12" font-weight="700">?</text></svg>
+  <p style="margin:0;font-size:16px">Menurutmu, apa yang terjadi pada bola meriam?</p></div>
+  <div class="guess"><section class="left"><h3>🔵 Tim Biru</h3><div data-team="left"></div></section><section class="right"><h3>🔴 Tim Merah</h3><div data-team="right"></div></section></div>
+ </div>
+ <div class="ft"><button class="act primary" id="introGo" disabled>Kunci tebakan & mulai ronde 1 →</button></div>
+</div></div>
+
+<div class="modal" id="endModal" hidden><div class="card">
+ <div class="hd"><h2 id="endTitle">🏆 Hasil Duel</h2><p id="endSub"></p></div>
+ <div class="bd"><table class="res" id="endTable"></table><p id="endLesson" style="color:var(--muted);margin:14px 0 0"></p></div>
+ <div class="ft"><span class="creator" style="margin-right:auto;align-self:center">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span><button class="act" id="endLatihan">🧪 Coba di Latihan</button><button class="act primary" id="endAgain">↻ Tanding lagi</button></div>
+</div></div>
+
+<script>
+(function(){
+"use strict";
+/* ═══════════════════════════════════════════════════════════════
+   BOLA SANG PEMBURU · DUEL  (percobaan "Monkey & Hunter")
+   Fisika (satuan SI, analitik — hasil sama di 15 maupun 60 fps):
+     bola   : x = x0 + v·cosθ·t        y = y0 + v·sinθ·t − ½·g·t²
+     target : x = X                    y = Y − ½·g·(t − tLepas)²
+   Garis bidik lurus ke target ⇒ keduanya turun ½·g·t² yang SAMA ⇒ pasti kena,
+   asal bola tiba sebelum target menyentuh tanah.
+   ═══════════════════════════════════════════════════════════════ */
+var $=function(id){return document.getElementById(id)};
+var WW=26,WH=19,PIV={x:1.7,y:1.05},BARREL=1.5,RB=.32,RT=.62;
+var PLANETS={bumi:{n:"Bumi",i:"🌍",g:9.8},bulan:{n:"Bulan",i:"🌙",g:1.62},mars:{n:"Mars",i:"🔴",g:3.71},jupiter:{n:"Jupiter",i:"🪐",g:24.8}};
+var COL={left:"#4fa8ff",right:"#ff5d75"};
+var fmt=function(v,d){return Number(v).toFixed(d==null?1:d).replace(".",",")};
+var clamp=function(v,a,b){return Math.max(a,Math.min(b,v))};
+function rnd(a,b){return a+Math.random()*(b-a)}
+
+/* ───── ronde ───── */
+var ROUNDS=[
+ {type:"zone",planet:"bumi",ico:"🎯",title:"Ronde 1 · Zona Emas",text:"Atur <b>kecepatan</b> agar bola mengenai target <b>di dalam pita emas</b>. Kena di pita = 100, kena di luar pita = 40."},
+ {type:"guess",planet:"bumi",ico:"🔮",title:"Ronde 2 · Tebak Titik",text:"Kecepatan <b>dikunci sama</b>. Geser <b>tebakan</b>: di ketinggian berapa bola akan mengenai target? Selisih makin kecil, skor makin besar."},
+ {type:"min",planet:"bumi",ico:"🐢",title:"Ronde 3 · Kecepatan Minimum",text:"Cari kecepatan <b>paling pelan</b> yang masih kena. Terlalu pelan → target keburu menyentuh tanah = 0."},
+ {type:"zone",planet:"bulan",ico:"🌙",title:"Ronde 4 · Zona Emas di Bulan",text:"Gravitasi Bulan hanya 1,6 m/s². Apakah bidikan lurus <b>masih</b> kena? Kenai pita emas!"},
+ {type:"guess",planet:"jupiter",ico:"🪐",title:"Ronde 5 · Tebak Titik di Jupiter",text:"g = 24,8 m/s² — target jatuh sangat cepat. Kecepatan dikunci, tebak ketinggian tumbukan!"}
+];
+var BIGQ=[["hit","🎯 Pasti KENA target"],["over","⬆ Lewat DI ATAS target"],["under","⬇ Lewat DI BAWAH target"]];
+
+/* ───── state ───── */
+var S={mode:"duel",round:-1,phase:"idle",timer:0,xray:true,slow:false,sound:false,world:null,big:{left:null,right:null},history:[],latihan:{planet:"bumi",release:"0"}};
+var teams={};
+
+function makeWorld(planet,seedX,seedY){
+ var X=seedX!=null?seedX:Math.round(rnd(15,21.5)*2)/2,Y=seedY!=null?seedY:Math.round(rnd(10,14.5)*2)/2,g=PLANETS[planet].g;
+ var w={X:X,Y:Y,g:g,planet:planet};
+ var dx=X-PIV.x,dy=Y-PIV.y,th=Math.atan2(dy,dx);w.th=th;w.mx=PIV.x+Math.cos(th)*BARREL;w.my=PIV.y+Math.sin(th)*BARREL;
+ w.D=Math.hypot(X-w.mx,Y-w.my);
+ w.tFloor=Math.sqrt(2*(Y-RT)/g);            // waktu target sampai tanah
+ w.vMin=w.D/w.tFloor;                        // lebih pelan dari ini → meleset
+ return w;
+}
+function hitHeightFor(w,v){var t=w.D/v;return w.Y-.5*w.g*t*t}   // tinggi titik tumbukan (pusat target)
+function speedForHeight(w,h){var t=Math.sqrt(2*(w.Y-h)/w.g);return w.D/t}
+
+/* Simulasi satu tembakan — dihitung sekali saat ditembak, lalu dianimasikan */
+function simulate(w,v,release){
+ var tRel=release==="off"?Infinity:+release||0,vx=v*Math.cos(w.th),vy=v*Math.sin(w.th);
+ function ball(t){return{x:w.mx+vx*t,y:w.my+vy*t-.5*w.g*t*t}}
+ function targ(t){if(t<=tRel)return{x:w.X,y:w.Y};var d=t-tRel,y=w.Y-.5*w.g*d*d;return{x:w.X,y:Math.max(RT,y)}}
+ var res={v:v,vx:vx,vy:vy,tRel:tRel,ball:ball,targ:targ,hit:false,t:0,end:0};
+ for(var t=0;t<12;t+=.0005){var b=ball(t),q=targ(t);
+  if(Math.hypot(b.x-q.x,b.y-q.y)<=RB+RT){res.hit=true;res.t=t;res.hb=b;res.ht=q;break}
+  if(b.y<RB||b.x>WW+2){res.t=t;break}}
+ res.end=res.t+(res.hit?1.4:.6);
+ res.drop=.5*w.g*res.t*res.t;                                  // jarak jatuh bola dari garis bidik = jarak jatuh target
+ res.hitH=res.hit?(tRel===0?hitHeightFor(w,v):res.ht.y):null;   // tinggi titik temu analitik (yang dihitung siswa)
+ return res;
+}
+
+/* ───── kartu tim ───── */
+function buildTeam(side){
+ var el=$("team-"+side),name=side==="left"?"Tim Biru":"Tim Merah",bd=side==="left"?"B":"M";
+ el.innerHTML='<div class="thead"><div class="badge">'+bd+'</div><div class="tname"><h3>'+name+'</h3><small id="'+side+'-sub">'+(side==="left"?"meriam di kiri":"meriam di kanan")+'</small></div><div class="score"><b id="'+side+'-score">0</b><small>SKOR</small></div></div>'+
+  '<div class="arena" id="'+side+'-arena"><canvas id="'+side+'-cv"></canvas><div class="banner" id="'+side+'-banner"></div></div>'+
+  '<div class="ctrl"><div class="sliders"><div class="sl" id="'+side+'-vrow"><label>Kecepatan</label><div class="slider" id="'+side+'-v"></div><output id="'+side+'-vo"></output></div>'+
+  '<div class="sl" id="'+side+'-prow"><label>Tebakan tinggi</label><div class="slider" id="'+side+'-p"></div><output id="'+side+'-po"></output></div></div>'+
+  '<button class="fire" id="'+side+'-fire">SIAP</button></div>';
+ var T={side:side,flip:side==="right",col:COL[side],score:0,v:18,pred:6,ready:false,shot:null,trails:[],parts:[],cv:$(side+"-cv")};
+ T.ctx=T.cv.getContext("2d");
+ T.vS=makeSlider($(side+"-v"),{min:4,max:45,step:.5,value:T.v,onInput:function(x){T.v=x;syncTeam(T)}});
+ T.pS=makeSlider($(side+"-p"),{min:0,max:15,step:.1,value:T.pred,onInput:function(x){T.pred=x;syncTeam(T)}});
+ $(side+"-fire").onclick=function(){onFire(T)};
+ new ResizeObserver(function(){sizeCanvas(T)}).observe($(side+"-arena"));
+ teams[side]=T;return T;
+}
+/* slider sentuh khusus: tiap slider melacak jarinya sendiri → dua tim bisa menggeser bersamaan di IFP */
+function makeSlider(host,o){
+ host.innerHTML='<div class="trk"><div class="fill"></div></div><div class="th"></div>';host.setAttribute("role","slider");host.tabIndex=0;
+ var api={value:o.value,min:o.min,max:o.max,locked:false},fill=host.querySelector(".fill"),th=host.querySelector(".th"),pid=null;
+ function draw(){var f=(api.value-api.min)/(api.max-api.min);fill.style.width=(f*100)+"%";th.style.left="calc(14px + "+f+" * (100% - 28px))";host.setAttribute("aria-valuenow",api.value);host.setAttribute("aria-valuemin",api.min);host.setAttribute("aria-valuemax",api.max)}
+ function setFromX(cx){var r=host.getBoundingClientRect(),f=clamp((cx-r.left-14)/(r.width-28),0,1);api.set(api.min+f*(api.max-api.min),true)}
+ api.set=function(v,user){v=Math.round(clamp(v,api.min,api.max)/o.step)*o.step;v=+v.toFixed(3);if(v===api.value&&!user){draw();return}api.value=v;draw();if(user&&o.onInput)o.onInput(v)};
+ api.range=function(a,b){api.min=a;api.max=b;api.set(api.value)};
+ api.lock=function(l){api.locked=l;host.classList.toggle("locked",l)};
+ host.addEventListener("pointerdown",function(e){if(api.locked||pid!=null)return;if(e.pointerType==="touch"&&Math.max(e.width||0,e.height||0)>90)return;pid=e.pointerId;host.setPointerCapture(e.pointerId);setFromX(e.clientX)});
+ host.addEventListener("pointermove",function(e){if(e.pointerId===pid)setFromX(e.clientX)});
+ var up=function(e){if(e.pointerId===pid)pid=null};host.addEventListener("pointerup",up);host.addEventListener("pointercancel",up);
+ host.addEventListener("keydown",function(e){if(api.locked)return;var k=e.key==="ArrowRight"||e.key==="ArrowUp"?1:e.key==="ArrowLeft"||e.key==="ArrowDown"?-1:0;if(k){e.preventDefault();api.set(api.value+k*o.step,true)}});
+ draw();return api;
+}
+function sizeCanvas(T){var r=T.cv.getBoundingClientRect();if(!r.width)return;var D=window.PILAR&&PILAR.device,lite=D&&D.fx==="lite";
+ var k=Math.min(window.devicePixelRatio||1,lite?1.6:2);T.cv.width=Math.round(r.width*k);T.cv.height=Math.round(r.height*k);T.k=k;T.W=r.width;T.H=r.height;
+ var s=Math.min(r.width/WW,(r.height)/WH);T.s=s;T.ox=(r.width-WW*s)/2;T.oy=(r.height-WH*s)/2;}
+function W2S(T,x,y){return{x:T.ox+(T.flip?WW-x:x)*T.s,y:T.oy+(WH-y)*T.s}}
+
+function syncTeam(T){
+ var r=ROUNDS[S.round]||{},w=S.world;
+ $(T.side+"-vo").textContent=fmt(T.v)+" m/s";
+ $(T.side+"-po").textContent=fmt(T.pred)+" m";
+ var guess=S.mode==="duel"&&r.type==="guess";
+ $(T.side+"-prow").style.display=guess?"":"none";
+ T.vS.lock(S.mode==="duel"&&(guess||S.phase!=="setup")||T.ready);
+ T.pS.lock(!guess||S.phase!=="setup"||T.ready);
+ var f=$(T.side+"-fire");
+ if(S.mode==="latihan"){f.textContent=T.shot&&!T.shot.done?"…":"🔥 TEMBAK";f.disabled=!!(T.shot&&!T.shot.done);f.classList.remove("ready")}
+ else{f.textContent=T.ready?"✓ SIAP":"SIAP";f.classList.toggle("ready",T.ready);f.disabled=S.phase!=="setup"}
+ $(T.side+"-score").textContent=T.score;
+}
+function banner(T,html,kind){var b=$(T.side+"-banner");b.innerHTML=html;b.className="banner show "+(kind||"");}
+function hideBanner(T){$(T.side+"-banner").className="banner"}
+
+/* ───── alur tanding ───── */
+function setRoundBar(){
+ var r=ROUNDS[S.round],p=PLANETS[S.mode==="latihan"?S.latihan.planet:(r?r.planet:"bumi")];
+ $("rPlanet").textContent=p.i+" "+p.n+" · g = "+fmt(p.g,p.g<10?2:1)+" m/s²";
+ if(S.mode==="latihan"){$("rIco").textContent="🧪";$("rTitle").textContent="Latihan bebas";$("rText").innerHTML="Tembak kapan saja. Ubah planet & cara melepas target. Perhatikan dua penggaris kuning: <b>selalu sama panjang?</b>";return}
+ if(!r){$("rIco").textContent="🎯";$("rTitle").textContent="Siap bertanding?";$("rText").innerHTML="Tekan <b>Mulai</b>. Kedua tim mendapat target yang sama.";return}
+ $("rIco").textContent=r.ico;$("rTitle").textContent=r.title;$("rText").innerHTML=r.text;
+}
+function startMatch(){S.round=-1;S.history=[];S.big={left:null,right:null};each(function(T){T.score=0;T.trails=[];T.shot=null});openIntro()}
+function openIntro(){
+ ["left","right"].forEach(function(side){var box=document.querySelector('#introModal [data-team="'+side+'"]');box.innerHTML=BIGQ.map(function(q){return'<button data-q="'+q[0]+'" aria-pressed="false">'+q[1]+"</button>"}).join("");
+  box.querySelectorAll("button").forEach(function(b){b.onclick=function(){S.big[side]=b.dataset.q;box.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",String(x===b))});$("introGo").disabled=!(S.big.left&&S.big.right);tone(500,.05)}})});
+ $("introGo").disabled=true;$("introModal").hidden=false;
+}
+$("introGo").onclick=function(){$("introModal").hidden=true;nextRound()};
+function nextRound(){
+ S.round++;if(S.round>=ROUNDS.length)return endMatch();
+ var r=ROUNDS[S.round],w=makeWorld(r.planet);
+ // pastikan ronde bisa dimainkan: vMin wajar & kecepatan maks cukup
+ if(r.type==="zone"){var lo=Math.max(RT+.6,w.Y*.2),hi=w.Y*.82,c=rnd(lo+.8,hi-.8);w.zone=[c-.8,c+.8]}
+ if(r.type==="guess"){var h=rnd(w.Y*.25,w.Y*.8);w.vFixed=Math.round(speedForHeight(w,h)*2)/2}
+ S.world=w;S.phase="setup";S.timer=r.type==="guess"?35:30;
+ each(function(T){T.ready=false;T.shot=null;T.trails=[];T.parts=[];hideBanner(T);
+  T.vS.range(4,45);if(r.type==="guess"){T.v=w.vFixed;T.vS.set(T.v)}T.pS.range(0,Math.ceil(w.Y));T.pred=Math.round(w.Y*.5*10)/10;T.pS.set(T.pred);syncTeam(T)});
+ $("roundNo").textContent=(S.round+1)+"/"+ROUNDS.length;$("nextBtn").textContent="⏭ Lewati";
+ setRoundBar();tone(660,.08);
+}
+function onFire(T){
+ if(S.mode==="latihan"){fire(T,T.v,S.latihan.release);return}
+ if(S.phase!=="setup")return;T.ready=!T.ready;syncTeam(T);tone(T.ready?720:420,.05);
+ if(teams.left.ready&&teams.right.ready)countdown();
+}
+function countdown(){S.phase="count";each(syncTeam);var n=3,el=$("count");el.hidden=false;el.textContent=n;tone(520,.1);
+ var iv=setInterval(function(){n--;if(n>0){el.textContent=n;tone(520,.1)}else{clearInterval(iv);el.textContent="🔥";tone(880,.18);setTimeout(function(){el.hidden=true},350);launchRound()}},700)}
+function launchRound(){S.phase="flying";each(function(T){fire(T,T.v,"0")})}
+function fire(T,v,release){
+ if(T.shot&&!T.shot.done&&S.mode==="latihan")return;
+ if(T.shot)T.trails.push({pts:T.shot.pts,col:T.shot.col});if(T.trails.length>5)T.trails.shift();
+ var sim=simulate(S.world,v,release),hue=["#ffb347","#ff6f91","#a78bfa","#5fe3a1","#67e8f9"][T.trails.length%5];
+ T.shot={sim:sim,t:0,done:false,pts:[],col:S.mode==="duel"?T.col:hue,hitShown:false};hideBanner(T);syncTeam(T);tone(220,.12);
+}
+function scoreTeam(T){
+ var r=ROUNDS[S.round],w=S.world,s=T.shot.sim,pts=0,msg="",kind="bad";
+ if(!s.hit){msg="❌ Meleset — target sudah sampai tanah";if(r.type==="min")msg="❌ Terlalu pelan! v minimum ≈ "+fmt(w.vMin)+" m/s"}
+ else{kind="good";var h=s.hitH;
+  if(r.type==="zone"){var inZ=h>=w.zone[0]-.3&&h<=w.zone[1]+.3;pts=inZ?100:40;msg=(inZ?"🎯 Di pita emas! ":"✓ Kena, di luar pita · ")+"tinggi "+fmt(h)+" m"}
+  if(r.type==="guess"){var err=Math.abs(h-T.pred);pts=Math.max(0,Math.round(100-25*err));msg="✓ Kena di "+fmt(h)+" m · tebakan "+fmt(T.pred)+" m (selisih "+fmt(err,2)+")"}
+  if(r.type==="min"){pts=Math.max(20,Math.round(100-8*(T.v-w.vMin)));msg="✓ Kena dengan "+fmt(T.v)+" m/s · minimum ≈ "+fmt(w.vMin)+" m/s"}}
+ if(S.round===0&&S.big[T.side]){var ok=S.big[T.side]==="hit";if(ok)pts+=20;msg+=" · Tebakan besar "+(ok?"BENAR +20":"belum tepat")}
+ T.score+=pts;T.last={pts:pts,hit:s.hit,h:s.hitH,drop:s.drop,t:s.t};banner(T,msg+(pts?" · +"+pts:""),kind);syncTeam(T);
+}
+function roundDone(){
+ S.phase="result";var r=ROUNDS[S.round],L=teams.left.last,R=teams.right.last;
+ S.history.push({title:r.title,left:L,right:R});
+ var anyHit=(L&&L.hit)||(R&&R.hit),ex=anyHit?(L&&L.hit?L:R):null;
+ $("rText").innerHTML=ex?"Lihat penggaris kuning: dalam "+fmt(ex.t,2)+" s bola turun <b>"+fmt(ex.drop,2)+" m</b> dari garis bidik — target juga turun <b>"+fmt(ex.drop,2)+" m</b>. Sama-sama ½·g·t².":"Keduanya meleset: bola tiba setelah target menyentuh tanah. Coba lebih cepat!";
+ $("nextBtn").textContent=S.round<ROUNDS.length-1?"▶ Ronde berikutnya":"🏆 Lihat hasil";
+ each(syncTeam);
+}
+function endMatch(){
+ S.phase="end";var L=teams.left.score,R=teams.right.score;
+ $("endTitle").textContent=L===R?"🤝 SERI!":L>R?"🏆 Tim Biru menang!":"🏆 Tim Merah menang!";
+ $("endSub").textContent="Skor akhir · Biru "+L+" : "+R+" Merah";
+ var row=function(x){return x?(x.hit?"✓ "+fmt(x.h)+" m · +"+x.pts:"✗ meleset"):"—"};
+ $("endTable").innerHTML="<tr><th>Ronde</th><th>🔵 Tim Biru</th><th>🔴 Tim Merah</th></tr>"+S.history.map(function(h){return"<tr><td>"+h.title+"</td><td class=b>"+row(h.left)+"</td><td class=r>"+row(h.right)+"</td></tr>"}).join("")+"<tr><td><b>Total</b></td><td class=b>"+L+"</td><td class=r>"+R+"</td></tr>";
+ $("endLesson").innerHTML="<b>Inti pelajaran:</b> gerak mendatar dan gerak jatuh berjalan sendiri-sendiri. Bola dan target sama-sama jatuh ½·g·t², jadi bidikan lurus selalu kena — di Bumi, Bulan, maupun Jupiter — asalkan bola tiba sebelum target menyentuh tanah.";
+ $("endModal").hidden=false;$("nextBtn").textContent="↻ Tanding lagi";
+ try{window.PILAR_PULSE?.track?.("hunter_duel_end",{left:L,right:R})}catch(_){}
+}
+$("endAgain").onclick=function(){$("endModal").hidden=true;startMatch()};
+$("endLatihan").onclick=function(){$("endModal").hidden=true;setMode("latihan")};
+$("nextBtn").onclick=function(){
+ if(S.phase==="idle"||S.phase==="end"){startMatch();return}
+ if(S.phase==="setup"){S.timer=0;return}            // lewati: tembak sekarang
+ if(S.phase==="result")nextRound();
+};
+function each(f){f(teams.left);f(teams.right)}
+
+/* ───── latihan ───── */
+function setMode(m){S.mode=m;document.body.classList.toggle("mode-latihan",m==="latihan");document.body.classList.toggle("mode-duel",m==="duel");
+ $("mDuel").setAttribute("aria-pressed",String(m==="duel"));$("mLatihan").setAttribute("aria-pressed",String(m==="latihan"));
+ if(m==="latihan"){S.phase="free";S.world=makeWorld(S.latihan.planet,S.world&&S.world.X,S.world&&S.world.Y);each(function(T){T.ready=false;T.shot=null;T.trails=[];hideBanner(T);T.vS.range(4,45);syncTeam(T)})}
+ else{S.phase="idle";S.round=-1;S.world=makeWorld("bumi");$("roundNo").textContent="0/5";$("timer").textContent="--";$("nextBtn").textContent="▶ Mulai";each(function(T){T.score=0;T.shot=null;T.trails=[];hideBanner(T);syncTeam(T)})}
+ setRoundBar();
+}
+$("mDuel").onclick=function(){setMode("duel")};$("mLatihan").onclick=function(){setMode("latihan")};
+Object.keys(PLANETS).forEach(function(k){var o=document.createElement("option");o.value=k;o.textContent=PLANETS[k].i+" "+PLANETS[k].n+" (g = "+fmt(PLANETS[k].g,PLANETS[k].g<10?2:1)+")";$("lPlanet").appendChild(o)});
+$("lPlanet").onchange=function(e){S.latihan.planet=e.target.value;S.world=makeWorld(S.latihan.planet,S.world.X,S.world.Y);each(function(T){T.shot=null;T.trails=[]});setRoundBar()};
+$("lRelease").onchange=function(e){S.latihan.release=e.target.value};
+$("lRandom").onclick=function(){S.world=makeWorld(S.latihan.planet);each(function(T){T.shot=null;T.trails=[];hideBanner(T)})};
+$("lClear").onclick=function(){each(function(T){T.trails=[];T.shot=null;hideBanner(T)})};
+function latihanResult(T){var s=T.shot.sim,rel=s.tRel===Infinity?"off":String(s.tRel),w=S.world;
+ if(s.hit)banner(T,"✓ Kena di "+fmt(s.hitH)+" m · bola & target turun "+fmt(s.drop,2)+" m","good");
+ else banner(T,rel==="off"?"❌ Target diam → bola lewat DI BAWAH (bola tetap jatuh, target tidak)":rel!=="0"?"❌ Target dilepas terlambat → bola lewat DI ATAS":"❌ Terlalu pelan · v minimum ≈ "+fmt(w.vMin)+" m/s","bad")}
+
+/* ───── tombol umum ───── */
+$("xrayBtn").onclick=function(){S.xray=!S.xray;this.setAttribute("aria-pressed",String(S.xray));this.classList.toggle("on",S.xray)};$("xrayBtn").classList.add("on");
+$("slowBtn").onclick=function(){S.slow=!S.slow;this.setAttribute("aria-pressed",String(S.slow));this.classList.toggle("on",S.slow)};
+$("soundBtn").onclick=function(){S.sound=!S.sound;this.textContent=S.sound?"🔊":"🔇";this.setAttribute("aria-pressed",String(S.sound));tone(660,.06)};
+$("fullBtn").onclick=function(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen({navigationUI:"hide"})}catch(_){}};
+$("homeBtn").onclick=function(){location.href="../../"};
+document.querySelectorAll("#mTabs button").forEach(function(b){b.onclick=function(){document.querySelectorAll("#mTabs button").forEach(function(x){x.setAttribute("aria-pressed",String(x===b))});$("team-left").classList.toggle("off",b.dataset.side!=="left");$("team-right").classList.toggle("off",b.dataset.side!=="right")}});
+if(matchMedia("(max-width:820px)").matches)$("team-right").classList.add("off");
+var audio=null;function tone(f,d){if(!S.sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();var o=audio.createOscillator(),g=audio.createGain();o.frequency.value=f;g.gain.setValueAtTime(.06,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}catch(_){}}
+
+/* ───── gambar ───── */
+function draw(T,now){
+ var c=T.ctx,w=S.world,k=T.k||1;c.setTransform(k,0,0,k,0,0);c.clearRect(0,0,T.W,T.H);if(!w||!T.s)return;
+ var s=T.s,P=function(x,y){return W2S(T,x,y)},r=ROUNDS[S.round]||{},shot=T.shot,tt=shot?Math.min(shot.t,shot.sim.end):0;
+ // grid & sumbu
+ c.lineWidth=1;c.strokeStyle="rgba(120,150,180,.07)";for(var gx=0;gx<=WW;gx++){var a=P(gx,0),b=P(gx,WH);c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.stroke()}for(var gy=0;gy<=WH;gy++){a=P(0,gy);b=P(WW,gy);c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.stroke()}
+ c.strokeStyle="#2b4560";c.lineWidth=2;a=P(0,0);b=P(WW,0);c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.stroke();
+ // penggaris tinggi di jalur jatuh target
+ c.font="600 "+Math.max(10,s*.42)+"px Inter,system-ui";c.fillStyle="#5d7287";c.textAlign=T.flip?"right":"left";
+ for(var hh=0;hh<=Math.ceil(w.Y);hh+=2){var m=P(w.X,hh),off=(T.flip?-1:1)*s*1.15;c.fillRect(m.x+off-(T.flip?-2:0),m.y,T.flip?-6:6,1);c.fillText(hh+" m",m.x+off+(T.flip?-8:8),m.y+4)}
+ // zona emas
+ if(S.mode==="duel"&&r.type==="zone"&&w.zone){var z1=P(w.X,w.zone[1]),z0=P(w.X,w.zone[0]);c.fillStyle="rgba(255,207,90,.16)";c.fillRect(z1.x-s*1.3,z1.y,s*2.6,z0.y-z1.y);c.strokeStyle="rgba(255,207,90,.6)";c.strokeRect(z1.x-s*1.3,z1.y,s*2.6,z0.y-z1.y)}
+ // jejak lama
+ T.trails.forEach(function(tr){line(c,tr.pts,tr.col,.28,2)});
+ // magnet & tali
+ var mg=P(w.X,w.Y+1.25);c.fillStyle="#3a4757";c.fillRect(mg.x-s*.55,mg.y-s*.3,s*1.1,s*.55);c.strokeStyle="#55677b";c.lineWidth=2;var bar=P(w.X+(T.flip?-1:1)*0,w.Y+1.9);
+ c.beginPath();c.moveTo(mg.x,mg.y-s*.3);c.lineTo(mg.x,bar.y);c.lineTo(mg.x+(T.flip?-1:1)*s*1.8,bar.y);c.lineTo(mg.x+(T.flip?-1:1)*s*1.8,bar.y+s*.4);c.stroke();
+ var held=!shot||tt<=shot.sim.tRel;c.fillStyle=held?"#ff5d75":"#3d4b5a";c.beginPath();c.arc(mg.x+(T.flip?-1:1)*s*.36,mg.y-s*.03,s*.08,0,7);c.fill();
+ // garis bidik (dashed) & bayangan posisi awal target
+ var mz=P(w.mx,w.my),tg0=P(w.X,w.Y);c.setLineDash([s*.25,s*.25]);c.strokeStyle="rgba(200,215,230,.35)";c.lineWidth=1.5;c.beginPath();c.moveTo(mz.x,mz.y);c.lineTo(tg0.x,tg0.y);c.stroke();c.setLineDash([]);
+ c.strokeStyle="rgba(200,215,230,.25)";c.beginPath();c.arc(tg0.x,tg0.y,RT*s,0,7);c.stroke();
+ c.setLineDash([2,5]);c.beginPath();c.moveTo(tg0.x,tg0.y);c.lineTo(P(w.X,0).x,P(w.X,0).y);c.stroke();c.setLineDash([]);
+ // tebakan
+ if(S.mode==="duel"&&r.type==="guess"){var pg=P(w.X,T.pred);c.strokeStyle=T.col;c.lineWidth=3;c.beginPath();c.moveTo(pg.x-s*1.4,pg.y);c.lineTo(pg.x+s*1.4,pg.y);c.stroke();c.fillStyle=T.col;c.textAlign="center";c.fillText("tebakan "+fmt(T.pred)+" m",pg.x,pg.y-8)}
+ // pratinjau (sebelum menembak, mode latihan tanpa tembakan): tidak menampilkan lintasan agar tetap jadi tebakan
+ // meriam
+ var pv=P(PIV.x,PIV.y),ang=T.flip?Math.PI-w.th:w.th;c.save();c.translate(pv.x,pv.y);c.rotate(-ang);
+ var gr=c.createLinearGradient(0,-s*.3,0,s*.3);gr.addColorStop(0,"#a9b6c6");gr.addColorStop(1,"#4c5a6b");c.fillStyle=gr;rr(c,-s*.35,-s*.28,s*(BARREL+.35),s*.56,s*.12);c.fill();
+ c.fillStyle=T.col;c.fillRect(s*(BARREL-.28),-s*.3,s*.18,s*.6);c.restore();
+ c.strokeStyle="#55677b";c.lineWidth=2;c.beginPath();c.moveTo(pv.x,pv.y);c.lineTo(pv.x-(T.flip?-1:1)*s*.6,P(0,0).y);c.moveTo(pv.x,pv.y);c.lineTo(pv.x+(T.flip?-1:1)*s*.3,P(0,0).y);c.stroke();
+ // tembakan aktif
+ var tp,bp;
+ if(shot){var sim=shot.sim,tc=Math.min(tt,sim.t);
+  bp=sim.ball(tc);tp=sim.targ(tc);
+  if(tt>sim.t&&sim.hit){var d=tt-sim.t;var dx=Math.min(WW-1-sim.ht.x,sim.vx*.12*d);tp={x:sim.ht.x+dx,y:Math.max(RT,sim.ht.y+.8*d-.5*w.g*d*d)};bp={x:sim.hb.x+dx*.4,y:Math.max(RB,sim.hb.y-.5*w.g*d*d)}}
+  line(c,shot.pts,shot.col,.95,2.5);
+  if(S.xray)xray(T,sim,tc);
+ }else{tp={x:w.X,y:w.Y}}
+ // target
+ var tq=P(tp.x,tp.y);if(held){c.strokeStyle="#55677b";c.lineWidth=1.5;c.beginPath();c.moveTo(mg.x,mg.y+s*.25);c.lineTo(tq.x,tq.y-RT*s);c.stroke()}
+ bull(c,tq.x,tq.y,RT*s,S.mode==="duel"?T.col:"#ffcf5a");
+ if(bp){var bq=P(bp.x,bp.y);c.fillStyle=shot.col;c.beginPath();c.arc(bq.x,bq.y,RB*s,0,7);c.fill();c.strokeStyle="#fff";c.globalAlpha=.6;c.lineWidth=1;c.stroke();c.globalAlpha=1}
+ // percikan
+ for(var i=T.parts.length-1;i>=0;i--){var p=T.parts[i],q=P(p.x,p.y);c.globalAlpha=Math.max(0,p.l);c.fillStyle=p.c;c.fillRect(q.x-2,q.y-2,4,4)}c.globalAlpha=1;
+}
+function xray(T,sim,tc){
+ var c=T.ctx,w=S.world,s=T.s,P=function(x,y){return W2S(T,x,y)},N=6,T0=sim.t||1;
+ c.lineWidth=1;c.font="700 "+Math.max(10,s*.45)+"px Inter,system-ui";
+ for(var i=1;i<=N;i++){var t=T0*i/N;if(t>tc+1e-6)break;
+  var g=P(w.mx+sim.v*Math.cos(w.th)*t,w.my+sim.v*Math.sin(w.th)*t),b=P(sim.ball(t).x,sim.ball(t).y),q=P(w.X,sim.targ(t).y);
+  c.strokeStyle="rgba(200,215,230,.45)";c.beginPath();c.arc(g.x,g.y,4,0,7);c.stroke();c.beginPath();c.moveTo(g.x,g.y);c.lineTo(b.x,b.y);c.stroke();
+  c.fillStyle="rgba(255,255,255,.35)";c.beginPath();c.arc(b.x,b.y,2.5,0,7);c.fill();c.beginPath();c.arc(q.x,q.y,2.5,0,7);c.fill()}
+ // dua penggaris jatuh saat ini: (posisi tanpa gravitasi → bola) dan (posisi awal target → target)
+ var gNow=P(w.mx+sim.v*Math.cos(w.th)*tc,w.my+sim.v*Math.sin(w.th)*tc),bNow=P(sim.ball(tc).x,sim.ball(tc).y),t0=P(w.X,w.Y),tNow=P(w.X,sim.targ(tc).y);
+ var dropB=.5*w.g*tc*tc,dropT=w.Y-sim.targ(tc).y,side=(T.flip?-1:1);
+ c.strokeStyle="#ffcf5a";c.fillStyle="#ffcf5a";c.lineWidth=3;
+ c.beginPath();c.moveTo(gNow.x,gNow.y);c.lineTo(gNow.x,bNow.y);c.stroke();
+ var tx=t0.x+side*s*2.9;c.beginPath();c.moveTo(tx,t0.y);c.lineTo(tx,tNow.y);c.stroke();
+ c.textAlign=T.flip?"left":"right";if(dropB>.05)c.fillText(fmt(dropB,2)+" m",gNow.x-side*8,(gNow.y+bNow.y)/2+4);
+ c.textAlign=T.flip?"right":"left";if(dropT>.05)c.fillText(fmt(dropT,2)+" m",tx+side*6,(t0.y+tNow.y)/2+4);
+ c.textAlign="center";c.fillStyle="#cfe0ee";c.fillText("t = "+fmt(tc,2)+" s",P(w.X,w.Y+2.6).x-side*s*5,P(w.X,w.Y+2.6).y);
+}
+function line(c,pts,col,a,wid){if(pts.length<2)return;c.globalAlpha=a;c.strokeStyle=col;c.lineWidth=wid;c.beginPath();c.moveTo(pts[0].x,pts[0].y);for(var i=1;i<pts.length;i++)c.lineTo(pts[i].x,pts[i].y);c.stroke();c.globalAlpha=1}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function bull(c,x,y,r,col){var rings=[[1,col],[.72,"#f4f7fb"],[.48,col],[.22,"#f4f7fb"]];rings.forEach(function(q){c.fillStyle=q[1];c.beginPath();c.arc(x,y,r*q[0],0,7);c.fill()})}
+
+/* ───── loop ───── */
+var last=0,tickAcc=0;
+function frame(now){requestAnimationFrame(frame);var dt=Math.min(.1,(now-(last||now))/1000);last=now;
+ if(S.mode==="duel"&&S.phase==="setup"){tickAcc+=dt;if(tickAcc>=1){tickAcc=0;S.timer--;if(S.timer<=5&&S.timer>0)tone(400,.04)}$("timer").textContent=Math.max(0,S.timer)+" s";
+  if(S.timer<=0){each(function(T){T.ready=true;syncTeam(T)});countdown()}}
+ var speed=S.slow?.3:1,flyingDone=true;
+ each(function(T){var sh=T.shot;
+  if(sh&&!sh.done){var sim=sh.sim;sh.t+=dt*speed;var tc=Math.min(sh.t,sim.t),b=sim.ball(tc),q=W2S(T,b.x,b.y);if(!sh.pts.length||Math.hypot(q.x-sh.pts[sh.pts.length-1].x,q.y-sh.pts[sh.pts.length-1].y)>2)sh.pts.push(q);
+   if(sh.t>=sim.t&&!sh.hitShown){sh.hitShown=true;if(sim.hit){tone(980,.15);for(var i=0;i<26;i++){var a=Math.random()*6.28,v=rnd(2,7);T.parts.push({x:sim.hb.x,y:sim.hb.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:1,c:i%2?"#fff":T.col})}}else tone(160,.2)}
+   if(sh.t>=sim.end){sh.done=true;if(S.mode==="duel")scoreTeam(T);else{latihanResult(T);syncTeam(T)}}}
+  if(sh&&!sh.done)flyingDone=false;
+  for(var i=T.parts.length-1;i>=0;i--){var p=T.parts[i];p.x+=p.vx*dt*speed;p.y+=p.vy*dt*speed;p.vy-=9.8*dt*speed;p.l-=dt*speed*1.2;if(p.l<=0)T.parts.splice(i,1)}
+  draw(T,now)});
+ if(S.mode==="duel"&&S.phase==="flying"&&flyingDone&&teams.left.shot&&teams.right.shot)roundDone();
+}
+
+/* ───── mulai ───── */
+buildTeam("left");buildTeam("right");
+S.world=makeWorld("bumi");setRoundBar();each(syncTeam);
+window.PILAR_HUNTER={state:S,teams:teams,simulate:simulate,makeWorld:makeWorld};
+try{window.PILAR_PULSE?.setApp?.("hunter-ball")}catch(_){}
+if(/[?&]mode=latihan/.test(location.search))setMode("latihan");
+requestAnimationFrame(frame);
+})();
+</script>
+<script src="../../pulse/config.js"></script>
+<script src="../../core/pulse.js"></script>
+</body>
+</html>
