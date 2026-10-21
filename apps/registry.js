@@ -12,6 +12,6 @@
     {id:'pressure',title:'Lab Maya Tekanan',subtitle:'Amati · Selidiki · Pahami · Terapkan · Ceritakan · 3D',category:'Simulasi / Lab Maya',icon:'🫧',url:'apps/pressure/',version:'2.0',status:'ready',visionGate:false},
     {id:'frost-breakout',title:'Frost Breakout',subtitle:'Arcade pemecah es neon · Mode Debug: step, breakpoint, rancang versimu',category:'Game / Arcade',icon:'❄️',url:'apps/frost-breakout/',version:'1.1',status:'ready',visionGate:false},
     {id:'bioweb',title:'BioWeb · Ciremai',subtitle:'Jejaring hidup Gunung Ciremai 3D · cincin waktu · skenario · keberlanjutan',category:'Simulasi / Lab Maya / IPA',icon:'🌋',url:'apps/bioweb/',version:'0.3',status:'ready',visionGate:false},
-    {id:'hunter-ball',title:'Bola Sang Pemburu · Duel',subtitle:'Monyet & Pemburu · gerak parabola · jatuh bebas · 2 tim tanding',category:'Game / Fisika / MPI',icon:'🎯',url:'apps/hunter-ball/',version:'1.0',status:'ready',visionGate:false}
+    {id:'hunter-ball',title:'Bola Sang Pemburu · Duel',subtitle:'Adu sudut · kecepatan awal · tembak tercepat · gerak parabola & jatuh bebas',category:'Game / Fisika / MPI',icon:'🎯',url:'apps/hunter-ball/',version:'2.0',status:'ready',visionGate:false}
   ];
 })(window);
