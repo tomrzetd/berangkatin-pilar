@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#030a18">
+<meta name="description" content="Frost Snake · Duel Numerasi — dua tim mengendalikan ular es dan memakan bola berisi jawaban soal tambah, kurang, kali, bagi, dan melengkapi pernyataan matematika.">
+<title>PILAR™ · Frost Snake · Duel Numerasi</title>
+<style>
+:root{--bg:#030a18;--panel:#071327;--panel2:#0a1a33;--line:#12305a;--line2:#1d4580;--text:#eaf4ff;--muted:#8ea8c8;--dim:#5a7598;
+ --blue:#38a3ff;--red:#ff5d7a;--ice:#7fd8ff;--gold:#ffd166;--green:#5fe3a1}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:15px/1.4 Inter,Segoe UI,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+body{display:flex;flex-direction:column;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible{outline:3px solid var(--ice);outline-offset:2px}
+.topbar{flex:none;display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--line);background:#040d1d}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.homeBtn{width:44px;height:44px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);font-size:22px}
+.brand b{display:block;font-size:18px;letter-spacing:.06em;color:#9fe3ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand small{display:block;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.creator{font:600 9px ui-monospace,Consolas,monospace;color:#5a7598}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--line2);border-radius:999px;background:var(--panel);font-size:13px;color:#b8cde6;white-space:nowrap}.pill b{color:var(--text);font-variant-numeric:tabular-nums;font-size:16px}
+.pill.warn b{color:var(--gold)}
+.act{min-height:46px;padding:0 14px;border-radius:12px;border:1px solid var(--line2);background:var(--panel2);font-weight:800;font-size:14px;white-space:nowrap}
+.act.primary{background:linear-gradient(135deg,#1767c9,#38c6ff);color:#02101f;border-color:#7fd8ff}
+.tools{display:flex;gap:6px;align-items:center}
+.strip{flex:none;display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 14px 0;padding:8px 12px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.strip .lab{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.seg{display:flex;gap:3px;padding:3px;border:1px solid var(--line2);border-radius:12px;background:#040d1d}.seg button{min-height:40px;padding:0 12px;border:0;border-radius:9px;background:none;font-weight:800;font-size:13px;color:var(--muted)}.seg button[aria-pressed=true]{background:#143a6e;color:var(--text)}
+.strip.locked .seg{opacity:.5;pointer-events:none}
+.strip .goal{margin-left:auto;color:var(--muted);font-size:13px}
+.arenas{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:10px 14px 12px}
+body.solo .arenas{grid-template-columns:1fr}body.solo #team-right{display:none}
+.team{min-width:0;min-height:0;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:18px;background:var(--panel);overflow:hidden}
+.team.left{--tc:var(--blue)}.team.right{--tc:var(--red)}
+.thead{flex:none;display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,color-mix(in srgb,var(--tc) 16%,transparent),transparent)}
+.team.right .thead{flex-direction:row-reverse;text-align:right;background:linear-gradient(270deg,color-mix(in srgb,var(--tc) 16%,transparent),transparent)}
+.badge{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--tc);color:#02101f;font-weight:900}
+.thead h3{margin:0;font-size:17px}.thead small{color:var(--muted);font-size:12px}.tname{flex:1;min-width:0}
+.hud{display:flex;gap:14px;align-items:flex-end}.team.right .hud{flex-direction:row-reverse}
+.hud div{text-align:center}.hud small{display:block;font-size:10px;letter-spacing:.12em;color:var(--muted)}.hud b{display:block;font-size:20px;line-height:1.1;font-variant-numeric:tabular-nums}
+.hud .sc b{font-size:30px;color:var(--tc)}
+.qcard{flex:none;display:flex;align-items:center;gap:12px;padding:8px 14px;border-bottom:1px solid var(--line);background:#050f22;min-height:64px}
+.team.right .qcard{flex-direction:row-reverse}
+.qtxt{font-size:clamp(22px,2.6vw,38px);font-weight:900;letter-spacing:.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.qtxt .blank{display:inline-block;min-width:1.2em;border-bottom:4px solid var(--gold);color:var(--gold);text-align:center}
+.qhint{color:var(--muted);font-size:12px;flex:1;min-width:0}.team.right .qhint{text-align:right}
+.fb{padding:6px 12px;border-radius:10px;font-weight:800;font-size:14px;white-space:nowrap;opacity:0;transition:opacity .2s}
+.fb.show{opacity:1}.fb.good{background:#0f3b2a;color:#bff5d6}.fb.bad{background:#3d1424;color:#ffc2cc}.fb.ice{background:#0f2c4d;color:#cdefff}
+.body{flex:1;min-height:0;display:grid;grid-template-columns:auto 1fr;gap:10px;padding:10px}
+.team.right .body{grid-template-columns:1fr auto}.team.right .side{order:2}
+.side{display:flex;flex-direction:column;gap:10px;justify-content:space-between;width:212px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.stat{padding:7px 9px;border:1px solid var(--line);border-radius:11px;background:#050f22}.stat small{display:block;font-size:10px;color:var(--muted);letter-spacing:.08em}.stat b{font-size:19px;font-variant-numeric:tabular-nums}
+.stat.ok b{color:var(--green)}.stat.no b{color:#ff9db0}
+.prog{grid-column:1/-1}.bar{height:8px;border-radius:8px;background:#0c2140;overflow:hidden;margin-top:5px}.bar i{display:block;height:100%;width:0;background:var(--tc);transition:width .3s}
+.dpad{display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(3,64px);gap:6px;justify-content:center}
+.dpad button{border-radius:16px;border:1px solid var(--line2);background:#0a1d3a;font-size:26px;font-weight:900;color:#cfe8ff;box-shadow:0 4px 0 #04101f}
+.dpad button:active,.dpad button.hit{transform:translateY(3px);box-shadow:0 1px 0 #04101f;background:color-mix(in srgb,var(--tc) 40%,#0a1d3a)}
+.dpad .u{grid-column:2;grid-row:1}.dpad .l{grid-column:1;grid-row:2}.dpad .r{grid-column:3;grid-row:2}.dpad .d{grid-column:2;grid-row:3}
+.dpad .c{grid-column:2;grid-row:2;display:grid;place-items:center;font-size:11px;color:var(--dim);text-align:center;line-height:1.1}
+.stage{position:relative;min-width:0;min-height:0;display:grid;place-items:center}
+.stage canvas{display:block;touch-action:none;border-radius:10px;box-shadow:0 0 0 2px #1d5fae,0 0 24px #0b5cc455}
+html[data-fx=lite] .stage canvas{box-shadow:0 0 0 2px #1d5fae}
+.over{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;text-align:center}
+.over div{padding:12px 18px;border-radius:14px;background:rgba(3,10,24,.9);border:1px solid var(--line2);font-weight:800}
+.over[hidden]{display:none}
+.modal{position:fixed;inset:0;z-index:1100;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.72)}
+.modal[hidden]{display:none}
+.card{width:min(860px,96vw);max-height:92vh;overflow:auto;border:1px solid var(--line2);border-radius:22px;background:#06101f;box-shadow:0 30px 90px #000a}
+.card .hd{padding:16px 20px;border-bottom:1px solid var(--line)}.card .hd h2{margin:0;font-size:24px}.card .hd p{margin:6px 0 0;color:var(--muted)}
+.card .bd{padding:16px 20px}.card .ft{padding:12px 20px 18px;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+table.res{width:100%;border-collapse:collapse;font-size:15px}table.res th,table.res td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left}table.res th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+table.res td.b{color:var(--blue);font-weight:800}table.res td.r{color:var(--red);font-weight:800}
+.count{position:fixed;inset:0;z-index:1050;display:grid;place-items:center;pointer-events:none;font-size:min(26vh,220px);font-weight:900;color:#dff6ff;text-shadow:0 0 40px #0b5cc4}
+.count[hidden]{display:none}
+body.playing .strip{display:none}
+@media(max-width:1500px){.strip .goal{display:none}}
+@media(max-width:1100px){.side{width:176px}.dpad{grid-template-columns:repeat(3,54px);grid-template-rows:repeat(3,54px)}}
+@media(max-width:820px){
+ .brand small,.creator{display:none}.topbar{flex-wrap:wrap}.tools{width:100%;overflow:auto}
+ .strip{margin:6px 8px 0;gap:6px 8px}.strip .goal{display:none}.arenas{padding:8px}
+ .body,.team.right .body{grid-template-columns:1fr;grid-template-rows:1fr auto}.side{width:auto;order:2;flex-direction:row;align-items:center}
+ .stats{flex:1}.dpad{grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px)}
+ .hud{gap:8px}.hud .sc b{font-size:24px}.tname small{display:none}
+ .qcard{flex-wrap:wrap;gap:4px 10px;min-height:0}.qhint{display:none}.fb{flex-basis:100%;white-space:normal;font-size:13px}
+ .stat.prog{display:none}.stat{padding:5px 8px}.stat b{font-size:17px}.side{gap:8px}
+ .strip .seg button{min-height:36px;padding:0 9px;font-size:12px}.strip .lab{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<link rel="stylesheet" href="../../css/pilar-perf.css">
+<script src="../../core/device-profile.js"></script>
+</head>
+<body>
+<header class="topbar">
+ <div class="brand"><button class="homeBtn" id="homeBtn" aria-label="Kembali ke PILAR Hub">←</button>
+  <div style="min-width:0"><b>❄ FROST SNAKE · DUEL NUMERASI</b><small>Makan bola berisi jawaban yang benar · tambah · kurang · kali · bagi · lengkapi pernyataan</small></div></div>
+ <span class="creator">by : rizalabdurrahman05@guru.smp.belajar.id</span>
+ <div class="tools">
+  <span class="pill" id="timerPill">⏱ <b id="timer">3:00</b></span>
+  <button class="act primary" id="startBtn">▶ Mulai</button>
+  <button class="act" id="pauseBtn" disabled>⏸ Jeda</button>
+  <button class="act" id="soundBtn" aria-label="Suara" aria-pressed="false">🔇</button>
+  <button class="act" id="fullBtn" aria-label="Layar penuh">⛶</button>
+ </div>
+</header>
+<section class="strip" id="strip">
+ <span class="lab">Mode</span><div class="seg" id="segMode"><button data-v="duel" aria-pressed="true">⚔ Duel 2 Tim</button><button data-v="solo" aria-pressed="false">👤 Solo</button></div>
+ <span class="lab">Soal</span><div class="seg" id="segOps"><button data-v="add" aria-pressed="true">+ Tambah</button><button data-v="sub" aria-pressed="true">− Kurang</button><button data-v="mul" aria-pressed="true">× Kali</button><button data-v="div" aria-pressed="true">÷ Bagi</button><button data-v="blank" aria-pressed="true">□ Lengkapi</button></div>
+ <span class="lab">Tingkat</span><div class="seg" id="segLvl"><button data-v="0" aria-pressed="true">Mudah</button><button data-v="1" aria-pressed="false">Sedang</button><button data-v="2" aria-pressed="false">Sulit</button></div>
+ <span class="lab">Waktu</span><div class="seg" id="segDur"><button data-v="120" aria-pressed="false">2 m</button><button data-v="180" aria-pressed="true">3 m</button><button data-v="300" aria-pressed="false">5 m</button></div>
+ <span class="goal">Benar 5× beruntun → <b style="color:var(--ice)">ABSOLUTE ZERO</b> (poin ×2)</span>
+</section>
+<main class="arenas">
+ <section class="team left" id="team-left"></section>
+ <section class="team right" id="team-right"></section>
+</main>
+<div class="count" id="count" hidden></div>
+<div class="modal" id="endModal" hidden><div class="card">
+ <div class="hd"><h2 id="endTitle">🏆</h2><p id="endSub"></p></div>
+ <div class="bd"><table class="res" id="endTable"></table><p id="endNote" style="color:var(--muted);margin:14px 0 0"></p></div>
+ <div class="ft"><span class="creator" style="margin-right:auto;align-self:center">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span><button class="act" id="endClose">Tutup</button><button class="act primary" id="endAgain">↻ Main lagi</button></div>
+</div></div>
+
+<script>
+(function(){
+"use strict";
+/* ═══════════════════════════════════════════════════════════════
+   FROST SNAKE · DUEL NUMERASI
+   - Tiap tim punya ular & arena 16×16 sendiri. Soal muncul di atas arena;
+     beberapa bola angka tersebar → makan bola berisi JAWABAN yang benar.
+   - Benar: ular tumbuh, poin = 10 × combo (×2 saat ABSOLUTE ZERO).
+   - Salah: combo hilang, ular memendek 1, membeku 0,8 s; soal tetap sama.
+   - Menabrak dinding/es/badan sendiri: membeku 2 s, ular dipendekkan & kembali ke titik awal.
+   - Urutan soal kedua tim SAMA (seed sama) → adil.
+   ═══════════════════════════════════════════════════════════════ */
+var $=function(id){return document.getElementById(id)};
+var N=16,SPAWN={x:8,y:13};
+var DIRS={u:{x:0,y:-1},d:{x:0,y:1},l:{x:-1,y:0},r:{x:1,y:0}};
+var COL={left:{body:"#2f8bff",bodyAZ:"#88ffff",ring:"#38a3ff"},right:{body:"#ff4d6d",bodyAZ:"#ffc2d4",ring:"#ff5d7a"}};
+var LITE=!!(window.PILAR&&PILAR.device&&PILAR.device.fx==="lite");
+var CFG={mode:"duel",ops:["add","sub","mul","div","blank"],lvl:0,dur:180};
+try{var sv=JSON.parse(localStorage.getItem("pilar_frost_snake")||"null");if(sv)Object.assign(CFG,sv)}catch(_){}
+if(matchMedia("(max-width:820px)").matches)CFG.mode="solo";
+var S={phase:"idle",left:0,seed:1,sound:false,last:0};
+var teams={};
+
+/* ───── generator soal (seeded → kedua tim dapat urutan soal yang sama) ───── */
+function rng(seed){var a=seed>>>0;return function(){a=(a+0x6D2B79F5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}}
+function ri(r,a,b){return a+Math.floor(r()*(b-a+1))}
+var SYM={add:"+",sub:"−",mul:"×",div:"÷"};
+function base(r,op,L){
+ var a,b,c;
+ if(op==="add"){a=L===0?ri(r,1,10):L===1?ri(r,12,65):ri(r,120,560);b=L===0?ri(r,1,10):L===1?ri(r,8,35):ri(r,45,440);c=a+b}
+ if(op==="sub"){a=L===0?ri(r,6,20):L===1?ri(r,30,99):ri(r,300,999);b=L===0?ri(r,1,a-1):L===1?ri(r,9,a-5):ri(r,60,a-40);c=a-b}
+ if(op==="mul"){a=L===0?ri(r,2,5):L===1?ri(r,3,10):ri(r,11,25);b=L===0?ri(r,1,10):L===1?ri(r,3,10):ri(r,3,9);c=a*b}
+ if(op==="div"){b=L===0?ri(r,2,5):L===1?ri(r,3,10):ri(r,4,12);c=L===0?ri(r,1,10):L===1?ri(r,3,10):ri(r,6,15);a=b*c}
+ return{a:a,b:b,c:c,op:op}
+}
+function makeQuestion(k){
+ var r=rng(S.seed*7919+k*104729),ops=CFG.ops.length?CFG.ops:["add"],op=ops[Math.floor(r()*ops.length)],L=CFG.lvl,q;
+ if(op!=="blank"){var e=base(r,op,L);q={html:e.a+" "+SYM[op]+" "+e.b+" = <span class=blank>?</span>",text:e.a+" "+SYM[op]+" "+e.b+" = ?",ans:e.c,e:e,kind:"hasil"};
+  q.near=[e.c+1,e.c-1,e.c+2,e.c-2,e.c+10,e.c-10,op==="mul"?e.a*(e.b+1):0,op==="mul"?e.a*(e.b-1):0,op==="add"?e.a-e.b:0,op==="sub"?e.a+e.b:0,op==="div"?e.c+e.b:0]}
+ else{var bop=["add","sub","mul","div"].filter(function(o){return ops.indexOf(o)>=0});if(!bop.length)bop=["add","sub","mul","div"];
+  var o=bop[Math.floor(r()*bop.length)],e2=base(r,o,L),first=r()<.5;
+  if(L===2&&(o==="add"||o==="sub")&&r()<.4){              // pernyataan setara: a + b = □ + d
+   var d=ri(r,5,Math.max(6,Math.min(e2.a,e2.b)-1)),tot=o==="add"?e2.c:e2.a+e2.b;var ab=o==="add"?[e2.a,e2.b]:[e2.a,e2.b];
+   tot=ab[0]+ab[1];q={html:ab[0]+" + "+ab[1]+" = <span class=blank>□</span> + "+d,text:ab[0]+" + "+ab[1]+" = □ + "+d,ans:tot-d,kind:"setara"};q.near=[tot,tot+d,q.ans+1,q.ans-1,q.ans+10,q.ans-10]}
+  else if(first){q={html:"<span class=blank>□</span> "+SYM[o]+" "+e2.b+" = "+e2.c,text:"□ "+SYM[o]+" "+e2.b+" = "+e2.c,ans:e2.a,kind:"lengkapi"};
+   q.near=[o==="add"?e2.c+e2.b:o==="sub"?e2.c-e2.b:o==="mul"?e2.c*e2.b:e2.c+e2.b,e2.a+1,e2.a-1,e2.a+2,e2.a+10]}
+  else{q={html:e2.a+" "+SYM[o]+" <span class=blank>□</span> = "+e2.c,text:e2.a+" "+SYM[o]+" □ = "+e2.c,ans:e2.b,kind:"lengkapi"};
+   q.near=[o==="add"?e2.a+e2.c:o==="sub"?e2.a+e2.c:o==="mul"?e2.c-e2.a:e2.a-e2.c,e2.b+1,e2.b-1,e2.b+2,e2.b+10]}}
+ var need=L===0?2:3,opts=[],seen={};seen[q.ans]=1;
+ q.near.forEach(function(v){if(opts.length<need&&v>=0&&!seen[v]){seen[v]=1;opts.push(v)}});
+ var guard=0;while(opts.length<need&&guard++<50){var v=q.ans+ri(r,-12,12);if(v>=0&&!seen[v]){seen[v]=1;opts.push(v)}}
+ // acak urutan pengecoh
+ for(var i=opts.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=opts[i];opts[i]=opts[j];opts[j]=t}
+ q.opts=opts;return q;
+}
+
+/* ───── kartu tim ───── */
+function buildTeam(side){
+ var el=$("team-"+side),name=side==="left"?"Tim Biru":"Tim Merah",keys=side==="left"?"W A S D":"↑ ← ↓ →";
+ el.innerHTML='<div class="thead"><div class="badge">'+(side==="left"?"B":"M")+'</div><div class="tname"><h3>'+name+'</h3><small>tombol: '+keys+' · geser di arena</small></div>'+
+  '<div class="hud"><div><small>LEVEL</small><b id="'+side+'-lv">1</b></div><div><small>COMBO</small><b id="'+side+'-cb">×1</b></div><div class="sc"><small>SKOR</small><b id="'+side+'-sc">0</b></div></div></div>'+
+  '<div class="qcard"><div class="qtxt" id="'+side+'-q">Siap?</div><div class="qhint" id="'+side+'-qh">Makan bola yang berisi jawaban benar</div><div class="fb" id="'+side+'-fb"></div></div>'+
+  '<div class="body"><div class="side"><div class="stats"><div class="stat ok"><small>BENAR</small><b id="'+side+'-ok">0</b></div><div class="stat no"><small>SALAH</small><b id="'+side+'-no">0</b></div>'+
+  '<div class="stat prog"><small>MENUJU LEVEL BERIKUTNYA</small><div class="bar"><i id="'+side+'-bar"></i></div></div></div>'+
+  '<div class="dpad"><button class="u" data-d="u" aria-label="Atas">▲</button><button class="l" data-d="l" aria-label="Kiri">◀</button><div class="c">ARAH</div><button class="r" data-d="r" aria-label="Kanan">▶</button><button class="d" data-d="d" aria-label="Bawah">▼</button></div></div>'+
+  '<div class="stage" id="'+side+'-stage"><canvas id="'+side+'-cv"></canvas><div class="over" id="'+side+'-over" hidden><div id="'+side+'-overT"></div></div></div></div>';
+ var T={side:side,cv:$(side+"-cv"),col:COL[side],parts:[],pops:[],flash:[]};T.ctx=T.cv.getContext("2d");
+ el.querySelectorAll(".dpad button").forEach(function(b){b.addEventListener("pointerdown",function(e){e.preventDefault();steer(T,b.dataset.d);b.classList.add("hit");setTimeout(function(){b.classList.remove("hit")},120)})});
+ swipe(T);
+ new ResizeObserver(function(){fit(T)}).observe($(side+"-stage"));
+ teams[side]=T;resetTeam(T);return T;
+}
+function swipe(T){var pid=null,x0=0,y0=0;
+ T.cv.addEventListener("pointerdown",function(e){if(pid!=null)return;if(e.pointerType==="touch"&&Math.max(e.width||0,e.height||0)>90)return;pid=e.pointerId;x0=e.clientX;y0=e.clientY;T.cv.setPointerCapture(pid)});
+ T.cv.addEventListener("pointermove",function(e){if(e.pointerId!==pid)return;var dx=e.clientX-x0,dy=e.clientY-y0;if(Math.max(Math.abs(dx),Math.abs(dy))<22)return;
+  steer(T,Math.abs(dx)>Math.abs(dy)?(dx>0?"r":"l"):(dy>0?"d":"u"));x0=e.clientX;y0=e.clientY});   // geser terus = belok terus
+ var up=function(e){if(e.pointerId===pid)pid=null};T.cv.addEventListener("pointerup",up);T.cv.addEventListener("pointercancel",up)}
+function fit(T){var st=$(T.side+"-stage").getBoundingClientRect(),sz=Math.floor(Math.min(st.width,st.height));if(sz<40)return;
+ var k=Math.min(window.devicePixelRatio||1,LITE?1.5:2);T.cv.style.width=sz+"px";T.cv.style.height=sz+"px";T.cv.width=Math.round(sz*k);T.cv.height=Math.round(sz*k);T.k=k;T.sz=sz;T.cs=sz/N}
+
+/* ───── logika ular ───── */
+function resetTeam(T){
+ T.snake=[{x:SPAWN.x,y:SPAWN.y},{x:SPAWN.x,y:SPAWN.y+1},{x:SPAWN.x,y:SPAWN.y+2}];T.dir="u";T.queue=[];T.acc=0;
+ T.score=0;T.combo=1;T.bestCombo=1;T.streak=0;T.ok=0;T.no=0;T.crash=0;T.level=1;T.prog=0;T.az=0;T.frozen=0;T.qk=0;T.q=null;T.orbs=[];T.ice=[];T.parts=[];T.pops=[];T.flash=[];
+ T.r=rng(S.seed*31+(T.side==="left"?1:2));for(var i=0;i<4;i++)addIce(T);
+}
+function speed(T){return Math.min(10,5+(T.level-1)*.7)}
+function occupied(T,x,y,skipOrbs){if(T.snake.some(function(s){return s.x===x&&s.y===y}))return true;if(T.ice.some(function(s){return s.x===x&&s.y===y}))return true;
+ if(!skipOrbs&&T.orbs.some(function(s){return s.x===x&&s.y===y}))return true;return false}
+function freeCell(T,minHead){var h=T.snake[0];for(var g=0;g<400;g++){var x=Math.floor(T.r()*N),y=Math.floor(T.r()*N);
+ if(occupied(T,x,y))continue;if(Math.abs(x-h.x)+Math.abs(y-h.y)<minHead)continue;if(Math.abs(x-SPAWN.x)<=1&&y>=SPAWN.y-1)continue;return{x:x,y:y}}return null}
+function addIce(T){if(T.ice.length>=14)return;var c=freeCell(T,4);if(c){T.ice.push(c)}}
+function newQuestion(T){
+ T.q=makeQuestion(T.qk++);T.orbs=[];
+ [T.q.ans].concat(T.q.opts).forEach(function(v){var c=freeCell(T,3);if(c)T.orbs.push({x:c.x,y:c.y,v:v,ok:v===T.q.ans,born:performance.now()})});
+ $(T.side+"-q").innerHTML=T.q.html;$(T.side+"-qh").textContent=T.q.kind==="lengkapi"?"Bilangan berapa yang mengisi □ ?":T.q.kind==="setara"?"Kedua ruas harus sama besar. □ = ?":"Makan bola berisi hasilnya";
+}
+function steer(T,d){if(S.phase!=="live")return;var cur=T.queue.length?T.queue[T.queue.length-1]:T.dir,a=DIRS[d],b=DIRS[cur];if(d===cur||(a.x===-b.x&&a.y===-b.y))return;if(T.queue.length<2)T.queue.push(d)}
+function step(T,now){
+ if(T.frozen>now)return;
+ if(T.queue.length)T.dir=T.queue.shift();
+ var h=T.snake[0],dv=DIRS[T.dir],nx=h.x+dv.x,ny=h.y+dv.y;
+ var why=nx<0||ny<0||nx>=N||ny>=N?"dinding":T.ice.some(function(s){return s.x===nx&&s.y===ny})?"balok es":T.snake.slice(0,-1).some(function(s){return s.x===nx&&s.y===ny})?"badanmu sendiri":"";
+ if(why){crash(T,why,now);return}
+ T.snake.unshift({x:nx,y:ny});
+ var oi=-1;T.orbs.forEach(function(o,i){if(o.x===nx&&o.y===ny)oi=i});
+ if(oi<0){T.snake.pop();return}
+ var o=T.orbs[oi];
+ if(o.ok){
+  var pts=10*T.combo*(T.az>now?2:1);T.score+=pts;T.ok++;T.streak++;T.combo=Math.min(5,T.combo+1);T.bestCombo=Math.max(T.bestCombo,T.combo);T.prog++;
+  pop(T,nx,ny,"+"+pts,"#bff5d6");burst(T,nx,ny,T.col.body);fb(T,"✓ "+T.q.text.replace(/[?□]/,String(T.q.ans))+" · +"+pts,"good");tone(880,.08);
+  if(T.streak%5===0){T.az=now+10000;fb(T,"❄ ABSOLUTE ZERO! poin ×2 selama 10 detik","ice");tone(1320,.25)}
+  if(T.prog>=5){T.prog=0;T.level++;addIce(T);pop(T,nx,ny-1,"LEVEL "+T.level,"#ffd166")}
+  newQuestion(T);
+ }else{
+  T.snake.pop();if(T.snake.length>2)T.snake.pop();T.no++;T.combo=1;T.streak=0;T.frozen=now+800;
+  T.orbs.splice(oi,1);T.flash.push({x:nx,y:ny,t:now});
+  fb(T,"✗ "+o.v+" bukan jawabannya — cari lagi!","bad");tone(170,.18);
+ }
+ syncTeam(T);
+}
+function crash(T,why,now){
+ T.crash++;T.combo=1;T.streak=0;T.frozen=now+2000;
+ var len=Math.max(3,T.snake.length-2);T.snake=[];for(var i=0;i<len;i++)T.snake.push({x:SPAWN.x,y:Math.min(N-1,SPAWN.y+i)});
+ T.dir="u";T.queue=[];   // segmen ekor yang lebih panjang menumpuk di dasar lalu terurai sendiri saat bergerak
+ T.orbs.forEach(function(o){if(Math.abs(o.x-SPAWN.x)<=1&&o.y>=SPAWN.y-1){var c=freeCell(T,3);if(c){o.x=c.x;o.y=c.y}}});
+ fb(T,"❄ Membeku 2 detik! Menabrak "+why,"ice");tone(120,.3);syncTeam(T);
+}
+function syncTeam(T){
+ $(T.side+"-sc").textContent=T.score;$(T.side+"-cb").textContent="×"+T.combo;$(T.side+"-lv").textContent=T.level;
+ $(T.side+"-ok").textContent=T.ok;$(T.side+"-no").textContent=T.no;$(T.side+"-bar").style.width=(T.prog/5*100)+"%";
+}
+function fb(T,txt,kind){var f=$(T.side+"-fb");f.textContent=txt;f.className="fb show "+kind;clearTimeout(T.fbT);T.fbT=setTimeout(function(){f.className="fb"},2200)}
+function pop(T,x,y,txt,col){T.pops.push({x:x,y:y,txt:txt,col:col,t:performance.now()})}
+function burst(T,x,y,col){if(LITE&&T.parts.length>40)return;for(var i=0;i<(LITE?10:18);i++){var a=Math.random()*6.28,v=2+Math.random()*5;T.parts.push({x:x+.5,y:y+.5,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:1,c:i%2?"#fff":col})}}
+
+/* ───── gambar ───── */
+function draw(T,now){
+ var c=T.ctx,k=T.k||1,cs=T.cs;if(!cs)return;c.setTransform(k,0,0,k,0,0);
+ var az=T.az>now,fr=T.frozen>now;
+ c.fillStyle=az?"#06204a":"#041330";c.fillRect(0,0,T.sz,T.sz);
+ c.strokeStyle=az?"rgba(127,216,255,.22)":"rgba(56,120,220,.16)";c.lineWidth=1;c.beginPath();
+ for(var i=1;i<N;i++){c.moveTo(i*cs+.5,0);c.lineTo(i*cs+.5,T.sz);c.moveTo(0,i*cs+.5);c.lineTo(T.sz,i*cs+.5)}c.stroke();
+ // balok es (berkedip pelan seperti di video)
+ T.ice.forEach(function(b,i){var a=.55+.25*Math.sin(now/700+i*1.7);c.fillStyle="rgba(40,110,210,"+a+")";c.fillRect(b.x*cs+cs*.12,b.y*cs+cs*.12,cs*.76,cs*.76);c.fillStyle="rgba(170,225,255,.35)";c.fillRect(b.x*cs+cs*.12,b.y*cs+cs*.12,cs*.76,cs*.12)});
+ // bola angka
+ var fs=Math.max(11,cs*.42);c.font="900 "+fs+"px Inter,system-ui";c.textAlign="center";c.textBaseline="middle";
+ T.orbs.forEach(function(o){var cx=o.x*cs+cs/2,cy=o.y*cs+cs/2,s=Math.max(.05,Math.min(1,(now-o.born)/250)),txt=String(o.v),w=Math.max(cs*.86,c.measureText(txt).width+cs*.34)*s,h=cs*.86*s;
+  c.fillStyle="#f4fbff";rr(c,cx-w/2,cy-h/2,w,h,h/2);c.fill();c.lineWidth=2.5;c.strokeStyle=az?"#88ffff":T.col.ring;c.stroke();
+  if(s>.6){c.fillStyle="#04203f";c.fillText(txt,cx,cy+1)}});
+ // tanda salah
+ T.flash=T.flash.filter(function(f){var a=1-(now-f.t)/700;if(a<=0)return false;c.globalAlpha=a;c.strokeStyle="#ff5d7a";c.lineWidth=4;var x=f.x*cs,y=f.y*cs;c.beginPath();c.moveTo(x+cs*.2,y+cs*.2);c.lineTo(x+cs*.8,y+cs*.8);c.moveTo(x+cs*.8,y+cs*.2);c.lineTo(x+cs*.2,y+cs*.8);c.stroke();c.globalAlpha=1;return true});
+ // ular
+ var body=fr?"#cfeeff":az?T.col.bodyAZ:T.col.body;
+ for(var j=T.snake.length-1;j>=1;j--){var s=T.snake[j],sh=.16+.06*(j/T.snake.length);c.fillStyle=body;c.globalAlpha=1-.35*(j/T.snake.length);c.fillRect(s.x*cs+cs*sh,s.y*cs+cs*sh,cs*(1-2*sh),cs*(1-2*sh))}
+ c.globalAlpha=1;
+ var hd=T.snake[0],ang={u:0,d:Math.PI,l:-Math.PI/2,r:Math.PI/2}[T.dir];
+ c.save();c.translate(hd.x*cs+cs/2,hd.y*cs+cs/2);c.rotate(ang);
+ if(!LITE){c.shadowBlur=az?22:14;c.shadowColor=az?"#88ffff":T.col.body}
+ c.fillStyle=fr?"#e6f7ff":"#ffffff";c.beginPath();c.moveTo(0,-cs*.45);c.lineTo(cs*.42,cs*.38);c.lineTo(-cs*.42,cs*.38);c.closePath();c.fill();c.restore();
+ if(fr){c.fillStyle="rgba(200,240,255,.12)";c.fillRect(0,0,T.sz,T.sz);c.font="800 "+Math.max(12,cs*.5)+"px Inter";c.fillStyle="#dff6ff";c.fillText("❄ "+fmt((T.frozen-now)/1000)+" s",hd.x*cs+cs/2,Math.max(cs*.5,hd.y*cs-cs*.4))}
+ // partikel & teks melayang
+ for(var p=T.parts.length-1;p>=0;p--){var q=T.parts[p];c.globalAlpha=Math.max(0,q.l);c.fillStyle=q.c;c.fillRect(q.x*cs-2,q.y*cs-2,4,4)}c.globalAlpha=1;
+ T.pops=T.pops.filter(function(pp){var a=(now-pp.t)/900;if(a>=1)return false;c.globalAlpha=1-a;c.fillStyle=pp.col;c.font="900 "+Math.max(14,cs*.6)+"px Inter";c.fillText(pp.txt,pp.x*cs+cs/2,pp.y*cs-a*cs*1.2);c.globalAlpha=1;return true});
+ // label ABSOLUTE ZERO + bar sisa
+ if(az){c.font="900 "+Math.max(13,cs*.55)+"px Inter";c.fillStyle="#bff4ff";c.fillText("ABSOLUTE ZERO "+Math.ceil((T.az-now)/1000),T.sz/2,cs*.7)}
+ var prog=S.phase==="live"||S.phase==="paused"?S.left/CFG.dur:0;c.fillStyle="rgba(56,150,255,.25)";c.fillRect(T.sz*.25,T.sz-cs*.28,T.sz*.5,3);c.fillStyle="#38c6ff";c.fillRect(T.sz*.25,T.sz-cs*.28,T.sz*.5*prog,3);
+}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function fmt(v){return v.toFixed(1).replace(".",",")}
+
+/* ───── alur permainan ───── */
+function active(){return CFG.mode==="solo"?[teams.left]:[teams.left,teams.right]}
+function startGame(){
+ if(S.phase==="count")return;
+ $("endModal").hidden=true;S.seed=(Math.random()*1e9)|0;S.left=CFG.dur;
+ each(function(T){resetTeam(T);T.q=null;T.orbs=[];syncTeam(T);$(T.side+"-q").textContent="Siap…";$(T.side+"-over").hidden=true});
+ $("strip").classList.add("locked");document.body.classList.add("playing");S.phase="count";$("startBtn").textContent="↻ Ulang";$("pauseBtn").disabled=true;
+ var n=3,el=$("count");el.hidden=false;el.textContent=n;tone(520,.1);
+ var iv=setInterval(function(){n--;if(n>0){el.textContent=n;tone(520,.1)}else{clearInterval(iv);el.textContent="MULAI!";tone(900,.2);setTimeout(function(){el.hidden=true},450);
+  S.phase="live";S.last=performance.now();each(function(T){newQuestion(T)});$("pauseBtn").disabled=false}},650);
+}
+function pause(on){if(S.phase!=="live"&&S.phase!=="paused")return;S.phase=on?"paused":"live";$("pauseBtn").textContent=on?"▶ Lanjut":"⏸ Jeda";
+ var shift=on?0:performance.now()-S.pausedAt;if(on)S.pausedAt=performance.now();else each(function(T){T.az&&(T.az+=shift);T.frozen&&(T.frozen+=shift)});
+ each(function(T){$(T.side+"-over").hidden=!on;$(T.side+"-overT").textContent="⏸ Jeda"});S.last=performance.now()}
+function endGame(){
+ S.phase="end";$("strip").classList.remove("locked");document.body.classList.remove("playing");$("pauseBtn").disabled=true;$("startBtn").textContent="▶ Main lagi";
+ var A=active(),acc=function(T){var t=T.ok+T.no;return t?Math.round(T.ok/t*100)+"%":"–"};
+ if(A.length===2){var L=teams.left.score,R=teams.right.score;$("endTitle").textContent=L===R?"🤝 SERI!":L>R?"🏆 Tim Biru menang!":"🏆 Tim Merah menang!";$("endSub").textContent="Skor akhir · Biru "+L+" : "+R+" Merah"}
+ else{$("endTitle").textContent="❄ Waktu habis!";$("endSub").textContent="Skor kamu: "+teams.left.score}
+ var rows=[["Skor",function(T){return T.score}],["Jawaban benar",function(T){return T.ok}],["Jawaban salah",function(T){return T.no}],["Akurasi",acc],["Combo terbaik",function(T){return"×"+T.bestCombo}],["Level",function(T){return T.level}],["Panjang ular",function(T){return T.snake.length}],["Menabrak",function(T){return T.crash+"×"}]];
+ $("endTable").innerHTML="<tr><th></th>"+A.map(function(T){return"<th>"+(T.side==="left"?"🔵 Tim Biru":"🔴 Tim Merah")+"</th>"}).join("")+"</tr>"+rows.map(function(r){return"<tr><td>"+r[0]+"</td>"+A.map(function(T){return"<td class="+(T.side==="left"?"b":"r")+">"+r[1](T)+"</td>"}).join("")+"</tr>"}).join("");
+ $("endNote").innerHTML="<b>Tips numerasi:</b> untuk soal □, gunakan operasi kebalikannya — □ + 7 = 15 → □ = 15 − 7; □ × 4 = 36 → □ = 36 ÷ 4. Kedua ruas tanda = harus bernilai sama.";
+ $("endModal").hidden=false;tone(660,.3);
+ try{window.PILAR_PULSE&&PILAR_PULSE.track&&PILAR_PULSE.track("frost_snake_end",{mode:CFG.mode,left:teams.left.score,right:teams.right.score})}catch(_){}
+}
+function each(f){active().forEach(f)}
+$("startBtn").onclick=startGame;$("endAgain").onclick=startGame;$("endClose").onclick=function(){$("endModal").hidden=true};
+$("pauseBtn").onclick=function(){pause(S.phase==="live")};
+document.addEventListener("visibilitychange",function(){if(document.hidden&&S.phase==="live")pause(true)});
+
+/* ───── pengaturan ───── */
+function save(){try{localStorage.setItem("pilar_frost_snake",JSON.stringify({ops:CFG.ops,lvl:CFG.lvl,dur:CFG.dur}))}catch(_){}}
+function segInit(id,get,set,multi){var box=$(id);box.querySelectorAll("button").forEach(function(b){b.onclick=function(){if(S.phase==="live"||S.phase==="count"||S.phase==="paused")return;set(b.dataset.v,b);paint();save()}});
+ function paint(){box.querySelectorAll("button").forEach(function(b){b.setAttribute("aria-pressed",String(get(b.dataset.v)))})}paint()}
+segInit("segMode",function(v){return CFG.mode===v},function(v){CFG.mode=v;applyMode()});
+segInit("segOps",function(v){return CFG.ops.indexOf(v)>=0},function(v){var i=CFG.ops.indexOf(v);if(i>=0){if(CFG.ops.length>1)CFG.ops.splice(i,1)}else CFG.ops.push(v)});
+segInit("segLvl",function(v){return CFG.lvl===+v},function(v){CFG.lvl=+v});
+segInit("segDur",function(v){return CFG.dur===+v},function(v){CFG.dur=+v;showTime(CFG.dur)});
+function applyMode(){document.body.classList.toggle("solo",CFG.mode==="solo");$("team-left").querySelector("small").textContent=CFG.mode==="solo"?"tombol: WASD / panah · geser di arena":"tombol: W A S D · geser di arena";setTimeout(function(){fit(teams.left);fit(teams.right)},30)}
+function showTime(s){var m=Math.floor(s/60),r=Math.floor(s%60);$("timer").textContent=m+":"+(r<10?"0":"")+r;$("timerPill").classList.toggle("warn",S.phase==="live"&&s<=15)}
+
+/* ───── tombol umum & keyboard ───── */
+$("soundBtn").onclick=function(){S.sound=!S.sound;this.textContent=S.sound?"🔊":"🔇";this.setAttribute("aria-pressed",String(S.sound));tone(660,.06)};
+$("fullBtn").onclick=function(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen({navigationUI:"hide"})}catch(_){}};
+$("homeBtn").onclick=function(){location.href="../../"};
+var KEYS={w:["left","u"],a:["left","l"],s:["left","d"],d:["left","r"],arrowup:["right","u"],arrowleft:["right","l"],arrowdown:["right","d"],arrowright:["right","r"]};
+document.addEventListener("keydown",function(e){var m=KEYS[e.key.toLowerCase()];if(!m)return;e.preventDefault();steer(CFG.mode==="solo"?teams.left:teams[m[0]],m[1])});
+var audio=null;function tone(f,d){if(!S.sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();var o=audio.createOscillator(),g=audio.createGain();o.frequency.value=f;g.gain.setValueAtTime(.05,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}catch(_){}}
+
+/* ───── loop: langkah ular memakai akumulator waktu tetap (tidak tergantung fps) ───── */
+function frame(now){requestAnimationFrame(frame);var dt=Math.min(.25,(now-(S.last||now))/1000);S.last=now;
+ if(S.phase==="live"){S.left-=dt;showTime(Math.max(0,Math.ceil(S.left)));
+  each(function(T){T.acc+=dt;var st=1/speed(T),n=0;while(T.acc>=st&&n++<4){T.acc-=st;step(T,now)}});
+  if(S.left<=0){S.left=0;endGame()}}
+ each(function(T){for(var i=T.parts.length-1;i>=0;i--){var p=T.parts[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.92;p.vy*=.92;p.l-=dt*1.6;if(p.l<=0)T.parts.splice(i,1)}draw(T,now)});
+}
+buildTeam("left");buildTeam("right");applyMode();showTime(CFG.dur);
+["left","right"].forEach(function(s){$(s+"-q").textContent="Tekan ▶ Mulai";});
+window.PILAR_SNAKE={state:S,cfg:CFG,teams:teams,makeQuestion:makeQuestion,steer:steer};
+try{window.PILAR_PULSE&&PILAR_PULSE.setApp&&PILAR_PULSE.setApp("frost-snake")}catch(_){}
+requestAnimationFrame(frame);
+})();
+</script>
+<script src="../../pulse/config.js"></script>
+<script src="../../core/pulse.js"></script>
+</body>
+</html>
