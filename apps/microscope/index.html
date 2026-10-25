@@ -1344,8 +1344,8 @@
             <div class="logo">
                 <i class="fas fa-microscope"></i>
                 <div class="logo-text-group">
-                    <div>PILAR™ Microscope Lab <small class="pilar-version">v0.8.2</small></div>
-                    <div class="tagline">IFP / MPI · Observasi · Vision · ML · Pengukuran · Bukti</div>
+                    <div>PILAR™ Microscope Lab <small class="pilar-version">v1.0</small></div>
+                    <div class="tagline">IFP / MPI · Lab Mikrobiologi · USB microscope · Vision · Ukur · Bukti</div>
                 </div>
             </div>
             <div class="header-spacer" aria-hidden="true"></div>
@@ -1659,7 +1659,7 @@
         </div>
     </div>
 
-    <footer class="pilar-app-footer"><span>PILAR™ Microscope Lab · v0.8.2</span><span>PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span></footer>
+    <footer class="pilar-app-footer"><span>PILAR™ Microscope Lab · v1.0</span><span>PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span></footer>
 
     <div class="modal" id="imageModal">
         <img id="modalImage" src="" alt="Preview">
@@ -2147,6 +2147,8 @@
                     const barPx=Math.max(110,Math.min(vidWidth*.28,vidWidth*.18)),um=barPx*(this.pixelScale/zoom),x=40,y=vidHeight-54;ctx.save();ctx.strokeStyle='white';ctx.fillStyle='white';ctx.lineWidth=Math.max(3,vidWidth/650);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+barPx,y);ctx.moveTo(x,y-9);ctx.lineTo(x,y+9);ctx.moveTo(x+barPx,y-9);ctx.lineTo(x+barPx,y+9);ctx.stroke();ctx.font=`bold ${Math.max(14,18*(vidWidth/1000))}px Arial`;ctx.textAlign='left';ctx.fillText(`≈ ${um.toFixed(um>=100?0:1)} μm`,x,y-16);ctx.restore();
                 }
 
+                // v1.0: modul tambahan (anotasi, jejak organisme, label sampel) ikut terbakar ke bukti
+                (this.captureOverlays||[]).forEach(fn=>{try{fn(ctx,{vidWidth,vidHeight,sx,sy,zoomedWidth,zoomedHeight,zoom})}catch(err){console.warn('[capture overlay]',err)}});
                 const stamp=new Date().toLocaleString('id-ID');ctx.font=`italic ${Math.max(14,20*(vidWidth/1000))}px monospace`;ctx.fillStyle='rgba(255,255,255,.74)';ctx.textAlign='right';ctx.fillText('PILAR Creator ID · '+this.brandingString,vidWidth-30,40);ctx.font=`600 ${Math.max(12,15*(vidWidth/1000))}px monospace`;ctx.fillStyle='rgba(255,255,255,.68)';ctx.fillText(`${stamp} · zoom ${zoom.toFixed(1)}×`,vidWidth-30,vidHeight-28);
                 ctx.textAlign='left';ctx.font=`bold ${Math.max(14,18*(vidWidth/1000))}px sans-serif`;ctx.fillStyle='rgba(94,233,255,.85)';ctx.fillText('PILAR™ Microscope Lab',30,40);
                 const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)return this.showNotification('Gagal membuat file gambar','error');
@@ -2776,11 +2778,12 @@
       const originalStop=M.stopCamera.bind(M);
       M.stopCamera=(silent=false)=>{box.classList.remove('ai-live');drawBlobs(null);return originalStop(silent)};
 
-      M.showHelp=()=>alert('PILAR Microscope Lab v0.8\n\n1. Hub memberi dua pintu: Masuk Cepat atau Vision Challenge.\n2. SCAN/START membuka USB microscope/webcam; FREEZE membantu pengukuran stabil.\n3. Vision Count = CV eksperimental (Otsu + connected components), bukan diagnosis dan bukan ML.\n4. Teachable Microscope = MobileNet + KNN lokal di browser; contoh gambar tidak diunggah oleh fitur ini.\n5. PILAR Focus Controller dapat memakai USB Serial atau BLE. WiFi ws:// tidak bekerja dari GitHub Pages HTTPS.\n6. Smart Autofocus memakai skor ketajaman Laplacian dua tahap.\n7. Kalibrasi tetap berbasis source pixel dan harus diulang bila set-up optik berubah.\n8. Camera HUD: klik TOOLS, klik kanan desktop, tahan pada IFP/mobile, atau tekan Q untuk Pie Menu.\n9. Capture tetap disimpan sebagai Blob di IndexedDB dengan overlay + Creator ID.');
+      M.showHelp=()=>alert('PILAR Microscope Lab v1.0\n\n🧫 LAB MIKROBIOLOGI: pilih jenis sampel → panduan, atlas ukuran, tantangan. Alat: 🎯 Fokus Peaking, ✨ Foto Fokus Terbaik, 🐾 Pelacak Gerak (jejak + µm/s), 🧱 Fokus Tumpuk, 🎬 Rekam + gerak lambat, ✏️ Anotasi multi-jari, 📌 Pembanding, 📏 Skala µm, 🎤 Mode Panggung.\nUSB microscope dipilih otomatis setelah SCAN.\n\n1. Hub memberi dua pintu: Masuk Cepat atau Vision Challenge.\n2. SCAN/START membuka USB microscope/webcam; FREEZE membantu pengukuran stabil.\n3. Vision Count = CV eksperimental (Otsu + connected components), bukan diagnosis dan bukan ML.\n4. Teachable Microscope = MobileNet + KNN lokal di browser; contoh gambar tidak diunggah oleh fitur ini.\n5. PILAR Focus Controller dapat memakai USB Serial atau BLE. WiFi ws:// tidak bekerja dari GitHub Pages HTTPS.\n6. Smart Autofocus memakai skor ketajaman Laplacian dua tahap.\n7. Kalibrasi tetap berbasis source pixel dan harus diulang bila set-up optik berubah.\n8. Camera HUD: klik TOOLS, klik kanan desktop, tahan pada IFP/mobile, atau tekan Q untuk Pie Menu.\n9. Capture tetap disimpan sebagai Blob di IndexedDB dengan overlay + Creator ID.');
     });
   })();
   </script>
 
+  <script src="./bio-lab.js?v=1.0.0"></script>
   <script src="../../pulse/config.js"></script>
   <script src="../../core/pulse.js"></script>
 </body>
