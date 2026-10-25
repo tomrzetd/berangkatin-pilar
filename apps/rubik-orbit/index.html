@@ -161,7 +161,7 @@ body[data-ui=mobile] .net{grid-template-columns:repeat(4,3.2rem);grid-template-r
 /* v3.1 · scene clean + transient 3D rotation guidance */
 .creatorTop{max-width:min(42rem,72vw);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 body[data-ui=mobile] .creatorTop{font-size:.62rem;max-width:74vw}
-.cubePane::after{content:"Drag/zoom view kapan saja · solver tetap berjalan";position:absolute;left:.7rem;bottom:.55rem;z-index:5;color:rgba(237,246,244,.45);font-size:.62rem;pointer-events:none}
+.cubePane::after{content:none;position:absolute;left:.7rem;bottom:.55rem;z-index:5;color:rgba(237,246,244,.45);font-size:.62rem;pointer-events:none}
 body[data-ui=mobile] .cubePane::after{font-size:.56rem;left:.55rem;bottom:.4rem}
 
 /* ===== v3.4 · Orbit Mathematics Hybrid ===== */
@@ -264,12 +264,29 @@ body[data-ui=ifp] .orbit-card svg{max-height:9.2rem}
 body[data-ui=ifp] .orbit-title{font-size:.92rem}
 body[data-ui=ifp] .orbit-cycle{font-size:.84rem}
 
+
+/* v3.5 · orientasi & pindai real-time */
+.holdBadge{position:absolute;left:.7rem;bottom:2.6rem;z-index:5;max-width:min(30rem,calc(100% - 1.4rem));display:flex;gap:.4rem;align-items:flex-start;background:rgba(10,18,21,.86);border:1px solid #3c565f;border-radius:.8rem;padding:.45rem .7rem;font-size:.8rem;color:#d9e6e4;pointer-events:none;line-height:1.5}
+.holdBadge i,.scheme i{display:inline-block;width:.8em;height:.8em;border-radius:.2em;margin:0 .2em -.05em .1em;border:1px solid rgba(255,255,255,.4)}
+.holdBadge b{color:#fff}
+body[data-ui=mobile] header{flex-wrap:wrap}body[data-ui=mobile] .actions{width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:.2rem}body[data-ui=mobile] .live{order:3;width:100%}
+body[data-ui=mobile] .holdBadge{font-size:.7rem;bottom:.5rem;padding:.35rem .55rem}
+.scheme{margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.3rem .7rem;align-items:center}
+.sticker.bad{outline:3px solid #ff5d5d;outline-offset:1px;animation:badPulse 1.2s ease-in-out infinite}
+@keyframes badPulse{50%{outline-color:#ffd166}}
+body.nomotion .sticker.bad{animation:none}
+.sticker.center{cursor:pointer}
+.camWrap.mirror video{transform:scaleX(-1)}
+.guide i{position:relative}.guide i.seen::after{content:'';position:absolute;left:50%;top:50%;width:34%;height:34%;transform:translate(-50%,-50%);border-radius:50%;background:var(--c);border:3px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.55)}.guide i.glare{border:2px solid #ffd166!important}
+.nextBadge{top:auto;bottom:6.6rem}
+.shotBtn{position:relative;overflow:hidden}.shotBtn i{position:absolute;left:0;bottom:0;height:.28rem;width:var(--prog,0%);background:#08221a;opacity:.55;transition:width .12s linear}
+.tog2{border:1px solid #3c565f;background:#101c20;color:#c7d8d6;border-radius:.6rem;padding:.45rem .7rem;font-size:.8rem;cursor:pointer}.tog2[aria-pressed=true]{border-color:var(--mint);color:var(--mint)}
 </style><link rel="stylesheet" href="../../css/pilar-perf.css">
 <script src="../../core/device-profile.js"></script>
 </head>
 <body data-ui="desk"><div class="app">
 <header>
-  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.4 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
+  <div class="brand"><div class="mark"><i></i><i></i><i></i></div><div><h1>PILAR™ Rubik Orbit Mathematics</h1><div class="sub">Satu putaran kubus = satu rotasi pada diagram lingkaran • v3.5 PILAR · IFP + Vision AI</div><div class="creatorTop">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
   <div class="live" id="live" role="status" aria-live="polite">Menyiapkan solver</div>
   <div class="actions">
     <a class="iconBtn pilarHub" href="../../" title="Kembali ke PILAR Hub" aria-label="PILAR Hub">←</a>
@@ -286,11 +303,14 @@ body[data-ui=ifp] .orbit-cycle{font-size:.84rem}
   <section class="cubePane">
     <div id="cube3d" aria-label="Rubik tiga dimensi interaktif"></div>
     <div class="cube-tools" aria-label="Sudut pandang kubus">
-      <button class="view-btn reset-view" id="resetView">↻ Reset U–R–F</button>
-      <button class="view-btn" data-view3="U">U</button><button class="view-btn" data-view3="R">R</button><button class="view-btn" data-view3="F">F</button><button class="view-btn" data-view3="D">D</button><button class="view-btn" data-view3="L">L</button><button class="view-btn" data-view3="B">B</button>
+      <button class="view-btn reset-view" id="eyeView" title="Lihat kubus seperti kubus yang kamu pegang: DEPAN menghadapmu, ATAS di atas">👁 Seperti di tanganmu</button>
+      <button class="view-btn" id="resetView" title="Sudut miring: atas, kanan, depan">↻ U–R–F</button>
+      <button class="view-btn" data-view3="U" title="Atas">U</button><button class="view-btn" data-view3="R" title="Kanan">R</button><button class="view-btn" data-view3="F" title="Depan">F</button><button class="view-btn" data-view3="D" title="Bawah">D</button><button class="view-btn" data-view3="L" title="Kiri">L</button><button class="view-btn" data-view3="B" title="Belakang">B</button>
+      <button class="view-btn" id="labelBtn" aria-pressed="true" title="Tampilkan nama sisi di kubus 3D">🏷 Label</button>
       <button class="view-btn" id="dirBtn" aria-pressed="false" title="Arah putaran saat mengetuk bidang kubus">↻ Searah</button>
     </div>
     <div class="nextBadge" id="nextBadge" hidden></div>
+    <div class="holdBadge" id="holdBadge"></div>
     <span class="cube-tip">Seret 360° • cubit/scroll untuk zoom • ketuk bidang untuk memutar layer</span>
     <div class="move-float" id="moveFloat">R</div>
   </section>
@@ -331,7 +351,7 @@ body[data-ui=ifp] .orbit-cycle{font-size:.84rem}
     <div>✋ Geser telapak ke kiri = Berikutnya, kanan = Ulangi</div>
     <div>☝️ Tahan 1 detik = klik (tanpa jepit)</div></div>
     <div class="buttons" style="margin-top:.5rem"><button class="btn ai-clickable" id="visionBtn2">◉ Aktifkan Vision AI</button></div></section>
-  <details><summary>Masukkan warna Rubik asli (manual)</summary><div class="editor-body"><div class="hint">Pilih kuas, lalu sentuh petak. Titik tengah menjadi acuan warna sisi. Atau gunakan 📷 Pindai.</div><div id="net" class="net"></div><div id="palette" class="palette"></div><div id="validation" class="notice" style="margin-top:.6rem"></div></div></details>
+  <details><summary>Masukkan warna Rubik asli (manual)</summary><div class="editor-body"><div class="hint">Pilih kuas, lalu sentuh petak. Petak bertanda merah perlu diperiksa. Atau gunakan 📷 Pindai.</div><div id="net" class="net"></div><div id="palette" class="palette"></div><div id="scheme" class="scheme hint"></div><div class="hint">Ketuk <b>titik tengah</b> untuk mengganti warna sisi agar sama dengan kubus fisikmu.</div><div id="validation" class="notice" style="margin-top:.6rem"></div></div></details>
 </aside></div></div>
 
 <aside id="settings" role="dialog" aria-label="Pengaturan tampilan dan Vision AI" hidden>
@@ -379,8 +399,10 @@ body[data-ui=ifp] .orbit-cycle{font-size:.84rem}
         <div class="dots" id="scanDots"></div>
         <h3 id="scanTitle"></h3><p id="scanText"></p>
         <div class="preview" id="scanPreview"></div>
-        <div class="buttons"><button class="btn primary ai-clickable" id="scanShot">📸 Ambil sisi ini</button><button class="btn ai-clickable" id="scanBack">← Sisi sebelumnya</button></div>
+        <div class="buttons"><button class="btn primary ai-clickable shotBtn" id="scanShot">📸 Ambil sisi ini<i></i></button><button class="btn ai-clickable" id="scanBack">← Sisi sebelumnya</button></div>
+        <div class="buttons"><button class="tog2 ai-clickable" id="scanAuto" aria-pressed="true">⚡ Ambil otomatis saat stabil</button><button class="tog2 ai-clickable" id="scanMirror" aria-pressed="true">⇋ Tampilan cermin</button></div>
         <div class="notice" id="scanNote">Cahaya merata, hindari pantulan/silau. Penuhi kotak panduan dengan 9 stiker.</div>
+        <div class="hint">Warna di atas stiker = bacaan AI secara langsung. Kalau ada sisi tertukar atau miring, aplikasi akan memperbaikinya otomatis.</div>
       </div>
     </div>
   </div>
@@ -416,6 +438,76 @@ var ORBIT_STRIPS={
   L:{U:[0,3,6],F:[18,21,24],D:[27,30,33],B:[47,50,53]}
 };
 var FN={U:'atas',D:'bawah',F:'depan',B:'belakang',R:'kanan',L:'kiri'};
+/* ===== Skema warna ASLI kubus (tidak semua Rubik memakai skema standar) =====
+   Huruf facelet (U R F D L B) = posisi sisi; warna tampilan diambil dari warna pusat kubus milik siswa. */
+var CANON={white:{n:'putih',hex:'#f2f1ed',h:-1},yellow:{n:'kuning',hex:'#f2ce18',h:55},red:{n:'merah',hex:'#e84a3b',h:2},orange:{n:'oranye',hex:'#f17824',h:24},green:{n:'hijau',hex:'#18b957',h:130},blue:{n:'biru',hex:'#2878c9',h:215}};
+var CANON_KEYS=['white','yellow','red','orange','green','blue'];
+var DEFAULT_SCHEME={U:'white',R:'red',F:'green',D:'yellow',L:'orange',B:'blue'};
+var SCHEME_KEY='rubikScheme.v1',SCHEME=Object.assign({},DEFAULT_SCHEME),CNAME={};
+try{var _s=JSON.parse(localStorage.getItem(SCHEME_KEY)||'null');if(_s&&F.every(function(f){return CANON[_s[f]]}))SCHEME=_s}catch(e){}
+function applyScheme(save){F.forEach(function(f){COL[f]=CANON[SCHEME[f]].hex;CNAME[f]=CANON[SCHEME[f]].n});if(save)try{localStorage.setItem(SCHEME_KEY,JSON.stringify(SCHEME))}catch(e){}}
+applyScheme(false);
+function hsv(rgb){var r=rgb[0]/255,g=rgb[1]/255,b=rgb[2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn,h=0;
+  if(d>1e-6){h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;h*=60;if(h<0)h+=360}return{h:h,s:mx?d/mx:0,v:mx}}
+function hueDist(a,b){var d=Math.abs(a-b)%360;return d>180?360-d:d}
+/* biaya sampel → warna kanonik (dipakai untuk penugasan 1-1 enam pusat & label langsung) */
+function canonCost(rgb,k){var c=hsv(rgb),C=CANON[k];if(C.h<0)return c.s*300+(1-c.v)*60;return hueDist(c.h,C.h)*1.6+Math.max(0,.35-c.s)*260+(c.v<.12?80:0)}
+function classifyCanon(rgb){var c=hsv(rgb);if(c.v<.12)return null;var best=null,bc=1e9;CANON_KEYS.forEach(function(k){var v=canonCost(rgb,k);if(v<bc){bc=v;best=k}});return best}
+/* enam pusat → enam warna kanonik, satu-satu, total biaya minimum (720 permutasi) */
+function schemeFromCenters(centerRgb){var best=null,bc=1e9;
+  (function perm(a,used,acc,i){if(acc>=bc)return;if(i===6){bc=acc;best=a.slice();return}
+    for(var k=0;k<6;k++)if(!used[k]){used[k]=1;a[i]=CANON_KEYS[k];perm(a,used,acc+canonCost(centerRgb[i],CANON_KEYS[k]),i+1);used[k]=0}})([],[],0,0);
+  var s={};F.forEach(function(f,i){s[f]=best[i]});return s}
+
+/* ===== Validator kubus fisik (dekomposisi kubie ala Kociemba) =====
+   Menangkap hal yang lolos dari "cek 9 warna": kubus cermin (kiri↔kanan tertukar), sudut terpelintir,
+   rusuk terbalik, paritas, kombinasi warna mustahil. */
+var CORNER_F=[[8,9,20],[6,18,38],[0,36,47],[2,45,11],[29,26,15],[27,44,24],[33,53,42],[35,17,51]];
+var CORNER_C=[['U','R','F'],['U','F','L'],['U','L','B'],['U','B','R'],['D','F','R'],['D','L','F'],['D','B','L'],['D','R','B']];
+var EDGE_F=[[5,10],[7,19],[3,37],[1,46],[32,16],[28,25],[30,43],[34,52],[23,12],[21,41],[50,39],[48,14]];
+var EDGE_C=[['U','R'],['U','F'],['U','L'],['U','B'],['D','R'],['D','F'],['D','L'],['D','B'],['F','R'],['F','L'],['B','L'],['B','R']];
+function parityOf(p){var n=0;for(var i=0;i<p.length;i++)for(var j=i+1;j<p.length;j++)if(p[i]>p[j])n++;return n&1}
+function verifyFacelets(f){
+  var n={U:0,R:0,F:0,D:0,L:0,B:0};f.forEach(function(x){if(n[x]!==undefined)n[x]++});
+  if(!F.every(function(k){return n[k]===9}))return{ok:false,code:'count',msg:'Jumlah tiap warna harus tepat 9.'};
+  var cp=[],co=0,ep=[],eo=0,mirror=0,bad=[];
+  for(var i=0;i<8;i++){var cf=CORNER_F[i],ori=-1;for(var o=0;o<3;o++)if(f[cf[o]]==='U'||f[cf[o]]==='D')ori=o;
+    if(ori<0){bad=bad.concat(cf);continue}
+    var c1=f[cf[(ori+1)%3]],c2=f[cf[(ori+2)%3]],j=-1;for(var k=0;k<8;k++)if(CORNER_C[k][1]===c1&&CORNER_C[k][2]===c2)j=k;
+    if(j<0){for(k=0;k<8;k++)if(CORNER_C[k][1]===c2&&CORNER_C[k][2]===c1)mirror++;bad=bad.concat(cf);continue}
+    cp.push(j);co+=ori}
+  for(i=0;i<12;i++){var e=EDGE_F[i],a=f[e[0]],b=f[e[1]],jj=-1,fl=0;for(k=0;k<12;k++){if(EDGE_C[k][0]===a&&EDGE_C[k][1]===b)jj=k;else if(EDGE_C[k][0]===b&&EDGE_C[k][1]===a){jj=k;fl=1}}
+    if(jj<0){bad=bad.concat(e);continue}ep.push(jj);eo+=fl}
+  if(bad.length){if(mirror>=4)return{ok:false,code:'mirror',bad:bad,msg:'Kubus terbaca seperti bayangan cermin — biasanya sisi KIRI dan KANAN tertukar saat memindai.'};
+    return{ok:false,code:'combo',bad:bad,msg:'Ada sudut/rusuk dengan kombinasi warna mustahil. Periksa stiker bertanda merah.'}}
+  if(new Set(cp).size<8||new Set(ep).size<12)return{ok:false,code:'dup',msg:'Ada potongan yang muncul dua kali — ada stiker yang salah warna.'};
+  if(co%3)return{ok:false,code:'twist',msg:'Satu sudut terpelintir (orientasi sudut tidak mungkin). Periksa stiker sudut.'};
+  if(eo%2)return{ok:false,code:'flip',msg:'Satu rusuk terbalik (orientasi rusuk tidak mungkin). Periksa stiker rusuk.'};
+  if(parityOf(cp)!==parityOf(ep))return{ok:false,code:'parity',msg:'Dua potongan tertukar (paritas) — kubus seperti pernah dibongkar-pasang.'};
+  return{ok:true,msg:'Susunan valid — kubus fisik mungkin, siap dicari solusinya.'};
+}
+/* ===== Perbaikan otomatis =====
+   imgs[s] = 9 id-klaster stiker sisi s (urutan baca kamera), klaster k = warna pusat imgs[k][4].
+   Coba kombinasi kesalahan umum: tukar L↔R / F↔B / U↔D, dan sisi terpindai miring (rotasi 90°). */
+var ROT90=[6,3,0,7,4,1,8,5,2];   // putar 3×3 searah jarum jam
+function rotGrid(g,k){for(var t=0;t<k;t++)g=ROT90.map(function(i){return g[i]});return g}
+var FIX_CANDS=null;
+function fixCandidates(){if(FIX_CANDS)return FIX_CANDS;var out=[];
+  for(var sw=0;sw<8;sw++)for(var r=0;r<4096;r++){var rot=[r&3,(r>>2)&3,(r>>4)&3,(r>>6)&3,(r>>8)&3,(r>>10)&3],cost=0;
+    rot.forEach(function(x){cost+=x===0?0:x===2?1.2:1});cost+=((sw&1)+((sw>>1)&1)+((sw>>2)&1))*1.5;out.push({sw:sw,rot:rot,cost:cost})}
+  out.sort(function(a,b){return a.cost-b.cost});return FIX_CANDS=out}
+function buildFrom(imgs,c){
+  var slot=[0,1,2,3,4,5];   // indeks F: U0 R1 F2 D3 L4 B5
+  if(c.sw&1){slot[1]=4;slot[4]=1}if(c.sw&2){slot[2]=5;slot[5]=2}if(c.sw&4){slot[0]=3;slot[3]=0}
+  var letterOf=[];for(var s=0;s<6;s++)letterOf[slot[s]]=F[s];      // klaster dari gambar slot[s] → huruf sisi s
+  var out=[];for(s=0;s<6;s++){var g=rotGrid(imgs[slot[s]],c.rot[s]);for(var i=0;i<9;i++)out.push(letterOf[g[i]])}
+  return out;
+}
+function describeFix(c){var t=[];if(c.sw&1)t.push('sisi KIRI ↔ KANAN tertukar');if(c.sw&2)t.push('sisi DEPAN ↔ BELAKANG tertukar');if(c.sw&4)t.push('sisi ATAS ↔ BAWAH tertukar');
+  c.rot.forEach(function(r,s){if(r)t.push('sisi '+FN[F[s]].toUpperCase()+' terpindai miring '+(r*90)+'°')});return t}
+function autoFix(imgs,maxCost){var C=fixCandidates();for(var i=0;i<C.length;i++){if(C[i].cost>maxCost)break;var f=buildFrom(imgs,C[i]);if(verifyFacelets(f).ok)return{f:f,c:C[i]}}return null}
+/* gambar klaster dari facelet huruf saat ini (untuk tombol "Perbaiki otomatis" di editor manual) */
+function imgsFromFacelets(f){var idx={};F.forEach(function(x,s){idx[f[s*9+4]]=s});var imgs=[];for(var s=0;s<6;s++){var g=[];for(var i=0;i<9;i++)g.push(idx[f[s*9+i]]);imgs.push(g)}return imgs}
 function el(id){return document.getElementById(id)}
 function $$(s){return Array.prototype.slice.call(document.querySelectorAll(s))}
 function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
@@ -474,11 +566,11 @@ function toast(msg,ms){var t=el('toast');t.textContent=msg;t.classList.add('show
 function axisOf(m){var f=m.charAt(0);return f==='U'||f==='D'?0:f==='F'||f==='B'?1:2}
 function directionOf(m){var n=m.indexOf('2')>-1?2:1,sg=m.indexOf("'")>-1?-1:1;if(m.charAt(0)==='D'||m.charAt(0)==='B'||m.charAt(0)==='L')sg*=-1;return sg*n}
 function inverse(m){if(m.indexOf('2')>-1)return m;return m.indexOf("'")>-1?m.replace("'",""):m+"'"}
-function describe(m){var f=FN[m.charAt(0)];if(m.indexOf('2')>-1)return 'putar sisi '+f+' 180°';return 'putar sisi '+f+(m.indexOf("'")>-1?' berlawanan arah':' searah')+' jarum jam'}
+function describe(m){var c=m.charAt(0),f=FN[c]+(CNAME[c]?' ('+CNAME[c]+')':'');if(m.indexOf('2')>-1)return 'putar sisi '+f+' 180°';return 'putar sisi '+f+(m.indexOf("'")>-1?' berlawanan arah':' searah')+' jarum jam (dilihat dari sisi itu)'}
 function isSolved(){for(var f=0;f<6;f++)for(var i=1;i<9;i++)if(facelets[f*9+i]!==facelets[f*9])return false;return true}
 function colorCount(){var n={U:0,R:0,F:0,D:0,L:0,B:0};facelets.forEach(function(x){if(n[x]!==undefined)n[x]++});return n}
 function validColors(){var n=colorCount();return F.every(function(f){return n[f]===9})}
-function ensureCube(){if(!ready)throw Error('Mesin solver belum termuat. Pastikan internet aktif.');if(!validColors())throw Error('Jumlah setiap warna harus tepat 9.');if(!cube)cube=Cube.fromString(facelets.join(''));return cube}
+function ensureCube(){if(!ready)throw Error('Mesin solver belum termuat. Pastikan internet aktif.');var v=verifyFacelets(facelets);if(!v.ok)throw Error(v.msg+' Buka “Masukkan warna Rubik asli” → 🔧 Perbaiki otomatis.');if(!cube)cube=Cube.fromString(facelets.join(''));return cube}
 function sync(){facelets=cube.asString().split('');render()}
 
 /* ===== Orbit Mathematics v3 · Hybrid Map + Active Detail ===== */
@@ -674,8 +766,10 @@ function updateCube3(){
   cubies.forEach(function(m){m.position.copy(m.userData.home);m.rotation.set(0,0,0);m.quaternion.set(0,0,0,1);m.scale.set(1,1,1);
     m.children.forEach(function(p){p.material=stickerMaterial(COL[facelets[p.userData.faceletIndex]])})});
 }
+function fitDist(){var v=camera3.fov*Math.PI/180,hf=2*Math.atan(Math.tan(v/2)*camera3.aspect);return clamp(3.05/Math.sin(Math.min(v,hf)/2),6,17)}   // bola radius ±3 (kubus + label) selalu muat
 function size3(){
   if(!renderer3)return;var box=el('cube3d'),w=Math.max(1,box.clientWidth),h=Math.max(1,box.clientHeight);renderer3.setSize(w,h,false);camera3.aspect=w/h;camera3.updateProjectionMatrix();
+  if(controls3){var off=camera3.position.clone().sub(controls3.target);off.setLength(fitDist());camera3.position.copy(controls3.target).add(off);controls3.update()}
 }
 function moveAtPoint(cx,cy,shift){
   if(!renderer3||!raycaster3)return null;
@@ -701,9 +795,9 @@ function init3D(){
     var box=el('cube3d');scene3=new THREE.Scene();camera3=new THREE.PerspectiveCamera(34,1,.1,100);camera3.position.set(5.2,4.2,6.2);
     renderer3=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});renderer3.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer3.outputEncoding=THREE.sRGBEncoding;box.appendChild(renderer3.domElement);
     GEO.box=new THREE.BoxGeometry(.92,.92,.92);GEO.plane=new THREE.PlaneGeometry(.75,.75);
-    controls3=new THREE.OrbitControls(camera3,renderer3.domElement);controls3.enableDamping=true;controls3.dampingFactor=.08;controls3.enablePan=false;controls3.minDistance=5;controls3.maxDistance=13;controls3.target.set(0,0,0);
+    controls3=new THREE.OrbitControls(camera3,renderer3.domElement);controls3.enableDamping=true;controls3.dampingFactor=.08;controls3.enablePan=false;controls3.minDistance=5;controls3.maxDistance=20;controls3.target.set(0,0,0);
     scene3.add(new THREE.HemisphereLight(0xffffff,0x17252a,1.45));var key=new THREE.DirectionalLight(0xffffff,1.3);key.position.set(4,7,6);scene3.add(key);var rim=new THREE.DirectionalLight(0x66e1bf,.62);rim.position.set(-5,1,-4);scene3.add(rim);
-    raycaster3=new THREE.Raycaster();size3();buildCube3();
+    raycaster3=new THREE.Raycaster();size3();buildCube3();buildLabels();setCameraView('eye');
     if(window.ResizeObserver)new ResizeObserver(size3).observe(box);else addEventListener('resize',size3);
     /* tolak telapak tangan di IFP sebelum sampai ke OrbitControls */
     box.addEventListener('pointerdown',function(e){if(document.body.dataset.ui==='ifp'&&e.pointerType==='touch'&&Math.max(e.width||0,e.height||0)>110){e.stopImmediatePropagation();e.preventDefault()}},true);
@@ -714,15 +808,15 @@ function init3D(){
     });
     (function loop(t){requestAnimationFrame(loop);
       if(turnTween){var q=Math.min(1,(t-turnTween.start)/turnTween.ms),ease=1-Math.pow(1-q,3);turnTween.pivot.rotation[turnTween.axis]=turnTween.target*ease;if(turnTween.fx)fxUpdate(turnTween,q,t);if(q>=1)completeTween()}
-      controls3.update();renderer3.render(scene3,camera3)})(performance.now());
+      controls3.update();updateLabels();renderer3.render(scene3,camera3)})(performance.now());
   }catch(err){console.warn(err);scene3=null;renderer3=null;state('WebGL tidak tersedia — diagram orbit tetap aktif',true)}
 }
 function setCameraView(face){
   if(!camera3||!controls3)return;
   /* U/D dibuat sedikit miring (bukan 90° lurus) agar OrbitControls stabil: U → B di atas, D → F di atas */
-  var p={U:[0,8,.6],D:[0,-8,.6],F:[0,.15,8],B:[0,.15,-8],R:[8,.15,0],L:[-8,.15,0]};
-  var v=face&&p[face]?p[face]:[5.2,4.2,6.2];camera3.position.set(v[0],v[1],v[2]);controls3.target.set(0,0,0);camera3.lookAt(0,0,0);controls3.update();
-  state(face?'Tampilan sisi '+face:'Posisi awal: U atas, R kanan, F depan');
+  var p={U:[0,8,.6],D:[0,-8,.6],F:[0,.15,8],B:[0,.15,-8],R:[8,.15,0],L:[-8,.15,0],eye:[1.5,2.6,8.4]};
+  var v=face&&p[face]?p[face]:[5.2,4.2,6.2],dir=new THREE.Vector3(v[0],v[1],v[2]).setLength(fitDist());camera3.position.copy(dir);controls3.target.set(0,0,0);camera3.lookAt(0,0,0);controls3.update();
+  state(face==='eye'?'Seperti di tanganmu: DEPAN ('+CNAME.F+') menghadapmu, ATAS ('+CNAME.U+') di atas':face?'Tampilan sisi '+face+' — '+FN[face]+' ('+CNAME[face]+')':'Sudut miring: atas, kanan, depan');
 }
 function layerInfo(m){
   var f=m.charAt(0),axis=(f==='U'||f==='D')?'y':(f==='R'||f==='L')?'x':'z',layer=(f==='U'||f==='R'||f==='F')?1:-1;
@@ -747,6 +841,28 @@ function finishLayerTurn(){
   if(controls3)controls3.enabled=true;
 }
 
+/* ===== Label sisi di kubus 3D: nama sisi + warna aslinya, hanya untuk sisi yang terlihat ===== */
+var labelSprites={},labelsOn=true;try{labelsOn=localStorage.getItem('rubikLabels')!=='0'}catch(_){}
+var LABEL_POS={U:[0,1,0],D:[0,-1,0],R:[1,0,0],L:[-1,0,0],F:[0,0,1],B:[0,0,-1]};
+var LABEL_AT={U:[0,2.05,0],D:[0,-2.4,0],R:[1.62,-1.95,0],L:[-1.62,-1.95,0],F:[0,-1.95,1.62],B:[0,-1.95,-1.62]};
+function labelTexture(f){var c=document.createElement('canvas');c.width=320;c.height=120;var x=c.getContext('2d');
+  x.fillStyle='rgba(8,16,20,.82)';x.strokeStyle=COL[f];x.lineWidth=8;x.beginPath();x.moveTo(30,6);x.arcTo(314,6,314,114,26);x.arcTo(314,114,6,114,26);x.arcTo(6,114,6,6,26);x.arcTo(6,6,314,6,26);x.closePath();x.fill();x.stroke();
+  x.fillStyle=COL[f];x.beginPath();x.arc(56,60,24,0,7);x.fill();
+  x.fillStyle='#eef7f5';x.font='900 46px Inter,system-ui,sans-serif';x.textBaseline='middle';x.fillText(FN[f].toUpperCase(),96,46);
+  x.font='700 30px Inter,system-ui,sans-serif';x.fillStyle='#a9c2c0';x.fillText(f+' · '+CNAME[f],98,90);
+  var t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;return t}
+function buildLabels(){F.forEach(function(f){var m=new THREE.SpriteMaterial({map:labelTexture(f),transparent:true,depthTest:false,depthWrite:false}),sp=new THREE.Sprite(m);
+  sp.scale.set(1.05,.4,1);sp.renderOrder=10;var d=LABEL_POS[f],q=LABEL_AT[f];sp.userData.n=new THREE.Vector3(d[0],d[1],d[2]);sp.position.set(q[0],q[1],q[2]);scene3.add(sp);labelSprites[f]=sp})}
+function refreshLabels(){F.forEach(function(f){var sp=labelSprites[f];if(!sp)return;sp.material.map.dispose();sp.material.map=labelTexture(f);sp.material.needsUpdate=true})}
+var _vd=null;
+function updateLabels(){if(!camera3)return;_vd=_vd||new THREE.Vector3();_vd.copy(camera3.position).normalize();
+  F.forEach(function(f){var sp=labelSprites[f];if(!sp)return;var d=sp.userData.n.dot(_vd),a=labelsOn?Math.max(0,Math.min(1,(d-.12)/.25)):0;
+    if((f==='U'||f==='D')&&d>.86)a*=.4;      // dilihat lurus dari atas/bawah → transparan agar stiker tetap terlihat
+    sp.material.opacity=a;sp.visible=a>.02})}
+/* Badge "pegang seperti ini": menyamakan kubus di layar dengan kubus di tangan */
+function chip(f){return'<i style="background:'+COL[f]+'"></i><b>'+CNAME[f]+'</b>'}
+function updateHoldBadge(){var b=el('holdBadge');if(!b)return;
+  b.innerHTML='✋ <span>Samakan dengan kubusmu: pusat '+chip('F')+' menghadapmu, '+chip('U')+' di atas → '+chip('R')+' di kananmu, '+chip('L')+' di kirimu.</span>'}
 /* ===== Render panel ===== */
 function renderSolution(){
   if(!solution.length){el('solution').innerHTML='<span class="hint">Belum ada solusi.</span>';el('nextBadge').hidden=true;return}
@@ -797,11 +913,30 @@ function undo(){if(!history.length||busy)return;var m=history.pop();moveAnimated
 function renderEditor(){
   var pos={U:[2,1],L:[1,2],F:[2,2],R:[3,2],B:[4,2],D:[2,3]},h='';
   F.forEach(function(f,fi){h+='<div class="facebox" style="grid-column:'+pos[f][0]+';grid-row:'+pos[f][1]+'"><label>'+f+'</label>';for(var i=0;i<9;i++){var k=fi*9+i;h+='<button class="sticker '+(i===4?'center':'')+'" data-k="'+k+'" style="background:'+COL[facelets[k]]+'" aria-label="'+f+' '+(i+1)+'"></button>'}h+='</div>'});
-  el('net').innerHTML=h;$$('.sticker:not(.center)').forEach(function(n){n.onclick=function(){facelets[+n.dataset.k]=paint;cube=null;history=[];solution=[];step=0;render()}});
+  el('net').innerHTML=h;$$('.sticker:not(.center)').forEach(function(n){n.onclick=function(){var k=+n.dataset.k;facelets[k]=paint;delete suspect[k];cube=null;history=[];solution=[];step=0;render()}});
+  /* ketuk titik tengah = ganti warna sisi itu agar sama dengan kubus fisikmu (ditukar dengan sisi pemilik warna tsb) */
+  $$('.sticker.center').forEach(function(n){n.onclick=function(){var f=F[Math.floor(+n.dataset.k/9)],cur=CANON_KEYS.indexOf(SCHEME[f]),nk=CANON_KEYS[(cur+1)%6],other=F.filter(function(x){return SCHEME[x]===nk})[0];
+    SCHEME[other]=SCHEME[f];SCHEME[f]=nk;applyScheme(true);refreshLabels();render();toast('Warna sisi '+FN[f]+' → '+CNAME[f]+' (sisi '+FN[other]+' → '+CNAME[other]+')',2600)}});
+  var std=F.every(function(f){return SCHEME[f]===DEFAULT_SCHEME[f]});
+  el('scheme').innerHTML='Skema warna kubusmu: '+F.map(function(f){return'<span><i style="background:'+COL[f]+'"></i>'+f+' '+CNAME[f]+'</span>'}).join(' ')+(std?'':' <button class="btn ai-clickable" id="schemeStd">↺ Skema standar</button>');
+  if(el('schemeStd'))el('schemeStd').onclick=function(){SCHEME=Object.assign({},DEFAULT_SCHEME);applyScheme(true);refreshLabels();render()};
   el('palette').innerHTML=F.map(function(f){return'<button class="paint '+(paint===f?'active':'')+'" data-p="'+f+'" style="background:'+COL[f]+'" aria-label="Warna '+f+'"></button>'}).join('');
   $$('.paint').forEach(function(n){n.onclick=function(){paint=n.dataset.p;renderEditor()}});
 }
-function validate(){var n=colorCount(),ok=validColors();el('validation').textContent=ok?'Jumlah warna tepat: masing-masing 9.':'Belum tepat — '+F.map(function(f){return f+':'+n[f]}).join(' · ');el('validation').style.color=ok?'#78e0c3':'#ffaaa6'}
+var suspect={};
+function validate(){
+  var n=colorCount(),v=verifyFacelets(facelets),box=el('validation');
+  var txt=v.code==='count'?'Belum tepat — '+F.map(function(f){return f+':'+n[f]}).join(' · '):v.msg;
+  if(!v.ok&&v.code!=='count'){var key=facelets.join('');if(validate.key!==key){validate.key=key;var g=autoFix(imgsFromFacelets(facelets),3);validate.guess=g?describeFix(g.c).join(', '):''}
+    if(validate.guess)txt='Kemungkinan: '+validate.guess+'.'}
+  box.innerHTML=(v.ok?'✔ ':'⚠ ')+txt+(!v.ok&&v.code!=='count'?' <button class="btn ai-clickable" id="autoFixBtn" style="margin-top:.4rem">🔧 Perbaiki otomatis</button>':'');
+  box.style.color=v.ok?'#78e0c3':'#ffaaa6';
+  var b=el('autoFixBtn');if(b)b.onclick=function(){var r=autoFix(imgsFromFacelets(facelets),6);
+    if(!r){toast('Belum bisa diperbaiki otomatis — periksa stiker bertanda merah.',3500);return}
+    facelets=r.f;cube=null;history=[];solution=[];step=0;suspect={};render();toast('🔧 Diperbaiki: '+describeFix(r.c).join(', ')+'.',4200)};
+  $$('#net .sticker').forEach(function(s){var k=+s.dataset.k;s.classList.toggle('bad',!!((v.bad&&v.bad.indexOf(k)>-1)||suspect[k]))});
+  updateHoldBadge();
+}
 function hint(auto){
   var msg;
   if(solution.length&&step<solution.length)msg='Langkah '+(step+1)+': '+solution[step]+' — '+describe(solution[step])+'. Lihat lingkaran yang menyala: itu orbit sumbu putaran.';
@@ -816,6 +951,8 @@ function initControls(){
   F.forEach(function(f){['',"'",'2'].forEach(function(s){var m=f+s,b=document.createElement('button');b.className='move ai-clickable axis'+axisOf(m);b.textContent=m;b.title=describe(m);b.onclick=function(){moveAnimated(m,true)};el('moves').appendChild(b)})});
   el('scramble').onclick=scramble;el('solve').onclick=solveCube;el('reset').onclick=reset;el('undo').onclick=undo;el('next').onclick=next;el('prev').onclick=prev;el('play').onclick=togglePlay;
   el('resetView').onclick=function(e){e.stopPropagation();setCameraView()};
+  el('eyeView').onclick=function(e){e.stopPropagation();setCameraView('eye')};
+  el('labelBtn').onclick=function(e){e.stopPropagation();labelsOn=!labelsOn;this.setAttribute('aria-pressed',String(labelsOn));try{localStorage.setItem('rubikLabels',labelsOn?'1':'0')}catch(_){}}
   $$('[data-view3]').forEach(function(b){b.onclick=function(e){e.stopPropagation();setCameraView(b.dataset.view3)}});
   el('dirBtn').onclick=function(e){e.stopPropagation();prime=!prime;this.setAttribute('aria-pressed',prime);this.textContent=prime?'↺ Berlawanan':'↻ Searah'};
   el('hintBtn').onclick=function(){hint(false)};
@@ -844,15 +981,21 @@ function releaseCam(who){
 }
 addEventListener('beforeunload',function(){if(stream)stream.getTracks().forEach(function(t){t.stop()})});
 
-/* ===== Pindai Rubik asli lewat kamera ===== */
+/* ===== Pindai Rubik asli lewat kamera · v2 real-time =====
+   - Tampilan kamera seperti CERMIN (gerak tangan = gerak di layar); pembacaan stiker tetap dari bingkai asli.
+   - Warna setiap kotak dibaca langsung ±8×/detik dan ditampilkan di atas stiker.
+   - Bila bacaan stabil ±0,9 detik → diambil otomatis (median beberapa bingkai, tahan silau).
+   - Selesai: klasterisasi Lab berbatas 9 per warna + validator fisik + perbaikan otomatis kesalahan umum. */
 var SCAN=[
- {f:'F',t:'Sisi DEPAN (F)',d:'Pegang kubus: sisi mana pun sebagai depan, sisi lain di ATAS. Hadapkan ke kamera.'},
- {f:'R',t:'Sisi KANAN (R)',d:'Putar seluruh kubus 90° ke kiri: sisi kanan kini menghadap kamera, sisi atas tetap di atas.'},
- {f:'B',t:'Sisi BELAKANG (B)',d:'Putar lagi 90° ke kiri. Sisi atas tetap di atas.'},
- {f:'L',t:'Sisi KIRI (L)',d:'Putar lagi 90° ke kiri. Sisi atas tetap di atas.'},
- {f:'U',t:'Sisi ATAS (U)',d:'Putar ke kiri sekali lagi (F kembali di depan), lalu miringkan bagian ATAS kubus ke arah kamera. Sisi B berada di bagian atas gambar.'},
- {f:'D',t:'Sisi BAWAH (D)',d:'Kembali ke posisi awal (F di depan), lalu miringkan bagian BAWAH ke arah kamera. Sisi F berada di bagian atas gambar.'}];
-var scanIdx=0,scanData={},GUIDE=.6;
+ {f:'F',t:'Sisi DEPAN',d:'Pegang kubus dengan satu sisi menghadap kamera — sisi ini menjadi DEPAN. Ingat warna yang di ATAS, jangan diubah sampai langkah 4.'},
+ {f:'R',t:'Sisi KANAN',d:'Putar kubus mendatar (atas tetap di atas): bawa sisi yang ada di KIRI layar — dekat tangan kirimu — ke depan kamera. Sisi depan tadi bergeser ke KANAN layar.'},
+ {f:'B',t:'Sisi BELAKANG',d:'Ulangi putaran yang sama: sisi di KIRI layar dibawa ke depan kamera. Atas tetap di atas.'},
+ {f:'L',t:'Sisi KIRI',d:'Sekali lagi putaran yang sama: sisi di KIRI layar dibawa ke depan kamera.'},
+ {f:'U',t:'Sisi ATAS',d:'Putar sekali lagi sampai sisi DEPAN kembali menghadap kamera. Lalu miringkan kubus ke depan: sisi ATAS kini menghadap kamera (sisi depan turun ke bawah).'},
+ {f:'D',t:'Sisi BAWAH',d:'Kembalikan sisi DEPAN ke kamera, lalu miringkan ke arah sebaliknya: sisi BAWAH menghadap kamera (sisi depan naik ke atas).'}];
+var scanIdx=0,scanData={},GUIDE=.6,scanTimer=0,scanBuf=[],stableSince=0,lastShot=0,dupWarn=-1,lastNote='';
+var scanOpt={auto:true,mirror:true};try{Object.assign(scanOpt,JSON.parse(localStorage.getItem('rubikScan.v2')||'{}'))}catch(e){}
+function saveScanOpt(){try{localStorage.setItem('rubikScan.v2',JSON.stringify(scanOpt))}catch(e){}}
 function lab(rgb){
   function f(c){c/=255;return c>.04045?Math.pow((c+.055)/1.055,2.4):c/12.92}
   var r=f(rgb[0]),g=f(rgb[1]),b=f(rgb[2]);
@@ -860,58 +1003,108 @@ function lab(rgb){
   function h(t){return t>.008856?Math.cbrt(t):7.787*t+16/116}
   return[116*h(y)-16,500*(h(x)-h(y)),200*(h(y)-h(z))];
 }
-function labDist(a,b){var l=(a[0]-b[0])*.6,x=a[1]-b[1],y=a[2]-b[2];return Math.sqrt(l*l+x*x+y*y)}
-function median(a){a.sort(function(x,y){return x-y});return a[a.length>>1]}
+function labDist(a,b){var l=(a[0]-b[0])*.55,x=a[1]-b[1],y=a[2]-b[2];return Math.sqrt(l*l+x*x+y*y)}
+function median(a){a=a.slice().sort(function(x,y){return x-y});return a[a.length>>1]}
+var sampCv=null,sampCx=null,SAMP=150;
+/* baca 9 kotak dari bingkai ASLI kamera: median tiap kanal pada 40% tengah kotak + deteksi silau */
 function sampleFace(){
-  var v=el('scanVideo'),vw=v.videoWidth,vh=v.videoHeight;if(!vw)return null;
-  var cv=document.createElement('canvas');cv.width=vw;cv.height=vh;var cx=cv.getContext('2d',{willReadFrequently:true});cx.drawImage(v,0,0,vw,vh);
-  var side=Math.min(vw,vh)*GUIDE,x0=(vw-side)/2,y0=(vh-side)/2,cell=side/3,half=Math.max(2,Math.round(cell*.18)),out=[];
-  for(var r=0;r<3;r++)for(var c=0;c<3;c++){
-    var px=Math.round(x0+(c+.5)*cell-half),py=Math.round(y0+(r+.5)*cell-half),d=cx.getImageData(px,py,half*2,half*2).data,R=[],G=[],B=[];
-    for(var i=0;i<d.length;i+=4){R.push(d[i]);G.push(d[i+1]);B.push(d[i+2])}
-    out.push([median(R),median(G),median(B)]);
-  }
-  return out;
+  var v=el('scanVideo'),vw=v.videoWidth,vh=v.videoHeight;if(!vw||v.readyState<2)return null;
+  if(!sampCv){sampCv=document.createElement('canvas');sampCv.width=sampCv.height=SAMP;sampCx=sampCv.getContext('2d',{willReadFrequently:true})}
+  var side=Math.min(vw,vh)*GUIDE;sampCx.drawImage(v,(vw-side)/2,(vh-side)/2,side,side,0,0,SAMP,SAMP);
+  var img=sampCx.getImageData(0,0,SAMP,SAMP).data,cell=SAMP/3,half=Math.round(cell*.2),rgb=[],glare=[];
+  for(var r=0;r<3;r++)for(var c=0;c<3;c++){var cx0=Math.round((c+.5)*cell),cy0=Math.round((r+.5)*cell),R=[],G=[],B=[],hot=0,n=0;
+    for(var y=cy0-half;y<cy0+half;y+=2)for(var x=cx0-half;x<cx0+half;x+=2){var i=(y*SAMP+x)*4;R.push(img[i]);G.push(img[i+1]);B.push(img[i+2]);n++;if(img[i]>238&&img[i+1]>238&&img[i+2]>238)hot++}
+    var m=[median(R),median(G),median(B)];rgb.push(m);glare.push(hot/n>.28&&hsv(m).s>.22)}
+  return{rgb:rgb,glare:glare};
+}
+function bufMedian(){if(!scanBuf.length)return null;var out=[];for(var k=0;k<9;k++){out.push([0,1,2].map(function(ch){return median(scanBuf.map(function(s){return s.rgb[k][ch]}))}))}return out}
+function domCell(k){var r=Math.floor(k/3),c=k%3;return r*3+(scanOpt.mirror?2-c:c)}   // indeks kotak di layar
+function captured(except){return SCAN.filter(function(s,i){return i!==except&&scanData[s.f]})}
+function duplicateOf(rgb){var L=lab(rgb[4]),hit=null;captured(scanIdx).forEach(function(s){if(labDist(L,lab(scanData[s.f][4]))<13)hit=s});return hit}
+function scanTick(){
+  var d=sampleFace();if(!d)return;var now=performance.now();
+  scanBuf.push(d);if(scanBuf.length>6)scanBuf.shift();
+  var cells=el('scanGuide').children,unknown=0,glare=0;
+  d.rgb.forEach(function(c,k){var cls=classifyCanon(c),n=cells[domCell(k)];if(!cls)unknown++;if(d.glare[k])glare++;
+    n.style.setProperty('--c',cls?CANON[cls].hex:'transparent');n.classList.toggle('seen',!!cls);n.classList.toggle('glare',!!d.glare[k])});
+  // stabil? bandingkan bacaan terbaru dengan median penyangga
+  var med=bufMedian(),delta=0;d.rgb.forEach(function(c,k){delta=Math.max(delta,labDist(lab(c),lab(med[k])))});
+  var dup=duplicateOf(d.rgb),stable=scanBuf.length>=4&&delta<9&&unknown<=1,note;
+  if(unknown>2)note='Arahkan satu sisi kubus agar memenuhi 9 kotak panduan.';
+  else if(glare)note='⚠ Ada pantulan silau di '+glare+' kotak — miringkan sedikit kubus/hindari lampu langsung.';
+  else if(dup)note='Warna pusat sama dengan sisi '+dup.t+' yang sudah diambil — putar ke sisi berikutnya.';
+  else note=stable?'✔ Bacaan stabil'+(scanOpt.auto?' — mengambil otomatis…':' — tekan Ambil.'):'Tahan kubus diam sejenak…';
+  if(note!==lastNote){el('scanNote').textContent=note;lastNote=note}
+  var btn=el('scanShot');
+  if(scanOpt.auto&&stable&&!dup&&!glare&&now-lastShot>1400){if(!stableSince)stableSince=now;var q=(now-stableSince)/900;
+    btn.style.setProperty('--prog',Math.min(100,q*100)+'%');if(q>=1){stableSince=0;shotScan(true)}}
+  else{stableSince=0;btn.style.setProperty('--prog','0%')}
 }
 function renderScan(){
-  var s=SCAN[scanIdx];
-  el('scanTitle').textContent=(scanIdx+1)+'/6 — '+s.t;el('scanText').textContent=s.d;
-  el('scanDots').innerHTML=SCAN.map(function(x,i){return'<span class="'+(scanData[x.f]?'ok':i===scanIdx?'on':'')+'">'+x.f+'</span>'}).join('');
-  var d=scanData[s.f];el('scanPreview').innerHTML=d?d.map(function(c){return'<i style="background:rgb('+c[0]+','+c[1]+','+c[2]+')"></i>'}).join(''):'';
+  var s=SCAN[scanIdx],front=scanData.F?' (depan: '+(CANON[classifyCanon(scanData.F[4])]||{n:'?'}).n+')':'';
+  el('scanTitle').textContent=(scanIdx+1)+'/6 — '+s.t+' ('+s.f+')';el('scanText').textContent=s.d+(scanIdx>0&&scanIdx<5?front:'');
+  el('scanDots').innerHTML=SCAN.map(function(x,i){var d=scanData[x.f],bg=d?'background:rgb('+d[4].join(',')+');color:#06110f':'';return'<span class="'+(d?'ok':i===scanIdx?'on':'')+'" style="'+bg+'">'+x.f+'</span>'}).join('');
+  var d=scanData[s.f];el('scanPreview').innerHTML=d?[0,1,2,3,4,5,6,7,8].map(function(k){var src=Math.floor(k/3)*3+(scanOpt.mirror?2-k%3:k%3);return'<i style="background:rgb('+d[src].join(',')+')"></i>'}).join(''):'';
   el('scanBack').disabled=scanIdx===0;
-  el('scanShot').textContent=scanIdx===5?'📸 Ambil & selesai':'📸 Ambil sisi ini';
+  el('scanShot').firstChild.textContent=scanIdx===5?'📸 Ambil & selesai':'📸 Ambil sisi ini';
+  el('scanAuto').setAttribute('aria-pressed',String(scanOpt.auto));el('scanMirror').setAttribute('aria-pressed',String(scanOpt.mirror));
+  el('camWrap').classList.toggle('mirror',scanOpt.mirror);
 }
 function placeGuide(){
   var v=el('scanVideo'),vw=v.videoWidth||4,vh=v.videoHeight||3,w=el('camWrap');w.style.aspectRatio=vw+'/'+vh;
   var side=Math.min(vw,vh)*GUIDE,g=el('scanGuide');g.style.width=(side/vw*100)+'%';g.style.height=(side/vh*100)+'%';g.style.left=((1-side/vw)/2*100)+'%';g.style.top=((1-side/vh)/2*100)+'%';
 }
 function openScan(){
-  stopPlay();el('scanModal').hidden=false;scanIdx=0;scanData={};renderScan();el('scanNote').textContent='Menyalakan kamera…';
-  acquireCam('scan').then(function(s){var v=el('scanVideo');v.srcObject=s;v.onloadedmetadata=placeGuide;return v.play()}).then(function(){placeGuide();el('scanNote').textContent='Cahaya merata, hindari silau. Penuhi kotak panduan dengan 9 stiker, lalu tekan Ambil.'})
+  stopPlay();el('scanModal').hidden=false;scanIdx=0;scanData={};scanBuf=[];dupWarn=-1;renderScan();el('scanNote').textContent='Menyalakan kamera…';lastNote='';
+  acquireCam('scan').then(function(s){var v=el('scanVideo');v.srcObject=s;v.onloadedmetadata=placeGuide;return v.play()}).then(function(){placeGuide();clearInterval(scanTimer);scanTimer=setInterval(scanTick,120)})
   .catch(function(err){el('scanNote').textContent=(err&&err.name==='NotAllowedError')?'Izin kamera ditolak. Gunakan editor warna manual.':'Kamera tidak tersedia. Gunakan editor warna manual.'});
 }
-function closeScan(){el('scanModal').hidden=true;releaseCam('scan')}
-function shotScan(){
-  var d=sampleFace();if(!d){toast('Kamera belum siap.');return}
-  scanData[SCAN[scanIdx].f]=d;tone(660,.06);
+function closeScan(){el('scanModal').hidden=true;clearInterval(scanTimer);scanTimer=0;releaseCam('scan')}
+function shotScan(auto){
+  var d=scanBuf.length?bufMedian():(sampleFace()||{}).rgb;if(!d){toast('Kamera belum siap.');return}
+  var dup=duplicateOf(d);
+  if(dup&&!auto&&dupWarn!==scanIdx){dupWarn=scanIdx;toast('Pusatnya sama dengan sisi '+dup.t+'. Bila memang benar, tekan Ambil sekali lagi.',3600);return}
+  scanData[SCAN[scanIdx].f]=d;scanBuf=[];lastShot=performance.now();dupWarn=-1;tone(auto?880:660,.07);
   if(scanIdx<5){scanIdx++;renderScan();return}
   renderScan();finalizeScan();
 }
 function finalizeScan(){
-  var centers={};SCAN.forEach(function(s){centers[s.f]=lab(scanData[s.f][4])});
-  var items=[],out=new Array(54);
-  SCAN.forEach(function(s){var fi=F.indexOf(s.f);for(var i=0;i<9;i++){var idx=fi*9+i;if(i===4){out[idx]=s.f;continue}
-    var L=lab(scanData[s.f][i]);F.forEach(function(c){items.push([labDist(L,centers[c]),idx,c])})}});
-  items.sort(function(a,b){return a[0]-b[0]});
-  var cap={U:8,R:8,F:8,D:8,L:8,B:8};   // kapasitas 8 per warna (+1 pusat) → hasil selalu 9 stiker per warna
-  items.forEach(function(it){if(out[it[1]]===undefined&&cap[it[2]]>0){out[it[1]]=it[2];cap[it[2]]--}});
-  facelets=out;cube=null;history=[];solution=[];step=0;queue=[];render();closeScan();
-  state('Hasil pindai dimuat — periksa di editor warna, lalu Cari solusi');
-  toast('Pindai selesai. Periksa warna di “Masukkan warna Rubik asli”, lalu tekan Cari solusi.',5000);
+  // 1) klasterisasi Lab: 6 klaster disemai warna pusat, kapasitas tepat 9, rata-rata klaster diperbarui (adaptif terhadap cahaya)
+  var labs=F.map(function(f){return scanData[f].map(lab)}),means=labs.map(function(L){return L[4].slice()}),cl,marg;
+  for(var it=0;it<6;it++){
+    cl=labs.map(function(){return new Array(9)});var items=[],cap=[8,8,8,8,8,8];
+    for(var s=0;s<6;s++){cl[s][4]=s;for(var i=0;i<9;i++)if(i!==4)for(var k=0;k<6;k++)items.push([labDist(labs[s][i],means[k]),s,i,k])}
+    items.sort(function(a,b){return a[0]-b[0]});
+    items.forEach(function(t){if(cl[t[1]][t[2]]===undefined&&cap[t[3]]>0){cl[t[1]][t[2]]=t[3];cap[t[3]]--}});
+    var sum=[0,1,2,3,4,5].map(function(){return[0,0,0,0]});
+    for(s=0;s<6;s++)for(i=0;i<9;i++){var c=cl[s][i],L=labs[s][i];sum[c][0]+=L[0];sum[c][1]+=L[1];sum[c][2]+=L[2];sum[c][3]++}
+    means=sum.map(function(q,k){return q[3]?[q[0]/q[3],q[1]/q[3],q[2]/q[3]]:means[k]});
+  }
+  marg=[];for(s=0;s<6;s++)for(i=0;i<9;i++){if(i===4)continue;var ds=means.map(function(m){return labDist(labs[s][i],m)}),own=ds[cl[s][i]],alt=1e9;ds.forEach(function(v,k){if(k!==cl[s][i])alt=Math.min(alt,v)});marg.push([alt-own,s,i])}
+  marg.sort(function(a,b){return a[0]-b[0]});
+  // 2) validator fisik + perbaikan otomatis (tukar sisi / sisi miring), lalu bila perlu koreksi 1 pasang stiker meragukan
+  var r=autoFix(cl,6),pair=null;
+  if(!r){var cand=marg.slice(0,10);
+    outer:for(var a=0;a<cand.length;a++)for(var b=a+1;b<cand.length;b++){var A=cand[a],B=cand[b];if(cl[A[1]][A[2]]===cl[B[1]][B[2]])continue;
+      var g=cl.map(function(x){return x.slice()}),t=g[A[1]][A[2]];g[A[1]][A[2]]=g[B[1]][B[2]];g[B[1]][B[2]]=t;r=autoFix(g,3);if(r){pair=[A,B];break outer}}}
+  suspect={};var msg;
+  if(r){facelets=r.f;var fx=describeFix(r.c);if(pair)fx.push('warna 2 stiker meragukan dikoreksi');
+    msg=fx.length?'🔧 Diperbaiki otomatis: '+fx.join(', ')+'.':'✔ Pindai berhasil — susunan kubus valid.'}
+  else{facelets=buildFrom(cl,{sw:0,rot:[0,0,0,0,0,0]});marg.slice(0,6).forEach(function(m){suspect[m[1]*9+m[2]]=1});
+    msg='⚠ Hasil pindai belum valid. Periksa stiker bertanda merah di editor warna (biasanya merah↔oranye atau putih↔kuning).'}
+  // 3) skema warna asli dari pusat (urutan gambar → sisi mengikuti perbaikan)
+  var slot=[0,1,2,3,4,5],c0=r?r.c:{sw:0};if(c0.sw&1){slot[1]=4;slot[4]=1}if(c0.sw&2){slot[2]=5;slot[5]=2}if(c0.sw&4){slot[0]=3;slot[3]=0}
+  SCHEME=schemeFromCenters(slot.map(function(k){return scanData[F[k]][4]}));applyScheme(true);refreshLabels();
+  cube=null;history=[];solution=[];step=0;queue=[];render();closeScan();
+  state(r?'Hasil pindai dimuat — tekan Cari solusi':'Hasil pindai perlu diperiksa',!r);toast(msg,6000);
+  if(!r){var det=document.querySelector('.side details');if(det)det.open=true}
 }
+window.PILAR_RUBIK={get facelets(){return facelets.join('')},get scheme(){return SCHEME},verify:verifyFacelets,autoFix:autoFix};
 function initScan(){
-  el('scanBtn').onclick=openScan;el('scanBtn2').onclick=openScan;el('scanClose').onclick=closeScan;el('scanShot').onclick=shotScan;
-  el('scanBack').onclick=function(){if(scanIdx>0){scanIdx--;renderScan()}};
+  el('scanBtn').onclick=openScan;el('scanBtn2').onclick=openScan;el('scanClose').onclick=closeScan;el('scanShot').onclick=function(){shotScan(false)};
+  el('scanBack').onclick=function(){if(scanIdx>0){scanIdx--;scanBuf=[];renderScan()}};
+  el('scanAuto').onclick=function(){scanOpt.auto=!scanOpt.auto;saveScanOpt();renderScan()};
+  el('scanMirror').onclick=function(){scanOpt.mirror=!scanOpt.mirror;saveScanOpt();renderScan()};
 }
 
 /* ===== Vision AI (MediaPipe) ===== */
