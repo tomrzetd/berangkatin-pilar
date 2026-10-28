@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f9ff">
+<meta name="description" content="Petualangan Volta — lab baterai lithium-ion interaktif untuk SMP: isi & pakai, cas pelan vs cas cepat, HP & mobil listrik, dan tantangan merancang baterai.">
+<title>PILAR™ · Lab Baterai · Petualangan Volta</title>
+<link rel="stylesheet" href="../../css/pilar-ceria.css">
+<script src="../../core/device-profile.js"></script>
+<style>
+.wrap{max-width:1360px;margin:auto;padding:1rem 1rem 2rem}
+.top{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap}
+.score{display:flex;align-items:center;gap:.6rem;font-weight:900}.score .c-progress{width:min(220px,40vw)}
+.panel{display:none}.panel.active{display:block}
+.diagram{width:100%;height:auto;display:block;touch-action:manipulation}
+.diagram .hot{cursor:pointer}
+.diagram text{font-family:var(--f-head);fill:var(--ink)}
+.row{display:flex;gap:.55rem;flex-wrap:wrap;align-items:center;margin:.7rem 0}
+.meter{display:flex;align-items:center;gap:.6rem;font-weight:900}.meter .c-progress{flex:1;height:22px}
+.lane{display:grid;grid-template-columns:auto 1fr auto;gap:.6rem;align-items:center;margin:.5rem 0;font-weight:800}
+.lane .bat{position:relative;height:46px;border:var(--bw) solid var(--ink);border-radius:12px;background:#fff;overflow:hidden}
+.lane .bat::after{content:"";position:absolute;right:-9px;top:12px;width:6px;height:16px;border:var(--bw) solid var(--ink);border-left:0;border-radius:0 4px 4px 0;background:#fff}
+.lane .bat i{position:absolute;inset:0 auto 0 0;width:0;background:var(--green)}
+.lane .bat span{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-head);font-size:1.15rem}
+.lane .bat .l80{position:absolute;top:0;bottom:0;left:80%;border-left:3px dashed var(--ink);opacity:.5}
+.therm{min-width:5.8em;text-align:center;padding:.2em .5em;border:2px solid var(--ink);border-radius:12px;background:#eaf7ff}
+.therm.warm{background:var(--orange)}.therm.hot{background:#ff9aa9}
+.lane-tag{font-family:var(--f-head);font-size:1.05rem;min-width:4.6em}
+select.c-btn{appearance:auto;padding-right:.6em;max-width:100%}
+table.res{width:100%;border-collapse:collapse;margin-top:.6rem;font-size:.95rem}
+table.res th,table.res td{border-bottom:2px dotted #cfdbe8;padding:.4rem .35rem;text-align:left}table.res th{font-family:var(--f-head);font-weight:600}
+.clients{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
+.client{border:var(--bw) solid var(--ink);border-radius:18px;padding:.6rem .7rem;background:#fff;box-shadow:var(--shadow);cursor:pointer;text-align:left;font-family:var(--f-body);font-weight:800;line-height:1.3}
+.client b{font-family:var(--f-head);font-size:1.1rem;display:block}.client small{display:block;color:var(--ink2);font-weight:700}
+.client.active{background:var(--yellow)}.client.won::after{content:" 🏅"}
+.client:active{transform:translate(3px,4px);box-shadow:1px 1px 0 var(--ink)}
+.knobs{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem;margin-top:.8rem}
+.knob h3{margin:0 0 .35rem;font-size:1.02rem}
+.check{display:grid;grid-template-columns:auto 1fr auto;gap:.5rem;align-items:center;padding:.45rem .2rem;border-bottom:2px dotted #d6e1ee;font-weight:800}
+.check .v{font-family:var(--f-head);font-size:1.05rem;white-space:nowrap}.check small{display:block;color:var(--ink2);font-weight:700}
+.check .bar{grid-column:2/4;height:9px;border-radius:9px;background:#e6edf5;overflow:hidden}.check .bar i{display:block;height:100%;background:#6ed48d}
+.check.no .bar i{background:#ff8fa3}
+.won-card{border:var(--bw) solid var(--ink);border-radius:18px;background:var(--green);padding:.8rem 1rem;margin-top:.7rem;box-shadow:var(--shadow);animation:c-pop .45s ease-out}
+.won-card textarea{width:100%;min-height:4.5em;border:2px solid var(--ink);border-radius:12px;padding:.5rem;font:inherit;font-weight:700;margin-top:.4rem}
+.intro{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:1rem;background:rgba(23,36,58,.55)}
+.intro[hidden]{display:none}
+.intro .c-card{max-width:780px;display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center}
+.intro .c-card svg{width:9rem}
+.cert{border:4px double var(--ink);border-radius:20px;padding:1rem;text-align:center;background:linear-gradient(135deg,#fff7d5,#e9f8ff)}
+.cert h2{font-size:1.8rem}
+.foot{text-align:center;font-weight:800;opacity:.7;margin:1.4rem 0 .4rem;font-size:.9rem}
+.foot code{font-size:.75rem}
+@media(max-width:900px){.clients{grid-template-columns:1fr}.knobs{grid-template-columns:1fr}.intro .c-card{grid-template-columns:1fr;text-align:center}.intro .c-card svg{margin:auto;width:7rem}.lane{grid-template-columns:auto 1fr}.lane .therm{grid-column:1/-1}}
+</style>
+</head>
+<body class="ceria">
+<div class="wrap">
+ <div class="top"><a class="c-btn sm" href="../../" aria-label="Kembali ke PILAR Hub">← PILAR Hub</a>
+  <div class="score"><span id="foundTxt">🔎 Penemuan 0/9</span><div class="c-progress"><i id="foundBar"></i></div></div></div>
+ <header style="margin-top:.6rem">
+  <h1 class="c-title">🔋 <span class="hl">Petualangan Volta</span><br>di dalam baterai ⚡</h1>
+  <p class="c-sub">Lithium-ion • cas pelan vs cas cepat • HP &amp; mobil listrik • rancang baterai terbaikmu</p>
+ </header>
+ <nav class="c-tabs" aria-label="Bab cerita">
+  <button class="c-tab active" data-tab="b1"><b>1</b>🔍 Kenalan Volta</button>
+  <button class="c-tab" data-tab="b2"><b>2</b>⚡ Balapan Cas</button>
+  <button class="c-tab" data-tab="b3"><b>3</b>🛠️ Rancang Baterai</button>
+  <button class="c-tab" data-tab="b4"><b>4</b>🏆 Kuis Insinyur</button>
+ </nav>
+
+ <!-- ================= BAB 1 ================= -->
+ <section class="panel active" id="b1"><div class="c-grid">
+  <div class="c-card">
+   <h2>🔍 Intip ke dalam tubuh Volta</h2>
+   <div class="row" style="margin-top:0"><span class="c-tag" id="b1Mode">Volta sedang istirahat</span>
+    <div class="c-seg" style="margin-left:auto"><button class="c-btn sm on" data-dev1="hp">📱 HP</button><button class="c-btn sm" data-dev1="ev">🚗 Mobil</button></div></div>
+   <svg class="diagram" id="cell" viewBox="0 0 800 470" role="img" aria-label="Diagram baterai lithium-ion: rumah grafit, kolam elektrolit, pagar pemisah, rumah logam, dan kabel luar">
+    <defs><linearGradient id="gBody" x2="0" y2="1"><stop stop-color="#f5faff"/><stop offset="1" stop-color="#cbeaff"/></linearGradient></defs>
+    <g class="hot" data-part="kabel"><path id="wire" d="M215 200 V95 Q215 78 232 78 H568 Q585 78 585 95 V200" fill="none" stroke="#263950" stroke-width="12" stroke-linecap="round"/>
+     <path d="M215 200 V95 Q215 78 232 78 H568 Q585 78 585 95 V200" fill="none" stroke="#ffcf66" stroke-width="5" stroke-dasharray="10 12"/></g>
+    <g id="device" transform="translate(400 70)"></g>
+    <rect x="120" y="190" width="560" height="230" rx="28" fill="url(#gBody)" stroke="#17243a" stroke-width="6"/>
+    <rect x="200" y="178" width="30" height="16" rx="4" fill="#17243a"/><rect x="570" y="178" width="30" height="16" rx="4" fill="#17243a"/>
+    <text x="215" y="172" text-anchor="middle" font-size="22">−</text><text x="585" y="172" text-anchor="middle" font-size="22">+</text>
+    <g class="hot" data-part="grafit"><rect x="140" y="210" width="165" height="175" rx="12" fill="#5b6c7e" stroke="#17243a" stroke-width="4"/>
+     <g stroke="#8fa0b3" stroke-width="3"><path d="M150 228H295M150 268H295M150 308H295M150 348H295M150 378H295"/></g></g>
+    <g class="hot" data-part="kolam"><rect x="305" y="210" width="190" height="175" rx="8" fill="#8ce3f4" fill-opacity=".5" stroke="#268eb0" stroke-width="3"/>
+     <path d="M312 240q12-8 24 0t24 0t24 0t24 0t24 0t24 0t24 0" fill="none" stroke="#268eb0" stroke-width="2" opacity=".6"/></g>
+    <g class="hot" data-part="pagar"><rect x="388" y="210" width="24" height="175" fill="#ffffff" stroke="#17243a" stroke-width="3" stroke-dasharray="9 6"/></g>
+    <g class="hot" data-part="logam"><rect x="495" y="210" width="165" height="175" rx="12" fill="#ffad62" stroke="#17243a" stroke-width="4"/>
+     <g fill="#e07b2c" id="lattice"></g></g>
+    <text x="222" y="408" text-anchor="middle" font-size="19">Rumah Grafit (−)</text>
+    <text x="400" y="408" text-anchor="middle" font-size="17">kolam + pagar</text>
+    <text x="578" y="408" text-anchor="middle" font-size="19">Rumah Logam (+)</text>
+    <text x="400" y="455" text-anchor="middle" font-size="17" id="cellCaption">Ketuk bagian mana saja untuk berkenalan</text>
+    <g id="ions"></g><g id="electrons"></g>
+   </svg>
+   <div class="meter">🔋 Isi baterai <div class="c-progress"><i id="socBar" style="width:75%"></i></div><span id="socTxt">75%</span></div>
+   <div class="row"><button class="c-btn go" id="useBtn">📱 Pakai HP</button><button class="c-btn info" id="chgBtn">🔌 Cas</button><button class="c-btn stop" id="pauseBtn">⏸ Jeda</button></div>
+   <div class="c-note"><span style="color:#ff9c3e">●</span> elektron e<sup>−</sup> lewat kabel &nbsp; <span style="color:#38b6cf">●</span> ion Li<sup>+</sup> lewat kolam elektrolit. Gambar disederhanakan agar mudah diamati.</div>
+  </div>
+  <div class="c-card">
+   <div class="c-guide"><span id="volta1"></span><div class="c-bubble" id="bub1"></div></div>
+   <h3>🎯 Misi Bab 1</h3>
+   <ul class="c-missions" id="mis1"></ul>
+   <h3>💡 Penemuanmu</h3><div id="find1"></div>
+   <p class="c-note" style="margin-top:.8rem">🛟 Baterai itu aman bila dirawat: pakai charger yang sesuai, jangan dijemur, jangan ditusuk atau dibanting.</p>
+  </div>
+ </div></section>
+
+ <!-- ================= BAB 2 ================= -->
+ <section class="panel" id="b2"><div class="c-grid">
+  <div class="c-card">
+   <h2>⚡ Balapan Cas: pelan 🐢 vs cepat ⚡</h2>
+   <div class="row" style="margin-top:0"><div class="c-seg" aria-label="Perangkat"><button class="c-btn sm on" data-dev="hp">📱 HP</button><button class="c-btn sm" data-dev="ev">🚗 Mobil listrik</button></div>
+    <div class="c-seg" aria-label="Cuaca"><button class="c-btn sm" data-amb="5">❄️ 5°C</button><button class="c-btn sm on" data-amb="25">🌤️ 25°C</button><button class="c-btn sm" data-amb="38">🔥 38°C</button></div></div>
+   <div class="row"><b>Pendingin:</b><div class="c-seg"><button class="c-btn sm" data-cool="none">Tanpa</button><button class="c-btn sm" data-cool="sink">Heatsink</button><button class="c-btn sm" data-cool="liquid">Cairan</button></div></div>
+   <div class="row"><label class="c-field">🐢 Charger A<select class="c-btn sm" id="chA"></select></label><label class="c-field">⚡ Charger B<select class="c-btn sm" id="chB"></select></label>
+    <button class="c-btn go" id="raceBtn" style="margin-left:auto">🏁 Mulai balapan</button></div>
+   <div class="lane"><span class="lane-tag">🐢 A</span><div class="bat"><i id="batA"></i><b class="l80"></b><span id="pctA">10%</span></div><span class="therm" id="thA">🌡️ 25°C</span></div>
+   <div class="lane"><span class="lane-tag">⚡ B</span><div class="bat"><i id="batB" style="background:#ffe27c"></i><b class="l80"></b><span id="pctB">10%</span></div><span class="therm" id="thB">🌡️ 25°C</span></div>
+   <div class="row" style="margin:.2rem 0"><span class="c-tag" id="clock">⏱ 0 mnt</span><span class="c-note">garis putus-putus = 80%</span></div>
+   <svg class="diagram" id="chart" viewBox="0 0 700 290" role="img" aria-label="Grafik persen isi baterai terhadap waktu"></svg>
+   <table class="res" id="resTbl"></table>
+  </div>
+  <div class="c-card">
+   <div class="c-guide"><span id="volta2"></span><div class="c-bubble" id="bub2"></div></div>
+   <h3>🎯 Misi Bab 2</h3><ul class="c-missions" id="mis2"></ul>
+   <h3>💡 Penemuanmu</h3><div id="find2"></div>
+  </div>
+ </div></section>
+
+ <!-- ================= BAB 3 ================= -->
+ <section class="panel" id="b3"><div class="c-grid">
+  <div class="c-card">
+   <h2>🛠️ Rancang baterai untuk klien</h2>
+   <div class="clients" id="clients"></div>
+   <div class="c-guide" style="margin-top:.8rem"><span id="voltaC"></span><div class="c-bubble" id="clientStory"></div></div>
+   <div class="knobs">
+    <div class="knob"><h3>🧪 Bahan rumah logam (kimia)</h3><div class="c-seg"><button class="c-btn sm" data-chem="nmc">🔥 NMC · padat energi</button><button class="c-btn sm" data-chem="lfp">🛡️ LFP · awet &amp; aman</button></div></div>
+    <div class="knob"><h3>📦 Ukuran baterai: <span id="sizeTxt"></span></h3><input type="range" class="c-range" id="size" aria-label="Ukuran baterai"></div>
+    <div class="knob"><h3>⚡ Kecepatan cas</h3><div class="c-seg"><button class="c-btn sm" data-speed="slow">🐢 Lambat</button><button class="c-btn sm" data-speed="mid">🚲 Sedang</button><button class="c-btn sm" data-speed="fast">⚡ Cepat</button></div></div>
+    <div class="knob"><h3>❄️ Pendingin</h3><div class="c-seg" id="coolSeg"></div></div>
+    <div class="knob"><h3>🎚️ Batas isi harian</h3><div class="c-seg"><button class="c-btn sm" data-limit="0">100% penuh</button><button class="c-btn sm" data-limit="1">🌱 80% mode awet</button></div></div>
+    <div class="knob"><svg class="diagram" id="pack" viewBox="0 0 360 150" role="img" aria-label="Gambar paket baterai"></svg></div>
+   </div>
+  </div>
+  <div class="c-card">
+   <h2>📋 Cek kebutuhan</h2>
+   <div id="checks"></div>
+   <div class="c-callout" id="hint" style="margin-top:.7rem"></div>
+   <div id="wonBox"></div>
+   <h3>💡 Penemuanmu</h3><div id="find3"></div>
+  </div>
+ </div></section>
+
+ <!-- ================= BAB 4 ================= -->
+ <section class="panel" id="b4"><div class="c-grid">
+  <div class="c-card">
+   <h2>🏆 Kuis Insinyur Muda</h2>
+   <div class="c-progress"><i id="qBar"></i></div>
+   <p id="qNo" style="font-weight:800"></p>
+   <h2 id="qText" style="font-size:1.35rem"></h2>
+   <div id="qOpts"></div>
+   <div class="c-info" id="qFeed">Pilih jawaban yang paling tepat.</div>
+   <div class="row"><button class="c-btn go" id="qNext" disabled>Soal berikutnya ➜</button><button class="c-btn" id="qReset">🔄 Ulangi</button></div>
+  </div>
+  <div class="c-card">
+   <div class="cert" id="cert">
+    <h2>🏅 Sertifikat</h2><p style="font-weight:800;margin:.2rem 0">Insinyur Muda Baterai</p>
+    <input id="certName" placeholder="Tulis namamu" class="c-btn" style="width:100%;margin:.5rem 0;font-family:var(--f-head)">
+    <p id="certTxt" style="font-weight:800"></p>
+   </div>
+   <p class="c-note">Media ini berjalan seluruhnya di browser. Model baterai disederhanakan untuk belajar — arah dan besarannya mengikuti baterai lithium-ion nyata.</p>
+  </div>
+ </div></section>
+
+ <div class="foot">⚡ PILAR™ · Tema Ceria · Lab Baterai — Petualangan Volta ⚡<br><code>PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</code></div>
+</div>
+
+<div class="intro" id="intro" hidden><div class="c-card"><span id="voltaBig"></span><div>
+ <h2>Halo! Aku <span style="background:var(--yellow);padding:0 .3em;border-radius:.4em">Volta</span> 👋</h2>
+ <p style="font-weight:700">Aku tinggal di dalam HP-mu, laptop, motor, sampai mobil listrik. Hari ini kamu jadi <b>Insinyur Muda Baterai</b>!</p>
+ <p style="font-weight:700">Ada tiga klien yang butuh baterai buatanmu. Tapi sebelum merancang, ayo intip dulu isi tubuhku dan cari tahu kenapa ada cas yang pelan dan ada yang super cepat.</p>
+ <button class="c-btn go" id="introGo">🚀 Ayo mulai!</button></div></div></div>
+
+<script src="./model.js"></script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id),$$=s=>[...document.querySelectorAll(s)],M=window.BateraiModel,SVGNS='http://www.w3.org/2000/svg';
+const pulse=(n,d={})=>{try{window.PILAR_PULSE?.track?.(n,d)}catch(_){}};
+const KEY='pilar_baterai_v1';let ST={found:[],won:{},refl:{},intro:false,quiz:0};
+try{Object.assign(ST,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(_){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(ST))}catch(_){}};
+const fmtT=m=>m==null?'—':m<60?Math.round(m)+' mnt':Math.floor(m/60)+' jam '+(Math.round(m%60)?Math.round(m%60)+' mnt':'');
+
+/* ---------- maskot Volta (gambar orisinal) ---------- */
+function volta(mood='happy',size=1){const mouth={happy:'M-14 18 Q0 32 14 18',wow:'M-7 20 a7 8 0 1 0 14 0 a7 8 0 1 0 -14 0',think:'M-12 22 H12',proud:'M-16 16 Q0 36 16 16'}[mood];
+ return `<svg viewBox="-60 -78 120 160" aria-hidden="true"><rect x="-14" y="-74" width="28" height="14" rx="5" fill="#17243a"/>
+ <rect x="-44" y="-62" width="88" height="128" rx="24" fill="#b8f3b2" stroke="#17243a" stroke-width="5"/>
+ <path d="M-44 22 H44 V42 Q44 66 20 66 H-20 Q-44 66 -44 42 Z" fill="#7fe08a"/><rect x="-44" y="-62" width="88" height="128" rx="24" fill="none" stroke="#17243a" stroke-width="5"/>
+ <path d="M6 30 L-6 46 H2 L-4 60 L10 42 H2 Z" fill="#ffe27c" stroke="#17243a" stroke-width="3" stroke-linejoin="round"/>
+ <circle cx="-16" cy="-8" r="8" fill="#17243a"/><circle cx="16" cy="-8" r="8" fill="#17243a"/><circle cx="-13" cy="-11" r="3" fill="#fff"/><circle cx="19" cy="-11" r="3" fill="#fff"/>
+ <circle cx="-30" cy="8" r="7" fill="#ffbed8"/><circle cx="30" cy="8" r="7" fill="#ffbed8"/>
+ <path d="${mouth}" fill="${mood==='wow'?'#17243a':'none'}" stroke="#17243a" stroke-width="4" stroke-linecap="round"/>
+ <path d="M-44 0 Q-58 -10 -54 -24" fill="none" stroke="#17243a" stroke-width="5" stroke-linecap="round"/><path d="M44 0 Q58 ${mood==='proud'?'-30 50 -40':'10 56 20'}" fill="none" stroke="#17243a" stroke-width="5" stroke-linecap="round"/></svg>`}
+function setVolta(id,mood){$(id).innerHTML=volta(mood)}
+
+/* ---------- penemuan ---------- */
+const FINDS={
+ kosong:['🪫 Baterai "habis" itu…','Bukan listriknya yang hilang — semua penumpang Li<sup>+</sup> sudah pindah ke rumah kanan. Tidak ada lagi yang bisa pindah, jadi tidak ada elektron yang didorong lewat kabel.'],
+ isi:['🔌 Mengisi = mendorong pulang','Charger mendorong Li<sup>+</sup> kembali ke rumah kiri. Energinya tersimpan, seperti mendorong bola naik ke atas bukit.'],
+ pagar:['🧱 Pagar ajaib','Pagar pemisah (separator) hanya meloloskan Li<sup>+</sup>. Elektron harus memutar lewat kabel — aliran elektron itulah listrik yang menyalakan HP!'],
+ cepat:['⚡ Cepat di awal','Cas cepat bisa mengisi sampai 80% hanya dalam belasan menit, karena baterai masih "lapar".'],
+ gelas:['🥛 Pelan menjelang penuh','Di atas ±80% pengisian sengaja diperlambat — seperti menuang air ke gelas yang hampir penuh supaya tidak tumpah.'],
+ panas:['🔥 Panas bikin cepat tua','Arus besar → baterai panas → lebih cepat menua (umurnya berkurang). Pendingin membantu menjaga suhu.'],
+ dingin:['❄️ Dingin? Sabar dulu','Saat dingin, Li<sup>+</sup> bergerak lambat dan bisa menumpuk di pintu rumah grafit. Otak baterai (BMS) sengaja memperlambat cas untuk melindungi.'],
+ ev:['🚗 Mobil listrik pintar ngecas','Di perjalanan: cas cepat sampai ±80% lalu lanjut jalan. Di rumah: cas pelan semalaman — lebih awet.'],
+ tradeoff:['⚖️ Tidak ada baterai sempurna','Insinyur memilih yang paling COCOK untuk kebutuhan: ringan vs awet, cepat vs dingin, murah vs aman. Ini namanya <i>trade-off</i>.']};
+const GROUP={find1:['kosong','isi','pagar'],find2:['cepat','gelas','panas','dingin','ev'],find3:['tradeoff']};
+function renderFinds(){Object.entries(GROUP).forEach(([box,ids])=>{$(box).innerHTML=ids.map(k=>ST.found.includes(k)?`<div class="c-find"><b>${FINDS[k][0]}</b>${FINDS[k][1]}</div>`:`<div class="c-find locked"><b>❓ ???</b>Belum ditemukan</div>`).join('')});
+ const n=ST.found.length,T=Object.keys(FINDS).length;$('foundTxt').textContent='🔎 Penemuan '+n+'/'+T;$('foundBar').style.width=(n/T*100)+'%';
+ $$('.c-tab').forEach(t=>{const g={b1:'find1',b2:'find2',b3:'find3'}[t.dataset.tab];if(g)t.classList.toggle('done',GROUP[g].every(k=>ST.found.includes(k)))});certUpdate()}
+function find(k){if(ST.found.includes(k))return false;ST.found.push(k);save();renderFinds();pulse('baterai_find',{k});return true}
+
+/* ---------- tab ---------- */
+$$('.c-tab').forEach(b=>b.onclick=()=>{$$('.c-tab').forEach(x=>x.classList.toggle('active',x===b));$$('.panel').forEach(p=>p.classList.toggle('active',p.id===b.dataset.tab));if(b.dataset.tab==='b3')renderDesign();window.scrollTo({top:0,behavior:'smooth'})});
+function goTab(id){$$('.c-tab').find(t=>t.dataset.tab===id).click()}
+
+/* ================= BAB 1 · isi tubuh Volta ================= */
+const N=12,slotL=[],slotR=[];[170,222,274].forEach(x=>[248,288,328,364].forEach(y=>slotL.push([x,y])));[526,578,630].forEach(x=>[248,288,328,364].forEach(y=>slotR.push([x,y])));
+(function(){let h='';for(let x=510;x<655;x+=24)for(let y=222;y<380;y+=24)h+=`<circle cx="${x}" cy="${y}" r="5"/>`;$('lattice').innerHTML=h})();
+const B1={mode:'idle',dev:'hp',paused:false,ions:[],els:[],next:0,mis:{kosong:false,isi:false,pagar:false}};
+function mk(tag,attrs,parent){const e=document.createElementNS(SVGNS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent&&parent.appendChild(e);return e}
+for(let i=0;i<N;i++){const g=mk('g',{},$('ions'));mk('circle',{r:15,fill:'#8bdfec',stroke:'#17243a','stroke-width':3},g);const t=mk('text',{'text-anchor':'middle',y:5,'font-size':12},g);t.textContent='Li+';
+ const home=i<9?'L':'R',slot=home==='L'?i:i-9,p=(home==='L'?slotL:slotR)[slot];B1.ions.push({g,home,slot,x:p[0],y:p[1],mv:null})}
+function placeIon(o){o.g.setAttribute('transform',`translate(${o.x.toFixed(1)} ${o.y.toFixed(1)})`)}
+B1.ions.forEach(placeIon);
+const wirePath=$('wire'),wireLen=wirePath.getTotalLength();
+function drawDevice(){const g=$('device'),soc=leftCount()/N;let h;
+ if(B1.mode==='charge')h=`<rect x="-46" y="-30" width="92" height="52" rx="12" fill="#e0caff" stroke="#17243a" stroke-width="4"/><path d="M4 -22 L-10 0 H0 L-6 16 L12 -6 H2 Z" fill="#ffe27c" stroke="#17243a" stroke-width="3"/><text x="0" y="40" text-anchor="middle" font-size="16">charger</text>`;
+ else if(B1.dev==='hp')h=`<rect x="-26" y="-44" width="52" height="88" rx="10" fill="#17243a"/><rect x="-21" y="-36" width="42" height="68" rx="4" fill="${B1.mode==='use'&&soc>0?'#ffe27c':'#3c4c63'}"/><text x="0" y="6" text-anchor="middle" font-size="15" fill="#17243a">${Math.round(soc*100)}%</text>`;
+ else h=`<path d="M-58 10 Q-56 -8 -36 -12 L-22 -30 H24 L40 -12 Q58 -8 58 10 V18 H-58 Z" fill="${B1.mode==='use'&&soc>0?'#ffe27c':'#a7e7ff'}" stroke="#17243a" stroke-width="4"/><circle cx="-34" cy="20" r="10" fill="#17243a"/><circle cx="34" cy="20" r="10" fill="#17243a"/><text x="0" y="6" text-anchor="middle" font-size="15">${Math.round(soc*100)}%</text>`;
+ g.innerHTML=h}
+const leftCount=()=>B1.ions.filter(o=>o.home==='L'&&!o.mv).length+B1.ions.filter(o=>o.mv&&o.mv.to==='L').length;
+function socUpdate(){const s=Math.round(leftCount()/N*100);$('socBar').style.width=s+'%';$('socTxt').textContent=s+'%';drawDevice()}
+function bub1(t,mood){$('bub1').innerHTML=t;setVolta('volta1',mood||'happy')}
+const PART={
+ grafit:'⬛ <b>Rumah Grafit</b> (kutub −). Grafit itu seperti tumpukan lembaran tipis — penumpang Li<sup>+</sup> bisa menyelip di antaranya. Saat penuh, Volta punya banyak energi!',
+ logam:'🟧 <b>Rumah Logam</b> (kutub +), dari campuran logam & oksigen. Saat HP dipakai, penumpang Li<sup>+</sup> pindah ke sini.',
+ kolam:'💧 <b>Kolam elektrolit</b>: cairan khusus tempat Li<sup>+</sup> berenang dari rumah ke rumah. Elektron tidak bisa berenang di sini.',
+ pagar:'🧱 <b>Pagar pemisah</b> (separator): lapisan plastik berpori. Li<sup>+</sup> boleh lewat, tapi kedua rumah tidak boleh bersentuhan. Kalau bersentuhan → korsleting & panas. Karena itu baterai jangan ditusuk!',
+ kabel:'〰️ <b>Kabel luar</b>: jalan tol elektron. Saat elektron lewat sini, HP / mobil mendapat listrik.'};
+$$('#cell .hot').forEach(h=>h.onclick=()=>{const k=h.dataset.part;bub1(PART[k]+(k==='pagar'?'<span class="q">🤔 Jadi kalau elektron tidak boleh lewat pagar, lewat mana dong?</span>':''),k==='pagar'?'wow':'happy');$('cellCaption').textContent='';
+ if(k==='pagar'&&!B1.mis.pagar){B1.mis.pagar=true;find('pagar');renderMis1()}});
+function setMode1(m){B1.mode=m;B1.paused=false;$('pauseBtn').textContent='⏸ Jeda';$('b1Mode').textContent=m==='use'?(B1.dev==='hp'?'📱 HP sedang dipakai':'🚗 Mobil sedang jalan'):m==='charge'?'🔌 Sedang dicas':'Volta sedang istirahat';
+ $('useBtn').classList.toggle('on',m==='use');$('chgBtn').classList.toggle('on',m==='charge');drawDevice();
+ if(m==='use')bub1('Perhatikan baik-baik! Penumpang <b>Li<sup>+</sup></b> berenang dari rumah <b>kiri</b> ke rumah <b>kanan</b>. Lalu ke mana perginya bola oranye (elektron)?<span class="q">🔎 Misi: pakai sampai baterai 0%.</span>','wow');
+ if(m==='charge')bub1('Sekarang charger bekerja. Lihat arah penumpang Li<sup>+</sup> — sama atau terbalik dibanding saat dipakai?<span class="q">🔎 Misi: cas sampai 100%.</span>','think')}
+$('useBtn').onclick=()=>setMode1(B1.mode==='use'?'idle':'use');$('chgBtn').onclick=()=>setMode1(B1.mode==='charge'?'idle':'charge');
+$('pauseBtn').onclick=()=>{B1.paused=!B1.paused;$('pauseBtn').textContent=B1.paused?'▶ Lanjut':'⏸ Jeda'};
+$$('[data-dev1]').forEach(b=>b.onclick=()=>{B1.dev=b.dataset.dev1;$$('[data-dev1]').forEach(x=>x.classList.toggle('on',x===b));$('useBtn').textContent=B1.dev==='hp'?'📱 Pakai HP':'🚗 Jalankan mobil';setMode1(B1.mode);
+ bub1(B1.dev==='hp'?'Baterai HP berisi 1 sel seperti aku.':'Baterai mobil listrik berisi <b>ribuan sel</b> sepertiku yang bekerja bersama-sama. Cara kerjanya sama persis!','happy')});
+function startMove(o,to){const tgt=to==='L'?slotL:slotR,used=new Set(B1.ions.filter(x=>(x.mv?x.mv.to:x.home)===to).map(x=>x.mv?x.mv.slot:x.slot));let slot=0;while(used.has(slot))slot++;
+ o.mv={to,slot,t:0,dur:1.5,x0:o.x,y0:o.y,xm:400,ym:240+Math.random()*130,x1:tgt[slot][0],y1:tgt[slot][1],sent:false}}
+function spawnElectron(dir){const c=mk('circle',{r:9,fill:'#ff9c3e',stroke:'#17243a','stroke-width':2},$('electrons'));B1.els.push({c,t:0,dir})}
+function step1(dt){if(B1.mode!=='idle'&&!B1.paused){B1.next-=dt;const from=B1.mode==='use'?'L':'R',to=from==='L'?'R':'L';
+  if(B1.next<=0){const cand=B1.ions.filter(o=>!o.mv&&o.home===from);
+   if(cand.length){cand.sort((a,b)=>a.slot-b.slot);startMove(cand[cand.length-1],to);B1.next=B1.mode==='use'?1.0:.8}
+   else if(!B1.ions.some(o=>o.mv)){const was=B1.mode;setMode1('idle');
+    if(was==='use'){bub1('Baterai 0%! Semua penumpang Li<sup>+</sup> sudah di rumah kanan. Tidak ada lagi yang bisa pindah, jadi elektron berhenti mengalir.<span class="q">🤔 Bagaimana cara memindahkan mereka kembali?</span>','think');if(!B1.mis.kosong){B1.mis.kosong=true;find('kosong')}}
+    else{bub1('Penuh 100%! Charger mendorong semua penumpang pulang ke rumah kiri. Energi tersimpan lagi. 🎉','proud');if(!B1.mis.isi){B1.mis.isi=true;find('isi')}}
+    renderMis1();checkB1Done()}}}
+ B1.ions.forEach(o=>{if(!o.mv)return;if(B1.paused)return;const m=o.mv;m.t+=dt/m.dur;const t=Math.min(1,m.t),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  if(e<.5){const u=e*2;o.x=m.x0+(m.xm-m.x0)*u;o.y=m.y0+(m.ym-m.y0)*u}else{const u=(e-.5)*2;o.x=m.xm+(m.x1-m.xm)*u;o.y=m.ym+(m.y1-m.ym)*u}
+  if(!m.sent&&t>.45){m.sent=true;spawnElectron(m.to==='R'?1:-1)}
+  if(t>=1){o.home=m.to;o.slot=m.slot;o.mv=null;socUpdate()}placeIon(o)});
+ B1.els=B1.els.filter(e=>{if(!B1.paused)e.t+=dt/1.6;if(e.t>=1){e.c.remove();return false}const L=(e.dir>0?e.t:1-e.t)*wireLen,p=wirePath.getPointAtLength(L);e.c.setAttribute('cx',p.x);e.c.setAttribute('cy',p.y);return true})}
+function renderMis1(){$('mis1').innerHTML=[['kosong','Pakai sampai baterai 0%'],['isi','Cas sampai 100%'],['pagar','Ketuk pagar pemisah (separator)']].map(([k,t])=>`<li class="${B1.mis[k]||ST.found.includes(k)?'ok':''}">${t}</li>`).join('')}
+function checkB1Done(){if(['kosong','isi','pagar'].every(k=>ST.found.includes(k)))setTimeout(()=>bub1('Hebat! Kamu sudah paham isi tubuhku. 🎉 Sekarang pertanyaan besar: <b>kenapa ada charger yang mengisi 2 jam, ada yang cuma 20 menit?</b><span class="q">👉 Lanjut ke Bab 2: Balapan Cas!</span>','proud'),2500)}
+
+/* ================= BAB 2 · balapan cas ================= */
+const B2={dev:'hp',amb:25,cool:'none',run:null,raced:new Set()};
+function fillChargers(){const D=M.DEV[B2.dev],opts=D.chargers.map(p=>`<option value="${p}">${D.fmtP(p)}${p===D.chargers[1]?' · biasa':p===D.chargers[4]?' · cas cepat':''}</option>`).join('');
+ $('chA').innerHTML=opts;$('chB').innerHTML=opts;$('chA').value=D.chargers[1];$('chB').value=D.chargers[4]}
+function syncSeg2(){$$('[data-dev]').forEach(b=>b.classList.toggle('on',b.dataset.dev===B2.dev));$$('[data-amb]').forEach(b=>b.classList.toggle('on',+b.dataset.amb===B2.amb));$$('[data-cool]').forEach(b=>b.classList.toggle('on',b.dataset.cool===B2.cool))}
+$$('[data-dev]').forEach(b=>b.onclick=()=>{B2.dev=b.dataset.dev;B2.cool=M.DEV[B2.dev].defCool;fillChargers();syncSeg2();resetLanes();
+ bub2(B2.dev==='ev'?'Mobil listrik punya baterai ±60 kWh — <b>3000×</b> lebih besar dari baterai HP! Charger di rumah ±7 kW, di rest area tol bisa 150 kW. Mobil listrik juga punya <b>pendingin cairan</b>.<span class="q">🤔 Tebak: berapa lama mengisi di rumah?</span>':'Baterai HP ±19 Wh. Charger biasa 10 W, cas cepat 65 W.','happy')});
+$$('[data-amb]').forEach(b=>b.onclick=()=>{B2.amb=+b.dataset.amb;syncSeg2();resetLanes()});
+$$('[data-cool]').forEach(b=>b.onclick=()=>{B2.cool=b.dataset.cool;syncSeg2();resetLanes()});
+function bub2(t,mood){$('bub2').innerHTML=t;setVolta('volta2',mood||'happy')}
+function laneUI(k,soc,T){$('bat'+k).style.width=(soc*100)+'%';$('pct'+k).textContent=Math.round(soc*100)+'%';const th=$('th'+k);th.textContent='🌡️ '+Math.round(T)+'°C';th.classList.toggle('warm',T>=35&&T<40);th.classList.toggle('hot',T>=40)}
+function resetLanes(){B2.run=null;['A','B'].forEach(k=>laneUI(k,.1,B2.amb));$('clock').textContent='⏱ 0 mnt';$('resTbl').innerHTML='';drawChart(null,null,0)}
+function drawChart(a,b,tNow){const W=700,H=290,L=54,R=14,T=16,Bm=40,w=W-L-R,h=H-T-Bm,tMax=a&&b?Math.max(a.t100,b.t100)*1.04:120;
+ const X=t=>L+w*t/tMax,Y=s=>T+h*(1-s);let s=`<rect x="${L}" y="${T}" width="${w}" height="${h}" fill="#fff" stroke="#17243a" stroke-width="3" rx="8"/>`;
+ [0,.2,.5,.8,1].forEach(v=>{s+=`<line x1="${L}" x2="${L+w}" y1="${Y(v)}" y2="${Y(v)}" stroke="${v===.8?'#17243a':'#dbe6f1'}" stroke-width="${v===.8?2:1.5}" ${v===.8?'stroke-dasharray="8 6"':''}/><text x="${L-8}" y="${Y(v)+5}" text-anchor="end" font-size="15">${v*100}%</text>`});
+ const step=tMax>600?120:tMax>240?60:tMax>90?30:tMax>40?10:5;for(let t=0;t<=tMax;t+=step)s+=`<text x="${X(t)}" y="${H-14}" text-anchor="middle" font-size="14">${t<60?t+'m':(t/60).toFixed(t%60?1:0).replace('.',',')+'j'}</text>`;
+ s+=`<text x="${L+w/2}" y="${H}" text-anchor="middle" font-size="13">waktu (m = menit, j = jam)</text>`;
+ const path=(r,col)=>{if(!r)return'';let d='';const tr=r.tr;for(let i=0;i<tr.t.length&&tr.t[i]<=tNow;i++)d+=(d?'L':'M')+X(tr.t[i]).toFixed(1)+' '+Y(tr.soc[i]).toFixed(1);return d?`<path d="${d}" fill="none" stroke="#17243a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${col}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`:''};
+ s+=path(a,'#6ed48d')+path(b,'#f5b921');$('chart').innerHTML=s}
+function at(r,t){const tr=r.tr;let i=0;while(i<tr.t.length-1&&tr.t[i+1]<=t)i++;return{soc:tr.soc[i],T:tr.T[i]}}
+$('raceBtn').onclick=()=>{const PA=+$('chA').value,PB=+$('chB').value,o={dev:B2.dev,Tamb:B2.amb,cool:B2.cool};
+ const a=M.charge({...o,P:PA}),b=M.charge({...o,P:PB}),tMax=Math.max(a.t100,b.t100);B2.run={a,b,tMax,t0:performance.now(),dur:Math.min(16000,Math.max(8000,tMax*60)),PA,PB,done:false};
+ $('resTbl').innerHTML='';bub2('🏁 Balapan dimulai! Perhatikan <b>garis</b>, <b>termometer</b>, dan apa yang terjadi setelah <b>80%</b>.','wow');pulse('baterai_race',{dev:B2.dev,PA,PB,amb:B2.amb,cool:B2.cool})};
+function step2(now){const R=B2.run;if(!R||R.done)return;const f=Math.min(1,(now-R.t0)/R.dur),t=f*R.tMax*1.02;
+ const A=at(R.a,t),Bv=at(R.b,t);laneUI('A',A.soc,A.T);laneUI('B',Bv.soc,Bv.T);$('clock').textContent='⏱ '+fmtT(t);drawChart(R.a,R.b,t);
+ if(f>=1){R.done=true;finishRace(R)}}
+function finishRace(R){const D=M.DEV[B2.dev],a=R.a,b=R.b,fast=a.t80<b.t80?a:b,slow=fast===a?b:a,fn=r=>r===a?'🐢 A':'⚡ B';
+ $('resTbl').innerHTML='<tr><th></th><th>Charger</th><th>10→80%</th><th>Penuh</th><th>Suhu maks</th><th>Umur ±</th></tr>'+[a,b].map(r=>`<tr><td>${fn(r)}</td><td>${D.fmtP(r.P)}</td><td>${fmtT(r.t80)}</td><td>${fmtT(r.t100)}</td><td>${r.Tmax.toFixed(0)}°C${r.throttle?' 🧠':''}${r.coldLimit?' ❄️':''}</td><td>${r.lifeCycles.toLocaleString('id-ID')} kali cas</td></tr>`).join('')+
+  '<tr><td colspan="6" class="c-note">🧠 = otak baterai (BMS) memperlambat karena panas · ❄️ = diperlambat karena dingin · umur = perkiraan berapa kali cas penuh sampai kapasitas tinggal 80%</td></tr>';
+ const newF=[];if(a.P!==b.P)B2.raced.add('race');if(B2.amb===38&&B2.cool==='none')B2.raced.add('hot');if(B2.amb===5)B2.raced.add('cold');if(B2.dev==='ev')B2.raced.add('ev');
+ if(fast.t80<=(B2.dev==='hp'?30:45)&&find('cepat'))newF.push('cepat');
+ if((fast.t100-fast.t80)>fast.t80*.45&&find('gelas'))newF.push('gelas');
+ if(Math.max(a.Tmax,b.Tmax)>=40&&find('panas'))newF.push('panas');
+ if(B2.amb===5&&(a.coldLimit||b.coldLimit)&&find('dingin'))newF.push('dingin');
+ if(B2.dev==='ev'&&find('ev'))newF.push('ev');
+ renderMis2();
+ let msg=a.P===b.P?'Dua charger sama — hasilnya kembar. Coba pilih charger yang berbeda!':`${fn(fast)} sampai 80% dalam <b>${fmtT(fast.t80)}</b>, ${fn(slow)} dalam <b>${fmtT(slow.t80)}</b>. `+
+  (fast.Tmax>slow.Tmax+3?`Tapi ${fn(fast)} sempat <b>${fast.Tmax.toFixed(0)}°C</b> dan umurnya ±${fast.lifeCycles.toLocaleString('id-ID')} kali cas, sedangkan ${fn(slow)} ±${slow.lifeCycles.toLocaleString('id-ID')} kali. `:'')+
+  '<span class="q">🤔 '+(B2.dev==='ev'?'Kalau mobilnya dipakai mudik, kapan pakai charger cepat dan kapan pakai yang pelan?':'Menurutmu, untuk dipakai setiap hari, mana yang lebih baik? Kapan cas cepat berguna?')+'</span>';
+ if(newF.length)msg+='<br>🎉 Penemuan baru: '+newF.map(k=>FINDS[k][0]).join(', ');
+ bub2(msg,newF.length?'proud':'think');
+ if(GROUP.find2.every(k=>ST.found.includes(k)))setTimeout(()=>bub2('Luar biasa, kamu sudah jadi ahli cas! 🎓 Sekarang tiga klien menunggu desain baterai darimu.<span class="q">👉 Lanjut ke Bab 3: Rancang Baterai!</span>','proud'),5000)}
+function renderMis2(){$('mis2').innerHTML=[['race','Balapan charger pelan vs cepat'],['hot','Coba cuaca 🔥 38°C tanpa pendingin'],['cold','Coba cuaca ❄️ 5°C'],['ev','Coba 🚗 mobil listrik']].map(([k,t])=>`<li class="${B2.raced.has(k)?'ok':''}">${t}</li>`).join('')}
+
+/* ================= BAB 3 · rancang baterai ================= */
+const B3={client:'hp',d:{}};
+function defDesign(id){const K=M.CLIENTS[id];return{chem:'nmc',size:K.size.def,speed:'mid',cool:'none',limit80:false}}
+Object.keys(M.CLIENTS).forEach(id=>B3.d[id]=defDesign(id));
+$('clients').innerHTML=Object.entries(M.CLIENTS).map(([id,K])=>`<button class="client" data-client="${id}"><b>${K.who.split(' ')[0]} ${K.name}</b><small>${K.who.split(' ').slice(1).join(' ')}</small></button>`).join('');
+$$('[data-client]').forEach(b=>b.onclick=()=>{B3.client=b.dataset.client;renderDesign()});
+$$('[data-chem]').forEach(b=>b.onclick=()=>{cur().chem=b.dataset.chem;renderDesign()});
+$$('[data-speed]').forEach(b=>b.onclick=()=>{cur().speed=b.dataset.speed;renderDesign()});
+$$('[data-limit]').forEach(b=>b.onclick=()=>{cur().limit80=b.dataset.limit==='1';renderDesign()});
+$('size').oninput=e=>{cur().size=+e.target.value;renderDesign()};
+const cur=()=>B3.d[B3.client];
+const HINT={use:'Kurang jauh/lama! Perbesar ukuran baterai — atau pilih NMC yang lebih padat energi. Mode 80% juga mengurangi isi harian, lho.',
+ mass:'Terlalu berat! NMC lebih ringan untuk energi yang sama, atau kurangi ukurannya.',
+ gain:'Isi saat istirahat kurang. Coba kecepatan cas lebih tinggi… tapi awas panasnya!',
+ temp:'Terlalu panas saat dicas. Tambah pendingin, atau turunkan kecepatan cas.',
+ years:'Umurnya kurang panjang. Coba LFP yang awet, mode 🌱 80%, atau cas lebih pelan & dingin.',
+ safety:'Untuk 40 anak, keamanan nomor satu: pilih kimia paling aman (LFP), jaga suhu tetap dingin.',
+ cost:'Kemahalan! LFP lebih murah per kWh, atau kurangi ukuran yang berlebihan.'};
+function fmtV(c){const v=c.val;if(c.unit==='★')return'★'.repeat(Math.round(v))+'☆'.repeat(5-Math.round(v));return(c.unit==='°C'||c.unit==='%'||c.unit==='g'||c.unit==='km'?Math.round(v):v.toFixed(1).replace('.',','))+' '+c.unit}
+function renderDesign(){const id=B3.client,K=M.CLIENTS[id],d=cur(),r=M.design(id,d);
+ $$('[data-client]').forEach(b=>{b.classList.toggle('active',b.dataset.client===id);b.classList.toggle('won',!!ST.won[b.dataset.client])});
+ $('clientStory').innerHTML='<b>'+K.name+'</b> '+K.who.split(' ').slice(1).join(' ')+':<br>'+K.story;setVolta('voltaC',r.ok?'proud':'think');
+ $$('[data-chem]').forEach(b=>b.classList.toggle('on',b.dataset.chem===d.chem));$$('[data-speed]').forEach(b=>b.classList.toggle('on',b.dataset.speed===d.speed));$$('[data-limit]').forEach(b=>b.classList.toggle('on',(b.dataset.limit==='1')===d.limit80));
+ const S=$('size');S.min=K.size.min;S.max=K.size.max;S.step=K.size.step;S.value=d.size;$('sizeTxt').textContent=K.size.fmt(d.size);
+ $('coolSeg').innerHTML=Object.entries(K.coolNames).map(([k,n])=>`<button class="c-btn sm ${d.cool===k?'on':''}" data-c="${k}">${n}</button>`).join('');$$('#coolSeg [data-c]').forEach(b=>b.onclick=()=>{cur().cool=b.dataset.c;renderDesign()});
+ $('checks').innerHTML=r.checks.map(c=>{const ratio=c.op==='≥'?c.val/c.target:c.target/Math.max(c.val,1e-9);return`<div class="check ${c.ok?'':'no'}"><span>${c.ok?'✅':'❌'}</span><span>${c.label}<small>butuh ${c.op} ${c.unit==='★'?c.target+' ★':c.target+' '+c.unit}</small></span><span class="v">${fmtV(c)}</span><div class="bar"><i style="width:${Math.min(100,ratio*100)}%"></i></div></div>`}).join('')+
+  (r.throttled?'<p class="c-note">🧠 Terlalu panas saat cas cepat → otak baterai menurunkan kecepatan cas.</p>':'');
+ const bad=r.checks.find(c=>!c.ok);$('hint').innerHTML=bad?'💡 <b>Petunjuk Volta:</b> '+HINT[bad.k]:'🎉 Semua kebutuhan terpenuhi!';
+ drawPack(K,d);
+ if(r.ok){const first=!ST.won[id];ST.won[id]={...d};save();if(first){find('tradeoff');pulse('baterai_design_win',{client:id,...d})}
+  $('wonBox').innerHTML=`<div class="won-card"><b style="font-family:var(--f-head);font-size:1.2rem">🏅 Desainmu cocok untuk ${K.name}!</b><br>${M.CHEM[d.chem].name} · ${K.size.fmt(d.size)} · cas ${({slow:'lambat',mid:'sedang',fast:'cepat'})[d.speed]} · ${K.coolNames[d.cool].toLowerCase()} · isi ${d.limit80?'80%':'100%'}
+   <div style="margin-top:.4rem;font-weight:700">✍️ Jelaskan dengan kata-katamu: kenapa pilihan ini cocok untuk ${K.name}? ${Object.keys(ST.won).length<3?'Lalu coba klien lain — apakah bahan yang sama tetap cocok?':'Kamu sudah membantu ketiga klien! Bandingkan desainmu.'}</div>
+   <textarea id="refl" placeholder="Aku memilih … karena …">${(ST.refl[id]||'').replace(/</g,'&lt;')}</textarea></div>`;
+  $('refl').oninput=e=>{ST.refl[id]=e.target.value;save()}}
+ else $('wonBox').innerHTML='';
+ renderFinds()}
+function drawPack(K,d){const C=M.CHEM[d.chem],n=Math.round(4+12*(d.size-K.size.min)/(K.size.max-K.size.min)),col=d.chem==='nmc'?'#ffad62':'#8ce3f4';let s='';
+ const cols=Math.min(8,n),rows=Math.ceil(n/cols),cw=34,ch=rows>1?44:70;
+ s+=`<rect x="12" y="12" width="336" height="126" rx="16" fill="#fff" stroke="#17243a" stroke-width="3"/>`;
+ if(d.cool==='liquid'){s+=`<rect x="24" y="20" width="312" height="104" rx="10" fill="#d8f1ff" stroke="#2b8fd6" stroke-width="4" stroke-dasharray="2 0"/>`;for(let i=0;i<9;i++)s+=`<line x1="${37+i*36}" y1="22" x2="${37+i*36}" y2="122" stroke="#2b8fd6" stroke-width="4" opacity=".7"/>`}
+ for(let i=0;i<n;i++){const x=40+(i%cols)*36,y=(rows>1?24:38)+Math.floor(i/cols)*(ch+6);s+=`<rect x="${x}" y="${y}" width="${cw-6}" height="${ch}" rx="6" fill="${col}" stroke="#17243a" stroke-width="2.5"/><rect x="${x+9}" y="${y-5}" width="10" height="6" rx="2" fill="#17243a"/>`}
+ if(d.cool==='sink')for(let i=0;i<14;i++)s+=`<rect x="${28+i*22}" y="132" width="10" height="14" fill="#9aa9bb" stroke="#17243a" stroke-width="1.5"/>`;
+ if(d.limit80)s+=`<g transform="translate(300 34)"><circle r="22" fill="#b8f3b2" stroke="#17243a" stroke-width="3"/><text text-anchor="middle" y="6" font-size="15">80%</text></g>`;
+ s+=`<text x="180" y="146" text-anchor="middle" font-size="13">${C.name} · ${K.size.fmt(d.size)} · ${n} modul</text>`;$('pack').innerHTML=s}
+
+/* ================= BAB 4 · kuis ================= */
+const QZ=[
+ {q:'Saat HP dipakai, ion Li⁺ berpindah dari…',a:['Rumah grafit (−) ke rumah logam (+), lewat kolam elektrolit','Rumah logam (+) ke rumah grafit (−), lewat kabel','Charger ke layar HP','Tidak berpindah sama sekali'],c:0,why:'Saat dipakai, Li⁺ berenang dari rumah grafit ke rumah logam lewat elektrolit, sementara elektron memutar lewat kabel.'},
+ {q:'Kenapa elektron harus lewat kabel, bukan lewat dalam baterai?',a:['Kabel lebih pendek','Pagar pemisah & elektrolit tidak meloloskan elektron','Elektron takut air','Supaya baterai lebih berat'],c:1,why:'Separator dan elektrolit hanya meloloskan ion. Elektron terpaksa memutar lewat kabel — itulah arus listrik yang menyalakan alat.'},
+ {q:'Cas cepat 65 W mengisi 10→80% dalam ±14 menit, tapi 80→100% jauh lebih lama. Kenapa?',a:['Charger mulai rusak','Menjelang penuh, pengisian sengaja diperlambat agar baterai aman','Listrik PLN melemah','Baterai lupa sedang dicas'],c:1,why:'Seperti menuang air ke gelas yang hampir penuh: di atas ±80% arus dikurangi supaya baterai tidak "tumpah" (rusak/panas).'},
+ {q:'Andi ngecas HP dengan cas cepat di dalam mobil yang panas terjemur. Apa yang terjadi?',a:['Lebih cepat penuh karena hangat','Baterai makin panas; otak baterai memperlambat cas dan baterai lebih cepat menua','Baterai jadi lebih awet','Tidak ada bedanya'],c:1,why:'Panas + arus besar mempercepat penuaan. BMS akan memperlambat cas untuk melindungi baterai.'},
+ {q:'Baterai untuk bus sekolah listrik (40 anak, dipakai bertahun-tahun) sebaiknya memakai…',a:['NMC karena paling ringan','LFP karena paling aman & awet, walau lebih berat','Baterai HP bekas','Apa saja, sama saja'],c:1,why:'Untuk bus, keamanan dan umur panjang lebih penting daripada ringan. LFP unggul di keduanya.'},
+ {q:'Mobil listrik dipakai mudik jauh. Strategi cas paling cerdas?',a:['Selalu tunggu sampai 100% di rest area','Cas cepat ±20→80% di rest area, lanjut jalan; cas penuh pelan di rumah','Jangan pernah dicas','Cas di stop kontak kamar mandi'],c:1,why:'0→80% paling cepat. Di atas 80% melambat, jadi lebih efisien lanjut jalan dan cas lagi di rest area berikutnya.'}];
+let qi=0,qs=0,qa=false;
+function renderQ(){const q=QZ[qi];qa=false;$('qNo').textContent='Soal '+(qi+1)+' dari '+QZ.length;$('qText').textContent=q.q;$('qOpts').innerHTML='';$('qFeed').textContent='Pilih jawaban yang paling tepat.';$('qNext').disabled=true;
+ q.a.forEach((a,i)=>{const b=document.createElement('button');b.className='c-btn c-opt';b.textContent=String.fromCharCode(65+i)+'. '+a;b.onclick=()=>{if(qa)return;qa=true;if(i===q.c)qs++;
+  $$('.c-opt').forEach((x,j)=>{x.disabled=true;if(j===q.c)x.classList.add('correct');else if(j===i)x.classList.add('wrong')});
+  $('qFeed').textContent=(i===q.c?'✅ Tepat! ':'❌ Belum tepat. ')+q.why;$('qBar').style.width=((qi+1)/QZ.length*100)+'%';$('qNext').disabled=false;$('qNext').textContent=qi===QZ.length-1?'Lihat hasil 🏆':'Soal berikutnya ➜'};$('qOpts').append(b)})}
+$('qNext').onclick=()=>{if(qi===QZ.length-1){ST.quiz=Math.max(ST.quiz||0,qs);save();$('qText').textContent='Selesai! Nilaimu '+Math.round(qs/QZ.length*100)+' / 100 🎉';$('qOpts').innerHTML='';$('qFeed').textContent=qs===QZ.length?'Sempurna! Kamu benar-benar Insinyur Muda Baterai.':'Bagus! Ulangi simulasinya untuk memperkuat pemahaman, lalu coba lagi.';$('qNext').disabled=true;certUpdate();pulse('baterai_quiz',{score:qs})}else{qi++;renderQ()}};
+$('qReset').onclick=()=>{qi=0;qs=0;$('qBar').style.width='0';renderQ()};
+function certUpdate(){const won=Object.keys(ST.won||{}).length;$('certTxt').innerHTML='🔎 '+ST.found.length+'/9 penemuan · 🛠️ '+won+'/3 klien terbantu · 🏆 kuis '+(ST.quiz||0)+'/'+QZ.length+(ST.found.length===9&&won===3&&ST.quiz===QZ.length?'<br>⭐ LULUS DENGAN PUJIAN ⭐':'')}
+$('certName').oninput=e=>{try{localStorage.setItem(KEY+'_name',e.target.value)}catch(_){}};try{$('certName').value=localStorage.getItem(KEY+'_name')||''}catch(_){}
+
+/* ---------- loop & mulai ---------- */
+let last=performance.now();function loop(now){requestAnimationFrame(loop);const dt=Math.min(.1,(now-last)/1000);last=now;if(document.hidden)return;
+ if($('b1').classList.contains('active'))step1(dt);if($('b2').classList.contains('active'))step2(now)}
+requestAnimationFrame(loop);
+['volta1','volta2','voltaC'].forEach(i=>setVolta(i,'happy'));$('voltaBig').innerHTML=volta('happy');
+bub1('Ini isi tubuhku! Ada <b>dua rumah</b> dan <b>penumpang Li<sup>+</sup></b> (bola biru) yang tinggal di sana. Tekan <b>📱 Pakai HP</b> dan amati ke mana mereka pergi.<span class="q">🤔 Tebak dulu: ke mana arah penumpangnya?</span>');
+bub2('Ayo balapan! Pilih dua charger, lalu tekan <b>🏁 Mulai balapan</b>. Tebak dulu: kalau charger B 6× lebih kuat, apakah B juga penuh 6× lebih cepat?','think');
+fillChargers();syncSeg2();resetLanes();renderMis1();renderMis2();socUpdate();renderQ();renderFinds();renderDesign();
+if(!ST.intro){$('intro').hidden=false}$('introGo').onclick=()=>{$('intro').hidden=true;ST.intro=true;save()};
+window.PILAR_BATERAI={state:ST,B1,B2,B3,model:M,goTab};
+try{window.PILAR_PULSE?.setApp?.('baterai-lab')}catch(_){}
+})();
+</script>
+<script src="../../pulse/config.js"></script>
+<script src="../../core/pulse.js"></script>
+</body>
+</html>
