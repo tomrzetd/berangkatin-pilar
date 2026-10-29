@@ -1334,6 +1334,59 @@
           .dark-mode .user-controls{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px}
         }
 
+
+        /* ===== v1.1 · Tata letak rapi: kamera + bar kontrol (kiri) · satu dock bertab (kanan) ===== */
+        .pilar-flow[hidden],.tool-item[hidden],.cam-source [hidden],#hudFocusChip{display:none!important}
+        .main-content{grid-template-columns:minmax(0,1fr) 400px}
+        html[data-ui="ifp"] .main-content{grid-template-columns:minmax(0,1fr) minmax(500px,30vw)}
+        .cam-source{display:flex;flex-wrap:nowrap;gap:8px;padding:8px 14px}
+        .cam-source .camera-select{flex:1.5 1 0;min-width:0}.cam-source #srcMode{flex:1 1 0;min-width:0}
+        .cam-source #ipUrl{flex:1.4 1 0;min-width:0}
+        .cam-bar{display:flex;gap:10px;align-items:stretch;padding:10px 14px;border-top:1px solid #e2e8f0}
+        .dark-mode .cam-bar{border-color:#284561;background:#081421}
+        .cam-bar .camera-controls{display:flex;gap:8px;margin:0;flex:1 1 auto;min-width:0}
+        .cam-bar .control-btn{flex:1 1 0;min-width:0;flex-direction:row;gap:6px;padding:10px 8px;font-size:.82rem;white-space:nowrap}
+        .cam-bar .control-btn i{font-size:1.05rem}
+        .cam-bar .control-btn.capture{flex:1.5 1 0;grid-column:auto}
+        .cam-bar .control-btn:disabled{opacity:.42;cursor:default;transform:none;box-shadow:none}
+        .cam-bar .zoom-controls{margin:0;gap:8px;flex:0 1 300px;min-width:200px}
+        .cam-bar .zoom-controls .control-btn{flex:0 0 auto;width:44px!important}
+        .cam-bar .zoom-value{min-width:44px}
+        html[data-ui="ifp"] .cam-bar .control-btn{font-size:.9rem}
+        /* dock */
+        .dock{padding:0;display:flex;flex-direction:column;overflow:hidden}
+        .dock-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:8px;border-bottom:1px solid #e2e8f0;flex:none}
+        .dark-mode .dock-tabs{border-color:#284561;background:#0b1726}
+        .dock-tabs button{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:58px;padding:6px 2px;border:2px solid transparent;border-radius:12px;background:transparent;color:inherit;font:700 1.25rem/1 system-ui,sans-serif;cursor:pointer}
+        .dock-tabs button span{font-size:.72rem;letter-spacing:.02em}
+        .dock-tabs button:hover{background:rgba(94,233,255,.08)}
+        .dock-tabs button.on{border-color:#5ee9ff;background:rgba(94,233,255,.14)}
+        body:not(.dark-mode) .dock-tabs button.on{border-color:var(--primary);background:#eef0ff}
+        .dock-badge{position:absolute;top:3px;right:6px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:#10b981;color:#fff;font-size:.66rem;line-height:18px}
+        .dock-body{padding:14px 16px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+        .dock-pane[hidden]{display:none}
+        .dock-pane>.panel-section:last-child,.dock-pane>.controls-panel:last-child{margin-bottom:0}
+        .dock .bio-panel{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0 0 12px!important}
+        .dock .gallery-section{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;position:static!important;max-height:none!important}
+        .dock .gallery-header{flex-wrap:wrap;gap:8px}
+        .dock .ai-lab-grid{grid-template-columns:1fr}
+        .dock-opt{font-size:.68rem;font-weight:600;opacity:.65}
+        .dock-more{margin-top:10px;border:1px solid #e2e8f0;border-radius:12px;padding:8px 12px}
+        .dark-mode .dock-more{border-color:#284561;background:#0b1726}
+        .dock-more summary{cursor:pointer;font-weight:800;display:flex;align-items:center;gap:8px;list-style:none;min-height:34px}
+        .dock-more summary::-webkit-details-marker{display:none}
+        .dock-more summary::after{content:"▸";display:inline-block;margin-left:auto;transition:transform .15s}.dock-more[open] summary::after{transform:rotate(90deg)}
+        @media(min-width:1201px){
+          .dock{position:sticky;top:12px;max-height:calc(100vh - 24px)}
+          .dock-body{flex:1 1 auto;min-height:0}
+        }
+        @media(max-width:1200px){.dock-body{max-height:none}}
+        @media(max-width:900px){
+          .cam-bar{flex-wrap:wrap}.cam-bar .zoom-controls{flex:1 1 100%}
+          .cam-source{flex-wrap:wrap}.cam-source .camera-select,.cam-source #srcMode{flex:1 1 100%}
+        }
+        @media(max-width:560px){.cam-bar .camera-controls{gap:5px}.cam-bar .control-btn{font-size:.7rem;padding:8px 3px}.cam-bar .control-btn i{display:none}}
+        .cam-bar .zoom-controls .control-btn b{font:900 1.3rem/1 system-ui,sans-serif}
 </style>
 <link rel="stylesheet" href="../../css/pilar-perf.css">
 <script src="../../core/device-profile.js"></script>
@@ -1344,7 +1397,7 @@
             <div class="logo">
                 <i class="fas fa-microscope"></i>
                 <div class="logo-text-group">
-                    <div>PILAR™ Microscope Lab <small class="pilar-version">v1.0</small></div>
+                    <div>PILAR™ Microscope Lab <small class="pilar-version">v1.1</small></div>
                     <div class="tagline">IFP / MPI · Lab Mikrobiologi · USB microscope · Vision · Ukur · Bukti</div>
                 </div>
             </div>
@@ -1362,7 +1415,7 @@
             </div>
         </header>
 
-        <nav class="pilar-flow" aria-label="Alur eksplorasi PILAR">
+        <nav class="pilar-flow" hidden aria-label="Alur eksplorasi PILAR">
             <button data-phase="lihat" class="active"><b>1</b><span>LIHAT</span><small>kamera</small></button>
             <button data-phase="fokus"><b>2</b><span>FOKUS</span><small>zoom & filter</small></button>
             <button data-phase="ukur"><b>3</b><span>UKUR</span><small>kalibrasi</small></button>
@@ -1384,26 +1437,23 @@
                         <span class="camera-meta" id="cameraMeta">—</span>
                     </div>
                 </div>
-                
-                <div class="camera-selector" style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0;">
+
+                <div class="pilar-source-row cam-source">
                     <select id="cameraSelect" class="camera-select" disabled>
                         <option value="">Pilih kamera...</option>
                     </select>
-                    <button class="btn btn-accent" id="refreshCamerasBtn" style="padding: 8px 12px;">
+                    <button class="btn btn-accent" id="refreshCamerasBtn" hidden>
                         <i class="fas fa-sync-alt"></i>
                     </button>
-                </div>
-
-                <div class="pilar-source-row">
                     <select id="srcMode" class="pilar-ai-input" aria-label="Sumber video">
                         <option value="local">USB Mikroskop / Webcam</option>
                         <option value="ip">IP Cam MJPEG (eksperimental)</option>
                     </select>
                     <input id="ipUrl" class="pilar-ai-input" placeholder="http://192.168.4.2:81/stream" hidden>
                     <button class="btn btn-accent btn-sm" id="ipBtn" hidden><i class="fas fa-plug"></i> Sambung</button>
-                    <span class="pilar-source-hint" id="sourceHint">USB camera direkomendasikan pada GitHub Pages HTTPS.</span>
+                    <span class="pilar-source-hint" id="sourceHint" hidden>USB camera direkomendasikan pada GitHub Pages HTTPS.</span>
                 </div>
-                
+
                 <div class="camera-view" id="cameraViewContainer">
                     <div class="overlay-container">
                         <div class="overlay-grid" id="overlayGrid"></div>
@@ -1463,15 +1513,8 @@
                         </p>
                     </div>
                 </div>
-            </div>
 
-            <div>
-                <div class="controls-panel">
-                    <div class="panel-section">
-                        <div class="panel-title">
-                            <i class="fas fa-sliders-h"></i>
-                            Kontrol Kamera
-                        </div>
+                <div class="cam-bar">
                         <div class="camera-controls">
                             <button class="control-btn" id="scanBtn">
                                 <i class="fas fa-sync-alt"></i>
@@ -1491,22 +1534,39 @@
                             </button>
                             <button class="control-btn capture" id="captureBtn" disabled>
                                 <i class="fas fa-camera"></i>
-                                <span>📸 AMBIL GAMBAR</span>
+                                <span>FOTO</span>
                             </button>
                         </div>
-
                         <div class="zoom-controls">
-                            <button class="control-btn" style="padding: 10px; width: 40px;" id="zoomOut" disabled>
-                                <i class="fas fa-search-minus"></i>
+                            <button class="control-btn" style="padding: 10px; width: 40px;" id="zoomOut" disabled aria-label="Perkecil">
+                                <b>−</b>
                             </button>
                             <input type="range" min="1" max="5" step="0.1" value="1" class="zoom-slider" id="zoomSlider" disabled>
                             <div class="zoom-value" id="zoomValue">1.0x</div>
-                            <button class="control-btn" style="padding: 10px; width: 40px;" id="zoomIn" disabled>
-                                <i class="fas fa-search-plus"></i>
+                            <button class="control-btn" style="padding: 10px; width: 40px;" id="zoomIn" disabled aria-label="Perbesar">
+                                <b>+</b>
                             </button>
                         </div>
-                    </div>
+                </div>
+            </div>
 
+            <aside class="dock controls-panel" id="dock" aria-label="Panel alat mikroskop">
+                <div class="dock-tabs" role="tablist">
+                    <button role="tab" data-pane="lab" class="on" aria-selected="true">🧫<span>Lab</span></button>
+                    <button role="tab" data-pane="ukur" aria-selected="false">📏<span>Ukur</span></button>
+                    <button role="tab" data-pane="ai" aria-selected="false">🧠<span>AI</span></button>
+                    <button role="tab" data-pane="galeri" aria-selected="false">🖼️<span>Galeri</span><b class="dock-badge" id="dockGalCount" hidden>0</b></button>
+                    <button role="tab" data-pane="motor" aria-selected="false">🔌<span>Motor</span></button>
+                </div>
+                <div class="dock-body">
+                    <section class="dock-pane on" data-pane="lab" id="dockLab">
+                        <details class="dock-more" id="missionBox">
+                            <summary>🏆 Misi Ilmuwan <span class="ai-chip" id="xpBadge">0 XP</span></summary>
+                            <div class="ai-xp"><i id="xpBar"></i></div>
+                            <ul class="ai-missions" id="missionList"></ul>
+                        </details>
+                    </section>
+                    <section class="dock-pane" data-pane="ukur" hidden>
                     <div class="panel-section">
                         <div class="panel-title">
                             <i class="fas fa-tools"></i>
@@ -1525,7 +1585,7 @@
                                 <i class="fas fa-ruler"></i>
                                 <span>Penggaris</span>
                             </div>
-                            <div class="tool-item" data-tool="fullscreen">
+                            <div class="tool-item" data-tool="fullscreen" hidden>
                                 <i class="fas fa-expand"></i>
                                 <span>Fullscreen</span>
                             </div>
@@ -1574,11 +1634,10 @@
                             <i class="fas fa-undo"></i> Reset Filter
                         </button>
                     </div>
-                </div>
-
-                <div class="controls-panel" style="margin-top:20px">
+                    </section>
+                    <section class="dock-pane" data-pane="ai" hidden>
                     <div class="panel-section">
-                        <div class="panel-title"><i class="fas fa-brain"></i> PILAR Vision & ML Lab <span class="ai-chip" id="mlBackend">CV lokal</span></div>
+                        <div class="panel-title"><i class="fas fa-brain"></i> Asisten AI <span class="ai-chip" id="mlBackend">CV lokal</span></div>
                         <div class="ai-lab-grid">
                             <div class="ai-card">
                                 <div class="ai-card-head"><span>🎯 Focus Coach</span><span class="ai-chip" id="focusChip">idle</span></div>
@@ -1600,40 +1659,11 @@
                                     <button class="btn btn-danger btn-sm ai-btn-wide" id="mlReset">Reset contoh</button>
                                 </div>
                             </div>
-                            <div class="ai-card">
-                                <div class="ai-card-head"><span>🏆 Misi Ilmuwan</span><span class="ai-chip" id="xpBadge">0 XP</span></div>
-                                <div class="ai-xp"><i id="xpBar"></i></div>
-                                <ul class="ai-missions" id="missionList"></ul>
-                            </div>
                         </div>
                     </div>
-
-                    <div class="panel-section" style="margin-bottom:0">
-                        <div class="panel-title"><i class="fas fa-microchip"></i> PILAR Focus Controller <span class="ai-chip" id="espStat">terputus</span></div>
-                        <div class="esp-actions">
-                            <button class="btn btn-primary btn-sm" id="espUsb"><i class="fas fa-usb"></i> USB Serial</button>
-                            <button class="btn btn-primary btn-sm" id="espBle"><i class="fas fa-bluetooth-b"></i> BLE</button>
-                            <button class="btn btn-outline btn-sm" id="espWifi"><i class="fas fa-wifi"></i> WiFi legacy</button>
-                        </div>
-                        <div class="ai-row"><span>Host</span><input class="pilar-ai-input" id="espHost" value="192.168.4.1" aria-label="IP ESP32"></div>
-                        <div class="esp-focus-grid">
-                            <button class="btn btn-accent btn-sm" data-m="-200">⏪ -200</button>
-                            <button class="btn btn-accent btn-sm" data-m="-20">◀ -20</button>
-                            <button class="btn btn-accent btn-sm" data-m="20">+20 ▶</button>
-                            <button class="btn btn-accent btn-sm" data-m="200">+200 ⏩</button>
-                        </div>
-                        <div class="ai-row"><span>💡 LED</span><input type="range" id="espLed" min="0" max="255" value="128"><b id="espLedOut">128</b></div>
-                        <div class="esp-actions">
-                            <button class="btn btn-outline btn-sm" id="espHome">⌂ Home</button>
-                            <button class="btn btn-danger btn-sm" id="espStop">■ Stop</button>
-                            <button class="btn btn-success btn-sm" id="espAF"><i class="fas fa-crosshairs"></i> Smart Autofocus</button>
-                        </div>
-                        <div class="ai-out" id="espLog">Hubungkan controller via USB atau BLE. WiFi ws:// hanya untuk halaman HTTP/file lokal.</div>
-                        <div class="esp-foot"><span class="pilar-source-hint">Autofocus memakai skor Laplacian dua tahap; ML classifier terpisah.</span><a href="firmware/ESP32_Microscope_Controller.ino" download>Firmware ESP32 v0.3</a></div>
-                    </div>
-                </div>
-
-                <div class="gallery-section" style="margin-top: 20px;">
+                    </section>
+                    <section class="dock-pane" data-pane="galeri" hidden>
+                <div class="gallery-section">
                     <div class="gallery-header">
                         <div class="panel-title" style="margin-bottom: 0; border-bottom: none;">
                             <i class="fas fa-images"></i>
@@ -1655,11 +1685,56 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                    </section>
+                    <section class="dock-pane" data-pane="motor" hidden>
+                    <div class="panel-section">
+                        <div class="panel-title"><i class="fas fa-microchip"></i> Motor Fokus ESP32 <small class="dock-opt">opsional</small> <span class="ai-chip" id="espStat">terputus</span></div>
+                        <div class="esp-actions">
+                            <button class="btn btn-primary btn-sm" id="espUsb"><i class="fas fa-usb"></i> USB Serial</button>
+                            <button class="btn btn-primary btn-sm" id="espBle"><i class="fas fa-bluetooth-b"></i> BLE</button>
+                            <button class="btn btn-outline btn-sm" id="espWifi"><i class="fas fa-wifi"></i> WiFi legacy</button>
+                        </div>
+                        <div class="ai-row"><span>Host</span><input class="pilar-ai-input" id="espHost" value="192.168.4.1" aria-label="IP ESP32"></div>
+                        <div class="esp-focus-grid">
+                            <button class="btn btn-accent btn-sm" data-m="-200">⏪ -200</button>
+                            <button class="btn btn-accent btn-sm" data-m="-20">◀ -20</button>
+                            <button class="btn btn-accent btn-sm" data-m="20">+20 ▶</button>
+                            <button class="btn btn-accent btn-sm" data-m="200">+200 ⏩</button>
+                        </div>
+                        <div class="ai-row"><span>💡 LED</span><input type="range" id="espLed" min="0" max="255" value="128"><b id="espLedOut">128</b></div>
+                        <div class="esp-actions">
+                            <button class="btn btn-outline btn-sm" id="espHome">⌂ Home</button>
+                            <button class="btn btn-danger btn-sm" id="espStop">■ Stop</button>
+                            <button class="btn btn-success btn-sm" id="espAF"><i class="fas fa-crosshairs"></i> Smart Autofocus</button>
+                        </div>
+                        <div class="ai-out" id="espLog">Hubungkan controller via USB atau BLE. WiFi ws:// hanya untuk halaman HTTP/file lokal.</div>
+                        <div class="esp-foot"><span class="pilar-source-hint">Autofocus memakai skor Laplacian dua tahap; ML classifier terpisah.</span><a href="firmware/ESP32_Microscope_Controller.ino" download>Firmware ESP32 v0.3</a></div>
+                    </div>
+                    </section>
+                </div>
+            </aside>
         </div>
     </div>
 
-    <footer class="pilar-app-footer"><span>PILAR™ Microscope Lab · v1.0</span><span>PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span></footer>
+    <script>
+      /* PILAR · dock bertab (v1.1): satu panel kanan, tidak lagi memanjang ke bawah */
+      (function(){
+        const dock=document.getElementById('dock');if(!dock)return;
+        const tabs=[...dock.querySelectorAll('.dock-tabs button')],panes=[...dock.querySelectorAll('.dock-pane')];
+        function show(name,save=true){tabs.forEach(b=>{const on=b.dataset.pane===name;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
+          panes.forEach(p=>p.hidden=p.dataset.pane!==name);dock.querySelector('.dock-body').scrollTop=0;
+          if(save)try{localStorage.setItem('pilarMicroscopeDock',name)}catch(e){}}
+        tabs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.pane)));
+        function reveal(el){const p=el&&el.closest&&el.closest('.dock-pane');if(p&&p.hidden)show(p.dataset.pane,false)}
+        window.PILAR_DOCK={show,reveal};
+        try{const k=localStorage.getItem('pilarMicroscopeDock');if(k&&tabs.some(b=>b.dataset.pane===k))show(k,false)}catch(e){}
+        const ev=document.getElementById('evidenceCount'),badge=document.getElementById('dockGalCount');
+        const sync=()=>{const n=parseInt(ev.textContent,10)||0;badge.textContent=n;badge.hidden=!n};
+        new MutationObserver(sync).observe(ev,{childList:true,characterData:true,subtree:true});sync();
+      })();
+    </script>
+
+    <footer class="pilar-app-footer"><span>PILAR™ Microscope Lab · v1.1</span><span>PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span></footer>
 
     <div class="modal" id="imageModal">
         <img id="modalImage" src="" alt="Preview">
@@ -1822,7 +1897,7 @@
             goPhase(phase) {
                 const map={lihat:'#cameraViewContainer',fokus:'#zoomSlider',ukur:'.tool-item[data-tool="ruler"]',buktikan:'#captureBtn',dokumentasi:'#galleryGrid'};
                 this.markPhase(phase,{lihat:'Amati objek dan pilih kamera',fokus:'Atur fokus digital / citra',ukur:'Kalibrasi lalu ukur',buktikan:'Simpan frame sebagai bukti',dokumentasi:'Tinjau dan unduh bukti'}[phase]);
-                const el=document.querySelector(map[phase]);el?.scrollIntoView({behavior:'smooth',block:'center'});if(el?.focus)el.focus({preventScroll:true});
+                const el=document.querySelector(map[phase]);window.PILAR_DOCK?.reveal(el);el?.scrollIntoView({behavior:'smooth',block:'center'});if(el?.focus)el.focus({preventScroll:true});
             }
 
             initEventListeners() {
@@ -2783,7 +2858,7 @@
   })();
   </script>
 
-  <script src="./bio-lab.js?v=1.0.0"></script>
+  <script src="./bio-lab.js?v=1.1.0"></script>
   <script src="../../pulse/config.js"></script>
   <script src="../../core/pulse.js"></script>
 </body>

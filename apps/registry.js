@@ -2,7 +2,7 @@
   'use strict';
   global.PILAR_APP_REGISTRY = [
     {id:'lorentz',title:'Gaya Lorentz',subtitle:'Amati · Tebak · Selidiki · Pahami · Bukti · Terapkan · Vision AI',category:'Simulasi / Lab Maya',icon:'🧲',url:'apps/lorentz-lab/',version:'1.0',status:'ready'},
-    {id:'microscope',title:'Microscope Lab',subtitle:'Lab Mikrobiologi · USB microscope · pelacak organisme µm/s · fokus tumpuk · Mode Panggung',category:'Tools / MPI',icon:'🔬',url:'apps/microscope/',version:'1.0',status:'ready'},
+    {id:'microscope',title:'Microscope Lab',subtitle:'Lab Mikrobiologi · USB microscope · pelacak organisme µm/s · fokus tumpuk · Mode Panggung',category:'Tools / MPI',icon:'🔬',url:'apps/microscope/',version:'1.1',status:'ready'},
     {id:'rubik-orbit',title:'Rubik Orbit',subtitle:'Pindai kubus asli real-time · auto-koreksi kiri-kanan · 3D seperti di tanganmu · solver',category:'Game / Tools',icon:'◈',url:'apps/rubik-orbit/',version:'3.5',status:'ready'},
     {id:'mbg-duel',title:'MBG Delivery Duel',subtitle:'Algoritma rute · duel multitouch · Vision AI',category:'Game / MPI',icon:'🚚',url:'apps/mbg-duel/',version:'3.0',status:'ready'},
     {id:'soundscope',title:'SoundScope Lab',subtitle:'Generator Pro · Transcoder BFSK/Morse · DTMF · Tuner Pro · tes pendengaran · Sonar · Doppler',category:'Tools / MPI',icon:'〰',url:'apps/soundscope/',version:'5.0',status:'ready'},
