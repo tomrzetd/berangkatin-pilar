@@ -1,35 +1,73 @@
 (function(){
   'use strict';
-  const P=window.PILAR,$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-  let render=null,last=performance.now(),lastHud=0,loopStarted=false,uiBound=false;
-  let selectedAppId='lorentz';
-  const fmt=(x,d=2)=>Number(x).toFixed(d).replace('.',',');
-  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-  // Pakai hasil device-profile (sekali per sesi). Versi lama membuat 2 konteks WebGL baru setiap Hub dibuka — mahal & bisa memicu kedip di Mali-G52.
-  function webglReady(){if(P.device)return P.device.webgl>0;try{const c=document.createElement('canvas'),gl=c.getContext('webgl2')||c.getContext('webgl');gl&&gl.getExtension('WEBGL_lose_context')?.loseContext();return !!gl}catch(_){return false}}
-  const checks={WebGL:webglReady,Touch:()=>('ontouchstart' in window)||navigator.maxTouchPoints>0,Pointer:()=>('PointerEvent' in window),WASM:()=>typeof WebAssembly==='object',Kamera:()=>!!navigator.mediaDevices?.getUserMedia};
-  function drawBootCaps(){
-    const box=$('#bootCaps'); if(!box)return;
-    box.innerHTML='';
-    Object.entries(checks).forEach(([name,fn])=>{const ok=!!fn();const el=document.createElement('span');el.className='boot-cap '+(ok?'ok':'warn');el.textContent=(ok?'● ':'○ ')+name;box.appendChild(el)});
-    $('#bootRuntime').textContent=(checks.WebGL()?'WebGL siap':'WebGL tidak tersedia')+' · '+(navigator.onLine?'online':'offline');
+  const P=window.PILAR=window.PILAR||{};
+  const $=s=>document.querySelector(s);
+  const $$=s=>Array.from(document.querySelectorAll(s));
+  let selectedAppId='lorentz';
+
+  function webglReady(){
+    if(P.device)return P.device.webgl>0;
+    try{
+      const c=document.createElement('canvas');
+      const gl=c.getContext('webgl2')||c.getContext('webgl');
+      if(gl)gl.getExtension('WEBGL_lose_context')?.loseContext();
+      return !!gl;
+    }catch(_){return false}
   }
+
+  const checks={
+    WebGL:webglReady,
+    Touch:()=>('ontouchstart' in window)||navigator.maxTouchPoints>0,
+    Pointer:()=>('PointerEvent' in window),
+    WASM:()=>typeof WebAssembly==='object',
+    Kamera:()=>!!navigator.mediaDevices?.getUserMedia
+  };
+
+  function syncBootRuntime(){
+    const el=$('#bootRuntime');
+    if(!el)return;
+    el.textContent=(checks.WebGL()?'WebGL siap':'WebGL tidak tersedia')+' · '+(navigator.onLine?'online':'offline');
+  }
+
+  function drawBootCaps(){
+    const box=$('#bootCaps');
+    if(!box)return;
+    box.replaceChildren();
+    Object.entries(checks).forEach(([name,fn])=>{
+      const ok=!!fn();
+      const el=document.createElement('span');
+      el.className='boot-cap '+(ok?'ok':'warn');
+      el.textContent=(ok?'● ':'○ ')+name;
+      box.appendChild(el);
+    });
+    syncBootRuntime();
+  }
+
   const inspectorNotes={
     lorentz:'Simulasi Lorentz mendukung mouse, touch, multitouch IFP, dan Vision Challenge sebagai pintu masuk opsional.',
-    microscope:'Microscope Lab tetap meminta izin kamera hanya saat fitur kamera dipakai. Vision Challenge di Hub hanya menjadi pintu masuk ceria.',
+    microscope:'Microscope Lab meminta izin kamera hanya saat fitur kamera dipakai. Vision Challenge di Hub hanya menjadi pintu masuk ceria.',
     'rubik-orbit':'Rubik Orbit punya 3D, solver, dan Vision AI internal. Vision Challenge di Hub menjadi gerbang pembuka yang terpisah.',
     'mbg-duel':'MBG Duel mendukung touch, multitouch IFP, dan Vision AI. Dua pintu masuk tetap tersedia dari Hub.',
     soundscope:'SoundScope baru meminta mikrofon/kamera saat fitur terkait dipakai. Vision Challenge tidak menyalakan audio.',
     'pak-taro':'Pak Taro punya eksperimen, pola, dan Vision AI internal. Gerbang Vision di Hub tetap opsional.',
-    puzzlesnap:'PuzzleSnap mengubah foto atau gambar menjadi puzzle 3×3–5×5, mendukung touch/multitouch IFP dan pinch gesture. Kamera tetap diminta hanya saat fitur foto/gestur dipilih.',
-
-    pressure:'Empat simulasi 3D: tekanan zat padat, hidrostatis, lift hidrolik (Pascal), dan gaya angkat drone. Mouse, touch, multitouch/IFP; tanpa kamera. Pilih salah satu dari empat lab di dalam aplikasi.'
+    'air-writing':'Air Writing memakai kamera untuk gesture/air writing saat fitur terkait dipilih.',
+    puzzlesnap:'PuzzleSnap mengubah foto atau gambar menjadi puzzle 3×3–5×5, mendukung touch/multitouch IFP dan pinch gesture.',
+    pressure:'Empat simulasi 3D: tekanan zat padat, hidrostatis, lift hidrolik (Pascal), dan gaya angkat drone. Mouse, touch, multitouch/IFP; tanpa kamera.',
+    'frost-breakout':'Arcade pemecah es dengan mode debug dan rekayasa versi sendiri; tidak membutuhkan kamera untuk masuk.',
+    bioweb:'Jejaring hidup Gunung Ciremai 3D dengan skenario dan cincin waktu.',
+    'hunter-ball':'Duel gerak parabola untuk dua tim dengan kontrol sentuh.',
+    'frost-snake':'Duel numerasi dua tim berbasis touch/multitouch.',
+    'baterai-lab':'Petualangan baterai lithium-ion dengan tema Ceria dan eksperimen interaktif.'
   };
+
+  function apps(){return Array.isArray(window.PILAR_APP_REGISTRY)?window.PILAR_APP_REGISTRY:[]}
+
   function selectedApp(){
-    const apps=window.PILAR_APP_REGISTRY||[];
-    return apps.find(x=>x.id===selectedAppId)||apps[0]||null;
+    const list=apps();
+    return list.find(x=>x.id===selectedAppId)||list[0]||null;
   }
+
   function renderInspector(item){
     if(!item)return;
     $('#selectedAppIcon').textContent=item.icon||'✦';
@@ -38,80 +76,90 @@
     $('#selectedAppSubtitle').textContent=item.subtitle||'';
     $('#selectedAppVersion').textContent='v'+(item.version||'—');
     $('#selectedAppStatus').textContent=item.status==='ready'?'SIAP':'SEGERA';
-    $('#launchPrompt').textContent=item.status==='ready'?'Pilih cara masuk':'Dalam pengembangan';
+
+    const ready=item.status==='ready';
+    const visionEligible=item.visionGate!==false;
+    $('#launchPrompt').textContent=ready?(visionEligible?'Pilih cara masuk':'Buka aplikasi'):'Dalam pengembangan';
     $('#bootQuickTitle').textContent=item.id==='lorentz'?'Masuk Cepat':'Buka '+item.title;
     $('#bootQuickDesc').textContent=item.id==='lorentz'
-      ? 'Mission 00 · touch/multitouch IFP. Masuk tanpa kamera; Vision AI tetap opsional di dalam Lab Maya.'
-      : (item.category||'PILAR App')+' · v'+item.version+' · langsung masuk tanpa challenge kamera.';
-    $('#bootVisionDesc').textContent=item.id==='lorentz'?'Masuk langsung ke Mission 00 dengan hand pose + face wireframe opsional.':'Tantangan berganti: pose serius → senyum atau puzzle pinch dengan tangan.';
+      ?'Mission 00 · touch/multitouch IFP. Masuk tanpa kamera; Vision AI tetap opsional di dalam Lab Maya.'
+      :(item.category||'PILAR App')+' · v'+item.version+' · langsung masuk tanpa challenge kamera.';
+    $('#bootVisionDesc').textContent=item.id==='lorentz'
+      ?'Masuk langsung ke Mission 00 dengan hand pose + face wireframe opsional.'
+      :'Selesaikan tantangan kamera singkat sebelum aplikasi terbuka.';
     $('#selectedAppNote').textContent=inspectorNotes[item.id]||'Dua pintu tersedia: langsung masuk atau selesaikan Vision Challenge.';
-    const ready=item.status==='ready',visionEligible=item.visionGate!==false;
-    $('#launchPrompt').textContent=ready?(visionEligible?'Pilih cara masuk':'Buka aplikasi'):'Dalam pengembangan';
     $('#bootVision').hidden=!visionEligible;
     $('#bootQuick').disabled=!ready;
     $('#bootVision').disabled=!ready||!visionEligible;
   }
+
   function selectApp(id,{track=true,focus=false}={}){
-    const apps=window.PILAR_APP_REGISTRY||[];
-    const item=apps.find(x=>x.id===id)||apps[0];
+    const list=apps();
+    const item=list.find(x=>x.id===id)||list[0];
     if(!item)return;
     selectedAppId=item.id;
+
     $$('#pilarLibrary .pilar-app-card').forEach(card=>{
       const selected=card.dataset.appId===item.id;
       card.classList.toggle('current',selected);
       card.setAttribute('aria-pressed',selected?'true':'false');
       const badge=card.querySelector('em');
-      const app=apps.find(x=>x.id===card.dataset.appId);
+      const app=list.find(x=>x.id===card.dataset.appId);
       if(badge&&app)badge.textContent=selected?'DIPILIH':(app.status==='ready'?'BUKA':'SEGERA');
     });
+
     renderInspector(item);
     if(track){try{window.PILAR_PULSE?.track?.('hub_app_select',{app_id:item.id})}catch(_){}}
     if(focus)$('#bootQuick')?.focus();
   }
+
+  function make(tag,className,text){
+    const el=document.createElement(tag);
+    if(className)el.className=className;
+    if(text!==undefined)el.textContent=text;
+    return el;
+  }
+
   function renderLibrary(){
-    const box=$('#pilarLibrary'); if(!box)return;
-    const apps=window.PILAR_APP_REGISTRY||[];
-    box.innerHTML='';
-    apps.forEach(item=>{
-      const b=document.createElement('button');
-      b.className='pilar-app-card '+(item.status!=='ready'?'coming':'');
+    const box=$('#pilarLibrary');
+    if(!box)return;
+    box.replaceChildren();
+
+    apps().forEach(item=>{
+      const b=make('button','pilar-app-card '+(item.status!=='ready'?'coming':''));
       b.type='button';
       b.dataset.appId=item.id;
       b.setAttribute('aria-pressed','false');
-      b.innerHTML=`<span class="pilar-app-icon">${item.icon||'✦'}</span><span><strong>${item.title}</strong><small class="app-subtitle">${item.subtitle||''}</small><small>${item.category} · v${item.version}</small></span><em>${item.status==='ready'?'BUKA':'SEGERA'}</em>`;
-      b.onclick=()=>selectApp(item.id,{track:true,focus:true});
+
+      const icon=make('span','pilar-app-icon',item.icon||'✦');
+      const copy=make('span');
+      copy.append(
+        make('strong','',item.title||'PILAR App'),
+        make('small','app-subtitle',item.subtitle||''),
+        make('small','',(item.category||'PILAR App')+' · v'+(item.version||'—'))
+      );
+      const badge=make('em','',item.status==='ready'?'BUKA':'SEGERA');
+      b.append(icon,copy,badge);
+      b.addEventListener('click',()=>selectApp(item.id,{track:true,focus:true}));
       box.appendChild(b);
     });
+
     selectApp(selectedAppId,{track:false,focus:false});
   }
-  function resetBootUI(){
-    $('#bootProgress').hidden=true;
-    const item=selectedApp();
-    $('#bootQuick').disabled=!item||item.status!=='ready';
-    const visionEligible=!!item&&item.visionGate!==false;
-    $('#bootVision').hidden=!visionEligible;
-    $('#bootVision').disabled=!item||item.status!=='ready'||!visionEligible;
-    $('#bootBar').style.width='0%';$('#bootPercent').textContent='0%';
-    $('#bootStepTitle').textContent='MENYIAPKAN PILAR';$('#bootMessage').textContent='Pilih salah satu pintu masuk.';
-    $('#bootStepList').innerHTML='';
-    $$('#bootPhilosophy span').forEach(el=>el.className='');
+
+  function loadScript(src){
+    return new Promise((resolve,reject)=>{
+      const old=document.querySelector('script[data-dynamic="'+src+'"]');
+      if(old)return resolve();
+      const s=document.createElement('script');
+      s.src=src;
+      s.dataset.dynamic=src;
+      s.onload=resolve;
+      s.onerror=()=>reject(new Error('Gagal memuat '+src));
+      document.body.appendChild(s);
+    });
   }
-  function showHome(){
-    const bootEl=$('#pilarBoot');
-    resetBootUI();
-    bootEl.classList.remove('is-leaving');
-    bootEl.removeAttribute('aria-hidden');
-    $('#appShell').setAttribute('aria-hidden','true');
-    document.body.classList.add('boot-lock');
-    try{window.PILAR_PULSE?.setApp?.('hub')}catch(_){}
-    selectApp('lorentz',{track:false,focus:false});
-  }
-  function loadScript(src){return new Promise((resolve,reject)=>{const old=document.querySelector(`script[data-dynamic="${src}"]`);if(old)return resolve();const s=document.createElement('script');s.src=src;s.dataset.dynamic=src;s.onload=resolve;s.onerror=()=>reject(new Error('Gagal memuat '+src));document.body.appendChild(s)})}
-  function setBootStep(i,total,title,msg){
-    const pct=Math.round((i/total)*100);$('#bootBar').style.width=pct+'%';$('#bootPercent').textContent=pct+'%';$('#bootStepTitle').textContent=title;$('#bootMessage').textContent=msg;
-    [...$('#bootStepList').children].forEach((el,n)=>el.className=n<i?'done':n===i?'on':'');
-    const philosophy=$$('#bootPhilosophy span');philosophy.forEach((el,n)=>el.className=n<i?'done':n===i?'on':'');
-  }
+
   async function requestVision(item=selectedApp()){
     if(!checks.Kamera())throw new Error('Kamera tidak tersedia pada browser/perangkat ini.');
     await loadScript('input/vision-adapter.js');
@@ -124,7 +172,9 @@
     if(P.vision)P.vision.setEnabled(!!result.enabled);
     return result;
   }
+
   const HUB_BASE=new URL('./',location.href);
+
   function closeFullscreenAppHost(){
     const host=document.getElementById('pilarFullscreenAppHost');
     if(!host)return;
@@ -134,30 +184,37 @@
     document.body.classList.remove('pilar-app-host-open');
     try{window.PILAR_PULSE?.setApp?.('hub')}catch(_){}
   }
+
   function openInFullscreenHost(url,item){
     if(!document.fullscreenElement)return false;
+
     closeFullscreenAppHost();
     const host=document.createElement('section');
     host.id='pilarFullscreenAppHost';
     host.className='pilar-fullscreen-app-host';
     host.setAttribute('aria-label',(item?.title||'PILAR App')+' · fullscreen');
+
     const frame=document.createElement('iframe');
     frame.className='pilar-fullscreen-app-frame';
     frame.title=item?.title||'PILAR App';
     frame.allow='camera; microphone; fullscreen; autoplay; clipboard-read; clipboard-write';
     frame.allowFullscreen=true;
+
     host.appendChild(frame);
     document.body.appendChild(host);
     document.body.classList.add('pilar-app-host-open');
+
     frame.addEventListener('load',()=>{
       try{
         const p=frame.contentWindow.location.pathname;
         if(p===HUB_BASE.pathname||p===HUB_BASE.pathname+'index.html')closeFullscreenAppHost();
       }catch(_){}
     });
+
     frame.src=new URL(url,HUB_BASE).href;
     return true;
   }
+
   function openAppUrl(url,item){
     if(openInFullscreenHost(url,item))return;
     location.href=url;
@@ -167,180 +224,108 @@
     const item=selectedApp();
     if(!item||item.status!=='ready')return;
     if(item.visionGate===false)mode='standard';
-    if(item.id==='lorentz'){
-      try{await window.PILAR_PULSE?.track?.('hub_app_launch',{app_id:item.id,entry:mode==='vision'?'vision':'quick'})}catch(_){}
-      const sep=item.url.includes('?')?'&':'?';
-      openAppUrl(item.url+sep+'pilarEntry='+(mode==='vision'?'vision':'quick'),item);
-      return;
-    }
+
     if(mode==='standard'){
       try{await window.PILAR_PULSE?.track?.('hub_app_launch',{app_id:item.id,entry:'quick'})}catch(_){}
-      openAppUrl(item.url,item);
+      const url=item.id==='lorentz'
+        ?item.url+(item.url.includes('?')?'&':'?')+'pilarEntry=quick'
+        :item.url;
+      openAppUrl(url,item);
       return;
     }
-    $('#bootQuick').disabled=true;$('#bootVision').disabled=true;
+
+    const quick=$('#bootQuick');
+    const vision=$('#bootVision');
+    quick.disabled=true;
+    vision.disabled=true;
     $('#selectedAppNote').textContent='Vision Challenge sedang disiapkan… kamera hanya dipakai untuk challenge ini.';
+
     try{
       const vr=await requestVision(item);
       if(vr&&vr.enabled){
-        try{await window.PILAR_PULSE?.track?.('hub_app_launch',{app_id:item.id,entry:'vision',challenge:vr.challenge||vr.via})}catch(_){}
+        try{
+          await window.PILAR_PULSE?.track?.('hub_app_launch',{
+            app_id:item.id,
+            entry:'vision',
+            challenge:vr.challenge||vr.via
+          });
+        }catch(_){}
         const sep=item.url.includes('?')?'&':'?';
         openAppUrl(item.url+sep+'pilarEntry=vision',item);
-      }else{
-        $('#selectedAppNote').textContent='Challenge belum diselesaikan. Pilih Vision Challenge lagi atau gunakan Masuk Cepat.';
-        $('#bootQuick').disabled=false;$('#bootVision').disabled=false;
+        return;
       }
+      $('#selectedAppNote').textContent='Challenge belum diselesaikan. Pilih Vision Challenge lagi atau gunakan Masuk Cepat.';
     }catch(e){
       console.error(e);
       $('#selectedAppNote').textContent=(e?.message||'Vision Challenge gagal dimuat')+' Gunakan Masuk Cepat bila perlu.';
-      $('#bootQuick').disabled=false;$('#bootVision').disabled=false;
     }
+
+    quick.disabled=false;
+    vision.disabled=false;
   }
 
-  function toast(a,b=''){const el=$('#toast');el.innerHTML='<b>'+a+'</b>'+(b?'<br><small>'+b+'</small>':'');el.classList.add('show');clearTimeout(toast.id);toast.id=setTimeout(()=>el.classList.remove('show'),2600)}
-  function go(phase){P.state.patch(s=>{s.phase=phase});}
+  const fullscreenBtn=$('#bootFullscreenBtn');
 
-  function bindAppUI(){
-    if(uiBound)return;uiBound=true;
-    P.intent.on('GO_PHASE',go);
-    P.intent.on('PREDICT',p=>P.state.patch(s=>{s.prediction=p}));
-    P.intent.on('TOGGLE_SWITCH',()=>{
-      P.state.patch(s=>{s.circuit.on=!s.circuit.on;if(s.circuit.on)s.missions.close=true});
-      if(P.state.get().circuit.on){P.evidence.schedule('switch_on',1000);toast('Rangkaian tertutup','Amati arah pertama sebelum membuka semua vektor.')}else{P.evidence.schedule('switch_off',350);toast('Rangkaian terbuka','Arus menuju nol, gaya ikut hilang.')}
-      P.score.sync();
-    });
-    P.intent.on('FLIP_BATTERY',()=>{P.state.patch(s=>{s.circuit.targetPolarity*=-1;s.circuit.batteryRotationTarget=s.circuit.targetPolarity>0?0:Math.PI;s.missions.flip=true});P.evidence.schedule('battery_flip',1200);toast('Baterai dibalik','Arah arus aktual berubah setelah baterai melewati setengah putaran.');P.score.sync();});
-    P.intent.on('SET_PARAM',({k,v})=>{P.state.patch(s=>{s.params[k]=+v;if(k==='B'&&s.circuit.on)s.missions.bchange=true});if(P.state.get().circuit.on)P.evidence.schedule('param_'+k,850);P.score.sync()});
-    P.intent.on('TOGGLE_REVEAL',key=>P.state.patch(s=>{s.reveal[key]=!s.reveal[key]}));
-    P.intent.on('LOCK_PREDICTION',()=>{if(!P.state.get().prediction)return toast('Pilih tebakan dulu');go('coba');P.score.sync()});
-    P.intent.on('RESET_EXPERIMENT',()=>{P.state.resetExperiment();toast('Eksperimen diulang','Tebakan tetap tersimpan agar bisa dibandingkan.');});
-
-    $('#toPredict').onclick=()=>go('tebak');
-    $$('#predictionGrid button').forEach(b=>b.onclick=()=>P.intent.dispatch('PREDICT',b.dataset.pred));
-    $('#lockPrediction').onclick=()=>P.intent.dispatch('LOCK_PREDICTION');
-    $('#switchBtn').onclick=()=>P.intent.dispatch('TOGGLE_SWITCH');$('#flipBtn').onclick=()=>P.intent.dispatch('FLIP_BATTERY');$('#resetBtn').onclick=()=>P.intent.dispatch('RESET_EXPERIMENT');
-    $('#fieldBtn').onclick=()=>P.intent.dispatch('TOGGLE_REVEAL','field');$('#currentBtn').onclick=()=>P.intent.dispatch('TOGGLE_REVEAL','current');$('#forceBtn').onclick=()=>P.intent.dispatch('TOGGLE_REVEAL','force');
-    for(const [id,k] of [['Bslider','B'],['Vslider','V'],['Rslider','R'],['proofV','V'],['proofR','R'],['proofB','B']])$('#'+id).oninput=e=>P.intent.dispatch('SET_PARAM',{k,v:e.target.value});
-    $('#revealFormula').onclick=()=>{P.state.patch(s=>{s.reveal.formula=true});P.score.sync()};$('#toProof').onclick=()=>{if(!P.state.get().reveal.formula)return toast('Rumuskan temuan dulu');go('buktikan')};$('#toEngineering').onclick=()=>{if(!P.lorentzMissions.proofSuccess())return toast('Belum cukup bukti','Capai target α 35°–45° dan catat percobaan.');go('rekayasa')};
-    $('#proofSwitch').onclick=()=>P.intent.dispatch('TOGGLE_SWITCH');$('#recordNow').onclick=()=>{const r=P.evidence.record('manual_proof');toast('Data dicatat','Percobaan #'+r.id+' masuk Evidence Ledger.')};
-    $$('#engineeringModes button').forEach(b=>b.onclick=()=>P.state.patch(s=>{s.engineering.motion=b.dataset.motion}));
-    $('#makeBrief').onclick=()=>{const motion=P.state.get().engineering.motion,need=$('#needInput').value,constraint=$('#constraintInput').value;if(!motion)return toast('Pilih jenis gerak dulu');const brief=P.engineering.makeBrief(motion,need,constraint);P.state.patch(s=>{s.engineering.need=need;s.engineering.constraint=constraint;s.engineering.brief=brief});P.score.sync();toast('Brief rekayasa dibuat','Sekarang buktikan ide itu dengan prototipe nyata.')};
-    $('#rotateRoles').onclick=()=>P.state.patch(s=>{s.collab.round=(s.collab.round+1)%3});
-    $('#copyReport').onclick=async()=>{const s=P.state.get();const rows=s.evidence.map(r=>`#${r.id} | B=${fmt(r.B,2)} T | I=${fmt(Math.abs(r.current),2)} A | Fideal=${fmt(Math.abs(r.fIdeal),3)} N | Fef=${fmt(Math.abs(r.fEffective),3)} N | α=${fmt(r.alpha,0)}° | ${r.reason}`).join('\n');const report=`LAPORAN BUKTI PILAR LORENTZ\nPrediksi awal: ${s.prediction||'-'}\nAHA reversal: ${s.aha.reversal?'terbukti':'belum'}\nAHA pengaruh B: ${s.aha.bEffect?'terbukti':'belum'}\n\nEVIDENCE LEDGER\n${rows||'Belum ada data'}\n\nBatas model: medan, hambatan kontak, panas kawat, sag baterai, hambatan udara, dan fleksibilitas tali disederhanakan.`;try{await navigator.clipboard.writeText(report);toast('Laporan bukti disalin')}catch(_){toast('Clipboard dibatasi browser','Jalankan lewat GitHub Pages/localhost untuk fitur salin.')}};
-    $('#frontView').onclick=()=>render&&render.setView('front');$('#obliqueView').onclick=()=>render&&render.setView('oblique');
-    $('#flowSpeed').oninput=e=>P.state.patch(s=>{s.ui.flowSpeed=+e.target.value});
-    $('#rewindBtn').onclick=()=>{if(render&&render.rewindCurrent)render.rewindCurrent();toast('Animasi arus diulang','Fisika dan posisi kawat tidak di-reset.');};
-    $('#qualitySelect').onchange=e=>P.state.patch(s=>{s.ui.quality=e.target.value});
-    $$('#phaseTabs button').forEach(b=>b.onclick=()=>{const target=b.dataset.phase,s=P.state.get();if(['aha','buktikan','rekayasa'].includes(target)&&!s.aha.unlocked)return toast('Belum terbuka','Selesaikan pola reversal dan pengaruh B terlebih dahulu.');if(['buktikan','rekayasa'].includes(target)&&!s.reveal.formula)return toast('Belum terbuka','Masuk AHA dan rumuskan temuan terlebih dahulu.');if(target==='rekayasa'&&!P.lorentzMissions.proofSuccess())return toast('Belum terbuka','Buktikan dulu: capai target α 35°–45° dan catat hasil.');go(target)});
-
-    $('#homeBtn').onclick=showHome;
-    P.state.subscribe(updateUI);
-    if(P.ownership)P.ownership.stamp($('#ownershipMark'));
-    updateUI(P.state.get());
-  }
-
-  function updateUI(s){
-    $$('#phaseTabs button').forEach(b=>b.classList.toggle('active',b.dataset.phase===s.phase));$$('[data-panel]').forEach(p=>p.hidden=p.dataset.panel!==s.phase);
-    $('#xp').textContent=s.xp;
-    $$('#predictionGrid button').forEach(b=>b.classList.toggle('selected',b.dataset.pred===s.prediction));$('#predictionFeedback').textContent=s.prediction?'Tebakan terkunci sementara: '+s.prediction.toUpperCase()+'.':'Belum ada tebakan yang dikunci.';
-    for(const [k,id,d,u] of [['B','Bout',2,'T'],['V','Vout',1,'V'],['R','Rout',1,'Ω'],['V','proofVout',1,'V'],['R','proofRout',1,'Ω'],['B','proofBout',2,'T']])$('#'+id).textContent=fmt(s.params[k],d)+' '+u;
-    for(const [id,k] of [['Bslider','B'],['Vslider','V'],['Rslider','R'],['proofV','V'],['proofR','R'],['proofB','B']])if(Math.abs(+$('#'+id).value-s.params[k])>.0001)$('#'+id).value=s.params[k];
-    $('#switchBtn').textContent=s.circuit.on?'Buka sakelar':'Tutup sakelar';$('#proofSwitch').textContent=s.circuit.on?'Hentikan':'Jalankan';
-    for(const [id,k] of [['fieldBtn','field'],['currentBtn','current'],['forceBtn','force']])$('#'+id).setAttribute('aria-pressed',s.reveal[k]);
-    $('#fieldBtn').textContent=s.reveal.field?'Sembunyikan B':'Lihat medan B';$('#currentBtn').textContent=s.reveal.current?'Sembunyikan I':'Lihat arus I';$('#forceBtn').textContent=s.reveal.force?'Sembunyikan F':'Lihat gaya F';
-    $('#formulaPanel').hidden=!s.reveal.formula;$('#revealFormula').disabled=!s.aha.unlocked;$('#toProof').disabled=!s.reveal.formula;
-    $('#missionList [data-mission="close"]').classList.toggle('done',s.missions.close);$('#missionList [data-mission="flip"]').classList.toggle('done',s.missions.flip);$('#missionList [data-mission="bchange"]').classList.toggle('done',s.missions.bchange);
-    if(s.aha.unlocked&&s.phase==='coba')$('#experimentHint').innerHTML='<b>💡 Pola sudah cukup kuat.</b> Tahap AHA terbuka. Masuk ke tab AHA.';else if(!s.missions.close)$('#experimentHint').textContent='Mulai dengan menutup sakelar.';else if(!s.missions.flip)$('#experimentHint').textContent='Sekarang balik baterai. Bandingkan arah gaya.';else if(!s.missions.bchange)$('#experimentHint').textContent='Ubah B cukup jauh dan lihat perubahan besar gaya.';else $('#experimentHint').textContent='Data sedang dibandingkan…';
-    $('#alphaHud').textContent=fmt(Math.abs(s.dynamics.alpha*180/Math.PI),0)+'°';$('#currentHud').textContent=fmt(Math.abs(s.circuit.currentActual),2)+' A';$('#fIdealHud').textContent=fmt(Math.abs(s.dynamics.fIdeal),3)+' N';$('#fEffHud').textContent=fmt(Math.abs(s.dynamics.fEffective),3)+' N';
-    $('#vectorLegend').hidden=!(s.reveal.field||s.reveal.current||s.reveal.force);
-    if(Math.abs(+$('#flowSpeed').value-s.ui.flowSpeed)>.001)$('#flowSpeed').value=s.ui.flowSpeed;$('#flowSpeedOut').textContent=fmt(s.ui.flowSpeed,2)+'×';
-    if($('#qualitySelect').value!==s.ui.quality)$('#qualitySelect').value=s.ui.quality;if(render&&render.quality!==s.ui.quality)render.setQuality(s.ui.quality);
-    const body=$('#ledgerBody');body.innerHTML=s.evidence.slice().reverse().map(r=>`<tr><td>${r.id}</td><td>${fmt(r.B,2)}</td><td>${fmt(Math.abs(r.current),2)}</td><td>${fmt(Math.abs(r.fIdeal),3)}</td><td>${fmt(Math.abs(r.fEffective),3)}</td><td>${fmt(r.alpha,0)}°</td><td>${r.reason.replaceAll('_',' ')}</td></tr>`).join('');
-    const proof=s.evidence.find(x=>x.alpha>=35&&x.alpha<=45);$('#proofHint').innerHTML=proof?'<b>Target tercapai.</b> Percobaan #'+proof.id+' berada pada rentang 35°–45°. Coba ulang untuk melihat apakah hasil konsisten.':'Cari kombinasi V, R, dan B yang membawa α ke rentang target.';
-    $$('#engineeringModes button').forEach(b=>b.classList.toggle('selected',b.dataset.motion===s.engineering.motion));$('#engineeringBrief').textContent=s.engineering.brief||'Belum ada brief.';
-    $$('#collabStrip [data-role]').forEach((el,i)=>el.classList.toggle('active',i===s.collab.round));
-    if(s.aha.unlocked&&!['aha','buktikan','rekayasa'].includes(s.phase))$('#engineStatus').textContent='AHA siap dibuka';else $('#engineStatus').textContent='Physics state tunggal · WebGL aktif';
-  }
-
-  function startLoop(){if(loopStarted)return;loopStarted=true;last=performance.now();function loop(now){requestAnimationFrame(loop);const dt=Math.min(.03,(now-last)/1000);last=now;const s=P.state.get();P.lorentzPhysics.step(s,dt);P.evidence.tick(now);if(render)render.update(s,dt);if(now-lastHud>90){lastHud=now;updateUI(s)}}requestAnimationFrame(loop)}
-
-  async function boot(mode){
-    const quick=$('#bootQuick'),vision=$('#bootVision');quick.disabled=vision.disabled=true;$('#bootProgress').hidden=false;
-    const steps=mode==='vision'?[
-      ['CORE PILAR','Menghubungkan state, evidence engine, misi, dan UI…'],
-      ['RENDERER','Menyiapkan WebGL dan rig Lorentz 3D…'],
-      ['ASSET','Membangun material, magnet, kabel, sakelar, dan dudukan…'],
-      ['INPUT','Mengaktifkan pointer, touch, dan multitouch…'],
-      ['VISION AI','Memuat adapter Vision dan memeriksa izin kamera…'],
-      ['READY','Semua subsistem siap.']
-    ]:[
-      ['CORE PILAR','Menghubungkan state, evidence engine, misi, dan UI…'],
-      ['RENDERER','Menyiapkan WebGL dan rig Lorentz 3D…'],
-      ['ASSET','Membangun material, magnet, kabel, sakelar, dan dudukan…'],
-      ['INPUT','Mengaktifkan pointer, touch, dan multitouch…'],
-      ['LITE MODE','Vision AI tidak dimuat — startup tetap ringan.'],
-      ['READY','Semua subsistem siap.']
-    ];
-    $('#bootStepList').innerHTML=steps.map(()=>'<i></i>').join('');
-    try{
-      setBootStep(0,steps.length,steps[0][0],steps[0][1]);bindAppUI();await sleep(130);
-      setBootStep(1,steps.length,steps[1][0],steps[1][1]);if(!checks.WebGL())throw new Error('WebGL tidak tersedia. Coba browser/perangkat lain.');if(!render)render=P.render3d.init($('#stage'));$('#stageBadge').textContent='3D siap · drag untuk memutar';await sleep(160);
-      setBootStep(2,steps.length,steps[2][0],steps[2][1]);await sleep(160);
-      setBootStep(3,steps.length,steps[3][0],steps[3][1]);await sleep(120);
-      setBootStep(4,steps.length,steps[4][0],steps[4][1]);
-      if(mode==='vision'){
-        try{
-          const vr=await requestVision(selectedApp());
-          if(vr&&vr.enabled){
-            $('#bootMessage').textContent='Smile recognition berhasil. Vision gate terbuka dan simulasi siap dimasuki.';
-            $('#engineStatus').textContent='Masuk via Vision AI';
-          }else{
-            $('#bootMessage').textContent='Vision Challenge belum selesai. Pilih lagi atau gunakan Masuk Cepat.';
-            if(P.vision)P.vision.setEnabled(false);
-            quick.disabled=vision.disabled=false;
-            return;
-          }
-        }
-        catch(e){
-          $('#bootMessage').textContent=(e&&e.message?e.message:'Vision Challenge tidak aktif')+' Gunakan Masuk Cepat bila perlu.';
-          if(P.vision)P.vision.setEnabled(false);
-          quick.disabled=vision.disabled=false;
-          return;
-        }
-      }else await sleep(100);
-      setBootStep(5,steps.length,steps[5][0],steps[5][1]);await sleep(160);setBootStep(steps.length,steps.length,'READY',mode==='vision'?'Vision AI siap. Memasuki simulasi…':'Mode cepat siap. Memasuki simulasi…');
-      sessionStorage.setItem('pilar-input-mode',mode);
-      try{await window.PILAR_PULSE?.setApp?.('lorentz')}catch(_){}
-      $('#appShell').setAttribute('aria-hidden','false');startLoop();await sleep(230);$('#pilarBoot').classList.add('is-leaving');$('#pilarBoot').setAttribute('aria-hidden','true');document.body.classList.remove('boot-lock');
-    }catch(e){console.error(e);$('#bootStepTitle').textContent='BOOT TERTAHAN';$('#bootMessage').textContent=e.message||'Terjadi kesalahan saat menyiapkan PILAR.';quick.disabled=vision.disabled=false;$('#engineStatus').textContent='Boot membutuhkan perhatian';}
-  }
-
-  drawBootCaps();
-  renderLibrary();
-  const bootFullscreenBtn=$('#bootFullscreenBtn');
-  async function toggleBootFullscreen(){
-    if(!bootFullscreenBtn)return;
+  async function toggleFullscreen(){
+    if(!fullscreenBtn)return;
     try{
       if(document.fullscreenElement)await document.exitFullscreen();
       else await document.documentElement.requestFullscreen();
     }catch(e){console.warn('Fullscreen tidak tersedia',e)}
   }
-  function syncBootFullscreen(){
-    if(!bootFullscreenBtn)return;
-    bootFullscreenBtn.hidden=!document.fullscreenEnabled;
+
+  function syncFullscreen(){
+    if(!fullscreenBtn)return;
+    fullscreenBtn.hidden=!document.fullscreenEnabled;
     const on=!!document.fullscreenElement;
-    try{sessionStorage.setItem('pilar_fullscreen_pref',on?'1':'0')}catch(_){}
     document.documentElement.dataset.pilarFullscreen=on?'on':'off';
-    bootFullscreenBtn.textContent=on?'⤢':'⛶';
-    bootFullscreenBtn.setAttribute('aria-pressed',on?'true':'false');
-    bootFullscreenBtn.title=on?'Keluar layar penuh':'Layar penuh';
+    fullscreenBtn.textContent=on?'⤢':'⛶';
+    fullscreenBtn.setAttribute('aria-pressed',on?'true':'false');
+    fullscreenBtn.title=on?'Keluar layar penuh':'Layar penuh';
+    fullscreenBtn.setAttribute('aria-label',fullscreenBtn.title);
   }
-  if(bootFullscreenBtn){bootFullscreenBtn.onclick=toggleBootFullscreen;document.addEventListener('fullscreenchange',syncBootFullscreen);syncBootFullscreen()}
-  // Tombol mode efek: Auto (IFP → ringan) · Ringan · Penuh. Disimpan & dipakai semua app PILAR.
+
   const fxBtn=$('#bootFxBtn');
-  function syncFx(){if(!fxBtn||!P.device)return;const m=P.device.fxMode,label={auto:'Auto',lite:'Ringan',full:'Penuh'}[m];fxBtn.textContent='⚡ '+label;fxBtn.title='Mode efek: '+label+(m==='auto'?' (sekarang '+(P.device.fx==='lite'?'ringan':'penuh')+')':'')+' · ketuk untuk ganti';fxBtn.setAttribute('aria-label',fxBtn.title)}
-  if(fxBtn){if(!P.device)fxBtn.hidden=true;else{fxBtn.onclick=()=>{const order=['auto','lite','full'],m=order[(order.indexOf(P.device.fxMode)+1)%3];P.device.setFx(m);syncFx()};syncFx()}}
-  $('#bootQuick').onclick=()=>launchSelected('standard');
-  $('#bootVision').onclick=()=>launchSelected('vision');
-  if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+
+  function syncFx(){
+    if(!fxBtn||!P.device)return;
+    const mode=P.device.fxMode;
+    const label={auto:'Auto',lite:'Ringan',full:'Penuh'}[mode]||'Auto';
+    fxBtn.textContent='⚡ '+label;
+    fxBtn.title='Mode efek: '+label+(mode==='auto'?' (sekarang '+(P.device.fx==='lite'?'ringan':'penuh')+')':'')+' · ketuk untuk ganti';
+    fxBtn.setAttribute('aria-label',fxBtn.title);
+  }
+
+  drawBootCaps();
+  renderLibrary();
+
+  if(fullscreenBtn){
+    fullscreenBtn.addEventListener('click',toggleFullscreen);
+    document.addEventListener('fullscreenchange',syncFullscreen);
+    syncFullscreen();
+  }
+
+  if(fxBtn){
+    if(!P.device)fxBtn.hidden=true;
+    else{
+      fxBtn.addEventListener('click',()=>{
+        const order=['auto','lite','full'];
+        const next=order[(order.indexOf(P.device.fxMode)+1)%order.length];
+        P.device.setFx(next);
+        syncFx();
+      });
+      syncFx();
+    }
+  }
+
+  $('#bootQuick')?.addEventListener('click',()=>launchSelected('standard'));
+  $('#bootVision')?.addEventListener('click',()=>launchSelected('vision'));
+  window.addEventListener('online',syncBootRuntime);
+  window.addEventListener('offline',syncBootRuntime);
+
+  try{window.PILAR_PULSE?.setApp?.('hub')}catch(_){}
+
+  if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
+    navigator.serviceWorker.register('service-worker.js').catch(err=>console.warn('Service worker gagal didaftarkan',err));
+  }
 })();

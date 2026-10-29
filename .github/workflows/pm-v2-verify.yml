@@ -4,22 +4,34 @@ on:
   push:
     branches: [main]
     paths:
-      - 'apps/pressure/**'
-      - 'apps/lorentz-lab/**'
-      - 'apps/registry.js'
-      - 'apps/soundscope/**'
+      - 'index.html'
+      - 'app.js'
+      - 'service-worker.js'
+      - 'manifest.webmanifest'
+      - 'css/**'
+      - 'apps/**'
       - 'labs/**'
       - 'core/**'
+      - 'input/**'
+      - 'render/**'
+      - 'pulse/**'
+      - 'developer/verify-hub.js'
       - 'developer/patch-v2-tests/**'
       - '.github/workflows/pm-v2-verify.yml'
   pull_request:
     paths:
-      - 'apps/pressure/**'
-      - 'apps/lorentz-lab/**'
-      - 'apps/registry.js'
-      - 'apps/soundscope/**'
+      - 'index.html'
+      - 'app.js'
+      - 'service-worker.js'
+      - 'manifest.webmanifest'
+      - 'css/**'
+      - 'apps/**'
       - 'labs/**'
       - 'core/**'
+      - 'input/**'
+      - 'render/**'
+      - 'pulse/**'
+      - 'developer/verify-hub.js'
       - 'developer/patch-v2-tests/**'
       - '.github/workflows/pm-v2-verify.yml'
   workflow_dispatch:
@@ -32,17 +44,29 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Hub structure and cache verification
+        run: node developer/verify-hub.js .
+
       - name: Pressure flow tests
         run: node developer/patch-v2-tests/test_pressure.js .
+
       - name: Lorentz flow tests
         run: node developer/patch-v2-tests/test_lorentz.js .
+
       - name: Pressure physics unit tests
         run: node labs/pressure/test/physics.test.js
+
       - name: Pressure scene smoke test
         run: node labs/pressure/test/smoke-scenes.js
+
       - name: SoundScope DSP tests
         run: |
           node apps/soundscope/test/fsk-core.test.js
           node apps/soundscope/test/acoustic-core.test.js
+
+      - name: Baterai model tests
+        run: node apps/baterai-lab/test-model.js
+
       - name: Frame-rate independence (physics)
         run: node labs/pressure/test/fps-independence.test.js
