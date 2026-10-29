@@ -80,7 +80,7 @@ body.debug main{grid-template-columns:minmax(0,.7fr) auto minmax(360px,1.3fr)}
 </head>
 <body data-theme="ice">
 <header class="top">
- <div class="brand"><a class="home" href="../../" aria-label="Kembali ke PILAR Hub">←</a><div><h1>Frost Breakout ❄</h1><div class="subtitle">PILAR™ ARCADE · NEON ICE · v1.1 · Mode Debug</div></div></div>
+ <div class="brand"><a class="home" href="../../" aria-label="Kembali ke PILAR Hub">←</a><div><h1>Frost Breakout ❄</h1><div class="subtitle">PILAR™ ARCADE · NEON ICE · v1.1 · Mode Debug</div><div class="creator">by : rizalabdurrahman05@guru.smp.belajar.id</div></div></div>
  <div class="actions"><button class="btn" id="debugBtn" aria-pressed="false" title="Mode Debug (G)">🧠 Debug</button><button class="btn" id="themeBtn">🌌 Aurora</button><button class="btn" id="soundBtn" aria-pressed="false">🔇 Suara</button><button class="btn" id="pauseBtn">⏸ Jeda</button><button class="btn" id="restartBtn">↻ Ulang</button></div>
 </header>
 <main>
@@ -88,7 +88,7 @@ body.debug main{grid-template-columns:minmax(0,.7fr) auto minmax(360px,1.3fr)}
  <section aria-label="Arena Frost Breakout"><div class="stage" id="stage"><canvas id="game" width="440" height="720" aria-label="Game brick breaker. Gerakkan paddle dengan sentuhan, mouse atau tombol panah."></canvas>
    <div class="modal" id="modal"><div class="modal-card"><h2 id="modalTitle">FROST<br>BREAKOUT</h2><p id="modalDesc">Pecahkan balok es dengan bola neon. Gerakkan paddle memakai mouse, sentuhan, atau tombol panah.</p><button class="play" id="modalAction">▶ MULAI MAIN</button></div></div>
  </div><p class="caption">Geser jari / mouse untuk menggerakkan paddle · <kbd>←</kbd> <kbd>→</kbd> · <kbd>Spasi</kbd> jeda · <kbd>G</kbd> debug · <kbd>N</kbd> baris · <kbd>F</kbd> frame</p></section>
- <aside class="right"><h2>FROST SYSTEM</h2><div class="stat"><small>Level saat ini</small><b id="level">1</b></div><div class="stat"><small>Nyawa</small><b id="lives">♥ ♥ ♥</b></div><p><strong>Bonus:</strong> tangkap kristal yang jatuh untuk memperlebar paddle atau memunculkan bola tambahan.</p><p class="creator">by : rizalabdurrahman05@guru.smp.belajar.id</p></aside>
+ <aside class="right"><h2>FROST SYSTEM</h2><div class="stat"><small>Level saat ini</small><b id="level">1</b></div><div class="stat"><small>Nyawa</small><b id="lives">♥ ♥ ♥</b></div><p><strong>Bonus:</strong> tangkap kristal yang jatuh untuk memperlebar paddle atau memunculkan bola tambahan.</p></aside>
  <section class="dbg" id="dbg" aria-label="Mode Debug Frost Breakout">
   <div class="dbg-head"><div><b>🧠 MODE DEBUG</b><br><small>Lihat isi "otak" game saat berjalan</small></div><label class="xray-tog"><input type="checkbox" id="xray" checked> Sinar-X</label></div>
   <div class="dbg-ctrl"><button id="dRun" title="Jalan">▶ Jalan</button><button id="dPause" title="Jeda">⏸ Jeda</button><button id="dLine" title="Langkah 1 baris (N)">⤵ Baris</button><button id="dFrame" title="Langkah 1 frame (F)">⏭ Frame</button>
