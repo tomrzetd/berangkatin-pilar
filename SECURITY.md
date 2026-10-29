@@ -27,7 +27,7 @@ Menonaktifkan Pulse menghentikan pengiriman baru tetapi tidak otomatis menghapus
 ## Temuan audit yang masih perlu diperhatikan
 - Beberapa library/model dimuat dari CDN. Versi yang sudah dipin lebih aman; dependency dinamis sebaiknya dipin atau di-vendor bila PILAR dipakai untuk deployment sensitif.
 - Anonymous Auth dapat menjadi target spam. Aktifkan proteksi/rate limit Supabase jika trafik publik meningkat.
-- `apps/pak-taro/` menjalankan kode latihan siswa di Web Worker dengan batas waktu. Ini terisolasi dari DOM, tetapi tetap fitur eksekusi kode dan perlu diperlakukan sebagai sandbox edukasi, bukan boundary keamanan tingkat tinggi.
+- `apps/pak-taro/` menjalankan kode latihan siswa di Web Worker yang ditempatkan di dalam iframe `sandbox="allow-scripts"` dengan timeout. Ini memperkuat isolasi dari DOM/storage PILAR, tetapi tetap diperlakukan sebagai sandbox edukasi, bukan boundary keamanan tingkat tinggi.
 - Firmware microscope memiliki password AP contoh. Ganti sebelum penggunaan di lingkungan publik.
 
 ## Pelaporan
