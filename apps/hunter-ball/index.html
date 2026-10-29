@@ -76,7 +76,7 @@ table.res td.b{color:var(--blue);font-weight:800}table.res td.r{color:var(--red)
 .creator{font:600 9px ui-monospace,Consolas,monospace;color:#5f7890}
 @media(max-width:820px){
  .arenas{grid-template-columns:1fr;padding:8px}.mobileTabs{display:flex;gap:6px;padding:6px 8px 0}.mobileTabs button{flex:1;min-height:42px;border-radius:11px;border:1px solid var(--line2);background:var(--panel)}.mobileTabs button[aria-pressed=true]{border-color:var(--cyan)}
- .team.off{display:none}.brand small,.creator{display:none}.topbar{flex-wrap:wrap}.tools{width:100%;justify-content:flex-start;overflow:auto;flex-wrap:nowrap}
+ .team.off{display:none}.brand small{display:none}.topbar>.creator{display:block;flex:1 1 100%;order:2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:8px}.topbar{flex-wrap:wrap}.tools{width:100%;order:3;justify-content:flex-start;overflow:auto;flex-wrap:nowrap}
  .roundBar{margin:6px 8px 0;flex-wrap:wrap;gap:6px 10px;padding:8px 10px}.roundBar .ico{display:none}.roundBar h2{font-size:15px}.roundBar p{font-size:12px}.roundBar .grow{flex-basis:100%}
  .latihanBar{width:100%}.latihanBar select{flex:1 1 140px;min-width:0;max-width:100%}
  .ctrl,.team.right .ctrl{grid-template-columns:1fr}.team.right .ctrl .fire{order:0}.fire{width:100%;min-height:58px}.sl label{min-width:0}.sl output{min-width:58px}
@@ -124,7 +124,7 @@ table.res td.b{color:var(--blue);font-weight:800}table.res td.r{color:var(--red)
 <div class="modal" id="endModal" hidden><div class="card">
  <div class="hd"><h2 id="endTitle">🏆 Hasil Duel</h2><p id="endSub"></p></div>
  <div class="bd"><table class="res" id="endTable"></table><p id="endLesson" style="color:var(--muted);margin:14px 0 0"></p></div>
- <div class="ft"><span class="creator" style="margin-right:auto;align-self:center">PILAR Creator ID · by : rizalabdurrahman05@guru.smp.belajar.id</span><button class="act" id="endLatihan">🧪 Coba di Latihan</button><button class="act primary" id="endAgain">↻ Tanding lagi</button></div>
+ <div class="ft"><span class="creator" style="margin-right:auto;align-self:center">by : rizalabdurrahman05@guru.smp.belajar.id</span><button class="act" id="endLatihan">🧪 Coba di Latihan</button><button class="act primary" id="endAgain">↻ Tanding lagi</button></div>
 </div></div>
 
 <script>
