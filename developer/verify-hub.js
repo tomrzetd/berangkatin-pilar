@@ -104,7 +104,7 @@ try{
   }
 }catch(e){ errors.push('manifest.webmanifest JSON error: ' + e.message); }
 
-if(!index.includes('PILAR Hub v0.8.0')) errors.push('Root title/version is not PILAR Hub v0.8.0');
+if(!/PILAR(?:™)? Hub v0\.8\.0/.test(index)) errors.push('Root title/version is not PILAR Hub v0.8.0');
 if(!index.includes('Launcher · v0.8.0')) errors.push('Launcher visible version is not v0.8.0');
 if(!index.includes('Runtime v0.8.0')) errors.push('Runtime visible version is not v0.8.0');
 if(!manifestText.includes('PILAR Hub v0.8.0')) errors.push('Manifest version/name is not v0.8.0');
