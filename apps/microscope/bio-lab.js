@@ -59,7 +59,8 @@ function init(){
  .bio-info{margin-top:10px;font-size:.84rem;line-height:1.45;color:var(--dark)}.bio-info p{margin:6px 0}.bio-info .note{color:var(--gray);font-size:.78rem}
  .bio-atlas{width:100%;border-collapse:collapse;font-size:.76rem;margin-top:6px}.bio-atlas td,.bio-atlas th{padding:4px 6px;border-bottom:1px solid rgba(100,116,139,.25);text-align:left}.bio-atlas th{font-size:.68rem;color:var(--gray);text-transform:uppercase}
  .bio-atlas tr.hit td{background:rgba(34,211,238,.16);font-weight:800}
- .bio-goals{list-style:none;padding:0;margin:8px 0 0;font-size:.82rem}.bio-goals li{padding:3px 0}
+ .bio-row[hidden],.bio-panel [hidden]{display:none!important}
+ .bio-goals{list-style:none;padding:0;margin:8px 0 0;font-size:.82rem}.bio-goals li.h{font-weight:800}.bio-goals li{padding:3px 0}
  .bio-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
  .bio-tools button{min-height:58px;border-radius:12px;border:1px solid #cbd5e1;background:rgba(255,255,255,.75);cursor:pointer;font-weight:800;font-size:.74rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--dark);touch-action:manipulation}
  .dark-mode .bio-tools button{background:#1e293b;border-color:#475569}
@@ -100,7 +101,7 @@ function init(){
  /* ---------- panel ---------- */
  const panel=document.createElement('div');panel.className='controls-panel bio-panel';panel.style.marginBottom='20px';
  panel.innerHTML=`<div class="panel-section" style="margin-bottom:0">
-  <div class="panel-title"><i class="fas fa-bacteria"></i> 🧫 Lab Mikrobiologi <span class="ai-chip" id="bioState">v1.0</span></div>
+  <div class="panel-title"><i class="fas fa-bacteria"></i> 🧫 Lab Mikrobiologi <span class="ai-chip" id="bioState">v1.1</span></div>
   <div class="bio-samples" id="bioSamples">${ORDER.map(k=>`<button data-s="${k}"><span>${SAMPLES[k].icon}</span>${SAMPLES[k].name}</button>`).join('')}</div>
   <div class="bio-usb" id="bioUsb">🔌 Colokkan USB microscope ke IFP, lalu tekan SCAN. Kamera USB dipilih otomatis.</div>
   <div class="bio-tools" id="bioTools">
@@ -118,7 +119,7 @@ function init(){
    <button class="btn btn-outline btn-sm" id="bioUndo" style="color:var(--dark);border-color:var(--gray)">↶ Urungkan</button><button class="btn btn-danger btn-sm" id="bioClear">Hapus coretan</button></div>
   <div class="bio-info" id="bioInfo"></div>
  </div>`;
- const col=document.querySelector('.main-content>div:last-child');col.insertBefore(panel,col.firstChild);
+ const dockLab=document.getElementById('dockLab');if(dockLab){panel.style.marginBottom='';dockLab.insertBefore(panel,dockLab.firstChild)}else{const col=document.querySelector('.main-content>div:last-child');col.insertBefore(panel,col.firstChild)}
 
  /* ---------- lapisan di atas video ---------- */
  const bc=document.createElement('canvas');bc.id='bioCanvas';box.appendChild(bc);const bx=bc.getContext('2d');
@@ -157,11 +158,13 @@ function init(){
   $('bioUsb').innerHTML=bs>0?'✅ USB microscope terdeteksi: <b>'+(best.label||'kamera USB')+'</b>'+(cur&&cur.deviceId!==best.deviceId?' (sedang dipilih: '+(cur.label||'lain')+')':''):'ℹ️ '+cams.length+' kamera ditemukan'+(cams.some(d=>d.label)?'':' — nama tampil setelah izin kamera')+'. Pilih USB microscope di daftar kamera.'};
 
  /* ---------- preset sampel ---------- */
+ let infoOpen=false;
  function renderInfo(){const s=SAMPLES[S.sample];document.querySelectorAll('#bioSamples button').forEach(b=>b.classList.toggle('on',b.dataset.s===S.sample));
   if(!s){$('bioInfo').innerHTML='<p>Pilih jenis sampel untuk panduan, atlas ukuran, dan tantangan.</p>';return}
-  $('bioInfo').innerHTML=`<p><b>${s.icon} Cara menyiapkan:</b> ${s.how}</p><p class="note">${s.note}</p>
-   <table class="bio-atlas" id="bioAtlas"><tr><th>Atlas</th><th>Ukuran</th>${S.sample==='pond'?'<th>Kecepatan</th>':''}<th>Ciri</th></tr>${s.atlas.map((a,i)=>`<tr data-i="${i}"><td>${a[0]}</td><td>${a[1]}–${a[2]} µm</td>${S.sample==='pond'?`<td>${a[3]}–${a[4]} µm/s</td>`:''}<td>${a[5]}</td></tr>`).join('')}</table>
-   <ul class="bio-goals">${s.goals.map(g=>`<li>${S.done[S.sample+':'+g[0]]?'✅':'⬜'} ${g[1]}</li>`).join('')}</ul>`;
+  $('bioInfo').innerHTML=`<ul class="bio-goals"><li class="h">🎯 Tantangan ${s.name}</li>${s.goals.map(g=>`<li>${S.done[S.sample+':'+g[0]]?'✅':'⬜'} ${g[1]}</li>`).join('')}</ul>
+   <details class="dock-more" id="bioGuide"${infoOpen?' open':''}><summary>📖 Cara menyiapkan & atlas ukuran</summary><p><b>${s.icon} Cara menyiapkan:</b> ${s.how}</p><p class="note">${s.note}</p>
+   <table class="bio-atlas" id="bioAtlas"><tr><th>Atlas</th><th>Ukuran</th>${S.sample==='pond'?'<th>Kecepatan</th>':''}<th>Ciri</th></tr>${s.atlas.map((a,i)=>`<tr data-i="${i}"><td>${a[0]}</td><td>${a[1]}–${a[2]} µm</td>${S.sample==='pond'?`<td>${a[3]}–${a[4]} µm/s</td>`:''}<td>${a[5]}</td></tr>`).join('')}</table></details>`;
+  $('bioGuide').ontoggle=e=>{infoOpen=e.target.open};
   $('bioStageT').textContent=s.icon+' '+s.name;}
  function goal(id){if(!S.sample)return;const k=S.sample+':'+id,s=SAMPLES[S.sample];if(S.done[k]||!s.goals.some(g=>g[0]===id))return;S.done[k]=1;save();renderInfo();toast('🏆 Tantangan selesai: '+s.goals.find(g=>g[0]===id)[1])}
  document.querySelectorAll('#bioSamples button').forEach(b=>b.onclick=()=>{S.sample=b.dataset.s;save();renderInfo();
@@ -211,11 +214,16 @@ function init(){
   for(let i=0;i<n;i++){const a=mask[i]?.012:.05;S.bg[i]+=a*(g[i]-S.bg[i])}
   // dilasi 1 piksel agar organisme tidak pecah
   const m2=new Uint8Array(n);for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const i=y*w+x;if(mask[i]||mask[i-1]||mask[i+1]||mask[i-w]||mask[i+w])m2[i]=1}
-  const blobs=[],stack=[];const minA=Math.max(5,n*.00006),maxA=n*.2;
-  for(let i=0;i<n;i++){if(m2[i]!==1)continue;let area=0,sx=0,sy=0,x0=w,y0=h,x1=0,y1=0;stack.push(i);m2[i]=2;
-   while(stack.length){const p=stack.pop(),x=p%w,y=(p/w)|0;area++;sx+=x;sy+=y;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;
+  const blobs=[],stack=[],pix=[];const minA=Math.max(5,n*.00006),maxA=n*.2,CS=8,gw=Math.ceil(w/CS),gh=Math.ceil(h/CS),big=new Uint8Array(gw*gh);
+  for(let i=0;i<n;i++){if(m2[i]!==1)continue;let area=0,sx=0,sy=0,x0=w,y0=h,x1=0,y1=0;stack.push(i);m2[i]=2;pix.length=0;
+   while(stack.length){const p=stack.pop(),x=p%w,y=(p/w)|0;area++;pix.push(p);sx+=x;sy+=y;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;
     if(x>0&&m2[p-1]===1){m2[p-1]=2;stack.push(p-1)}if(x<w-1&&m2[p+1]===1){m2[p+1]=2;stack.push(p+1)}if(y>0&&m2[p-w]===1){m2[p-w]=2;stack.push(p-w)}if(y<h-1&&m2[p+w]===1){m2[p+w]=2;stack.push(p+w)}}
-   if(area>=minA&&area<=maxA)blobs.push({x:sx/area,y:sy/area,len:Math.hypot(x1-x0+1,y1-y0+1)*.8,area})}
+   const bw=x1-x0+1,bh=y1-y0+1;
+   // struktur besar/memanjang (rambut, serat, tepi kaca) bukan organisme → tandai area-nya, abaikan juga serpihannya
+   if(area>maxA||Math.max(bw,bh)>=w*.3||(area>=minA*4&&area<=bw*bh*.12)){for(const q of pix)big[((q/w|0)/CS|0)*gw+((q%w)/CS|0)]=1;continue}
+   if(area>=minA)blobs.push({x:sx/area,y:sy/area,len:Math.hypot(bw,bh)*.8,area})}
+  if(blobs.length){const near=(x,y)=>{const cx=x/CS|0,cy=y/CS|0;for(let yy=Math.max(0,cy-1);yy<=Math.min(gh-1,cy+1);yy++)for(let xx=Math.max(0,cx-1);xx<=Math.min(gw-1,cx+1);xx++)if(big[yy*gw+xx])return true;return false};
+   for(let i=blobs.length-1;i>=0;i--)if(near(blobs[i].x,blobs[i].y))blobs.splice(i,1)}
   // pencocokan rakus (prediksi posisi = posisi + kecepatan)
   const maxD=w*.09,pairs=[];S.tracks.forEach((t,ti)=>{const px=t.x+t.vx*dt,py=t.y+t.vy*dt;blobs.forEach((b,bi)=>{const dd=Math.hypot(b.x-px,b.y-py);if(dd<maxD)pairs.push([dd,ti,bi])})});
   pairs.sort((a,b)=>a[0]-b[0]);const usedT=new Set(),usedB=new Set();
@@ -245,10 +253,11 @@ function init(){
   layerDirty=true;const d=sizeLayer(bc);bx.setTransform(d,0,0,d,0,0);bx.clearRect(0,0,box.clientWidth,box.clientHeight);const g=geom();
   if(S.tools.has('peak')&&pkImg){bx.save();bx.globalAlpha=.9;bx.imageSmoothingEnabled=true;bx.drawImage(PK,g.left,g.top,g.w,g.h);bx.restore()}
   if(S.tools.has('track')){const sx=g.w/TW,sy=sx;bx.lineWidth=2.5;bx.font='800 13px system-ui';
-   S.tracks.forEach(t=>{if(t.age<6||t.miss>3||(t.age>15&&!(t.speedPx>1.2)))return;const c='hsl('+t.hue+',95%,60%)';bx.strokeStyle=c;bx.beginPath();let first=true;t.pts.forEach(p=>{if(now-p[2]>3000)return;const x=g.left+p[0]*sx,y=g.top+p[1]*sy;first?bx.moveTo(x,y):bx.lineTo(x,y);first=false});bx.stroke();
-    const x=g.left+t.x*sx,y=g.top+t.y*sy,r=Math.max(10,(t.lenPx||8)*sx*.6);bx.beginPath();bx.arc(x,y,r,0,7);bx.stroke();
+   const vis=S.tracks.filter(t=>!(t.age<6||t.miss>3||(t.age>15&&!(t.speedPx>1.2)))),labeled=new Set(vis.slice().sort((a,b)=>b.age-a.age).slice(0,8));
+   vis.forEach(t=>{const c='hsl('+t.hue+',95%,60%)';bx.strokeStyle=c;bx.beginPath();let first=true;t.pts.forEach(p=>{if(now-p[2]>3000)return;const x=g.left+p[0]*sx,y=g.top+p[1]*sy;first?bx.moveTo(x,y):bx.lineTo(x,y);first=false});bx.stroke();
+    const x=g.left+t.x*sx,y=g.top+t.y*sy,r=Math.min(Math.max(10,(t.lenPx||8)*sx*.6),Math.max(28,g.w*.06));bx.beginPath();bx.arc(x,y,r,0,7);bx.stroke();
     const lab='#'+t.id+(t.um?' · '+fmtUm(t.um):'')+(t.ums?' · '+fmtUm(t.ums)+'/s':t.speedPx?' · '+Math.round(t.speedPx)+' px/s':'')+(t.guess!=null?' · '+SAMPLES.pond.atlas[t.guess][0]+'?':'');
-    const tw=bx.measureText(lab).width+12;bx.fillStyle='rgba(2,6,23,.75)';bx.fillRect(x+r+4,y-11,tw,22);bx.fillStyle=c;bx.fillText(lab,x+r+10,y+5)})}
+    if(!labeled.has(t))return;const tw=bx.measureText(lab).width+12;bx.fillStyle='rgba(2,6,23,.75)';bx.fillRect(x+r+4,y-11,tw,22);bx.fillStyle=c;bx.fillText(lab,x+r+10,y+5)})}
   if(S.tools.has('scale')&&M.pixelScale){const k=umPerScreenPx(),target=g.w*.18*k,steps=[10,20,50,100,200,500,1000,2000,5000];let um=steps[0];steps.forEach(s=>{if(s<=target)um=s});
    const px=um/k,x=g.left+24,y=g.top+g.h-30;bx.fillStyle='rgba(2,6,23,.6)';bx.fillRect(x-10,y-34,px+20,46);bx.fillStyle='#fff';bx.fillRect(x,y-4,px,8);bx.fillStyle='#0f172a';bx.fillRect(x+px/2,y-4,px/2,8);
    bx.strokeStyle='#fff';bx.strokeRect(x,y-4,px,8);bx.font='900 16px system-ui';bx.fillStyle='#fff';bx.textAlign='left';bx.fillText(fmtUm(um),x,y-12)}
