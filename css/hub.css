@@ -1,0 +1,141 @@
+/* PILAR Hub v0.8.0 · launcher-only stylesheet
+   Root Hub no longer carries the legacy Lorentz runtime UI. */
+:root{
+  --bg:#07101b;--panel:#0d1a2b;--line:#28415f;--text:#eef7ff;--muted:#9db2ca;
+  --cyan:#7eeeff;--lime:#c9ff42;--yellow:#ffd36c;--green:#63e3a0;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:16px/1.45 Inter,Segoe UI,system-ui,sans-serif}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.boot-lock{overflow:hidden}
+.pilar-boot{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:18px;background:#050913;color:#eef8ff;transition:opacity .42s ease,visibility .42s ease}
+.boot-grid{position:absolute;inset:0;opacity:.13;background-image:linear-gradient(rgba(94,233,255,.17) 1px,transparent 1px),linear-gradient(90deg,rgba(94,233,255,.17) 1px,transparent 1px);background-size:38px 38px;mask-image:linear-gradient(to bottom,#000,transparent 90%)}
+.boot-scan{position:absolute;inset:-55% 0 auto;height:52%;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(94,233,255,.07),transparent);animation:pilarScan 8s linear infinite}
+@keyframes pilarScan{to{transform:translateY(330%)}}
+.boot-card{position:relative;width:min(1020px,96vw);height:min(760px,92vh);min-height:0;overflow:hidden;border:1px solid #284561;border-radius:30px;background:linear-gradient(155deg,rgba(10,20,34,.96),rgba(5,9,17,.98));box-shadow:0 38px 120px #000b,inset 0 0 70px rgba(94,233,255,.035);display:grid;grid-template-rows:auto minmax(0,1fr) auto}
+.boot-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 26px;border-bottom:1px solid #1d344d;position:relative;z-index:2}
+.boot-brand{display:flex;align-items:center;gap:14px}
+.boot-brand strong{font-size:20px;font-weight:950;letter-spacing:.2em}
+.boot-brand sup{font-size:9px;color:#91a7bd;letter-spacing:0}
+.boot-brand small{display:block;color:#91a7bd;font-size:10px;letter-spacing:.09em;margin-top:2px}
+.boot-mark{display:flex;align-items:flex-end;gap:3px;height:34px}
+.boot-mark i{display:block;width:6px;border-radius:5px 5px 1px 1px;background:linear-gradient(#d7ff64,#5ee9ff);box-shadow:0 0 14px rgba(94,233,255,.28);animation:bootPulse 2.8s ease-in-out infinite}
+.boot-mark i:nth-child(1){height:18px}.boot-mark i:nth-child(2){height:27px;animation-delay:.12s}.boot-mark i:nth-child(3){height:34px;animation-delay:.24s}.boot-mark i:nth-child(4){height:23px;animation-delay:.36s}.boot-mark i:nth-child(5){height:30px;animation-delay:.48s}
+@keyframes bootPulse{50%{filter:brightness(1.35);transform:translateY(-2px)}}
+.boot-head-right{display:flex;align-items:center;gap:14px;margin-left:auto}
+.creator-id{font:700 9px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.035em;color:#7890a8;opacity:.78;padding:5px 8px;border:1px solid #213b55;border-radius:999px;background:#06111c}
+.boot-tools{display:flex;gap:6px;align-items:center;flex:0 0 auto}
+.boot-fx-btn,.boot-fullscreen-btn{min-height:38px;border:1px solid #294861;border-radius:12px;background:#081725;color:#dceafb;cursor:pointer}
+.boot-fx-btn{padding:0 10px;font:800 12px/1 Inter,system-ui;white-space:nowrap}
+.boot-fullscreen-btn{width:38px;height:38px;display:grid;place-items:center;font:900 18px/1 system-ui}
+.boot-fx-btn:hover,.boot-fullscreen-btn:hover,.boot-fullscreen-btn[aria-pressed="true"]{border-color:#5ee9ff;color:#5ee9ff;background:rgba(94,233,255,.1)}
+.boot-app-meta{text-align:right}.boot-app-meta b{font-size:13px}.boot-app-meta span{display:block;color:#91a7bd;font-size:11px;margin-top:3px}
+.boot-main{display:grid;grid-template-columns:1.06fr .94fr;min-height:0;max-height:none;overflow:hidden;position:relative;z-index:2}
+.boot-copy,.boot-actions{min-height:0;overflow:auto;scrollbar-width:thin;scrollbar-color:#29415f transparent;scrollbar-gutter:stable}
+.boot-copy{display:flex;flex-direction:column;justify-content:flex-start;padding:32px 38px 24px}
+.boot-kicker{font-size:11px;letter-spacing:.17em;color:#5ee9ff;font-weight:900}
+.boot-copy h1{font-size:clamp(38px,5vw,68px);line-height:.96;margin:10px 0 16px;letter-spacing:-.045em}
+.boot-copy h1 span{background:linear-gradient(90deg,#c9ff42,#5ee9ff,#ff5ea8);background-size:200% 100%;color:transparent;background-clip:text;-webkit-background-clip:text;animation:bootShine 8s ease-in-out infinite}
+@keyframes bootShine{0%,100%{background-position:0 0}50%{background-position:200% 0}}
+.boot-copy>p{max-width:590px;color:#b4c3d2;line-height:1.65;margin:0;font-size:15px}
+.boot-philosophy{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:25px}
+.boot-philosophy span{font-size:10px;font-weight:850;letter-spacing:.06em;color:#879cb2;padding:7px 10px;border:1px solid #29415f;border-radius:999px;background:#07111d}
+.boot-device{margin-top:22px;padding-bottom:4px}
+.boot-device-title{display:block;font-size:10px;color:#728aa2;text-transform:uppercase;letter-spacing:.13em;margin-bottom:8px}
+.boot-caps{display:flex;flex-wrap:wrap;gap:6px;padding-bottom:2px}
+.boot-cap{font-size:10px;padding:5px 8px;border:1px solid #223d57;border-radius:999px;color:#a9bcd0}
+.boot-cap.ok{color:#aaf5c8;border-color:#275e45}.boot-cap.warn{color:#ffd98a;border-color:#6d5424}
+.boot-actions{display:flex;flex-direction:column;justify-content:flex-start;padding:32px 30px 24px;border-left:1px solid #1d344d;background:rgba(2,8,14,.34)}
+.boot-actions [hidden]{display:none!important}
+.boot-mode-title{font-size:11px;letter-spacing:.13em;color:#91a7bd;font-weight:850;text-transform:uppercase;margin-bottom:12px}
+.launch-title{margin-top:2px}
+.boot-mode{width:100%;display:grid;grid-template-columns:46px 1fr auto;align-items:center;gap:12px;text-align:left;padding:15px 16px;margin-bottom:11px;border:1px solid #2a4663;border-radius:16px;background:#091626;color:#eef8ff;transition:.18s ease}
+.boot-mode:hover:not(:disabled){transform:translateY(-1px);border-color:#5ee9ff;box-shadow:0 10px 28px #0005}
+.boot-mode.recommended{border-color:#487230;background:linear-gradient(90deg,rgba(201,255,66,.09),#091626)}
+.boot-mode:disabled{opacity:.55;cursor:wait}
+.boot-mode-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:#0d2134;font-size:21px}
+.boot-mode strong{display:block;font-size:14px}.boot-mode small{display:block;color:#91a7bd;font-size:11px;line-height:1.4;margin-top:3px}
+.boot-mode em{font-style:normal;font-size:9px;font-weight:900;letter-spacing:.06em;padding:5px 7px;border-radius:999px;background:#1a2e1b;color:#c9ff42;border:1px solid #456335}
+.boot-privacy{font-size:10px;line-height:1.5;color:#728aa2;margin:2px 0 10px}
+.inspector-note{min-height:31px;padding:1px 2px 0}
+.app-inspector-card{position:relative;overflow:hidden;margin:0 0 18px;padding:18px;border:1px solid #284763;border-radius:19px;background:radial-gradient(circle at 12% 15%,rgba(94,233,255,.10),transparent 34%),linear-gradient(145deg,#0b1b2b,#07111d);box-shadow:inset 0 1px rgba(255,255,255,.025)}
+.app-inspector-card::after{content:"";position:absolute;width:150px;height:150px;right:-72px;bottom:-88px;border:1px solid rgba(201,255,66,.16);border-radius:50%;box-shadow:0 0 55px rgba(94,233,255,.07);pointer-events:none}
+.app-inspector-hero{position:relative;z-index:1;display:grid;grid-template-columns:76px minmax(0,1fr);gap:15px;align-items:center}
+.app-inspector-icon{width:76px;height:76px;display:grid;place-items:center;border:1px solid #2d506c;border-radius:18px;background:linear-gradient(145deg,#112a40,#091725);font-size:36px;box-shadow:inset 0 0 28px rgba(94,233,255,.04)}
+.app-inspector-copy{min-width:0}.app-inspector-category{display:block;margin-bottom:4px;color:#5ee9ff;font-size:9px;font-weight:900;letter-spacing:.13em}
+.app-inspector-copy h2{margin:0;font-size:clamp(21px,2.2vw,30px);line-height:1.05;letter-spacing:-.025em}
+.app-inspector-copy p{margin:7px 0 0;color:#9eb2c5;font-size:12px;line-height:1.45}
+.app-inspector-meta{position:relative;z-index:1;display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+.app-inspector-meta span{padding:5px 8px;border:1px solid #294761;border-radius:999px;color:#9eb4c8;background:#071421;font-size:9px;font-weight:800;letter-spacing:.05em}
+.app-inspector-meta span:last-child{color:#c9ff42;border-color:#466236}
+.pilar-library-wrap{margin-top:20px}.pilar-library-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:8px}
+.pilar-library-title span{font-size:10px;color:#91a7bd;text-transform:uppercase;font-weight:900;letter-spacing:.13em}.pilar-library-title small{font-size:9px;color:#627c96}
+.pilar-library{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;align-content:start}
+.pilar-app-card{display:grid;grid-template-columns:34px minmax(0,1fr) max-content;gap:9px;align-items:center;width:100%;min-width:0;overflow:hidden;text-align:left;padding:9px 10px;min-height:58px;border:1px solid #263f59;border-radius:12px;background:#071321;color:#e8f3fd;transition:border-color .16s ease,background .16s ease,transform .16s ease}
+.pilar-app-card>span:nth-child(2){min-width:0;overflow:hidden}.pilar-app-card:not(:disabled):hover{border-color:#5ee9ff;transform:translateY(-1px)}
+.pilar-app-card.current{border-color:#5d7d38;background:linear-gradient(90deg,rgba(201,255,66,.09),rgba(94,233,255,.025),#071321);box-shadow:inset 3px 0 0 rgba(201,255,66,.55)}
+.pilar-app-card.current em{color:#07111d;background:#c9ff42;border-color:#c9ff42}.pilar-app-card.coming{opacity:.62}.pilar-app-card.coming:hover{opacity:.82}
+.pilar-app-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#0d2134;font-size:17px}
+.pilar-app-card strong{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+.pilar-app-card small{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;color:#7f97ae;font-size:9px;margin-top:2px}
+.pilar-app-card .app-subtitle{color:#a8bfd4;line-height:1.25;white-space:nowrap}
+.pilar-app-card em{justify-self:end;font-style:normal;font-size:8px;font-weight:900;white-space:nowrap;color:#c9ff42;border:1px solid #456335;border-radius:999px;padding:4px 5px}
+.boot-foot{display:flex;justify-content:space-between;gap:12px;padding:10px 18px;border-top:1px solid #13283d;background:#050b13dc;color:#637c95;font-size:10px;z-index:3;min-height:38px;align-items:center;flex-wrap:wrap}
+.boot-foot span:last-child{color:#88a9c7;padding-right:58px}
+.primary{background:#e88b4a;border-color:#e88b4a;color:#fff;font-weight:800}
+
+/* Vision Challenge, created lazily by input/vision-adapter.js */
+.vision-gate{position:fixed;inset:0;z-index:1100;display:grid;place-items:center;padding:18px;background:rgba(4,8,14,.76);backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:opacity .24s ease}
+.vision-gate.show{opacity:1;pointer-events:auto}.vision-gate[hidden]{display:none}
+.vision-gate-card{width:min(1080px,96vw);border:1px solid #284561;border-radius:28px;overflow:hidden;background:linear-gradient(160deg,rgba(8,17,29,.98),rgba(4,9,17,.98));box-shadow:0 34px 100px rgba(0,0,0,.45)}
+.vision-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:22px 24px 16px;border-bottom:1px solid #173149}
+.vision-kicker{font-size:11px;letter-spacing:.15em;color:var(--cyan);font-weight:900}.vision-head h2{margin:7px 0 8px;font-size:clamp(28px,4vw,42px);line-height:1.02}
+.vision-head h2 span{background:linear-gradient(90deg,#c9ff42,#5ee9ff);color:transparent;background-clip:text;-webkit-background-clip:text}.vision-head p{margin:0;color:var(--muted);max-width:620px}
+.vision-x{min-width:42px;min-height:42px;border-radius:12px;background:#0a1727;border:1px solid #33506f;color:#d9e8f7}
+.vision-layout{display:grid;grid-template-columns:1.18fr .82fr;min-height:540px}.vision-camera-wrap{position:relative;background:radial-gradient(circle at 50% 35%,rgba(94,233,255,.12),transparent 48%),#02070d;min-height:420px;overflow:hidden}
+.vision-video,.vision-canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}.vision-canvas{pointer-events:none}
+.vision-frame-hint{position:absolute;left:12px;bottom:12px;padding:8px 10px;border-radius:999px;border:1px solid #355274;background:#071321db;color:#cfe1f2;font-size:11px}
+.vision-side{padding:22px 22px 20px;border-left:1px solid #173149;display:flex;flex-direction:column;gap:16px;background:rgba(3,10,17,.6)}
+.vision-mode-badge{align-self:flex-start;padding:6px 10px;border-radius:999px;border:1px solid #33506f;background:#0a1727;color:#c9ff42;font-size:11px;font-weight:800}
+.vision-status-box,.vision-meter{padding:14px;border:1px solid #223b55;border-radius:14px;background:#06111dcc}.vision-status-box b{display:block;font-size:18px;margin-bottom:6px}.vision-status-box span{font-size:13px;color:#98afc7;line-height:1.5}
+.vision-meter-top{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#cbd9e7}.vision-meter-top b{color:#c9ff42}
+.vision-meter-bar{height:10px;margin-top:10px;border:1px solid #29415f;border-radius:99px;background:#132437;overflow:hidden}.vision-meter-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5ee9ff,#c9ff42);border-radius:99px;box-shadow:0 0 16px rgba(94,233,255,.45);transition:width .12s linear}
+.vision-guide-list{display:grid;gap:10px}.vision-guide-list div{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}.vision-guide-list b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#102132;border:1px solid #33506f;color:#c9ff42}.vision-guide-list span{font-size:13px;color:#cbd9e7;line-height:1.45}
+.vision-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto}.vision-actions .primary{grid-column:1/-1}.vision-actions button{min-height:44px;border-radius:12px}
+
+/* Fullscreen app continuity */
+.pilar-fullscreen-app-host{position:fixed;inset:0;z-index:1250;background:#050913;overflow:hidden}
+.pilar-fullscreen-app-frame{display:block;width:100%;height:100%;border:0;background:#050913}
+body.pilar-app-host-open{overflow:hidden}
+body.pilar-app-host-open .pilar-boot{visibility:hidden}
+body.pilar-app-host-open .pilar-boot *{animation-play-state:paused!important}
+
+@media(max-height:700px) and (min-width:761px){
+  .boot-card{height:94vh}.boot-copy,.boot-actions{padding-top:22px;padding-bottom:18px}.pilar-library-wrap{margin-top:14px}.boot-device{margin-top:16px}
+}
+@media(max-width:1000px) and (min-width:761px){
+  .app-inspector-hero{grid-template-columns:58px minmax(0,1fr);gap:11px}.app-inspector-icon{width:58px;height:58px;border-radius:14px;font-size:28px}.app-inspector-card{padding:14px}
+}
+@media(min-width:1100px) and (min-height:620px){
+  .pilar-boot{padding:14px}.boot-card{width:min(1780px,calc(100vw - 28px));height:min(1040px,calc(100dvh - 28px));max-width:none;border-radius:26px}
+  .boot-head{padding:clamp(14px,1.15vw,24px) clamp(20px,1.8vw,34px)}.boot-brand{gap:16px}.boot-brand strong{font-size:clamp(20px,1.35vw,27px)}.boot-brand small{font-size:clamp(9px,.7vw,12px)}.boot-mark{height:40px}.boot-mark i{width:7px}.boot-head-right{gap:18px}.creator-id{font-size:clamp(8px,.58vw,10px);padding:7px 10px}.boot-app-meta b{font-size:clamp(13px,.8vw,16px)}.boot-app-meta span{font-size:clamp(10px,.65vw,12px)}
+  .boot-main{grid-template-columns:minmax(0,1.48fr) minmax(370px,.72fr)}.boot-copy{padding:clamp(22px,2vw,38px) clamp(24px,2.2vw,44px) clamp(18px,1.6vw,30px)}.boot-actions{padding:clamp(22px,2vw,38px) clamp(22px,1.8vw,34px)}
+  .boot-kicker{font-size:clamp(10px,.72vw,13px)}.boot-copy h1{font-size:clamp(46px,4.1vw,78px);margin:8px 0 12px}.boot-copy>p{max-width:760px;font-size:clamp(14px,.96vw,18px);line-height:1.55}.boot-philosophy{margin-top:16px;gap:7px}.boot-philosophy span{font-size:clamp(9px,.62vw,11px);padding:7px 11px}
+  .pilar-library-wrap{margin-top:16px}.pilar-library-title{margin-bottom:10px}.pilar-library{grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(8px,.7vw,13px)}.pilar-app-card{grid-template-columns:48px minmax(0,1fr) max-content;gap:11px;min-height:78px;padding:11px 12px;border-radius:15px}.pilar-app-icon{width:48px;height:48px;border-radius:13px;font-size:23px}.pilar-app-card strong{font-size:clamp(12px,.77vw,15px)}.pilar-app-card .app-subtitle{font-size:clamp(9px,.58vw,11px)}.pilar-app-card small:not(.app-subtitle){font-size:clamp(8px,.54vw,10px)}.pilar-app-card em{font-size:clamp(8px,.5vw,9px);padding:5px 7px}
+  .boot-device{margin-top:15px}.boot-mode-title{font-size:clamp(10px,.68vw,12px);margin-bottom:10px}.app-inspector-card{margin-bottom:14px;padding:clamp(15px,1.15vw,21px);border-radius:20px}.app-inspector-hero{grid-template-columns:82px minmax(0,1fr);gap:16px}.app-inspector-icon{width:82px;height:82px;font-size:39px}.app-inspector-copy h2{font-size:clamp(25px,1.7vw,34px)}
+  .boot-mode{grid-template-columns:54px 1fr auto;gap:13px;min-height:82px;padding:13px 15px;border-radius:17px;margin-bottom:10px}.boot-mode-icon{width:52px;height:52px;font-size:25px}.boot-mode strong{font-size:clamp(14px,.9vw,17px)}.boot-mode small{font-size:clamp(10px,.65vw,12px)}
+}
+@media(min-width:900px) and (max-width:1099px){
+  .boot-card{width:calc(100vw - 22px);height:calc(100dvh - 22px);max-width:none}.boot-main{grid-template-columns:minmax(0,1.22fr) minmax(340px,.78fr)}.pilar-library{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:900px){.vision-layout{grid-template-columns:1fr}.vision-side{border-left:0;border-top:1px solid #173149}.vision-camera-wrap{min-height:340px}}
+@media(max-width:760px){
+  .pilar-boot{padding:0;place-items:start stretch;overflow:auto}.boot-card{width:100%;height:auto;min-height:100dvh;border-radius:0;border-left:0;border-right:0;grid-template-rows:auto auto auto;overflow:visible}.boot-main{grid-template-columns:1fr;overflow:visible}.boot-copy,.boot-actions{overflow:visible;scrollbar-gutter:auto}
+  .boot-head{padding:13px 14px;gap:10px}.boot-brand{gap:10px;min-width:0}.boot-brand strong{font-size:17px}.boot-brand small{font-size:8px;letter-spacing:.055em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:62vw}.boot-mark{height:29px}.boot-mark i{width:5px}.creator-id{display:none}.boot-head-right{gap:8px}.boot-app-meta{display:none}
+  .boot-copy{padding:22px 16px 18px}.boot-kicker{font-size:10px}.boot-copy h1{font-size:clamp(38px,12.2vw,52px);margin:8px 0 12px}.boot-copy>p{font-size:14px;line-height:1.55}.boot-philosophy{margin-top:16px;gap:5px}.boot-philosophy span{font-size:9px;padding:6px 8px}
+  .pilar-library-wrap{margin-top:18px}.pilar-library{grid-template-columns:1fr;gap:9px}.pilar-app-card{grid-template-columns:46px minmax(0,1fr) max-content;gap:11px;min-height:72px;padding:11px 12px;border-radius:14px}.pilar-app-icon{width:46px;height:46px;border-radius:12px;font-size:22px}.pilar-app-card strong{font-size:14px}.pilar-app-card .app-subtitle{font-size:10px}.pilar-app-card small:not(.app-subtitle){font-size:9px}.pilar-app-card em{font-size:8px;padding:5px 6px}
+  .boot-device{margin-top:17px}.boot-actions{padding:20px 16px 26px;border-left:0;border-top:1px solid #1d344d}.app-inspector-card{padding:14px;margin-bottom:14px}.app-inspector-hero{grid-template-columns:60px minmax(0,1fr);gap:12px}.app-inspector-icon{width:60px;height:60px;font-size:29px}.app-inspector-copy h2{font-size:24px}.app-inspector-copy p{font-size:11px}.boot-mode{grid-template-columns:48px 1fr auto;min-height:76px;padding:12px}.boot-mode-icon{width:46px;height:46px}.boot-foot{padding:11px 14px;font-size:9px}.boot-foot span:last-child{padding-right:0}
+}
+@supports (padding:max(0px)){.boot-foot{padding-bottom:max(9px,env(safe-area-inset-bottom))}}
+@media(prefers-reduced-motion:reduce){.boot-scan,.boot-mark i,.boot-copy h1 span{animation:none!important}.pilar-boot,.boot-mode,.vision-gate,.vision-meter-bar i{transition:none!important}}
