@@ -58,7 +58,8 @@
     bioweb:'Jejaring hidup Gunung Ciremai 3D dengan skenario dan cincin waktu.',
     'hunter-ball':'Duel gerak parabola untuk dua tim dengan kontrol sentuh.',
     'frost-snake':'Duel numerasi dua tim berbasis touch/multitouch.',
-    'baterai-lab':'Petualangan baterai lithium-ion dengan tema Ceria dan eksperimen interaktif.'
+    'baterai-lab':'Petualangan baterai lithium-ion dengan tema Ceria dan eksperimen interaktif.',
+    'jejak-kata':'Literasi: baca buku cerita, temukan kata kunci, lalu hubungkan ke topik besar dengan kabel node. Ada topik jebakan dan mode tanding 2 tim.'
   };
 
   function apps(){return Array.isArray(window.PILAR_APP_REGISTRY)?window.PILAR_APP_REGISTRY:[]}

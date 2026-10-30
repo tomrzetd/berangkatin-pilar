@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f9ff">
+<meta name="description" content="Jejak Kata · Peta Makna — baca buku cerita, temukan kata kunci, lalu hubungkan ke topik besar dengan kabel ala papan node. Awas topik jebakan! Mode sendiri & tanding 2 tim.">
+<title>PILAR™ · Jejak Kata · Peta Makna</title>
+<link rel="stylesheet" href="../../css/pilar-ceria.css">
+<script src="../../core/device-profile.js"></script>
+<style>
+.wrap{max-width:1920px;margin:auto;padding:.7rem .9rem 1.2rem}
+.top{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin-bottom:.6rem}
+.top h1{margin:0;font-size:clamp(1.25rem,2.2vw,2rem);line-height:1.1}
+.top h1 small{display:block;font:800 .8rem var(--f-body);color:var(--ink2)}
+.top .c-seg{align-items:center}
+.banner{display:none;position:fixed;z-index:30;top:.6rem;left:50%;transform:translateX(-50%);width:min(760px,92vw);text-align:center;margin:0;padding:.6rem;border:var(--bw) solid var(--ink);border-radius:var(--r);background:var(--yellow);box-shadow:var(--shadow);font:600 1.3rem var(--f-head);animation:c-pop .45s}
+.banner.on{display:block}
+
+/* ---------- start ---------- */
+.start{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:1rem;background:rgba(23,36,58,.35)}
+.start[hidden]{display:none}
+.start .c-card{max-width:760px;width:100%;text-align:center;max-height:94vh;overflow:auto}
+.start .kiko-big svg{width:7.5rem;height:auto}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:1rem 0;text-align:left}
+.steps div{border:2px solid var(--ink);border-radius:16px;padding:.6rem .7rem;font-weight:700;font-size:.92rem;background:var(--paper)}
+.steps b{display:block;font-family:var(--f-head);font-size:1.05rem}
+.steps div:nth-child(1){background:#fff7d5}.steps div:nth-child(2){background:#eaf7ff}.steps div:nth-child(3){background:#ffeef5}
+
+/* ---------- arena & tim ---------- */
+.arena{display:grid;gap:.9rem}
+.arena.duel{grid-template-columns:1fr 1fr}
+.team{display:grid;gap:.6rem;min-width:0;position:relative}
+.arena.solo .team{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);grid-template-rows:auto auto minmax(0,1fr);grid-template-areas:"head head" "bub board" "book board"}
+.arena.duel .team{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,.95fr) minmax(0,1.05fr);grid-template-areas:"head" "bub" "book" "board"}
+@media(min-width:900px){.team{height:calc(100dvh - 5.6rem);min-height:600px}}
+.t-head{grid-area:head;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.45rem .6rem;border:var(--bw) solid var(--ink);border-radius:18px;background:#fff;box-shadow:var(--shadow-soft)}
+.t-head .name{font:600 1.15rem var(--f-head);margin-right:auto}
+.team[data-side="L"] .t-head{background:var(--pink)}.team[data-side="R"] .t-head{background:var(--blue)}
+.pill{display:inline-flex;align-items:center;gap:.3em;padding:.15em .65em;border:2px solid var(--ink);border-radius:999px;background:#fff;font-weight:900;font-size:.92rem}
+.t-bub{grid-area:bub}
+.t-bub .c-guide svg{width:3.4rem}
+.t-bub .c-bubble{font-size:.95rem;padding:.5rem .75rem}
+.t-bub .c-bubble::before{top:16px}.t-bub .c-bubble::after{top:18px}
+
+/* ---------- buku cerita ---------- */
+.book{grid-area:book;overflow:auto;overscroll-behavior:contain;border:var(--bw) solid var(--ink);border-radius:var(--r);background:#fffdf7;box-shadow:var(--shadow-soft);padding:0;scroll-behavior:smooth}
+.cover{padding:1rem 1.1rem .4rem;text-align:center}
+.cover h2{margin:0;font-size:1.6rem}.cover p{margin:.2rem 0 0;font-weight:800;color:var(--ink2);font-size:.9rem}
+.pg{padding:.4rem 1.1rem 1rem;border-top:2px dashed #e4d9bd}
+.pg:first-of-type{border-top:0}
+.art{position:relative;height:7.2rem;margin:.6rem 0 .5rem;border:var(--bw) solid var(--ink);border-radius:18px;overflow:hidden;display:flex;align-items:flex-end;justify-content:space-around;padding:0 1rem .4rem;font-size:3.1rem;line-height:1}
+.art::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.1rem;background:#0000000f}
+.art span{position:relative;z-index:1;filter:drop-shadow(2px 3px 0 #17243a33)}
+.art .no{position:absolute;left:.6rem;top:.5rem;font:600 .9rem var(--f-head);background:#fff;border:2px solid var(--ink);border-radius:10px;padding:0 .5em}
+.pg h3{margin:.2rem 0 .3rem;font-size:1.2rem}
+.pg p{margin:.35rem 0;font-size:1.1rem;line-height:1.85}
+.w{cursor:pointer;border-radius:5px;transition:background .15s}
+@media(hover:hover){.w:hover{background:#ffe27c66}}
+.w.wrong{animation:shake .4s;background:#ffc6c6}
+@keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.w{display:inline-block}
+.kw.found{background:linear-gradient(transparent 12%,#ffe27c 12%,#ffe27c 88%,transparent 88%);border-radius:4px;box-shadow:0 0 0 2px #ffe27c;font-weight:800}
+.kw.found .w{cursor:default}
+.kw.miss{text-decoration:underline wavy var(--red-d) 2px;text-underline-offset:5px;background:#ffeef3}
+.pg.flash{animation:flash 1.6s}
+@keyframes flash{0%,100%{background:transparent}30%,70%{background:#fff3b0}}
+.end{padding:1rem 1.1rem 1.4rem;text-align:center;font-weight:800;color:var(--ink2)}
+
+/* ---------- papan node ---------- */
+.board{grid-area:board;position:relative;overflow:hidden;border:var(--bw) solid var(--ink);border-radius:var(--r);box-shadow:var(--shadow-soft);touch-action:none;user-select:none;-webkit-user-select:none;container-type:inline-size;min-height:420px;
+ background:#22324a;background-image:radial-gradient(#ffffff22 1.4px,transparent 1.4px);background-size:22px 22px}
+.board .lbl{position:absolute;top:.45rem;font:600 .78rem var(--f-head);color:#cfe3ff;letter-spacing:.06em;text-transform:uppercase;pointer-events:none}
+.board .lbl.l{left:.7rem}.board .lbl.r{right:.7rem}
+.board .empty{position:absolute;left:.7rem;top:2.2rem;width:min(13rem,40cqw);color:#cfe3ffaa;font-weight:700;font-size:.85rem;pointer-events:none}
+.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.wire-bg{fill:none;stroke:#0d1626;stroke-width:9;stroke-linecap:round}
+.wire{fill:none;stroke:#ffe27c;stroke-width:4.5;stroke-linecap:round;stroke-dasharray:12 9;animation:flow .9s linear infinite}
+.wire.temp{stroke:#a7e7ff;stroke-dasharray:6 7}
+.wire.ok{stroke:#6ee08f}.wire.bad{stroke:#ff6b85;animation:none;stroke-dasharray:4 7}.wire.trap{stroke:#ffa24c;animation:none;stroke-dasharray:4 7}
+@keyframes flow{to{stroke-dashoffset:-21}}
+html[data-fx="lite"] .wire{animation-duration:1.8s}
+.node{position:absolute;width:min(13rem,40cqw);border:var(--bw) solid var(--ink);border-radius:14px;background:#fff;box-shadow:3px 4px 0 #0d1626;cursor:grab;touch-action:none}
+.node .nh{font:600 .68rem var(--f-head);letter-spacing:.08em;text-transform:uppercase;padding:.22rem .6rem;border-bottom:2px solid var(--ink);border-radius:11px 11px 0 0}
+.node .nb{padding:.35rem .6rem .45rem;font:600 1rem/1.2 var(--f-head)}
+.node.word .nh{background:var(--yellow)}
+.node.topic .nh{background:var(--purple)}
+.node.word.sel{outline:4px solid #a7e7ff;outline-offset:2px}
+.node.topic.hot{outline:4px solid #a7e7ff;outline-offset:2px;transform:scale(1.03)}
+.node.new{animation:c-pop .45s}
+.port{position:absolute;top:50%;width:26px;height:26px;margin-top:-13px;border:var(--bw) solid var(--ink);border-radius:50%;background:#ffe27c;cursor:crosshair}
+.port::after{content:"";position:absolute;inset:-14px}
+.port.out{right:-15px}.port.in{left:-15px;background:#e0caff;pointer-events:none}
+.node.linked .port.out{background:#6ee08f}
+.evb{display:inline-flex;margin:0 .6rem .45rem;padding:.05em .55em;border:2px solid var(--ink);border-radius:9px;background:#f4f8ff;font:800 .74rem var(--f-body);cursor:pointer;color:var(--ink)}
+.evb.set{background:#c9f5c4}
+.cut{position:absolute;top:-11px;right:16px;width:24px;height:24px;border:2px solid var(--ink);border-radius:50%;background:#fff;font:900 .8rem/1 var(--f-body);cursor:pointer;padding:0;color:var(--ink)}
+.node .res{display:none;padding:.3rem .6rem .45rem;font-size:.8rem;font-weight:700;line-height:1.35;border-top:2px dashed #c9d3e0}
+.node.trap{background:#ffe4cc}.node.trap .nh{background:var(--orange)}.node.trap .res{display:block}
+.node.word.ok{background:#dcf9df}.node.word.bad{background:#ffe0e6}
+.node .mark{position:absolute;right:.4rem;top:.15rem;font-size:.95rem}
+.lockveil{position:absolute;inset:0;display:grid;place-items:center;background:#22324acc;color:#fff;font:600 1.3rem var(--f-head);text-align:center;padding:1rem;z-index:5}
+.lockveil[hidden]{display:none}
+
+/* ---------- modal dalam tim ---------- */
+.t-modal{position:absolute;inset:0;z-index:20;display:grid;place-items:center;padding:.8rem;background:rgba(23,36,58,.42);border-radius:var(--r)}
+.t-modal[hidden]{display:none}
+.t-modal .c-card{width:min(640px,100%);max-height:100%;overflow:auto}
+.t-modal h3{margin:.1rem 0 .5rem;font-size:1.25rem}
+.t-modal .c-opt{font-family:var(--f-body);font-weight:700;font-size:1rem;line-height:1.45;min-height:auto;padding:.6em .9em}
+.res-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.4rem;margin:.6rem 0}
+.res-grid div{border:2px solid var(--ink);border-radius:12px;padding:.35rem .6rem;font-weight:800;background:var(--paper);display:flex;justify-content:space-between;gap:.5rem}
+.big-score{font:600 2.6rem var(--f-head);text-align:center;margin:.2rem 0}
+.trap-list{margin:.3rem 0 .6rem;padding-left:1.1rem;font-weight:700}
+
+@media(max-width:899px){
+ .arena.duel{grid-template-columns:1fr}
+ .arena.solo .team,.arena.duel .team{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "bub" "book" "board";grid-template-rows:auto}
+ .book{max-height:60vh}.board{height:34rem}
+ .steps{grid-template-columns:1fr}
+}
+html[data-device="ifp"] .pg p{font-size:1.18rem}
+.board.compact .node .nh{display:none}
+.board.compact .node{border-left-width:10px}.board.compact .node.word{border-left-color:#e8b923}.board.compact .node.topic{border-left-color:#9b6cf0}
+.board.compact .node .nb{padding:.4rem .6rem;font-size:.95rem}
+.board.compact .evb{margin:0 .5rem .35rem}
+.arena.duel .team{grid-template-rows:auto auto minmax(0,.8fr) minmax(0,1.2fr)}
+.node{width:min(13rem,28cqw)}
+</style>
+</head>
+<body class="ceria">
+<div class="wrap">
+ <div class="top">
+  <a class="c-btn sm" href="../../" title="Kembali ke PILAR Hub">⬅ Hub</a>
+  <h1>🔖 Jejak Kata · Peta Makna<small>Baca → temukan kata kunci → hubungkan ke topik besar. Awas topik jebakan!</small></h1>
+  <div class="c-seg">
+   <button class="c-btn sm" id="btnMode" type="button">🎮 Ganti mode</button>
+  </div>
+ </div>
+ <div class="banner" id="banner"></div>
+ <main class="arena solo" id="arena"></main>
+</div>
+
+<div class="start" id="start">
+ <div class="c-card">
+  <div class="kiko-big" id="kikoBig"></div>
+  <h2 class="c-title" style="font-size:clamp(1.6rem,3.6vw,2.6rem)">Jejak <span class="hl">Kata</span></h2>
+  <p class="c-sub">Petualangan membaca bersama Kiko si burung hantu</p>
+  <div class="steps">
+   <div><b>1 · Baca 📖</b>Gulir buku cerita sampai habis. Pelan-pelan saja, nikmati ceritanya.</div>
+   <div><b>2 · Temukan 🔍</b>Ketuk kata yang paling penting. Ada <b style="display:inline">8 kata kunci</b> tersembunyi!</div>
+   <div><b>3 · Hubungkan 🔌</b>Tarik kabel dari kata ke topik besar, lalu pilih kalimat buktinya. Hati-hati ada 2 topik jebakan.</div>
+  </div>
+  <div class="c-seg" style="justify-content:center">
+   <button class="c-btn go" id="goSolo" type="button">🧑 Main sendiri</button>
+   <button class="c-btn alt" id="goDuel" type="button">⚔️ Tanding 2 tim</button>
+  </div>
+ </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+/* ================= CERITA (orisinal untuk PILAR) =================
+   [[frasa|k1]] = kata kunci · ^k1 = kalimat ini bukti untuk k1 */
+const STORY={title:'Celengan Bambu Rani',sub:'Sebuah cerita tentang mimpi, uang jajan, dan sepeda biru',
+ pages:[
+ {t:'Mimpi Sepeda Biru',bg:'#a7e7ff',art:['🏫','🚶‍♀️','🚲'],p:[
+  'Rani duduk di kelas 8. Setiap pagi ia berjalan kaki 4 kilometer ke sekolah. Di toko Pak Darto ada sepeda bekas berwarna biru seharga Rp600.000.',
+  '“Kalau punya sepeda, aku tidak akan terlambat lagi,” pikir Rani. Masalahnya, uang jajan Rani hanya Rp10.000 sehari.']},
+ {t:'Celengan Bambu',bg:'#b8f3b2',art:['🎋','📒','✏️'],p:[
+  'Ayah memberi Rani sepotong bambu, lalu melubanginya menjadi celengan. Malam itu Rani membuat [[catatan keuangan|k1]] di sebuah buku kecil.',
+  'Ia menulis dua kolom: [[kebutuhan dan keinginan|k2]]. Ongkos fotokopi tugas masuk kolom kebutuhan, jajan boba masuk kolom keinginan^k2. Rani lalu memutuskan menyisihkan Rp4.000 setiap hari^k1.']},
+ {t:'Godaan di Gerbang Sekolah',bg:'#ffe27c',art:['🧋','🙅‍♀️','📅'],p:[
+  'Sepulang sekolah, teman-teman mengajak Rani membeli boba. Rani menggeleng sambil tersenyum, “Aku lagi nabung.”',
+  'Hari demi hari ia menabung [[sedikit demi sedikit|k3]]. Rp4.000 memang kecil, tetapi lama-lama menjadi bukit^k3. Rani [[tidak pernah bolos|k4]] memasukkannya, bahkan saat hujan dan saat sedang malas^k4. Setiap Minggu ia mewarnai satu kotak di kalender.']},
+ {t:'Ide dari Kain Perca',bg:'#ffbed8',art:['🧵','🐟','🔑'],p:[
+  'Di rumah, Ibu punya sekantong [[kain perca|k5]] sisa menjahit. Rani menjahitnya menjadi gantungan kunci berbentuk ikan untuk dijual^k5.',
+  'Ia memakai Rp20.000 tabungannya sebagai [[modal|k6]] untuk membeli benang dan ring kunci^k6. Satu gantungan dijual Rp5.000, dan dalam sebulan laku 40 buah. Uang hasil jualan ikut masuk celengan.']},
+ {t:'Dua Godaan Besar',bg:'#e0caff',art:['🎡','🎟️','💸'],p:[
+  'Suatu sore ada pasar malam. Seorang teman berbisik, “Beli kupon undian saja, siapa tahu hadiahnya sepeda!” Rani menghitung: ada ribuan kupon, padahal sepedanya hanya satu. Ia memilih tidak ikut.',
+  'Lalu Dina, sahabatnya, menawarkan, “Pinjam saja uangku dulu, nanti kamu ganti.” Rani berterima kasih, tetapi menolak. “Aku tidak mau berutang. Aku ingin sepeda ini hasil usahaku sendiri.”',
+  'Dina malah jadi tertarik. Sejak hari itu mereka [[menabung bersama|k7]] setiap pulang sekolah^k7. Mereka juga [[saling mengingatkan|k8]] kalau salah satu tergoda jajan^k8.']},
+ {t:'Dua Sepeda di Pagi Hari',bg:'#b9f5e6',art:['🚲','🌅','🚲'],p:[
+  'Lima bulan kemudian, celengan bambu dibelah. Isinya Rp600.000 dari tabungan harian dan Rp180.000 dari jualan gantungan kunci. Rani membeli sepeda biru, dan sisanya ia simpan untuk biaya servis.',
+  'Tak lama, Dina juga membeli sepeda. Kini setiap pagi dua sepeda melaju berdampingan ke sekolah. Sepeda itu bukan hadiah. Sepeda itu hasil rencana dan kesabaran.']}
+ ]};
+const KW={
+ k1:{w:'catatan keuangan',t:'uang'},k2:{w:'kebutuhan dan keinginan',t:'uang'},
+ k3:{w:'sedikit demi sedikit',t:'disiplin'},k4:{w:'tidak pernah bolos',t:'disiplin'},
+ k5:{w:'kain perca',t:'usaha'},k6:{w:'modal',t:'usaha'},
+ k7:{w:'menabung bersama',t:'sahabat'},k8:{w:'saling mengingatkan',t:'sahabat'}};
+const TOPICS={
+ uang:{n:'💰 Mengelola Uang'},disiplin:{n:'⏳ Disiplin & Konsisten'},usaha:{n:'🧵 Kewirausahaan'},sahabat:{n:'🤝 Persahabatan'},
+ luck:{n:'🎰 Keberuntungan',trap:'Rani justru menolak kupon undian. Sepedanya hasil rencana, bukan untung-untungan.'},
+ utang:{n:'💳 Meminjam Uang',trap:'Rani menolak pinjaman Dina: “Aku tidak mau berutang.”'}};
+const TOPIC_ORDER=['uang','luck','disiplin','sahabat','utang','usaha'];
+const NK=Object.keys(KW).length;
+const PTS={found:10,wrong:-2,hint:-3,link:15,ev:5,trap:-10,miss:-5};
+
+/* ---------- olah cerita: kalimat, kata, bukti ---------- */
+const SENT=[],EV={};
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function wordsHTML(txt){return txt.split(/(\s+)/).map(x=>/^\s+$/.test(x)||!x?x:'<span class="w">'+esc(x)+'</span>').join('')}
+function renderSentence(raw){return raw.split(/(\[\[[^\]]+\]\])/).map(seg=>{const m=seg.match(/^\[\[([^|]+)\|(k\d+)\]\]$/);
+  return m?'<span class="kw" data-k="'+m[2]+'">'+wordsHTML(m[1])+'</span>':wordsHTML(seg)}).join('')}
+const plain=raw=>raw.replace(/\[\[([^|]+)\|k\d+\]\]/g,'$1').replace(/\^k\d+/g,'');
+let storyHTML='<div class="cover"><h2>📖 '+STORY.title+'</h2><p>'+STORY.sub+'</p></div>';
+STORY.pages.forEach((pg,pi)=>{let h='<section class="pg" data-p="'+pi+'"><div class="art" style="background:'+pg.bg+'"><b class="no">Hal. '+(pi+1)+'</b>'+pg.art.map(a=>'<span>'+a+'</span>').join('')+'</div><h3>'+pg.t+'</h3>';
+ pg.p.forEach(par=>{const ss=par.match(/(?:[^.!?]|\.(?=\d))+[.!?]+[”"]?\s*/g)||[par];h+='<p>';
+  ss.forEach(raw=>{const id=SENT.length;(raw.match(/\^(k\d+)/g)||[]).forEach(m=>EV[m.slice(1)]=id);
+   SENT.push({id,page:pi,text:plain(raw).trim()});h+='<span class="s" data-s="'+id+'">'+renderSentence(raw.replace(/\^k\d+/g,''))+'</span>'});h+='</p>'});
+ storyHTML+=h+'</section>'});
+storyHTML+='<div class="end">— Tamat —<br>Sudah menemukan semua kata kunci? Ayo hubungkan di papan! 🔌</div>';
+Object.keys(KW).forEach(k=>{if(EV[k]==null)console.warn('bukti belum ada',k)});
+
+/* ---------- Kiko si burung hantu ---------- */
+function kiko(m){const eye=m==='wow'?'<circle cx="38" cy="44" r="9" fill="#17243a"/><circle cx="72" cy="44" r="9" fill="#17243a"/>':m==='think'?'<path d="M30 45q8-7 16 0M64 45q8-7 16 0" stroke="#17243a" stroke-width="4" fill="none" stroke-linecap="round"/>':'<circle cx="38" cy="45" r="6" fill="#17243a"/><circle cx="72" cy="45" r="6" fill="#17243a"/><circle cx="40" cy="43" r="2" fill="#fff"/><circle cx="74" cy="43" r="2" fill="#fff"/>';
+ return '<svg viewBox="0 0 110 120" aria-hidden="true"><path d="M20 30 L28 6 L42 22 M90 30 L82 6 L68 22" fill="#c98a4b" stroke="#17243a" stroke-width="3" stroke-linejoin="round"/><ellipse cx="55" cy="66" rx="40" ry="46" fill="#c98a4b" stroke="#17243a" stroke-width="3"/><ellipse cx="55" cy="80" rx="25" ry="27" fill="#ffe8c7" stroke="#17243a" stroke-width="2.5"/><circle cx="38" cy="45" r="15" fill="#fff" stroke="#17243a" stroke-width="3"/><circle cx="72" cy="45" r="15" fill="#fff" stroke="#17243a" stroke-width="3"/>'+eye+'<path d="M50 56 L55 66 L60 56Z" fill="#ffb02e" stroke="#17243a" stroke-width="2.5" stroke-linejoin="round"/><path d="M42 82q6 4 0 8M55 84q6 4 0 8M68 82q6 4 0 8" stroke="#c98a4b" stroke-width="2.5" fill="none"/><rect x="62" y="96" width="30" height="20" rx="3" fill="#a7e7ff" stroke="#17243a" stroke-width="2.5" transform="rotate(-12 77 106)"/></svg>'}
+$('kikoBig').innerHTML=kiko('wow');
+
+/* ================= TIM ================= */
+let TEAMS=[],MODE='solo';
+const PRAISE=['Mantap!','Jeli sekali!','Keren!','Mata elang!','Tepat!'];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function makeTeam(side,name){
+ const T={side,name,found:[],wrong:0,hints:0,links:{},sel:null,locked:false,checked:false,pos:{},drags:new Map()};
+ const root=document.createElement('section');root.className='team';if(side)root.dataset.side=side;
+ const mid='ar'+(side||'S');
+ root.innerHTML=`<div class="t-head"><span class="name">${name}</span><span class="pill" data-r="found">🔖 0/${NK}</span><span class="pill" data-r="wires">🔌 0</span>
+  <button class="c-btn sm" data-a="hint" type="button" title="Tunjukkan halaman yang masih punya kata kunci (−3 poin)">💡 Petunjuk</button>
+  <button class="c-btn sm go" data-a="check" type="button">${side?'🔒 Kunci jawaban':'✅ Cek peta'}</button></div>
+  <div class="t-bub"><div class="c-guide"><div data-r="kiko">${kiko('happy')}</div><div class="c-bubble" data-r="say"></div></div></div>
+  <div class="book" data-r="book">${storyHTML}</div>
+  <div class="board" data-r="board"><svg class="wires" data-r="svg"><defs><marker id="${mid}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ffe27c" stroke="#0d1626" stroke-width="1.2"/></marker></defs><g data-r="wg"></g><path class="wire-bg" data-r="tmpbg" d="" style="display:none"/><path class="wire temp" data-r="tmp" d="" style="display:none"/></svg>
+   <span class="lbl l">🔖 Kantong kata</span><span class="lbl r">Topik besar 🎯</span>
+   <div class="empty" data-r="empty">Kata kunci yang kamu temukan di buku akan muncul di sini.</div>
+   <div class="lockveil" data-r="veil" hidden>🔒 Jawaban terkunci<br><small>menunggu tim lawan…</small></div></div>
+  <div class="t-modal" data-r="modal" hidden><div class="c-card" data-r="mcard"></div></div>`;
+ const R=n=>root.querySelector('[data-r="'+n+'"]');
+ Object.assign(T,{root,R,mid,board:R('board'),svg:R('svg'),wg:R('wg'),book:R('book')});
+ // node topik
+ TOPIC_ORDER.forEach(t=>{const n=document.createElement('div');n.className='node topic';n.dataset.t=t;n.innerHTML='<i class="port in"></i><div class="nh">Topik</div><div class="nb">'+TOPICS[t].n+'</div><div class="res"></div>';T.board.appendChild(n)});
+ say(T,side?`Halo ${name}! Aku Kiko 🦉. Baca cerita Rani, lalu <b>ketuk kata yang paling penting</b>. Ada ${NK} kata kunci tersembunyi. Siapa lebih jeli?`:`Halo! Aku Kiko 🦉. Baca cerita Rani, lalu <b>ketuk kata-kata yang paling penting</b>. Ada ${NK} kata kunci tersembunyi!<span class="q">🤔 Petunjuk: kata kunci biasanya menjelaskan <i>cara</i> Rani mencapai mimpinya.</span>`);
+ // ketuk kata di buku
+ T.book.addEventListener('click',e=>{if(T.locked)return;const w=e.target.closest('.w');if(!w)return;const kw=w.closest('.kw');
+  if(kw){const k=kw.dataset.k;if(T.found.includes(k))return;foundKw(T,k);return}
+  const clean=w.textContent.replace(/[^\p{L}\p{N}]/gu,'');if(clean.length<3)return;
+  T.wrong++;w.classList.remove('wrong');void w.offsetWidth;w.classList.add('wrong');setTimeout(()=>w.classList.remove('wrong'),600);
+  say(T,`Hmm, «${esc(clean)}» kurang penting untuk makna cerita. Cari kata yang menjelaskan <b>bagaimana</b> Rani berhasil. (−2)`,'think');update(T)});
+ root.querySelector('[data-a="hint"]').onclick=()=>hint(T);
+ root.querySelector('[data-a="check"]').onclick=()=>side?lockTeam(T):(Object.keys(T.links).length||T.found.length?finish([T]):say(T,'Temukan dulu kata kuncinya di buku, ya! 📖','think'));
+ boardEvents(T);
+ new ResizeObserver(()=>{layout(T);drawWires(T)}).observe(T.board);
+ update(T);return T}
+
+function say(T,html,mood){T.R('say').innerHTML=html;T.R('kiko').innerHTML=kiko(mood||'happy')}
+function update(T){T.root.querySelector('[data-r="found"]').textContent='🔖 '+T.found.length+'/'+NK;
+ T.root.querySelector('[data-r="wires"]').textContent='🔌 '+Object.keys(T.links).length;T.R('empty').hidden=T.found.length>0}
+
+function foundKw(T,k){T.found.push(k);T.book.querySelectorAll('.kw[data-k="'+k+'"]').forEach(x=>x.classList.add('found'));
+ const n=document.createElement('div');n.className='node word new';n.dataset.k=k;
+ n.innerHTML='<div class="nh">🔖 Kata kunci</div><div class="nb">'+KW[k].w+'</div><span class="evb" data-ev>📎 bukti?</span><button class="cut" type="button" hidden aria-label="Lepas kabel">✕</button><i class="port out"></i>';
+ T.board.appendChild(n);layout(T);update(T);
+ const left=NK-T.found.length;
+ if(!left)say(T,`🎉 Semua ${NK} kata kunci ketemu! Sekarang <b>tarik kabel</b> dari titik kuning ke topik yang cocok (atau ketuk kata, lalu ketuk topik).<span class="q">⚠️ Hati-hati: 2 topik di papan adalah <b>jebakan</b>!</span>`,'wow');
+ else say(T,`${PRAISE[Math.random()*PRAISE.length|0]} «<b>${KW[k].w}</b>» masuk kantong kata. Masih ada <b>${left}</b> lagi.${T.found.length===1?'<span class="q">👉 Kamu sudah bisa menarik kabel dari titik kuning ke topik di papan.</span>':''}`,'happy');
+ try{window.PILAR_PULSE?.track?.('jejak_found',{k})}catch(_){}}
+
+function hint(T){if(T.locked)return;const k=Object.keys(KW).find(k=>!T.found.includes(k));if(!k){say(T,'Semua kata kunci sudah ketemu! Fokus ke kabel dan buktinya, ya. 🔌');return}
+ T.hints++;const pg=T.book.querySelector('.kw[data-k="'+k+'"]').closest('.pg');T.book.scrollTop=pg.offsetTop-6;pg.classList.remove('flash');void pg.offsetWidth;pg.classList.add('flash');
+ say(T,`💡 Di halaman <b>${+pg.dataset.p+1}</b> masih ada kata kunci. Baca pelan-pelan, ya! (−3)`,'think');update(T)}
+
+/* ---------- tata letak node ---------- */
+function layout(T){const W=T.board.clientWidth,H=T.board.clientHeight;if(!W)return;
+ const words=[...T.board.querySelectorAll('.node.word')],topics=[...T.board.querySelectorAll('.node.topic')];
+ T.board.classList.toggle('compact',H<600);
+ const top=34,place=(list,xf)=>{if(!list.length)return;const hs=list.map(n=>n.offsetHeight),tot=hs.reduce((a,b)=>a+b,0),gap=Math.max(6,Math.min(18,(H-top-10-tot)/Math.max(1,list.length-1)));
+  let y=top;list.forEach((n,i)=>{const key=n.dataset.k||n.dataset.t,p=T.pos[key];if(!p||!p.moved){T.pos[key]={x:xf(n,i),y,moved:false}}y+=hs[i]+gap})};
+ // kata: satu kolom bila muat, kalau tidak dua kolom berdampingan
+ const nh=words[0]?words[0].offsetHeight+8:0,perCol=Math.max(1,Math.floor((H-top-6)/Math.max(1,nh)));
+ if(words.length<=perCol)place(words,()=>16);
+ else{const half=Math.ceil(words.length/2);place(words.slice(0,half),()=>16);place(words.slice(half),n=>16+n.offsetWidth+30)}
+ place(topics,n=>W-n.offsetWidth-16);
+ [...words,...topics].forEach(n=>{const p=T.pos[n.dataset.k||n.dataset.t];p.x=Math.max(4,Math.min(W-n.offsetWidth-4,p.x));p.y=Math.max(26,Math.min(H-n.offsetHeight-4,p.y));n.style.transform='translate('+p.x+'px,'+p.y+'px)';n.style.left=n.style.top='0'})}
+const nodeOf=(T,key)=>T.board.querySelector('.node[data-k="'+key+'"],.node[data-t="'+key+'"]');
+function portXY(T,key,out){const n=nodeOf(T,key),p=T.pos[key];return out?[p.x+n.offsetWidth+4,p.y+n.offsetHeight/2]:[p.x-4,p.y+n.offsetHeight/2]}
+function curve(a,b){const dx=Math.max(50,Math.abs(b[0]-a[0])*.5);return`M${a[0]} ${a[1]}C${a[0]+dx} ${a[1]} ${b[0]-dx} ${b[1]} ${b[0]} ${b[1]}`}
+function drawWires(T){let h='';for(const k in T.links){const L=T.links[k],d=curve(portXY(T,k,true),portXY(T,L.t,false));
+  h+='<path class="wire-bg" d="'+d+'"/><path class="wire '+(L.res||'')+'" data-k="'+k+'" d="'+d+'" marker-end="url(#'+T.mid+')"/>'}
+ T.wg.innerHTML=h;
+ T.board.querySelectorAll('.node.word').forEach(n=>{const L=T.links[n.dataset.k];n.classList.toggle('linked',!!L);n.querySelector('.cut').hidden=!L||T.locked;
+  const b=n.querySelector('.evb');b.hidden=!L;b.classList.toggle('set',!!(L&&L.ev!=null));b.textContent=L&&L.ev!=null?'📎 bukti ✓':'📎 pilih bukti'})}
+
+/* ---------- interaksi papan: seret node, tarik kabel, ketuk-ketuk ---------- */
+function boardEvents(T){const B=T.board;
+ const rel=e=>{const r=B.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
+ const topicAt=e=>{const el=document.elementFromPoint(e.clientX,e.clientY);const n=el&&el.closest('.node.topic');return n&&B.contains(n)?n:null};
+ let hot=null;const setHot=n=>{if(hot!==n){hot?.classList.remove('hot');hot=n;n?.classList.add('hot')}};
+ B.addEventListener('pointerdown',e=>{if(T.locked||T.checked)return;
+  if(e.target.closest('.cut')){unlink(T,e.target.closest('.node').dataset.k);e.preventDefault();return}
+  if(e.target.closest('.evb')){openEvidence(T,e.target.closest('.node').dataset.k);e.preventDefault();return}
+  const port=e.target.closest('.port.out'),node=e.target.closest('.node');if(!node)return;
+  e.preventDefault();try{B.setPointerCapture(e.pointerId)}catch(_){}
+  const key=node.dataset.k||node.dataset.t,p=rel(e);
+  if(port)T.drags.set(e.pointerId,{type:'wire',k:key});
+  else T.drags.set(e.pointerId,{type:'move',node,key,sx:p[0],sy:p[1],ox:T.pos[key].x,oy:T.pos[key].y,moved:false})});
+ B.addEventListener('pointermove',e=>{const D=T.drags.get(e.pointerId);if(!D)return;const p=rel(e);
+  if(D.type==='wire'){const d=curve(portXY(T,D.k,true),p);['tmp','tmpbg'].forEach(r=>{const x=T.R(r);x.setAttribute('d',d);x.style.display=''});setHot(topicAt(e))}
+  else{const dx=p[0]-D.sx,dy=p[1]-D.sy;if(!D.moved&&Math.hypot(dx,dy)<7)return;D.moved=true;const P=T.pos[D.key];P.x=D.ox+dx;P.y=D.oy+dy;P.moved=true;
+   D.node.style.transform='translate('+P.x+'px,'+P.y+'px)';drawWires(T)}});
+ const end=e=>{const D=T.drags.get(e.pointerId);if(!D)return;T.drags.delete(e.pointerId);
+  if(D.type==='wire'){['tmp','tmpbg'].forEach(r=>T.R(r).style.display='none');setHot(null);const t=topicAt(e);if(t)link(T,D.k,t.dataset.t);else if(e.type==='pointerup')select(T,D.k)}
+  else{if(!D.moved&&e.type==='pointerup')tap(T,D.node);else layout(T),drawWires(T)}};
+ B.addEventListener('pointerup',end);B.addEventListener('pointercancel',end)}
+function select(T,k){T.sel=T.sel===k?null:k;T.board.querySelectorAll('.node.word').forEach(n=>n.classList.toggle('sel',n.dataset.k===T.sel));
+ if(T.sel)say(T,`Sekarang ketuk <b>topik</b> yang cocok untuk «${KW[k].w}».`,'think')}
+function tap(T,node){if(node.classList.contains('word'))select(T,node.dataset.k);else if(T.sel){const k=T.sel;select(T,k);link(T,k,node.dataset.t)}}
+function link(T,k,t){T.links[k]={t,ev:null};drawWires(T);update(T);openEvidence(T,k)}
+function unlink(T,k){delete T.links[k];drawWires(T);update(T)}
+
+/* ---------- bukti kalimat ---------- */
+function openEvidence(T,k){const L=T.links[k];if(!L)return;
+ if(!L.opts){const trapish=SENT.filter(s=>s.page===4&&s.id!==EV[k]),other=SENT.filter(s=>s.id!==EV[k]&&s.page!==4);
+  const d=[shuffle(trapish.slice())[0],shuffle(other.slice())[0]];L.opts=shuffle([EV[k],d[0].id,d[1].id])}
+ const card=T.R('mcard');
+ card.innerHTML=`<h3>🔎 Buktikan!</h3><p style="margin:.2rem 0 .5rem;font-weight:700">Kalimat mana yang menunjukkan bahwa «<b>${KW[k].w}</b>» berhubungan dengan <b>${TOPICS[L.t].n}</b>?</p>`+
+  L.opts.map(id=>`<button class="c-btn c-opt${L.ev===id?' on':''}" data-id="${id}" type="button">“${esc(SENT[id].text)}”</button>`).join('')+
+  `<div class="c-seg" style="margin-top:.4rem"><button class="c-btn sm" data-x type="button">Nanti saja</button></div><p class="c-note">Kalau ternyata topiknya kurang cocok, tutup ini lalu tarik ulang kabelnya.</p>`;
+ card.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{L.ev=+b.dataset.id;T.R('modal').hidden=true;drawWires(T);
+  say(T,`Bukti tersimpan 📎. ${Object.keys(T.links).length<T.found.length?'Lanjut hubungkan kata yang lain!':T.found.length<NK?'Masih ada kata kunci di buku, lho!':'Kalau sudah yakin, tekan <b>'+(T.side?'🔒 Kunci jawaban':'✅ Cek peta')+'</b>.'}`)});
+ card.querySelector('[data-x]').onclick=()=>{T.R('modal').hidden=true;drawWires(T)};T.R('modal').hidden=false}
+
+/* ---------- nilai ---------- */
+function score(T){const r={found:T.found.length*PTS.found,wrong:T.wrong*PTS.wrong,hint:T.hints*PTS.hint,link:0,ev:0,trap:0,miss:0,nOk:0,nEv:0,nTrap:0,nBad:0};
+ for(const k in T.links){const L=T.links[k];
+  if(TOPICS[L.t].trap){L.res='trap';r.trap+=PTS.trap;r.nTrap++}
+  else if(KW[k].t===L.t){L.res='ok';r.link+=PTS.link;r.nOk++;if(L.ev===EV[k]){r.ev+=PTS.ev;r.nEv++}}
+  else{L.res='bad';r.miss+=PTS.miss;r.nBad++}}
+ r.total=Math.max(0,r.found+r.wrong+r.hint+r.link+r.ev+r.trap+r.miss);r.max=NK*(PTS.found+PTS.link+PTS.ev);return r}
+function reveal(T){T.checked=true;T.locked=true;T.R('veil').hidden=true;T.sel=null;
+ T.board.querySelectorAll('.node.word').forEach(n=>{const L=T.links[n.dataset.k];n.classList.remove('sel');n.classList.toggle('ok',L?.res==='ok');n.classList.toggle('bad',!!L&&L.res!=='ok');
+  n.querySelector('.mark')?.remove();if(L)n.insertAdjacentHTML('beforeend','<span class="mark">'+(L.res==='ok'?(L.ev===EV[n.dataset.k]?'✅📎':'✅'):L.res==='trap'?'🪤':'❌')+'</span>')});
+ T.board.querySelectorAll('.node.topic').forEach(n=>{const tr=TOPICS[n.dataset.t].trap;if(tr){n.classList.add('trap');n.querySelector('.res').textContent='🪤 Jebakan!';n.title=tr}});
+ T.book.querySelectorAll('.kw').forEach(x=>{if(!T.found.includes(x.dataset.k))x.classList.add('miss')});
+ drawWires(T);layout(T)}
+function resultCard(T,r,extra){const c=T.R('mcard');
+ const badge=r.total>=r.max*.85?'🏅 Pembaca Detektif!':r.total>=r.max*.6?'⭐ Pembaca Jeli':r.total>=r.max*.35?'🌱 Pembaca Tumbuh':'📚 Ayo baca lagi';
+ c.innerHTML=`<div style="display:grid;grid-template-columns:auto 1fr;gap:.6rem;align-items:center"><div style="width:4.2rem">${kiko(r.total>=r.max*.6?'wow':'happy')}</div><div><h3 style="margin:0">${T.name}: ${badge}</h3>${extra||''}</div></div>
+  <div class="big-score">${r.total} <small style="font-size:1rem">/ ${r.max} poin</small></div>
+  <div class="res-grid"><div>🔖 Kata kunci ${T.found.length}/${NK}<b>+${r.found}</b></div><div>🔌 Kabel tepat ${r.nOk}<b>+${r.link}</b></div>
+   <div>📎 Bukti tepat ${r.nEv}<b>+${r.ev}</b></div><div>🪤 Kena jebakan ${r.nTrap}<b>${r.trap}</b></div>
+   <div>❌ Kabel keliru ${r.nBad}<b>${r.miss}</b></div><div>🙈 Salah ketuk ${T.wrong} · 💡 ${T.hints}<b>${r.wrong+r.hint}</b></div></div>
+  <b>Kenapa ada jebakan?</b><ul class="trap-list">${Object.values(TOPICS).filter(t=>t.trap).map(t=>'<li>'+t.n+' — '+t.trap+'</li>').join('')}</ul>
+  <p class="c-callout" style="margin:.4rem 0">💬 Refleksi: menurutmu, apa <b>pesan utama</b> cerita Rani? Ceritakan dengan 1 kalimat memakai 2 kata kunci yang kamu temukan.</p>
+  <div class="c-seg"><button class="c-btn sm info" data-png type="button">📷 Simpan peta makna</button><button class="c-btn sm" data-see type="button">👀 Lihat papan</button><button class="c-btn sm go" data-again type="button">🔁 Main lagi</button></div>`;
+ c.querySelector('[data-png]').onclick=()=>savePNG(T);c.querySelector('[data-see]').onclick=()=>{T.R('modal').hidden=true};c.querySelector('[data-again]').onclick=()=>start(MODE);
+ T.R('modal').hidden=false}
+function finish(list){const rs=list.map(T=>{const r=score(T);reveal(T);T.result=r;return r});
+ if(list.length===2){const [a,b]=rs,w=a.total===b.total?null:a.total>b.total?0:1;
+  const msg=w==null?'🤝 Seri! '+a.total+' : '+b.total:'🏆 '+list[w].name+' menang! '+rs[0].total+' : '+rs[1].total;$('banner').textContent=msg;$('banner').classList.add('on');
+  list.forEach((T,i)=>resultCard(T,rs[i],'<b>'+(w==null?'Seri!':w===i?'🏆 Menang!':'Kalah tipis — coba lagi!')+'</b>'))}
+ else resultCard(list[0],rs[0]);
+ try{window.PILAR_PULSE?.track?.('jejak_finish',{mode:MODE,scores:rs.map(r=>r.total)})}catch(_){}}
+function lockTeam(T){if(T.locked)return;if(!T.found.length){say(T,'Temukan dulu kata kuncinya di buku, ya! 📖','think');return}
+ T.locked=true;T.R('veil').hidden=false;T.R('modal').hidden=true;T.root.querySelector('[data-a="check"]').disabled=true;drawWires(T);
+ say(T,'🔒 Jawaban terkunci. Tunggu tim lawan selesai…','think');if(TEAMS.every(t=>t.locked))finish(TEAMS)}
+
+/* ---------- simpan peta sebagai gambar ---------- */
+function savePNG(T){const W=T.board.clientWidth,H=T.board.clientHeight,s=2,c=document.createElement('canvas');c.width=W*s;c.height=(H+60)*s;const x=c.getContext('2d');x.scale(s,s);
+ x.fillStyle='#22324a';x.fillRect(0,0,W,H+60);x.fillStyle='#ffffff22';for(let i=0;i<W;i+=22)for(let j=0;j<H+60;j+=22){x.beginPath();x.arc(i,j,1.4,0,7);x.fill()}
+ x.fillStyle='#fff';x.font='600 18px Fredoka, sans-serif';x.fillText('Peta Makna · '+STORY.title+' · '+T.name+(T.result?' · '+T.result.total+' poin':''),14,H+38);
+ const col={ok:'#6ee08f',bad:'#ff6b85',trap:'#ffa24c'};
+ for(const k in T.links){const L=T.links[k],a=portXY(T,k,true),b=portXY(T,L.t,false),dx=Math.max(50,Math.abs(b[0]-a[0])*.5);
+  x.lineCap='round';[[9,'#0d1626'],[4.5,col[L.res]||'#ffe27c']].forEach(([w,s2])=>{x.lineWidth=w;x.strokeStyle=s2;x.beginPath();x.moveTo(a[0],a[1]);x.bezierCurveTo(a[0]+dx,a[1],b[0]-dx,b[1],b[0],b[1]);x.stroke()})}
+ T.board.querySelectorAll('.node').forEach(n=>{const key=n.dataset.k||n.dataset.t,p=T.pos[key],w=n.offsetWidth,h=n.offsetHeight;
+  x.fillStyle='#0d1626';x.beginPath();x.roundRect(p.x+3,p.y+4,w,h,14);x.fill();x.fillStyle=getComputedStyle(n).backgroundColor;x.strokeStyle='#17243a';x.lineWidth=3;x.beginPath();x.roundRect(p.x,p.y,w,h,14);x.fill();x.stroke();
+  x.fillStyle='#17243a';x.font='600 11px Fredoka, sans-serif';x.fillText(n.classList.contains('word')?'KATA KUNCI':'TOPIK',p.x+10,p.y+16);
+  x.font='600 15px Fredoka, sans-serif';x.fillText(n.querySelector('.nb').textContent+' '+(n.querySelector('.mark')?.textContent||''),p.x+10,p.y+38)});
+ const a=document.createElement('a');a.download='peta-makna-'+(T.side||'solo')+'.png';a.href=c.toDataURL('image/png');a.click()}
+
+/* ---------- mulai ---------- */
+function start(mode){MODE=mode;$('start').hidden=true;$('banner').classList.remove('on');const A=$('arena');A.innerHTML='';A.className='arena '+mode;
+ TEAMS=mode==='duel'?[makeTeam('L','🔴 Tim Kiri'),makeTeam('R','🔵 Tim Kanan')]:[makeTeam('','🧑 Kamu')];
+ TEAMS.forEach(T=>A.appendChild(T.root));requestAnimationFrame(()=>TEAMS.forEach(T=>{layout(T);drawWires(T)}));
+ try{window.PILAR_PULSE?.track?.('jejak_start',{mode})}catch(_){}}
+$('goSolo').onclick=()=>start('solo');$('goDuel').onclick=()=>start('duel');$('btnMode').onclick=()=>{$('start').hidden=false};
+window.PILAR_JEJAK={get teams(){return TEAMS},STORY,KW,TOPICS,EV,SENT,start,score,finish,link:(i,k,t)=>link(TEAMS[i],k,t),found:(i,k)=>foundKw(TEAMS[i],k)};
+try{window.PILAR_PULSE?.setApp?.('jejak-kata')}catch(_){}
+})();
+</script>
+<script src="../../pulse/config.js"></script>
+<script src="../../core/pulse.js"></script>
+</body>
+</html>
