@@ -68,5 +68,8 @@ jobs:
       - name: Baterai model tests
         run: node apps/baterai-lab/test-model.js
 
+      - name: Papan Rangkai core tests
+        run: node apps/rangkai-lab/test-core.js
+
       - name: Frame-rate independence (physics)
         run: node labs/pressure/test/fps-independence.test.js
