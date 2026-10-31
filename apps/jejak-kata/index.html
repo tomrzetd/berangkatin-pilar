@@ -107,7 +107,10 @@ html[data-fx="lite"] .wire{animation-duration:1.8s}
 .t-modal[hidden]{display:none}
 .t-modal .c-card{width:min(640px,100%);max-height:100%;overflow:auto}
 .t-modal h3{margin:.1rem 0 .5rem;font-size:1.25rem}
-.t-modal .c-opt{font-family:var(--f-body);font-weight:700;font-size:1rem;line-height:1.45;min-height:auto;padding:.6em .9em}
+.m-x{position:sticky;top:0;float:right;z-index:2;width:2.6rem;height:2.6rem;margin:-.3rem -.3rem .2rem .6rem;border:var(--bw) solid var(--ink);border-radius:50%;background:var(--pink);box-shadow:2px 3px 0 var(--ink);font:900 1.15rem/1 var(--f-body);color:var(--ink);cursor:pointer;display:grid;place-items:center;padding:0}
+.m-x:active{transform:translate(2px,3px);box-shadow:none}
+html[data-device="ifp"] .m-x{width:3.2rem;height:3.2rem}
+.t-modal .c-opt{border-left-width:9px;font-family:var(--f-body);font-weight:700;font-size:1rem;line-height:1.45;min-height:auto;padding:.6em .9em}
 .res-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.4rem;margin:.6rem 0}
 .res-grid div{border:2px solid var(--ink);border-radius:12px;padding:.35rem .6rem;font-weight:800;background:var(--paper);display:flex;justify-content:space-between;gap:.5rem}
 .big-score{font:600 2.6rem var(--f-head);text-align:center;margin:.2rem 0}
@@ -238,7 +241,7 @@ function makeTeam(side,name){
    <span class="lbl l">🔖 Kantong kata</span><span class="lbl r">Topik besar 🎯</span>
    <div class="empty" data-r="empty">Kata kunci yang kamu temukan di buku akan muncul di sini.</div>
    <div class="lockveil" data-r="veil" hidden>🔒 Jawaban terkunci<br><small>menunggu tim lawan…</small></div></div>
-  <div class="t-modal" data-r="modal" hidden><div class="c-card" data-r="mcard"></div></div>`;
+  <div class="t-modal" data-r="modal" hidden><div class="c-card"><button class="m-x" data-close type="button" aria-label="Tutup" title="Tutup">✕</button><div data-r="mcard"></div></div></div>`;
  const R=n=>root.querySelector('[data-r="'+n+'"]');
  Object.assign(T,{root,R,mid,board:R('board'),svg:R('svg'),wg:R('wg'),book:R('book')});
  // node topik
@@ -252,6 +255,9 @@ function makeTeam(side,name){
   say(T,`Hmm, «${esc(clean)}» kurang penting untuk makna cerita. Cari kata yang menjelaskan <b>bagaimana</b> Rani berhasil. (−2)`,'think');update(T)});
  root.querySelector('[data-a="hint"]').onclick=()=>hint(T);
  root.querySelector('[data-a="check"]').onclick=()=>side?lockTeam(T):(Object.keys(T.links).length||T.found.length?finish([T]):say(T,'Temukan dulu kata kuncinya di buku, ya! 📖','think'));
+ const closeM=()=>{if(T.R('modal').hidden)return;T.R('modal').hidden=true;drawWires(T)};T.closeModal=closeM;
+ root.querySelector('[data-close]').onclick=closeM;
+ T.R('modal').addEventListener('click',e=>{if(e.target===T.R('modal'))closeM()});
  boardEvents(T);
  new ResizeObserver(()=>{layout(T);drawWires(T)}).observe(T.board);
  update(T);return T}
@@ -327,7 +333,7 @@ function openEvidence(T,k){const L=T.links[k];if(!L)return;
   const d=[shuffle(trapish.slice())[0],shuffle(other.slice())[0]];L.opts=shuffle([EV[k],d[0].id,d[1].id])}
  const card=T.R('mcard');
  card.innerHTML=`<h3>🔎 Buktikan!</h3><p style="margin:.2rem 0 .5rem;font-weight:700">Kalimat mana yang menunjukkan bahwa «<b>${KW[k].w}</b>» berhubungan dengan <b>${TOPICS[L.t].n}</b>?</p>`+
-  L.opts.map(id=>`<button class="c-btn c-opt${L.ev===id?' on':''}" data-id="${id}" type="button">“${esc(SENT[id].text)}”</button>`).join('')+
+  L.opts.map(id=>`<button class="c-btn c-opt${L.ev===id?' on':''}" data-id="${id}" type="button">${esc(SENT[id].text)}</button>`).join('')+
   `<div class="c-seg" style="margin-top:.4rem"><button class="c-btn sm" data-x type="button">Nanti saja</button></div><p class="c-note">Kalau ternyata topiknya kurang cocok, tutup ini lalu tarik ulang kabelnya.</p>`;
  card.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{L.ev=+b.dataset.id;T.R('modal').hidden=true;drawWires(T);
   say(T,`Bukti tersimpan 📎. ${Object.keys(T.links).length<T.found.length?'Lanjut hubungkan kata yang lain!':T.found.length<NK?'Masih ada kata kunci di buku, lho!':'Kalau sudah yakin, tekan <b>'+(T.side?'🔒 Kunci jawaban':'✅ Cek peta')+'</b>.'}`)});
@@ -386,6 +392,7 @@ function start(mode){MODE=mode;$('start').hidden=true;$('banner').classList.remo
  TEAMS=mode==='duel'?[makeTeam('L','🔴 Tim Kiri'),makeTeam('R','🔵 Tim Kanan')]:[makeTeam('','🧑 Kamu')];
  TEAMS.forEach(T=>A.appendChild(T.root));requestAnimationFrame(()=>TEAMS.forEach(T=>{layout(T);drawWires(T)}));
  try{window.PILAR_PULSE?.track?.('jejak_start',{mode})}catch(_){}}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')TEAMS.forEach(T=>T.closeModal&&T.closeModal())});
 $('goSolo').onclick=()=>start('solo');$('goDuel').onclick=()=>start('duel');$('btnMode').onclick=()=>{$('start').hidden=false};
 window.PILAR_JEJAK={get teams(){return TEAMS},STORY,KW,TOPICS,EV,SENT,start,score,finish,link:(i,k,t)=>link(TEAMS[i],k,t),found:(i,k)=>foundKw(TEAMS[i],k)};
 try{window.PILAR_PULSE?.setApp?.('jejak-kata')}catch(_){}
