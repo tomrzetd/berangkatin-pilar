@@ -24,6 +24,8 @@ Daftar aktif bersumber dari `apps/registry.js`.
 - Bola Sang Pemburu · Duel
 - Frost Snake · Duel Numerasi
 - Lab Baterai · Petualangan Volta
+- Jejak Kata · Peta Makna
+- Papan Rangkai · Logika & Wiring
 
 ## Menjalankan
 PILAR dapat dijalankan dari GitHub Pages atau server lokal:
@@ -82,3 +84,18 @@ node labs/pressure/test/physics.test.js
 ```
 
 Lab dapat dibuka langsung dengan `apps/pressure/?lab=padat|cair|pascal|bernoulli`.
+
+## Papan Rangkai · Logika & Wiring
+`apps/rangkai-lab/` adalah editor rangkaian gaya breadboard untuk mapel Informatika (operasi logika & bilangan biner) dan perakitan robot.
+
+- **Auto-snap ke netlist:** semua kaki komponen berada di grid 2,54 mm. Kaki yang jatuh di titik yang sama, lubang breadboard yang satu kolom/rel, dan kabel otomatis menjadi satu net.
+- **Gerbang logika:** NOT, AND, OR, NAND, NOR, XOR, XNOR dalam bentuk simbol, atau IC asli 74HC00/02/04/08/32/86 (DIP-14, butuh VCC pin 14 dan GND pin 7).
+- **Simulasi & tabel kebenaran** otomatis dari saklar (masukan) dan lampu/LED/tampilan biner 4-bit (keluaran). Ada 6 tantangan (NOT dan OR dari NAND, XOR, kunci 1-0-1, mayoritas, penjumlah 1 bit).
+- **Board Sebatang-Kara:** ESP32-S3 Super Mini, GY-87, DRV8833, charger+boost 5V, LiPo, motor coreless, dengan pemeriksaan listrik (korsleting, tegangan berlebih ke GPIO, pin daya belum tersambung, J1/EEP DRV8833).
+- Simpan/buka `.json`, ekspor netlist `.net` dan gambar PNG. Contoh bisa dibuka langsung: `apps/rangkai-lab/?contoh=ic-breadboard`.
+
+Inti logika dapat diuji tanpa browser:
+
+```bash
+node apps/rangkai-lab/test-core.js
+```
