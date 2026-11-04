@@ -3,7 +3,10 @@
   "productName": "PILAR Hub",
   "version": "0.8.2",
   "description": "PILAR Hub — lab maya, game edukasi, dan alat MPI untuk IFP, laptop, dan HP (versi desktop offline)",
-  "author": "PILAR · berangkatin",
+  "author": {
+    "name": "PILAR · berangkatin",
+    "email": "noreply@berangkatin.id"
+  },
   "license": "UNLICENSED",
   "main": "main.js",
   "scripts": {
@@ -72,5 +75,6 @@
         "libasound2t64 | libasound2"
       ]
     }
-  }
+  },
+  "homepage": "https://tomrzetd.github.io/berangkatin-pilar/"
 }
