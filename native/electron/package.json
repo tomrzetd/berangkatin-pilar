@@ -74,7 +74,9 @@
         "libgtk-3-0",
         "libasound2t64 | libasound2"
       ]
-    }
+    },
+    "publish": null,
+    "generateUpdatesFilesForAllChannels": false
   },
   "homepage": "https://tomrzetd.github.io/berangkatin-pilar/"
 }
