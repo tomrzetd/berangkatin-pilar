@@ -33,6 +33,7 @@
   const scrW=Math.max(screen.width||0,screen.height||0)*(global.devicePixelRatio||1);
   const mali=/Mali|PowerVR|Adreno \(TM\) [1-6]\d\d\b/i.test(g.name); // GPU mobile kelas menengah-bawah
   const intelIGPU=/Intel/i.test(g.name);
+  const softGPU=/SwiftShader|llvmpipe|softpipe|Software/i.test(g.name); // tanpa GPU sungguhan (emulator, VM, driver rusak)
 
   let tier='desktop';
   // IFP Android: layar fisik besar (>=3000 px), touch banyak titik, bukan UA ponsel.
@@ -55,7 +56,7 @@
   if(mali&&tier!=='ifp')Object.assign(budget,{maxPixels:Math.min(budget.maxPixels,1600*900),shadow:'pcf'});
 
   const profile={
-    tier,bigTouch,touchPoints:touch,gpu:g.name,webgl:g.webgl,mali,intelIGPU,
+    tier,bigTouch,touchPoints:touch,gpu:g.name,softGPU,webgl:g.webgl,mali,intelIGPU,
     reducedMotion:!!(global.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches),
     budget,
     /* Pixel ratio untuk kanvas w×h (CSS px) yang tampil dengan skala visual `scale`.
@@ -72,7 +73,7 @@
      Mali-G52 4K memicu kedip & patah-patah. auto = lite untuk IFP / GPU Mali. */
   const FX_KEY='pilar_fx';
   function fxMode(){try{return localStorage.getItem(FX_KEY)||'auto'}catch(_){return'auto'}}
-  function fxEffective(m){return m==='lite'||(m==='auto'&&(tier==='ifp'||mali))?'lite':'full'}
+  function fxEffective(m){return m==='lite'||(m==='auto'&&(tier==='ifp'||mali||softGPU))?'lite':'full'}
   profile.fxMode=fxMode();profile.fx=fxEffective(profile.fxMode);
   profile.setFx=function(m){try{localStorage.setItem(FX_KEY,m)}catch(_){}profile.fxMode=m;profile.fx=fxEffective(m);try{document.documentElement.dataset.fx=profile.fx}catch(_){}return profile.fx};
   P.device=profile;
