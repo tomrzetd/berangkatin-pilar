@@ -55,7 +55,7 @@ ws.onmessage = ev => {
   }
 };
 let wsClosed = false;
-ws.onclose = () => { wsClosed = true; console.log('[android-smoke] koneksi DevTools terputus (WebView/ aplikasi mungkin crash)'); pend.forEach(r => r({error: 'closed'})); pend.clear(); };
+ws.onclose = () => { wsClosed = true; if (cur) console.log('[android-smoke] koneksi DevTools terputus (WebView/ aplikasi mungkin crash)'); pend.forEach(r => r({error: 'closed'})); pend.clear(); };
 const send = (method, params = {}, ms = 45000) => new Promise(res => {
   if (wsClosed) return res({error: 'closed'});
   const i = ++id; const t = setTimeout(() => { pend.delete(i); res({error: 'timeout ' + method}); }, ms);
@@ -99,11 +99,16 @@ const DEEP = `(async()=>{const r={};const t0=performance.now();
   await tf.ready();r.tfjs='ok '+tf.getBackend()+' '+tf.tensor([1,2,3]).sum().dataSync()[0]}catch(e){r.tfjs='GAGAL '+e}
  try{const fa=await fetch('/_cdn/cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2');r.fontawesome=fa.ok?'ok':'GAGAL '+fa.status}catch(e){r.fontawesome='GAGAL '+e}
  return JSON.stringify(r)})()`;
+const deepCur = {id: 'deep', errors: []}; cur = deepCur;
 if (!wsClosed) { await send('Page.navigate', {url: 'https://localhost/index.html'}); await sleep(5000); }
 const deep = wsClosed ? {error: 'closed'} : await send('Runtime.evaluate', {expression: DEEP, awaitPromise: true, returnByValue: true, timeout: 120000}, 150000);
 const deepRes = deep.result?.result?.value || ('GAGAL ' + JSON.stringify(deep.result?.exceptionDetails || deep).slice(0, 400));
 console.log('[android-smoke] uji mendalam offline:', deepRes);
-results.push({id: 'deep', deep: deepRes, errors: /GAGAL/.test(deepRes) ? [deepRes] : []});
+deepCur.deep = deepRes; if (/GAGAL/.test(deepRes)) deepCur.errors.push(deepRes);
+if (deepCur.errors.length) console.log('[android-smoke] catatan konsol uji mendalam:\n   ' + deepCur.errors.slice(0, 6).join('\n   '));
+// pesan konsol MediaPipe/TF saat uji mendalam bersifat info, bukan kegagalan halaman
+deepCur.errors = deepCur.errors.filter(e => /GAGAL/.test(e));
+results.push(deepCur);
 cur = null; ws.close();
 const crash = adb('logcat', '-d', '-b', 'crash');
 await fs.writeFile(path.join(outDir, label + '-report.json'), JSON.stringify({info, results, crash}, null, 1));

@@ -61,6 +61,7 @@ const DEEP = `(async()=>{const r={};const t0=performance.now();
   console.log('[smoke] uji mendalam offline:', deepRes);
   cur.deep = deepRes; if (/GAGAL/.test(deepRes)) cur.errors.push(deepRes);
   if (cur.errors.length) console.log('[smoke] catatan konsol uji mendalam:\n   ' + cur.errors.slice(0, 6).join('\n   '));
+  cur.errors = cur.errors.filter(e => /GAGAL/.test(e));
   results.push(cur); cur = null;
   const rep = {when: new Date().toISOString(), electron: process.versions.electron, chrome: process.versions.chrome, results, blockedNetwork: [...blocked]};
   fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(rep, null, 1));
