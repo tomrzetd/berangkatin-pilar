@@ -18,7 +18,7 @@ const SKIP = new Set(['.git', '.github', 'native', 'node_modules', '.gitignore',
 const SKIP_RE = [/^PATCH-NOTES/i, /\.md$/i, /^developer\/patch-v2-tests/];
 const HOSTS = ['cdn.jsdelivr.net', 'cdnjs.cloudflare.com', 'storage.googleapis.com'];
 const KEEP_ONLINE = [/cdn\.jsdelivr\.net\/npm\/@supabase\//];   // butuh internet apa pun yang terjadi
-const MP_VERSIONS = ['0.10.14', '0.10.12', '1.0.1'];             // dicoba aplikasi secara berurutan
+const MP_VERSIONS = ['0.10.14'];   // aplikasi mencoba beberapa versi; cukup satu yang dibundel (hemat ±40 MB)
 const MP_FILES = ['+esm', 'vision_bundle.mjs', 'wasm/vision_wasm_internal.js', 'wasm/vision_wasm_internal.wasm', 'wasm/vision_wasm_nosimd_internal.js', 'wasm/vision_wasm_nosimd_internal.wasm'];
 const TEXT = /\.(html?|js|mjs|css|json|webmanifest|svg|txt)$/i;
 
