@@ -55,10 +55,13 @@ const DEEP = `(async()=>{const r={};const t0=performance.now();
   await tf.ready();r.tfjs='ok '+tf.getBackend()+' '+tf.tensor([1,2,3]).sum().dataSync()[0]}catch(e){r.tfjs='GAGAL '+e}
  try{const fa=await fetch('/_cdn/cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2');r.fontawesome=fa.ok?'ok':'GAGAL '+fa.status}catch(e){r.fontawesome='GAGAL '+e}
  return JSON.stringify(r)})()`;
+  cur = {id: 'deep', errors: []};
   await wc.loadURL(ORIGIN + '/index.html'); await new Promise(r => setTimeout(r, 4000));
   const deepRes = await wc.executeJavaScript(DEEP).catch(e => 'GAGAL ' + e.message);
   console.log('[smoke] uji mendalam offline:', deepRes);
-  results.push({id: 'deep', deep: deepRes, errors: /GAGAL/.test(deepRes) ? [deepRes] : []});
+  cur.deep = deepRes; if (/GAGAL/.test(deepRes)) cur.errors.push(deepRes);
+  if (cur.errors.length) console.log('[smoke] catatan konsol uji mendalam:\n   ' + cur.errors.slice(0, 6).join('\n   '));
+  results.push(cur); cur = null;
   const rep = {when: new Date().toISOString(), electron: process.versions.electron, chrome: process.versions.chrome, results, blockedNetwork: [...blocked]};
   fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(rep, null, 1));
   console.log('[smoke] jaringan yang diblokir (harus hanya layanan online seperti Supabase/model ML):\n   ' + [...blocked].join('\n   '));
