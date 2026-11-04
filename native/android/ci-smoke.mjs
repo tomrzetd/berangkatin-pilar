@@ -69,7 +69,9 @@ function dumpLogs(tag) {
 await send('Runtime.enable'); await send('Log.enable'); await send('Page.enable');
 
 const reg = await fs.readFile(path.join(www, 'apps/registry.js'), 'utf8');
-const pages = [['hub', '/index.html'], ...[...reg.matchAll(/id:'([^']+)'[^}]*?url:'([^']+)'/g)].map(m => [m[1], '/' + m[2]])];
+let pages = [['hub', '/index.html'], ...[...reg.matchAll(/id:'([^']+)'[^}]*?url:'([^']+)'/g)].map(m => [m[1], '/' + m[2]])];
+if (process.env.SMOKE_ORDER === 'reverse') pages = [pages[0], ...pages.slice(1).reverse()];
+const pss = () => { try { return (execFileSync('adb', ['shell', 'dumpsys', 'meminfo', PKG], {encoding: 'utf8', timeout: 25000}).match(/TOTAL PSS:\s*(\d+)|TOTAL\s+(\d+)/) || []).slice(1).find(Boolean) / 1024 | 0; } catch (_) { return -1; } };
 const results = [];
 for (const [pid2, p] of pages) {
   cur = {id: pid2, url: p, errors: []};
@@ -79,12 +81,12 @@ for (const [pid2, p] of pages) {
   const ev = await send('Runtime.evaluate', {returnByValue: true, expression:
     `JSON.stringify({title:document.title,native:window.PILAR_NATIVE&&PILAR_NATIVE.platform,tier:window.PILAR&&PILAR.device&&PILAR.device.tier,
       text:(document.body&&document.body.innerText||'').length,w:innerWidth,h:innerHeight,dpr:devicePixelRatio,
-      webgl:!!document.createElement('canvas').getContext('webgl'),href:location.pathname})`});
+      heap:performance.memory?Math.round(performance.memory.usedJSHeapSize/1048576):-1,href:location.pathname})`});
   try { Object.assign(cur, JSON.parse(ev.result.result.value)); } catch (_) { cur.errors.push('evaluate gagal ' + (ev.error || '')); if (ev.error) { results.push(cur); dumpLogs(pid2); break; } }
   const shot = await send('Page.captureScreenshot', {format: 'png'});
   if (shot.result?.data) await fs.writeFile(path.join(outDir, `${label}-${pid2}.png`), Buffer.from(shot.result.data, 'base64'));
   results.push(cur);
-  console.log(`[android-smoke] ${cur.errors.length ? '✗' : '✓'} ${label}/${pid2} "${cur.title}" ${cur.w}x${cur.h}@${cur.dpr} tier=${cur.tier} native=${cur.native} teks=${cur.text}` +
+  console.log(`[android-smoke] ${cur.errors.length ? '✗' : '✓'} ${label}/${pid2} "${cur.title}" ${cur.w}x${cur.h}@${cur.dpr} tier=${cur.tier} native=${cur.native} teks=${cur.text} heap=${cur.heap}MB pss=${pss()}MB` +
     (cur.errors.length ? '\n   ' + cur.errors.slice(0, 8).join('\n   ') : ''));
 }
 
