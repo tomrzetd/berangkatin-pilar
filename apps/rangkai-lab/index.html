@@ -9,6 +9,8 @@
 <link rel="stylesheet" href="../../css/pilar-ceria.css">
 <script src="../../core/device-profile.js"></script>
 <style>
+/* Mode lite (IFP Mali 4K / GPU software): bayangan SVG per komponen dimatikan — ratusan feDropShadow sangat berat */
+html[data-fx="lite"] svg [filter]{filter:none!important}
 html,body{height:100%;overflow:hidden}
 body.ceria{display:grid;grid-template-rows:auto 1fr;height:100dvh}
 .bar{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;padding:.45rem .6rem;border-bottom:var(--bw) solid var(--ink);background:#fff;z-index:5}

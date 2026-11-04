@@ -138,7 +138,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {label: ifp-tablet, profile: pixel_c, order: reverse}
+          - {label: ifp-tablet, profile: pixel_c, order: normal}
           - {label: hp, profile: pixel_6, order: normal}
     steps:
       - uses: actions/checkout@v4
