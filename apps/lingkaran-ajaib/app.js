@@ -35,10 +35,13 @@
   /* ---------- gambar ---------- */
   function glow(path, color, w) {
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    const ghost = ctx.globalAlpha < 1;
+    if (ghost && !C.dark) { ctx.strokeStyle = color; ctx.lineWidth = w + 1; path(); ctx.stroke(); ctx.globalAlpha = 1; return; }
+    const ga = ctx.globalAlpha;
     if (C.dark) {
-      if (!LITE()) { ctx.globalAlpha = .13; ctx.strokeStyle = color; ctx.lineWidth = w * 5; path(); ctx.stroke(); }
-      ctx.globalAlpha = .32; ctx.strokeStyle = color; ctx.lineWidth = w * 2.4; path(); ctx.stroke();
-      ctx.globalAlpha = 1; ctx.lineWidth = w; path(); ctx.stroke();
+      if (!LITE()) { ctx.globalAlpha = .13 * ga; ctx.strokeStyle = color; ctx.lineWidth = w * 5; path(); ctx.stroke(); }
+      ctx.globalAlpha = .32 * ga; ctx.strokeStyle = color; ctx.lineWidth = w * 2.4; path(); ctx.stroke();
+      ctx.globalAlpha = ga; ctx.lineWidth = w; path(); ctx.stroke();
     } else {
       ctx.globalAlpha = 1; ctx.strokeStyle = C.ink; ctx.lineWidth = w + 3; path(); ctx.stroke();
       ctx.strokeStyle = color; ctx.lineWidth = w; path(); ctx.stroke();
@@ -121,12 +124,20 @@
       ['negatif', 'Buat sin dan cos sama-sama negatif', 'Tanda tergantung kuadran', 'Di kuadran III (180°–270°) titik di kiri-bawah, jadi kedua bayangan negatif. Kuadran I: +,+ · II: cos − · IV: sin −.']
     ],
     layout() {
-      const narrow = W < 640;
-      this.R = narrow ? Math.min(W * .27, (H - 70) / 3.6) : Math.min(W * .2, (H - 70) / 3.3, H * .36);
-      this.cx = 24 + this.R + 26; this.cy = 30 + this.R + 16;
-      this.gx0 = this.cx + this.R + (narrow ? 26 : 46); this.gx1 = W - 26; this.gw = Math.max(60, this.gx1 - this.gx0);
-      this.ar = Math.max(24, Math.min(this.R * .55, (H - (this.cy + this.R) - 56) / 2));
-      this.cy2 = this.cy + this.R + 34 + this.ar;
+      this.portrait = W < 640 && H > W * 1.05;
+      if (this.portrait) {   // HP tegak: lingkaran di atas, grafik di bawahnya
+        this.R = Math.min(W * .3, H * .2); this.cx = W / 2; this.cy = 48 + this.R + 16;
+        this.gx0 = 40; this.gx1 = W - 22; this.gw = this.gx1 - this.gx0;
+        const room = H - (this.cy + this.R + 30) - 40; this.as = Math.max(22, Math.min(this.R * .6, room / 4.6));
+        this.cyS = this.cy + this.R + 34 + this.as; this.ar = this.as; this.cy2 = this.cyS + this.as + 34 + this.ar;
+      } else {
+        this.R = Math.min(W * .2, (H - 92) / 3.3, H * .35);
+        this.cx = 24 + this.R + 26; this.cy = 50 + this.R + 14;
+        this.gx0 = this.cx + this.R + 46; this.gx1 = W - 26; this.gw = Math.max(60, this.gx1 - this.gx0);
+        this.as = this.R; this.cyS = this.cy;
+        this.ar = Math.max(24, Math.min(this.R * .55, (H - (this.cy + this.R) - 56) / 2));
+        this.cy2 = this.cy + this.R + 34 + this.ar;
+      }
     },
     side() {
       return sideShell(`Ini titik di lingkaran berjari-jari <b>1</b>. Senter dari samping membuat <b class="sin">bayangan merah</b> naik-turun, senter dari atas membuat <b class="cos">bayangan kuning</b> maju-mundur.<span class="q">👉 Seret titik putih pelan-pelan dan lihat gelombang di kanan!</span>`,
@@ -183,7 +194,7 @@
     },
     draw(dt) {
       if (this.play && !this.drag) this.setAngle(this.th + dt * .45, false);
-      const {R, cx, cy, gx0, gw, ar, cy2} = this, th = this.th, px = cx + R * Math.cos(th), py = cy - R * Math.sin(th);
+      const {R, cx, cy, gx0, gw, ar, cy2, as, cyS} = this, th = this.th, px = cx + R * Math.cos(th), py = cy - R * Math.sin(th);
       grid(Math.max(24, R / 2));
       // sumbu & kuadran
       line(cx - R - 18, cy, cx + R + 18, cy, C.axis, 1.5); line(cx, cy - R - 18, cx, cy + R + 18, C.axis, 1.5);
@@ -210,24 +221,24 @@
       glow(() => { ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(px, py); }, C.dark ? '#ffffff' : '#ffffff', 3);
       // grafik sin (skala sama → bayangan lurus mendatar)
       const gx = t => gx0 + t / TAU * gw;
-      line(gx0, cy, gx0 + gw, cy, C.axis, 1.2); line(gx0, cy - R, gx0, cy + R, C.axis, 1);
+      line(gx0, cyS, gx0 + gw, cyS, C.axis, 1.2); line(gx0, cyS - as, gx0, cyS + as, C.axis, 1);
       line(gx0, cy2, gx0 + gw, cy2, C.axis, 1.2); line(gx0, cy2 - ar, gx0, cy2 + ar, C.axis, 1);
-      [1, 2, 3, 4].forEach(k => { const x = gx(k * PI / 2), lab = this.unit === 'deg' ? k * 90 + '°' : ['π/2', 'π', '3π/2', '2π'][k - 1];
-        line(x, cy - 4, x, cy + 4, C.tick, 1); text(lab, x, cy + 14, C.tick, 11); line(x, cy2 - 4, x, cy2 + 4, C.tick, 1); text(lab, x, cy2 + 14, C.tick, 11); });
-      text('1', gx0 - 10, cy - R, C.tick, 11); text('−1', gx0 - 12, cy + R, C.tick, 11);
-      text('sin θ', gx0 + 8, cy - R - 12, C.sin, 14, 'left', 900); text('cos θ', gx0 + 8, cy2 - ar - 12, C.cos, 14, 'left', 900);
+      [1, 2, 3, 4].filter(k => gw > 300 || k % 2 === 0).forEach(k => { const x = gx(k * PI / 2), lab = this.unit === 'deg' ? k * 90 + '°' : ['π/2', 'π', '3π/2', '2π'][k - 1];
+        line(x, cyS - 4, x, cyS + 4, C.tick, 1); text(lab, x, cyS + 14, C.tick, 11); line(x, cy2 - 4, x, cy2 + 4, C.tick, 1); text(lab, x, cy2 + 14, C.tick, 11); });
+      text('1', gx0 - 10, cyS - as, C.tick, 11); text('−1', gx0 - 12, cyS + as, C.tick, 11);
+      text('sin θ', gx0 + 8, cyS - as - 12, C.sin, 14, 'left', 900); text('cos θ', gx0 + 8, cy2 - ar - 12, C.cos, 14, 'left', 900);
       const wave = (fn, yc, amp, t1, w, col, alpha) => { ctx.globalAlpha = alpha; glow(() => { ctx.beginPath(); for (let i = 0; i <= 160; i++) { const t = t1 * i / 160; i ? ctx.lineTo(gx(t), yc - amp * fn(t)) : ctx.moveTo(gx(t), yc - amp * fn(t)); } }, col, w); ctx.globalAlpha = 1; };
-      ctx.globalAlpha = .25; wave(Math.sin, cy, R, TAU, 1.5, C.sin, .25); wave(Math.cos, cy2, ar, TAU, 1.5, C.cos, .25); ctx.globalAlpha = 1;
-      if (th > 1e-3) { wave(Math.sin, cy, R, th, 3.2, C.sin, 1); wave(Math.cos, cy2, ar, th, 3.2, C.cos, 1); }
-      const sx = gx(th), sy = cy - R * Math.sin(th), csy = cy2 - ar * Math.cos(th);
-      line(px, py, sx, sy, C.sin, 1.5, [6, 6]); line(sx, sy, sx, cy, C.sin, 1, [3, 4]); line(sx, csy, sx, cy2, C.cos, 1, [3, 4]);
+      wave(Math.sin, cyS, as, TAU, 1.5, C.sin, .3); wave(Math.cos, cy2, ar, TAU, 1.5, C.cos, .3);
+      if (th > 1e-3) { wave(Math.sin, cyS, as, th, 3.2, C.sin, 1); wave(Math.cos, cy2, ar, th, 3.2, C.cos, 1); }
+      const sx = gx(th), sy = cyS - as * Math.sin(th), csy = cy2 - ar * Math.cos(th);
+      if (!this.portrait) line(px, py, sx, sy, C.sin, 1.5, [6, 6]); line(sx, sy, sx, cyS, C.sin, 1, [3, 4]); line(sx, csy, sx, cy2, C.cos, 1, [3, 4]);
       dot(sx, sy, 6, C.sin); dot(sx, csy, 6, C.cos); dot(px, cy, 4.5, C.cos);
       dot(px, py, this.drag ? 11 : 9, C.pt, true);
     },
     down(p) {
       const {cx, cy, R} = this;
       if (Math.hypot(p.x - cx, p.y - cy) < R * 1.4) { this.drag = 'c'; this.play = false; this.syncBtns(); this.setAngle(Math.atan2(cy - p.y, p.x - cx), true); return true; }
-      if (p.x > this.gx0 - 10 && p.x < this.gx0 + this.gw + 10 && p.y < this.cy2 + this.ar + 20) { this.drag = 'g'; this.play = false; this.syncBtns(); this.move(p); return true; }
+      if (p.x > this.gx0 - 10 && p.x < this.gx0 + this.gw + 10 && p.y > (this.portrait ? this.cy + this.R + 10 : 0) && p.y < this.cy2 + this.ar + 20) { this.drag = 'g'; this.play = false; this.syncBtns(); this.move(p); return true; }
     },
     move(p) {
       if (this.drag === 'c') this.setAngle(Math.atan2(this.cy - p.y, p.x - this.cx), true);
@@ -356,8 +367,9 @@
     ],
     layout() {
       const pad = 22, top = Math.min(80, H * .16), left = Math.min(80, W * .14);
-      this.S = Math.max(120, Math.min(W - left - pad * 2, H - top - pad * 2)); this.A = this.S / 2 * .9;
-      this.mx = left + pad + (W - left - pad * 2) / 2; this.my = top + pad + (H - top - pad * 2) / 2;
+      const bot = Math.min(70, H * .12);
+      this.S = Math.max(120, Math.min(W - left - pad * 2, H - top - bot - pad * 2)); this.A = this.S / 2 * .9;
+      this.mx = left + pad + (W - left - pad * 2) / 2; this.my = top + pad + (H - top - bot - pad * 2) / 2;
       this.top = top; this.left = left;
     },
     side() {
@@ -383,7 +395,7 @@
       $('v3a').textContent = this.a; $('v3b').textContent = this.b; $('o3d').textContent = Math.round(this.dd) + '°';
       if (!this.spin) $('s3d').value = this.dd;
       const r = this.ratio(); $('r3').textContent = `a : b = ${this.a} : ${this.b}` + (r !== this.a + ':' + this.b ? ` = ${r}` : '');
-      this.drawn = 0;
+      this.drawn = 0; this.t = 0;
       if (RATIOS.includes(r) && !ST.cards['l' + r]) { ST.cards['l' + r] = 1; save(); toast('🃏 Kartu baru: ' + r.replace(':', ' : ')); }
       const n = RATIOS.filter(x => ST.cards['l' + x]).length; if (n >= 6) mission(this, 'koleksi');
       if (!this.spin) {
@@ -437,7 +449,7 @@
       ctx.globalAlpha = 1;
       const p = this.pt(tt), x = mx + A * p[0], y = my - A * p[1];
       // pemutar atas (a) & kiri (b)
-      const rr = Math.min(28, top * .32, left * .32), tx = mx - A - rr * 1.6, ty = my - A - top * .55, lx = mx - A - left * .55, ly = my + A + rr * 1.6 - (H < 500 ? rr * 3 : 0);
+      const rr = Math.min(26, top * .3, left * .3), ty = my - A - top * .45, tx = mx - A - rr - 14, lx = mx - A - left * .45, ly = my + A + rr + 14;
       line(mx - A, ty, mx + A, ty, C.axis, 1); line(lx, my - A, lx, my + A, C.axis, 1);
       const drv = (cx2, cy2, ang, col, lab) => { ctx.globalAlpha = .7; glow(() => { ctx.beginPath(); ctx.arc(cx2, cy2, rr, 0, TAU); }, col, 2); ctx.globalAlpha = 1; const ex = cx2 + rr * Math.cos(ang), ey = cy2 - rr * Math.sin(ang); line(cx2, cy2, ex, ey, col, 2.5); dot(ex, ey, 4, col); text(lab, cx2, cy2 + rr + 11, col, 11, 'center', 900); };
       drv(tx, ty, this.a * tt + rad(this.dd) - PI / 2, C.accent, '×' + this.a); drv(lx, ly, this.b * tt, C.sin, '×' + this.b);
@@ -475,7 +487,7 @@
       document.querySelectorAll('[data-sh]').forEach(b => b.classList.toggle('on', b.dataset.sh === k));
     },
     recompute() {
-      this.rec = M.reconstruct(this.coefs, this.K, 400); this.simv = M.similarity(this.pts, this.coefs, this.K); this.drawn = 0;
+      this.rec = M.reconstruct(this.coefs, this.K, 400); this.simv = M.similarity(this.pts, this.coefs, this.K); this.drawn = 0; this.t = 0;
       if ($('o4k')) { $('o4k').textContent = this.K; $('s4k').value = this.K; $('m4').style.width = (this.simv * 100) + '%'; $('p4').textContent = Math.round(this.simv * 100) + '%'; }
       const s = this.simv, k = this.shape;
       if (k === 'hati' && this.K === 1 && mission(this, 'satu')) say('Dengan 1 lingkaran, hati jadi… <b>bulat</b> saja. Tambah lingkaran satu per satu dan lihat kapan bentuk hati muncul!', 'think');
@@ -516,9 +528,9 @@
       }
       // target asli
       ctx.setLineDash([6, 7]); ctx.strokeStyle = C.axis; ctx.lineWidth = 2; ctx.beginPath(); this.pts.forEach((p, i) => i ? ctx.lineTo(X(p), Y(p)) : ctx.moveTo(X(p), Y(p))); ctx.closePath(); ctx.stroke(); ctx.setLineDash([]);
-      this.t = (this.t + dt * this.speed / 7) % 1; this.drawn = Math.min(1, this.drawn + dt * this.speed / 7);
-      // lintasan rekonstruksi
-      const n = this.rec.length, upto = this.drawn >= 1 ? n : Math.floor(this.drawn * n);
+      const step = dt * this.speed / 7; this.drawn = Math.min(1, this.drawn + step); this.t = (this.t + step) % 1;
+      // lintasan rekonstruksi: putaran pertama digambar mengikuti pena, sesudahnya utuh
+      const n = this.rec.length, upto = this.drawn >= 1 ? n : Math.floor(this.t * n);
       if (upto > 1) glow(() => { ctx.beginPath(); for (let i = 0; i <= upto; i++) { const p = this.rec[i % n]; i ? ctx.lineTo(X(p), Y(p)) : ctx.moveTo(X(p), Y(p)); } }, C.sin, 3.2);
       // rantai lingkaran
       let x = 0, y = 0; const showN = Math.min(this.K, LITE() ? 40 : 80);
