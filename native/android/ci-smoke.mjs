@@ -54,7 +54,17 @@ ws.onmessage = ev => {
     cur.errors.push('log ' + msg.params.entry.text.slice(0, 200) + ' ' + (msg.params.entry.url || '').replace('https://localhost', ''));
   }
 };
-const send = (method, params = {}) => new Promise(res => { const i = ++id; pend.set(i, res); ws.send(JSON.stringify({id: i, method, params})); });
+let wsClosed = false;
+ws.onclose = () => { wsClosed = true; console.log('[android-smoke] koneksi DevTools terputus (WebView/ aplikasi mungkin crash)'); pend.forEach(r => r({error: 'closed'})); pend.clear(); };
+const send = (method, params = {}, ms = 45000) => new Promise(res => {
+  if (wsClosed) return res({error: 'closed'});
+  const i = ++id; const t = setTimeout(() => { pend.delete(i); res({error: 'timeout ' + method}); }, ms);
+  pend.set(i, m => { clearTimeout(t); res(m); }); ws.send(JSON.stringify({id: i, method, params}));
+});
+function dumpLogs(tag) {
+  try { console.log('--- logcat crash (' + tag + ') ---\n' + adb('logcat', '-d', '-b', 'crash').slice(-6000)); } catch (_) {}
+  try { console.log('--- logcat chromium/ActivityManager ---\n' + adb('logcat', '-d', '-t', '400').split('\n').filter(l => /chromium|cr_|ActivityManager|lowmemorykiller|FATAL|AndroidRuntime|pilarhub/i.test(l)).slice(-80).join('\n')); } catch (e) { console.log('logcat gagal', e.message); }
+}
 await send('Runtime.enable'); await send('Log.enable'); await send('Page.enable');
 
 const reg = await fs.readFile(path.join(www, 'apps/registry.js'), 'utf8');
@@ -62,13 +72,14 @@ const pages = [['hub', '/index.html'], ...[...reg.matchAll(/id:'([^']+)'[^}]*?ur
 const results = [];
 for (const [pid2, p] of pages) {
   cur = {id: pid2, url: p, errors: []};
-  await send('Page.navigate', {url: 'https://localhost' + p});
+  const nav = await send('Page.navigate', {url: 'https://localhost' + p});
+  if (nav.error) { cur.errors.push('navigate: ' + nav.error); results.push(cur); dumpLogs(pid2); console.log(`[android-smoke] ✗ ${label}/${pid2} ${nav.error}`); break; }
   await sleep(8000);
   const ev = await send('Runtime.evaluate', {returnByValue: true, expression:
     `JSON.stringify({title:document.title,native:window.PILAR_NATIVE&&PILAR_NATIVE.platform,tier:window.PILAR&&PILAR.device&&PILAR.device.tier,
       text:(document.body&&document.body.innerText||'').length,w:innerWidth,h:innerHeight,dpr:devicePixelRatio,
       webgl:!!document.createElement('canvas').getContext('webgl'),href:location.pathname})`});
-  try { Object.assign(cur, JSON.parse(ev.result.result.value)); } catch (_) { cur.errors.push('evaluate gagal'); }
+  try { Object.assign(cur, JSON.parse(ev.result.result.value)); } catch (_) { cur.errors.push('evaluate gagal ' + (ev.error || '')); if (ev.error) { results.push(cur); dumpLogs(pid2); break; } }
   const shot = await send('Page.captureScreenshot', {format: 'png'});
   if (shot.result?.data) await fs.writeFile(path.join(outDir, `${label}-${pid2}.png`), Buffer.from(shot.result.data, 'base64'));
   results.push(cur);
@@ -88,9 +99,9 @@ const DEEP = `(async()=>{const r={};const t0=performance.now();
   await tf.ready();r.tfjs='ok '+tf.getBackend()+' '+tf.tensor([1,2,3]).sum().dataSync()[0]}catch(e){r.tfjs='GAGAL '+e}
  try{const fa=await fetch('/_cdn/cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2');r.fontawesome=fa.ok?'ok':'GAGAL '+fa.status}catch(e){r.fontawesome='GAGAL '+e}
  return JSON.stringify(r)})()`;
-await send('Page.navigate', {url: 'https://localhost/index.html'}); await sleep(5000);
-const deep = await send('Runtime.evaluate', {expression: DEEP, awaitPromise: true, returnByValue: true, timeout: 120000});
-const deepRes = deep.result?.result?.value || JSON.stringify(deep.result?.exceptionDetails || deep);
+if (!wsClosed) { await send('Page.navigate', {url: 'https://localhost/index.html'}); await sleep(5000); }
+const deep = wsClosed ? {error: 'closed'} : await send('Runtime.evaluate', {expression: DEEP, awaitPromise: true, returnByValue: true, timeout: 120000}, 150000);
+const deepRes = deep.result?.result?.value || ('GAGAL ' + JSON.stringify(deep.result?.exceptionDetails || deep).slice(0, 400));
 console.log('[android-smoke] uji mendalam offline:', deepRes);
 results.push({id: 'deep', deep: deepRes, errors: /GAGAL/.test(deepRes) ? [deepRes] : []});
 cur = null; ws.close();
@@ -98,3 +109,5 @@ const crash = adb('logcat', '-d', '-b', 'crash');
 await fs.writeFile(path.join(outDir, label + '-report.json'), JSON.stringify({info, results, crash}, null, 1));
 console.log(`[android-smoke] ${label}: ${results.filter(r => !r.errors.length).length}/${results.length} halaman bersih; crash log ${crash.trim() ? 'ADA' : 'kosong'}`);
 if (crash.includes(PKG)) { console.error(crash); process.exit(1); }
+if (results.length < pages.length + 1 || results.some(r => r.errors.some(e => !/favicon/.test(e)))) { console.error('[android-smoke] ada halaman bermasalah'); process.exit(1); }
+process.exit(0);

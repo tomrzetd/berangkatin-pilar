@@ -38,7 +38,7 @@
   // IFP Android: layar fisik besar (>=3000 px), touch banyak titik, bukan UA ponsel.
   if(android&&!phoneUA&&(touch>=10||scrW>=3000))tier='ifp';
   else if(phoneUA||(android&&phoneUA))tier='mobile';
-  else if(ios)tier='tablet';
+  else if(ios||android)tier='tablet';   // tablet Android / IFP kecil tanpa 10 titik sentuh
   else if(intelIGPU)tier='laptop';
   // Laptop yang "meminjam" layar sentuh IFP lewat HDMI + USB-touch: tetap laptop GPU, tapi layar besar & multitouch.
   const bigTouch=!android&&touch>=10;
