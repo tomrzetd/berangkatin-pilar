@@ -75,6 +75,24 @@ for (const [pid2, p] of pages) {
   console.log(`[android-smoke] ${cur.errors.length ? '✗' : '✓'} ${label}/${pid2} "${cur.title}" ${cur.w}x${cur.h}@${cur.dpr} tier=${cur.tier} native=${cur.native} teks=${cur.text}` +
     (cur.errors.length ? '\n   ' + cur.errors.slice(0, 8).join('\n   ') : ''));
 }
+
+/* Uji mendalam OFFLINE: AI MediaPipe (model tangan dari APK), three.js, TF.js */
+const DEEP = `(async()=>{const r={};const t0=performance.now();
+ try{const v=await import('/_cdn/cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/+esm.js');
+  const fs=await v.FilesetResolver.forVisionTasks('/_cdn/cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm');
+  const h=await v.HandLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:'/_cdn/storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',delegate:'CPU'},runningMode:'IMAGE',numHands:1});
+  const c=document.createElement('canvas');c.width=c.height=256;c.getContext('2d').fillRect(0,0,99,99);h.detect(c);r.mediapipe='ok '+Math.round(performance.now()-t0)+'ms';h.close()}catch(e){r.mediapipe='GAGAL '+e}
+ try{await new Promise((ok,no)=>{const s=document.createElement('script');s.src='/_cdn/cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js';s.onload=ok;s.onerror=no;document.head.appendChild(s)});
+  const rd=new THREE.WebGLRenderer();rd.setSize(64,64);rd.render(new THREE.Scene(),new THREE.PerspectiveCamera());r.three='ok r'+THREE.REVISION+' '+rd.getContext().getParameter(rd.getContext().VERSION);rd.dispose()}catch(e){r.three='GAGAL '+e}
+ try{await new Promise((ok,no)=>{const s=document.createElement('script');s.src='/_cdn/cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js';s.onload=ok;s.onerror=no;document.head.appendChild(s)});
+  await tf.ready();r.tfjs='ok '+tf.getBackend()+' '+tf.tensor([1,2,3]).sum().dataSync()[0]}catch(e){r.tfjs='GAGAL '+e}
+ try{const fa=await fetch('/_cdn/cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2');r.fontawesome=fa.ok?'ok':'GAGAL '+fa.status}catch(e){r.fontawesome='GAGAL '+e}
+ return JSON.stringify(r)})()`;
+await send('Page.navigate', {url: 'https://localhost/index.html'}); await sleep(5000);
+const deep = await send('Runtime.evaluate', {expression: DEEP, awaitPromise: true, returnByValue: true, timeout: 120000});
+const deepRes = deep.result?.result?.value || JSON.stringify(deep.result?.exceptionDetails || deep);
+console.log('[android-smoke] uji mendalam offline:', deepRes);
+results.push({id: 'deep', deep: deepRes, errors: /GAGAL/.test(deepRes) ? [deepRes] : []});
 cur = null; ws.close();
 const crash = adb('logcat', '-d', '-b', 'crash');
 await fs.writeFile(path.join(outDir, label + '-report.json'), JSON.stringify({info, results, crash}, null, 1));

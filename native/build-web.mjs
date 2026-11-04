@@ -88,6 +88,8 @@ for (const f of files) {
   }
   await fs.writeFile(dst, rewriteSource(txt, f));
 }
+// ikon tab/aplikasi (WebView meminta /favicon.ico)
+await fs.copyFile(path.join(ROOT, 'native', 'icons', 'icon.ico'), path.join(OUT, 'favicon.ico')).catch(() => {});
 // shim native
 await fs.mkdir(path.join(OUT, '_native'), {recursive: true});
 await fs.copyFile(path.join(ROOT, 'native', 'shim.js'), path.join(OUT, '_native', 'shim.js'));
