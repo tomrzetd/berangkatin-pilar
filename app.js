@@ -326,7 +326,7 @@
 
   try{window.PILAR_PULSE?.setApp?.('hub')}catch(_){}
 
-  if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
+  if('serviceWorker' in navigator&&location.protocol.startsWith('http')&&!window.PILAR_NATIVE){
     navigator.serviceWorker.register('service-worker.js').catch(err=>console.warn('Service worker gagal didaftarkan',err));
   }
 })();

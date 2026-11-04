@@ -1,0 +1,34 @@
+{
+  "name": "pilar-hub",
+  "productName": "PILAR Hub",
+  "version": "0.8.2",
+  "description": "PILAR Hub — lab maya, game edukasi, dan alat MPI untuk IFP, laptop, dan HP (versi desktop offline)",
+  "author": "PILAR · berangkatin",
+  "license": "UNLICENSED",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "smoke": "PILAR_SMOKE=1 electron .",
+    "dist:win": "electron-builder --win nsis portable --x64",
+    "dist:linux": "electron-builder --linux AppImage deb --x64"
+  },
+  "devDependencies": {
+    "electron": "^37.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "id.berangkatin.pilarhub",
+    "productName": "PILAR Hub",
+    "copyright": "PILAR",
+    "directories": {"output": "dist", "buildResources": "icons"},
+    "files": ["main.js", "preload.js", "smoke.js", "icons/**", "www/**", "package.json"],
+    "asar": true,
+    "asarUnpack": [],
+    "compression": "normal",
+    "win": {"icon": "icons/icon.ico", "target": ["nsis", "portable"], "artifactName": "PILAR-Hub-${version}-${arch}-${target}.${ext}"},
+    "nsis": {"oneClick": false, "perMachine": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "shortcutName": "PILAR Hub", "language": "1057"},
+    "portable": {"artifactName": "PILAR-Hub-${version}-portable.exe"},
+    "linux": {"icon": "icons/icon-512.png", "target": ["AppImage", "deb"], "category": "Education", "maintainer": "PILAR <noreply@berangkatin.id>", "artifactName": "PILAR-Hub-${version}-${arch}.${ext}"},
+    "deb": {"depends": ["libnss3", "libgtk-3-0", "libasound2t64 | libasound2"]}
+  }
+}

@@ -1,0 +1,11 @@
+# native build output
+native/www/
+native/out/
+native/electron/www/
+native/electron/icons/
+native/electron/node_modules/
+native/electron/dist/
+native/electron/smoke-out/
+native/android/www/
+native/android/android/
+native/android/node_modules/

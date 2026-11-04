@@ -1,0 +1,14 @@
+{
+  "appId": "id.berangkatin.pilarhub",
+  "appName": "PILAR Hub",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": false,
+    "backgroundColor": "#07101b"
+  },
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  }
+}

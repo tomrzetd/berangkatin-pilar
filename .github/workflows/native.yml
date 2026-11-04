@@ -1,0 +1,187 @@
+name: Aplikasi native (Electron x86 + Android)
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: native-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PILAR_VERSION_NAME: 0.8.${{ github.run_number }}
+  PILAR_VERSION_CODE: ${{ github.run_number }}
+
+jobs:
+  web:
+    name: Bundel web offline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 22}
+      - run: node native/build-web.mjs native/www
+      - run: du -sh native/www && cat native/www/_native/build.json | head -40
+      - uses: actions/upload-artifact@v4
+        with: {name: www, path: native/www, retention-days: 7}
+
+  electron-linux:
+    name: Electron · Linux x64 + uji asap
+    needs: web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 22}
+      - uses: actions/download-artifact@v4
+        with: {name: www, path: native/electron/www}
+      - name: Siapkan
+        working-directory: native/electron
+        run: |
+          cp -r ../icons icons
+          npm version --no-git-tag-version --allow-same-version "$PILAR_VERSION_NAME"
+          npm install --no-audit --no-fund
+      - name: Uji asap (offline, kamera palsu)
+        working-directory: native/electron
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq xvfb >/dev/null
+          PILAR_SMOKE=1 PILAR_SMOKE_OUT=smoke-out xvfb-run -a -s "-screen 0 1366x768x24" npx electron . --no-sandbox 2>&1 | grep -v -E "dbus|Fontconfig|libva|GLib-GIO" || true
+          test -f smoke-out/report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: electron-smoke, path: native/electron/smoke-out, retention-days: 14}
+      - name: Build AppImage + deb
+        working-directory: native/electron
+        run: npx electron-builder --linux AppImage deb --x64 --publish never
+        env: {GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pilar-linux-x64
+          path: |
+            native/electron/dist/*.AppImage
+            native/electron/dist/*.deb
+
+  electron-windows:
+    name: Electron · Windows x64
+    needs: web
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 22}
+      - uses: actions/download-artifact@v4
+        with: {name: www, path: native/electron/www}
+      - name: Build installer + portable
+        working-directory: native/electron
+        shell: bash
+        run: |
+          cp -r ../icons icons
+          npm version --no-git-tag-version --allow-same-version "$PILAR_VERSION_NAME"
+          npm install --no-audit --no-fund
+          npx electron-builder --win nsis portable --x64 --publish never
+        env: {GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}', CSC_IDENTITY_AUTO_DISCOVERY: 'false'}
+      - uses: actions/upload-artifact@v4
+        with: {name: pilar-windows-x64, path: native/electron/dist/*.exe}
+
+  android:
+    name: Android APK (HP + IFP)
+    needs: web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 22}
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: 21}
+      - uses: actions/download-artifact@v4
+        with: {name: www, path: native/android/www}
+      - name: Proyek Capacitor
+        working-directory: native/android
+        run: |
+          npm install --no-audit --no-fund
+          npx cap add android
+          node patch-android.mjs
+          npx cap sync android
+      - name: Kunci tanda tangan (opsional)
+        env: {KS: '${{ secrets.ANDROID_KEYSTORE_B64 }}'}
+        run: |
+          if [ -n "$KS" ]; then echo "$KS" | base64 -d > "$RUNNER_TEMP/pilar.jks"; echo "PILAR_KEYSTORE=$RUNNER_TEMP/pilar.jks" >> "$GITHUB_ENV"; fi
+      - name: Gradle build
+        working-directory: native/android/android
+        env:
+          PILAR_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          PILAR_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          PILAR_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon -q assembleDebug
+          if [ -n "$PILAR_KEYSTORE" ]; then ./gradlew --no-daemon -q assembleRelease; fi
+          mkdir -p ../../out
+          cp app/build/outputs/apk/debug/app-debug.apk ../../out/PILAR-Hub-$PILAR_VERSION_NAME-debug.apk
+          if [ -f app/build/outputs/apk/release/app-release.apk ]; then cp app/build/outputs/apk/release/app-release.apk ../../out/PILAR-Hub-$PILAR_VERSION_NAME.apk; fi
+          ls -la ../../out
+      - uses: actions/upload-artifact@v4
+        with: {name: pilar-android, path: native/out/*.apk}
+
+  android-smoke:
+    name: Uji emulator · ${{ matrix.label }}
+    needs: android
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {label: ifp-tablet, profile: pixel_c}
+          - {label: hp, profile: pixel_6}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 22}
+      - uses: actions/download-artifact@v4
+        with: {name: pilar-android, path: apk}
+      - uses: actions/download-artifact@v4
+        with: {name: www, path: native/www}
+      - name: Aktifkan KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          target: google_apis
+          arch: x86_64
+          profile: ${{ matrix.profile }}
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back emulated -camera-front emulated
+          script: node native/android/ci-smoke.mjs "$(ls apk/*-debug.apk | head -1)" native/www android-smoke ${{ matrix.label }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: 'android-smoke-${{ matrix.label }}', path: android-smoke, retention-days: 14}
+
+  release:
+    name: Terbitkan unduhan
+    if: github.event_name != 'pull_request'
+    needs: [electron-linux, electron-windows, android]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {path: dl, pattern: 'pilar-*', merge-multiple: true}
+      - name: Rilis
+        env: {GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'}
+        run: |
+          ls -la dl
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then TAG="${GITHUB_REF#refs/tags/}"; PRE=""; else TAG=native-latest; PRE="--prerelease"
+            git tag -f "$TAG" && git push -f origin "refs/tags/$TAG"; fi
+          NOTES="PILAR Hub $PILAR_VERSION_NAME · Windows (installer & portable .exe), Linux (AppImage/.deb), Android (.apk untuk HP & IFP). Dibuat otomatis dari commit ${GITHUB_SHA::7}."
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" $PRE --title "PILAR Hub · aplikasi native ($TAG)" --notes "$NOTES"
+          gh release edit "$TAG" --notes "$NOTES"
+          for f in $(gh release view "$TAG" --json assets -q '.assets[].name'); do gh release delete-asset "$TAG" "$f" -y; done
+          gh release upload "$TAG" dl/* --clobber
