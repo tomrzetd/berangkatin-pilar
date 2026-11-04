@@ -133,7 +133,7 @@ jobs:
     name: Uji emulator · ${{ matrix.label }}
     needs: android
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 50
     strategy:
       fail-fast: false
       matrix:
@@ -159,6 +159,10 @@ jobs:
           arch: x86_64
           profile: ${{ matrix.profile }}
           disable-animations: true
+          ram-size: 4096M
+          heap-size: 576M
+          cores: 4
+          emulator-boot-timeout: 900
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back emulated -camera-front emulated
           script: node native/android/ci-smoke.mjs "$(ls apk/*-debug.apk | head -1)" native/www android-smoke ${{ matrix.label }}
       - uses: actions/upload-artifact@v4

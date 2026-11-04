@@ -9,11 +9,12 @@ import path from 'node:path';
 
 const [apk, www, outDir = 'android-smoke', label = 'device'] = process.argv.slice(2);
 const PKG = 'id.berangkatin.pilarhub';
-const adb = (...a) => execFileSync('adb', a, {encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 << 20});
+const adb = (...a) => execFileSync('adb', a, {encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 << 20, timeout: 180000});
+console.log('[android-smoke] mulai', new Date().toISOString());
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 await fs.mkdir(outDir, {recursive: true});
 
-adb('install', '-r', '-g', apk);
+adb('wait-for-device'); console.log('[android-smoke] pasang APK…'); adb('install', '-r', '-g', apk); console.log('[android-smoke] APK terpasang');
 for (const p of ['CAMERA', 'RECORD_AUDIO']) try { adb('shell', 'pm', 'grant', PKG, 'android.permission.' + p); } catch (_) {}
 // Uji OFFLINE: matikan jaringan emulator — semua pustaka harus berasal dari APK
 for (const c of [['svc', 'wifi', 'disable'], ['svc', 'data', 'disable']]) try { adb('shell', ...c); } catch (_) {}
@@ -27,7 +28,7 @@ const info = {
   orientation: (adb('shell', 'dumpsys', 'input').match(/SurfaceOrientation:\s*(\d)/) || [])[1]
 };
 console.log('[android-smoke]', JSON.stringify(info));
-await fs.writeFile(path.join(outDir, label + '-hub-screen.png'), execFileSync('adb', ['exec-out', 'screencap', '-p'], {maxBuffer: 64 << 20}));
+await fs.writeFile(path.join(outDir, label + '-hub-screen.png'), execFileSync('adb', ['exec-out', 'screencap', '-p'], {maxBuffer: 64 << 20, timeout: 60000}));
 
 const pid = adb('shell', 'pidof', PKG).trim().split(/\s+/)[0];
 adb('forward', 'tcp:9333', 'localabstract:webview_devtools_remote_' + pid);
