@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="id" data-theme="gelap">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a1222">
+<meta name="description" content="Lingkaran Ajaib — titik berputar di lingkaran menjadi gelombang, Lissajous, lalu menggambar hati dengan lingkaran berputar (Fourier). Numerasi & matematika SMP yang bisa dilihat.">
+<title>PILAR™ · Lingkaran Ajaib · Gelombang & Gambar</title>
+<script>try{var t=localStorage.getItem('pilar_lingkaran_theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<script src="../../core/device-profile.js"></script>
+<style>
+@font-face{font-family:"Fredoka";src:url("../../vendor/fonts/fredoka-var.woff") format("woff");font-weight:300 700;font-display:swap}
+@font-face{font-family:"Nunito";src:url("../../vendor/fonts/nunito-var.woff") format("woff");font-weight:200 1000;font-display:swap}
+/* ---------- dua tema ---------- */
+:root{--f-head:"Fredoka","Trebuchet MS",system-ui,sans-serif;--f-body:"Nunito","Trebuchet MS",system-ui,sans-serif;--tap:48px;--r:20px}
+html[data-device="ifp"]{--tap:60px}
+html[data-theme="gelap"]{
+ --bg:#070e1c;--bg2:#0d1830;--panel:#0f1b31;--panel2:#13223d;--line:#243655;--text:#e8f1ff;--muted:#93a8c8;
+ --accent:#2ee6d6;--sin:#ff4f7b;--cos:#ffd23f;--pt:#ffffff;--trail:#2ee6d6;--alt:#a78bfa;--good:#5ef08f;--bad:#ff6b85;
+ --grid:#ffffff10;--axis:#ffffff38;--tick:#ffffff70;--stage:#050b17;
+ --bw:1.5px;--sh:0 10px 30px #0008;--btn:#14233f;--btnon:#1d3a5c;--ink:#e8f1ff;--bubble:#13223d
+}
+html[data-theme="ceria"]{
+ --bg:#f5f9ff;--bg2:#eaf3ff;--panel:#ffffff;--panel2:#f4f8ff;--line:#17243a;--text:#17243a;--muted:#4a5a70;
+ --accent:#0fa3b1;--sin:#e0446a;--cos:#e8a400;--pt:#17243a;--trail:#0fa3b1;--alt:#7c4dff;--good:#2f9e57;--bad:#d9445f;
+ --grid:#17243a12;--axis:#17243a55;--tick:#17243a90;--stage:#fffdf7;
+ --bw:3px;--sh:4px 5px 0 #17243a;--btn:#ffffff;--btnon:#ffe27c;--ink:#17243a;--bubble:#ffffff
+}
+html{font-size:clamp(14px,.45vw + 9.5px,23px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--f-body);-webkit-tap-highlight-color:transparent;transition:background .3s}
+html[data-theme="gelap"] body{background:radial-gradient(1200px 700px at 70% -10%,#16305a55,transparent),radial-gradient(900px 600px at 0% 110%,#2ee6d614,transparent),var(--bg)}
+html[data-theme="ceria"] body{background-image:radial-gradient(#d7e6f3 1.3px,transparent 1.3px);background-size:24px 24px}
+button{font:inherit;color:inherit;touch-action:manipulation}
+.wrap{max-width:1900px;margin:auto;padding:.6rem .9rem 1rem}
+/* ---------- kepala ---------- */
+.top{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.6rem}
+.top h1{margin:0;font:600 clamp(1.15rem,2vw,1.8rem)/1.1 var(--f-head);flex:1 1 auto}
+.top h1 small{display:block;font:800 .78rem var(--f-body);color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4em;min-height:var(--tap);padding:.35em .95em;border:var(--bw) solid var(--line);border-radius:14px;background:var(--btn);box-shadow:var(--sh);font:600 .98rem var(--f-head);cursor:pointer;text-decoration:none;color:var(--text);transition:transform .08s,box-shadow .08s,background .2s}
+html[data-theme="gelap"] .btn{box-shadow:none}
+.btn:active{transform:translate(2px,3px)}html[data-theme="ceria"] .btn:active{box-shadow:1px 1px 0 var(--ink)}
+.btn.on,.btn[aria-pressed="true"]{background:var(--btnon)}
+html[data-theme="gelap"] .btn.on,html[data-theme="gelap"] .btn[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset,0 0 18px #2ee6d633}
+.btn.sm{min-height:calc(var(--tap)*.78);font-size:.88rem;padding:.25em .7em}
+.btn.go{background:#5ef08f33}html[data-theme="ceria"] .btn.go{background:#b8f3b2}
+.btn:disabled{opacity:.4;cursor:default}
+.seg{display:inline-flex;gap:.35rem;flex-wrap:wrap}
+.themes{display:inline-flex;padding:3px;border:var(--bw) solid var(--line);border-radius:16px;background:var(--panel)}
+.themes button{border:0;background:transparent;min-height:calc(var(--tap)*.8);padding:0 .8em;border-radius:12px;font:600 .9rem var(--f-head);cursor:pointer}
+.themes button.on{background:var(--btnon)}html[data-theme="gelap"] .themes button.on{color:#06101e;background:var(--accent)}
+.prog{display:flex;align-items:center;gap:.5rem;font-weight:900;font-size:.9rem}
+.bar{width:min(180px,30vw);height:12px;border-radius:9px;background:var(--panel2);border:var(--bw) solid var(--line);overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--alt));transition:width .5s}
+/* ---------- tab bab ---------- */
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem}
+.tab{display:flex;align-items:center;gap:.55em;min-height:var(--tap);padding:.3em .9em;border:var(--bw) solid var(--line);border-radius:16px;background:var(--panel);box-shadow:var(--sh);cursor:pointer;font:600 .98rem var(--f-head);color:var(--text)}
+html[data-theme="gelap"] .tab{box-shadow:none}
+.tab b{display:grid;place-items:center;width:1.7em;height:1.7em;border-radius:50%;border:var(--bw) solid var(--line);font-size:.85em}
+.tab.on{background:var(--btnon)}html[data-theme="gelap"] .tab.on{border-color:var(--accent);box-shadow:0 0 20px #2ee6d62b}
+.tab.done b{background:var(--good);color:#06101e;border-color:var(--good)}
+/* ---------- area kerja ---------- */
+.main{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,400px);gap:.8rem;align-items:stretch}
+html[data-device="ifp"] .main{grid-template-columns:minmax(0,1fr) minmax(420px,27vw)}
+.stage{position:relative;border:var(--bw) solid var(--line);border-radius:var(--r);background:var(--stage);overflow:hidden;min-height:420px;height:calc(100dvh - 9.6rem);box-shadow:var(--sh)}
+html[data-theme="gelap"] .stage{box-shadow:inset 0 0 0 1px #ffffff08,0 20px 60px #0009}
+canvas#cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
+.hud{position:absolute;left:.7rem;top:.6rem;display:flex;gap:.4rem;flex-wrap:wrap;pointer-events:none;z-index:2}
+.chip{padding:.2em .7em;border-radius:999px;border:var(--bw) solid var(--line);background:var(--panel);font:800 .86rem var(--f-body);color:var(--text)}
+html[data-theme="gelap"] .chip{background:#0b1730cc;backdrop-filter:blur(4px)}
+html[data-fx="lite"] .chip{backdrop-filter:none}
+.chip.sin{color:var(--sin)}.chip.cos{color:var(--cos)}.chip.acc{color:var(--accent)}
+.stagebar{position:absolute;right:.6rem;bottom:.6rem;display:flex;gap:.4rem;z-index:2;flex-wrap:wrap;justify-content:flex-end}
+.side{display:flex;flex-direction:column;gap:.65rem;min-width:0;max-height:calc(100dvh - 9.6rem);overflow:auto;overscroll-behavior:contain;padding:2px 4px 6px 2px;scrollbar-width:thin}
+.card{background:var(--panel);border:var(--bw) solid var(--line);border-radius:var(--r);padding:.8rem .9rem;box-shadow:var(--sh)}
+html[data-theme="gelap"] .card{box-shadow:none;background:linear-gradient(180deg,var(--panel2),var(--panel))}
+.card h3{margin:0 0 .5rem;font:600 1.05rem var(--f-head);display:flex;align-items:center;gap:.4em}
+.guide{display:grid;grid-template-columns:auto 1fr;gap:.6rem;align-items:start}
+.guide svg{width:3.6rem;height:auto}
+.bubble{position:relative;background:var(--bubble);border:var(--bw) solid var(--line);border-radius:16px;padding:.6rem .8rem;font-weight:700;line-height:1.5;font-size:.97rem}
+.bubble .q{display:block;margin-top:.35rem;color:var(--accent);font-weight:900}
+.bubble b.sin{color:var(--sin)}.bubble b.cos{color:var(--cos)}.bubble b.acc{color:var(--accent)}
+.row{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin:.35rem 0}
+.field{display:grid;grid-template-columns:auto 1fr auto;gap:.5rem;align-items:center;font-weight:800;margin:.4rem 0}
+.field input[type=range]{width:100%;height:var(--tap);accent-color:var(--accent)}
+.field output{min-width:4.2em;text-align:right;font:600 1rem var(--f-head)}
+.field .lbl{min-width:5.6em}
+.formula{font:600 1.35rem var(--f-head);text-align:center;padding:.5rem;border-radius:14px;background:var(--panel2);border:var(--bw) dashed var(--line);margin:.3rem 0;letter-spacing:.02em}
+.formula .a{color:var(--sin)}.formula .b{color:var(--accent)}.formula .c{color:var(--cos)}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
+.readout div{border:var(--bw) solid var(--line);border-radius:12px;padding:.35rem .55rem;background:var(--panel2)}
+.readout small{display:block;font-weight:800;color:var(--muted);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase}
+.readout b{font:600 1.25rem var(--f-head)}
+.readout .sin b{color:var(--sin)}.readout .cos b{color:var(--cos)}
+.missions{list-style:none;margin:0;padding:0}
+.missions li{display:flex;gap:.5em;padding:.32em 0;font-weight:700;border-bottom:1px dashed var(--line);font-size:.93rem}
+.missions li::before{content:"⬜";flex:none}.missions li.ok::before{content:"✅"}
+.missions li.ok{color:var(--muted)}
+.find{border:var(--bw) solid var(--line);border-radius:14px;padding:.5rem .7rem;margin-top:.45rem;background:#2ee6d61a;font-weight:700;font-size:.92rem;animation:pop .45s ease-out}
+html[data-theme="ceria"] .find{background:#b9f5e6;box-shadow:3px 3px 0 var(--ink)}
+.find b{font-family:var(--f-head);display:block}
+.find.locked{opacity:.45;border-style:dashed;background:transparent;box-shadow:none;animation:none}
+@keyframes pop{0%{transform:scale(.85);opacity:0}70%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:.4rem}
+.cards button{position:relative;aspect-ratio:1;border:var(--bw) solid var(--line);border-radius:12px;background:var(--panel2);cursor:pointer;padding:0;overflow:hidden}
+.cards button canvas{width:100%;height:100%;display:block}
+.cards button span{position:absolute;left:0;right:0;bottom:2px;font:600 .72rem var(--f-head);text-align:center}
+.cards button.lock{opacity:.5}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(30px);opacity:0;z-index:50;padding:.7rem 1.1rem;border-radius:16px;border:var(--bw) solid var(--line);background:var(--panel);font:600 1.02rem var(--f-head);box-shadow:var(--sh);transition:.3s;pointer-events:none;max-width:92vw;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.score{font:600 2rem var(--f-head);text-align:center;margin:.1rem 0}
+.meter{height:14px;border-radius:9px;background:var(--panel2);border:var(--bw) solid var(--line);overflow:hidden}.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--bad),var(--cos),var(--good));transition:width .25s}
+.note{font-size:.82rem;color:var(--muted);font-weight:700}
+@media(max-width:900px){
+ .main{grid-template-columns:1fr}.stage{height:62vh;min-height:360px}.side{max-height:none;overflow:visible}
+ .tab span{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="top">
+  <a class="btn sm" href="../../" title="Kembali ke PILAR Hub">⬅ Hub</a>
+  <h1>🌀 Lingkaran Ajaib<small>Titik yang berputar → gelombang → pola Lissajous → menggambar dengan lingkaran (Fourier)</small></h1>
+  <div class="prog" title="Misi selesai"><span id="progTxt">0/0</span><div class="bar"><i id="progBar"></i></div></div>
+  <div class="themes" role="group" aria-label="Tema tampilan">
+   <button type="button" data-theme="gelap">🌙 Gelap</button><button type="button" data-theme="ceria">☀️ Ceria</button>
+  </div>
+ </div>
+ <nav class="tabs" id="tabs">
+  <button class="tab" data-ch="0" type="button"><b>1</b>🔦<span>Bayangan Titik</span></button>
+  <button class="tab" data-ch="1" type="button"><b>2</b>〰️<span>Mesin Gelombang</span></button>
+  <button class="tab" data-ch="2" type="button"><b>3</b>➰<span>Tarian Lissajous</span></button>
+  <button class="tab" data-ch="3" type="button"><b>4</b>❤️<span>Menggambar dengan Lingkaran</span></button>
+ </nav>
+ <div class="main">
+  <div class="stage" id="stage">
+   <canvas id="cv" aria-label="Kanvas simulasi"></canvas>
+   <div class="hud" id="hud"></div>
+   <div class="stagebar" id="stagebar"></div>
+  </div>
+  <aside class="side" id="side"></aside>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="./fourier.js?v=1.0.0"></script>
+<script src="./app.js?v=1.0.0"></script>
+<script src="../../pulse/config.js"></script>
+<script src="../../core/pulse.js"></script>
+</body>
+</html>
