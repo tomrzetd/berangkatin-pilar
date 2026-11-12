@@ -1,101 +1,95 @@
-# PILAR
+# PILAR — Hub Pembelajaran Interaktif
 
-PILAR adalah hub pembelajaran interaktif berbasis web untuk simulasi, game, eksperimen, Vision AI, dan perangkat kelas.
+**PILAR** adalah kumpulan aplikasi pembelajaran berbasis web untuk simulasi, permainan edukatif, eksperimen, Vision AI, dan interaksi di kelas. Hub ini dirancang untuk dibuka melalui browser pada komputer, HP, atau *Interactive Flat Panel* (IFP); fitur dan kenyamanannya bergantung pada perangkat serta browser yang digunakan.
 
-## Hub
-Root repository adalah **launcher murni**. Sejak v0.8.0, runtime Lorentz lama tidak lagi dimuat di halaman depan; setiap aplikasi berjalan mandiri dari `apps/<slug>/`.
+> **Untuk guru dan siswa:** pilih aplikasi dari halaman Hub, ikuti petunjuk pada aplikasinya, dan izinkan kamera/mikrofon hanya jika aktivitas memang memerlukannya.
 
-Aset awal Hub dibuat kecil untuk mempercepat startup. Service worker hanya melakukan precache pada shell inti, sedangkan aset aplikasi disimpan ke runtime cache setelah aplikasi pertama kali dipakai.
+## Mulai menggunakan
 
-## Aplikasi
-Daftar aktif bersumber dari `apps/registry.js`.
+- **Online:** buka situs PILAR melalui alamat GitHub Pages yang dikonfigurasi untuk repository ini.
+- **Di komputer (server lokal):** dari folder repository jalankan:
 
-- Gaya Lorentz
-- Microscope Lab
-- Rubik Orbit
-- MBG Delivery Duel
-- SoundScope Lab
-- Lab Misteri Pak Taro
-- Air Writing Lab
-- PuzzleSnap
-- Lab Maya Tekanan
-- Frost Breakout
-- BioWeb · Ciremai
-- Bola Sang Pemburu · Duel
-- Frost Snake · Duel Numerasi
-- Lab Baterai · Petualangan Volta
-- Jejak Kata · Peta Makna
-- Papan Rangkai · Logika & Wiring
+  ```bash
+  python -m http.server 8000
+  ```
 
-## Menjalankan
-PILAR dapat dijalankan dari GitHub Pages atau server lokal:
+  Lalu buka `http://localhost:8000` di browser komputer tersebut. Jika ingin mengakses server dari HP/IFP melalui jaringan lokal, perhatikan alamat host dan batas izin browser; kamera/mikrofon umumnya memerlukan HTTPS atau `localhost` sebagai *secure context*.
+- **Aplikasi terpasang:** lihat panduan [Windows, Linux, Android, dan IFP](native/README.md).
 
-```bash
-python -m http.server 8000
-```
+PILAR Hub adalah **launcher**: aplikasi berjalan pada folder masing-masing di `apps/<slug>/`. Service worker menyimpan *shell* utama; ketersediaan aplikasi saat offline bergantung pada aset yang sudah tersimpan atau bundel native yang digunakan. Jangan mengasumsikan semua fitur browser selalu tersedia tanpa internet.
 
-Fitur kamera/Vision memerlukan HTTPS atau localhost dan hanya diminta setelah aksi pengguna.
+## Katalog aplikasi
 
-## Verifikasi
-Pemeriksaan struktur Hub dapat dijalankan tanpa dependency tambahan:
+Sumber daftar resmi adalah [`apps/registry.js`](apps/registry.js). Pada pemeriksaan dokumentasi ini terdapat **17 entri**:
 
-```bash
-node developer/verify-hub.js .
-```
+| Aplikasi | Lokasi |
+|---|---|
+| Gaya Lorentz | [`apps/lorentz-lab/`](apps/lorentz-lab/) |
+| Microscope Lab | [`apps/microscope/`](apps/microscope/) |
+| Rubik Orbit | [`apps/rubik-orbit/`](apps/rubik-orbit/) |
+| MBG Delivery Duel | [`apps/mbg-duel/`](apps/mbg-duel/) |
+| SoundScope Lab | [`apps/soundscope/`](apps/soundscope/) |
+| Lab Misteri Pak Taro | [`apps/pak-taro/`](apps/pak-taro/) |
+| Air Writing Lab | [`apps/air-writing/`](apps/air-writing/) |
+| PuzzleSnap | [`apps/puzzlesnap/`](apps/puzzlesnap/) |
+| Lab Maya Tekanan | [`apps/pressure/`](apps/pressure/) |
+| Frost Breakout | [`apps/frost-breakout/`](apps/frost-breakout/) |
+| BioWeb · Ciremai | [`apps/bioweb/`](apps/bioweb/) |
+| Bola Sang Pemburu · Duel | [`apps/hunter-ball/`](apps/hunter-ball/) |
+| Frost Snake · Duel Numerasi | [`apps/frost-snake/`](apps/frost-snake/) |
+| Lab Baterai · Petualangan Volta | [`apps/baterai-lab/`](apps/baterai-lab/) |
+| Papan Rangkai · Logika & Wiring | [`apps/rangkai-lab/`](apps/rangkai-lab/) |
+| Jejak Kata · Peta Makna | [`apps/jejak-kata/`](apps/jejak-kata/) |
+| Lingkaran Ajaib · Gelombang & Gambar | [`apps/lingkaran-ajaib/`](apps/lingkaran-ajaib/) |
 
-Validator memeriksa antara lain:
-- target URL semua entri registry;
-- aset shell service worker;
-- referensi aset root;
-- duplicate HTML ID;
-- sintaks `app.js`;
-- manifest;
-- tidak adanya runtime Lorentz lama di root Hub.
+Contoh pembelajaran: **Lab Maya Tekanan** memuat simulasi tekanan padat, cair, Pascal, dan Bernoulli; **Papan Rangkai** mendukung gerbang logika, netlist, dan praktik wiring. Detail teknis tetap berada di folder aplikasinya.
 
-Workflow GitHub Actions juga menjalankan pengujian fisika, DSP, dan smoke test yang sudah tersedia.
+## Penggunaan di IFP dan HP
 
-## PILAR Pulse
-Pulse adalah kanal dukungan anonim antara pengguna dan developer. Pengguna baru harus mengaktifkan Pulse terlebih dahulu. Data yang dikirim dibatasi pada ID anonim, app aktif, kategori perangkat/browser, kemampuan grafis, status koneksi, event PILAR dasar, dan chat yang sengaja dikirim.
+- Gunakan orientasi dan ukuran tombol yang sesuai perangkat; mode layar penuh hanya berfungsi jika browser/perangkat mengizinkan.
+- Aktivitas multi-sentuh membutuhkan dukungan layar, browser, dan aplikasi terkait.
+- Fitur kamera, mikrofon, atau perangkat USB meminta izin pengguna dan tidak selalu didukung sama di semua browser.
+- Untuk praktikum, lakukan kalibrasi alat ukur jika konfigurasi kamera atau magnifikasi berubah.
 
-## Menambah app
-1. Duplikasi dan sesuaikan `apps/_starter/` atau buat `apps/<slug>/index.html`.
-2. Tambahkan entri di `apps/registry.js`.
-3. Sediakan navigasi kembali ke PILAR Hub.
-4. Minta izin kamera/mikrofon hanya ketika benar-benar diperlukan.
-5. Jalankan `node developer/verify-hub.js .` sebelum commit.
+## PILAR Pulse (opsional)
 
-## Creator
+**Pulse** adalah kanal dukungan pengguna–pengembang. Pengguna baru perlu mengaktifkannya secara sadar sebelum sesi anonim dan telemetri Pulse dimulai. Saat aktif, fitur ini memproses ID anonim, aplikasi aktif, kategori perangkat/browser, kemampuan perangkat, aktivitas dasar, dan pesan yang sengaja dikirim. Menonaktifkan Pulse menghentikan pengiriman data baru, tetapi tidak otomatis menghapus data yang sudah tersimpan. Pembersihan data otomatis memerlukan konfigurasi server yang sesuai.
+
+### Konfigurasi Pulse untuk pengembang
+
+Panduan :
+
+1. Siapkan proyek Supabase, lalu tinjau dan jalankan [`pulse/schema.sql`](pulse/schema.sql) pada SQL Editor sesuai kondisi database.
+2. Tinjau migrasi yang diperlukan, khususnya [`pulse/migrations/003_hardening.sql`](pulse/migrations/003_hardening.sql). **Jangan menjalankan ulang migrasi produksi tanpa memeriksa status penerapannya.**
+3. Aktifkan **Anonymous Sign-Ins** untuk pengunjung dan **Email Auth** untuk akun pengembang.
+4. Atur **Site URL** dan **Redirect URLs** sesuai alamat deploy PILAR, termasuk rute `/developer/`.
+5. Isi [`pulse/config.js`](pulse/config.js) hanya dengan URL Supabase, *publishable key*, dan konfigurasi yang aman dipublikasikan.
+6. Jika migrasi hardening digunakan, daftarkan UUID admin di `pilar_admins` melalui jalur administrasi database yang aman, kemudian masuk melalui halaman [`developer/`](developer/).
+
+**Jangan** menaruh `service_role`, password, private key, token rahasia, maupun kredensial Wi-Fi produksi di berkas publik. Dokumen ini menjelaskan konfigurasi kode, **bukan** verifikasi keadaan Supabase yang sedang berjalan.
+
+## Mengembangkan dan menguji
+
+1. Buat aplikasi di `apps/<slug>/` (bisa merujuk pola `apps/_starter/` jika masih tersedia).
+2. Tambahkan entri ke [`apps/registry.js`](apps/registry.js) dan sediakan navigasi kembali ke Hub.
+3. Pastikan kontrol sentuh, aksesibilitas dasar, dan izin perangkat sesuai kebutuhan pembelajaran.
+4. Sebelum mengajukan perubahan, jalankan:
+
+   ```bash
+   node developer/verify-hub.js .
+   node developer/patch-v2-tests/test_pressure.js .
+   node developer/patch-v2-tests/test_lorentz.js .
+   ```
+
+   Pengujian tambahan untuk fisika, audio, dan aplikasi lain tersedia pada workflow [PM v2 verification](.github/workflows/pm-v2-verify.yml). Pemeriksaan otomatis tidak menggantikan uji manual pada IFP/HP.
+
+## Dokumentasi lanjutan
+
+- [Microscope Lab](apps/microscope/README.md)
+- [SoundScope — Acoustic Analysis](apps/soundscope/ACOUSTIC-ANALYSIS.md)
+- [SoundScope — FSK & Hamming](apps/soundscope/FSK-HAMMING.md)
+- [Panduan aplikasi native](native/README.md)
+
+## Kreator
+
 `by : rizalabdurrahman05@guru.smp.belajar.id`
-
-## Lab Maya Tekanan
-`apps/pressure/` berisi empat simulasi 3D (Three.js r128) yang mengikuti alur PILAR: Lihat → Tebak → Coba → AHA → Buktikan → Rekayasa.
-
-| Lab | Konsep | Rekayasa |
-|---|---|---|
-| Padat | P = F/A, amblas di salju/pasir/tanah | sepatu salju vs ujung penusuk |
-| Cair | p = ρgh, menyelam di kolam, tekanan sama ke segala arah | zonasi kedalaman kolam |
-| Pascal | F₁/A₁ = F₂/A₂, lift hidrolik cuci mobil | rancang lift (gaya, langkah, tekanan) |
-| Bernoulli | gaya angkat bilah ∝ v², stall, hover | drone pengantar bantuan |
-
-Fisika murni ada di `labs/pressure/physics.js` dan dapat diuji tanpa browser:
-
-```bash
-node labs/pressure/test/physics.test.js
-```
-
-Lab dapat dibuka langsung dengan `apps/pressure/?lab=padat|cair|pascal|bernoulli`.
-
-## Papan Rangkai · Logika & Wiring
-`apps/rangkai-lab/` adalah editor rangkaian gaya breadboard untuk mapel Informatika (operasi logika & bilangan biner) dan perakitan robot.
-
-- **Auto-snap ke netlist:** semua kaki komponen berada di grid 2,54 mm. Kaki yang jatuh di titik yang sama, lubang breadboard yang satu kolom/rel, dan kabel otomatis menjadi satu net.
-- **Gerbang logika:** NOT, AND, OR, NAND, NOR, XOR, XNOR dalam bentuk simbol, atau IC asli 74HC00/02/04/08/32/86 (DIP-14, butuh VCC pin 14 dan GND pin 7).
-- **Simulasi & tabel kebenaran** otomatis dari saklar (masukan) dan lampu/LED/tampilan biner 4-bit (keluaran). Ada 6 tantangan (NOT dan OR dari NAND, XOR, kunci 1-0-1, mayoritas, penjumlah 1 bit).
-- **Board Sebatang-Kara:** ESP32-S3 Super Mini, GY-87, DRV8833, charger+boost 5V, LiPo, motor coreless, dengan pemeriksaan listrik (korsleting, tegangan berlebih ke GPIO, pin daya belum tersambung, J1/EEP DRV8833).
-- Simpan/buka `.json`, ekspor netlist `.net` dan gambar PNG. Contoh bisa dibuka langsung: `apps/rangkai-lab/?contoh=ic-breadboard`.
-
-Inti logika dapat diuji tanpa browser:
-
-```bash
-node apps/rangkai-lab/test-core.js
-```
