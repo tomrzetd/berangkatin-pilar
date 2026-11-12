@@ -3,9 +3,7 @@
 PILAR adalah hub pembelajaran interaktif berbasis web untuk simulasi, game, eksperimen, Vision AI, dan perangkat kelas.
 
 ## Hub
-Root repository adalah **launcher murni**. Sejak v0.8.0, runtime Lorentz lama tidak lagi dimuat di halaman depan; setiap aplikasi berjalan mandiri dari `apps/<slug>/`.
-
-Aset awal Hub dibuat kecil untuk mempercepat startup. Service worker hanya melakukan precache pada shell inti, sedangkan aset aplikasi disimpan ke runtime cache setelah aplikasi pertama kali dipakai.
+Root repository adalah **launcher murni**. Setiap aplikasi berjalan mandiri dari `apps/<slug>/`.
 
 ## Aplikasi
 Daftar aktif bersumber dari `apps/registry.js`.
@@ -66,9 +64,6 @@ Pulse adalah kanal dukungan anonim antara pengguna dan developer. Pengguna baru 
 
 ## Creator
 `by : rizalabdurrahman05@guru.smp.belajar.id`
-
-## Lab Maya Tekanan
-`apps/pressure/` berisi empat simulasi 3D (Three.js r128) yang mengikuti alur PILAR: Lihat → Tebak → Coba → AHA → Buktikan → Rekayasa.
 
 | Lab | Konsep | Rekayasa |
 |---|---|---|
