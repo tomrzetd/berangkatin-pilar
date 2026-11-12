@@ -1,43 +1,68 @@
-# PILAR Hub · aplikasi native
+# PILAR Hub — aplikasi terpasang (native)
 
-Semua aplikasi PILAR Hub dibungkus menjadi aplikasi yang bisa di-install dan berjalan **offline**:
+Folder `native/` berisi perangkat build untuk membungkus PILAR Hub sebagai aplikasi **Windows, Linux, dan Android**. Aplikasi dapat dipakai pada komputer, HP, dan IFP yang kompatibel. Tidak semua fitur dapat diasumsikan bekerja offline atau sama pada setiap platform.
 
-| Platform | Berkas | Untuk |
+## Pilihan platform
+
+| Platform | Bentuk keluaran build | Penggunaan |
 |---|---|---|
-| Windows x64 | `PILAR-Hub-…-x64-nsis.exe` (installer) · `PILAR-Hub-…-portable.exe` (tanpa install) | laptop sekolah / pemerintah, PC yang terhubung ke IFP |
-| Linux x64 | `.AppImage` · `.deb` | laptop Linux |
-| Android | `PILAR-Hub-…-debug.apk` (dan `.apk` rilis bila kunci rilis dipasang) | HP & IFP Hisense (Android 13), tablet |
+| Windows x64 | Installer NSIS `.exe` dan versi portable `.exe` | Laptop/PC kelas, termasuk PC yang terhubung ke IFP |
+| Linux x64 | `.AppImage` dan `.deb` | Laptop/PC Linux |
+| Android | APK debug; APK rilis jika kunci penandatanganan tersedia | HP, tablet, dan IFP Android yang kompatibel |
 
-Unduh dari halaman **Releases** → `native-latest` (otomatis diperbarui setiap ada perubahan di `main`),
-atau buat tag `v0.9.0` untuk rilis bernomor.
+Lihat [GitHub Releases](https://github.com/tomrzetd/berangkatin-pilar/releases) untuk memeriksa **aset yang benar-benar tersedia**. Workflow [`native.yml`](../.github/workflows/native.yml) dikonfigurasi membuat rilis `native-latest` pada jalur `main` dan rilis bernomor pada tag `v*`, jika job berhasil. Keberadaan workflow **tidak menjamin** tiap build/rilis sudah sukses.
 
-## Cara kerja
-1. `node native/build-web.mjs` menyalin situs ke `native/www`, mengunduh pustaka CDN & model AI
-   (three.js, MediaPipe, TensorFlow.js, Font Awesome, cubejs) ke `_cdn/` lalu menulis ulang URL-nya,
-   dan menyisipkan `/_native/shim.js` di setiap halaman.
-2. **Electron** (`native/electron`) melayani `www/` lewat protokol aman `app://pilar/`
-   (kamera, mikrofon, WebGL, Web Serial ESP32, Web Bluetooth, unduhan ke Documents/PILAR).
-3. **Android** (`native/android`, Capacitor 7): satu APK untuk HP & IFP.
-   IFP/tablet (≥ 600 dp) dikunci landscape, HP mengikuti sensor; layar penuh imersif, layar tidak mati,
-   unduhan disimpan ke **Documents/PILAR**.
-4. GitHub Actions (`.github/workflows/native.yml`) membangun semuanya, lalu menguji APK di emulator
-   tablet & HP **tanpa internet** dan menguji Electron di Linux (tangkapan layar ada di artefak Actions).
+## Instalasi untuk pengguna
 
-## Memasang di IFP Hisense
-1. Salin `.apk` ke flashdisk → colok ke IFP → buka dengan File Manager → **Install**
-   (izinkan “Sumber tidak dikenal” bila diminta).
-2. Pertama kali membuka lab berkamera/mikrofon, tekan **Izinkan**.
-3. Bila tampil pesan “WebView sudah lama”, perbarui **Android System WebView** (Play Store atau APK resmi).
+### IFP Hisense / Android
 
-## Pintasan desktop
-F11 layar penuh · Ctrl+R muat ulang · Ctrl +/−/0 zoom · Alt+← kembali · Alt+Home ke Hub · F12 DevTools
+1. Unduh APK dari **Releases** dan pastikan sumbernya repository yang benar.
+2. Pindahkan APK ke perangkat (contoh: flashdisk) dan buka melalui file manager.
+3. Jika perangkat meminta izin memasang aplikasi dari sumber tersebut, pahami risikonya dan aktifkan hanya seperlunya sesuai kebijakan sekolah.
+4. Buka PILAR. Saat memakai fitur kamera atau mikrofon, berikan izin jika memang dibutuhkan.
+5. Bila fitur WebView gagal berjalan, periksa kompatibilitas serta versi **Android System WebView** melalui sumber resmi perangkat.
 
-## Kunci rilis Android (opsional, disarankan untuk distribusi luas)
-APK debug memakai kunci tetap `native/android/pilar-debug.keystore` (bukan rahasia) agar versi baru bisa
-dipasang menimpa yang lama. Untuk APK rilis, tambahkan secret repo:
-`ANDROID_KEYSTORE_B64` (keystore base64), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`.
+Orientasi IFP/tablet dan perilaku layar penuh diatur pada implementasi Android; tampilan nyata tetap bergantung pada firmware dan WebView perangkat.
 
-## Batasan yang diketahui
-- Android WebView tidak punya Web Serial/Web Bluetooth → kontrol ESP32 di Microscope Lab hanya di desktop
-  (atau lewat WiFi). Fitur lain berjalan normal.
-- Pulse (Supabase) dan Teachable Microscope (MobileNet) tetap butuh internet; selebihnya offline.
+### Windows dan Linux
+
+- Windows: instal versi NSIS atau gunakan versi portable bila tersedia.
+- Linux: gunakan `.AppImage` atau `.deb` yang sesuai arsitektur dan izin sistem.
+- Shortcut desktop yang tersedia di aplikasi Electron mencakup `F11` (layar penuh), `Ctrl+R` (muat ulang), `Ctrl++/-/0` (zoom), dan `F12` (DevTools); dukungan dapat berbeda menurut platform/paket.
+
+## Cara build (pengembang)
+
+Build diatur oleh [`native/build-web.mjs`](build-web.mjs) dan GitHub Actions [`.github/workflows/native.yml`](../.github/workflows/native.yml):
+
+1. Pada lingkungan Node.js 20+ dengan akses jaringan saat pengunduhan dependensi, siapkan aset web:
+
+   ```bash
+   node native/build-web.mjs native/www
+   ```
+
+2. Proses ini menyalin halaman, menyiapkan shim native, dan mencoba menyimpan dependensi/model eksternal yang didukung ke bundel lokal. Proses build dapat gagal jika aset wajib tidak berhasil diunduh.
+3. Workflow melanjutkan paket Electron untuk Windows/Linux dan proyek Capacitor untuk Android. Workflow juga memiliki pengujian smoke Electron dan emulator Android, tetapi hasil eksekusi harus diperiksa pada halaman **Actions** untuk commit terkait.
+
+## Batas offline dan akses perangkat
+
+- Aset aplikasi yang **berhasil masuk bundel** dapat dipakai tanpa jaringan; perlu diuji per fitur pada perangkat target.
+- **PILAR Pulse / Supabase** tetap memerlukan internet. Fitur yang mengambil data atau model dari layanan luar mungkin juga memerlukan koneksi.
+- Android WebView tidak menyediakan dukungan Web Serial/Web Bluetooth yang setara dengan Electron desktop; kontrol ESP32 via USB Serial/Bluetooth tertentu perlu solusi/platform lain, sedangkan jalur Wi-Fi bergantung pada jaringan dan kebijakan keamanan.
+- Kamera, mikrofon, WebGL, serta akses file berbeda menurut perangkat, izin, dan versi WebView.
+
+## Menandatangani APK rilis
+
+Workflow menggunakan APK debug untuk pengujian. Untuk rilis bertanda tangan, konfigurasi secret di GitHub Actions sesuai workflow:
+
+- `ANDROID_KEYSTORE_B64`
+- `ANDROID_KEYSTORE_PASSWORD`
+- `ANDROID_KEY_ALIAS`
+- `ANDROID_KEY_PASSWORD`
+
+**Jangan** menaruh file keystore privat atau nilainya dalam commit, README, maupun kode client. Keystore debug bawaan yang ditujukan untuk pengembangan **bukan** identitas rilis publik yang tepercaya.
+
+## Pemeriksaan sebelum distribusi
+
+- Verifikasi build pada GitHub Actions/Releases untuk commit atau tag yang akan dibagikan.
+- Uji instalasi, navigasi Hub, izin kamera/mikrofon, mode offline, dan performa pada **perangkat nyata**, termasuk IFP.
+- Tinjau izin perangkat, privasi PILAR Pulse, keamanan kredensial, dan kebutuhan internet sebelum distribusi ke sekolah.
