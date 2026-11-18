@@ -290,6 +290,19 @@
 
   const fxBtn=$('#bootFxBtn');
 
+  /* Skin tampilan Hub: kalem (bawaan, terang & tenang) → gelap (neon asli) → pink (lucu) */
+  const SKINS=[['kalem','🌤️','Kalem','#f4f7fd'],['gelap','🌙','Gelap','#08111d'],['pink','🌸','Pink','#fff6fa']];
+  const skinBtn=$('#bootSkinBtn');
+  function applySkin(id,save){
+    const sk=SKINS.find(x=>x[0]===id)||SKINS[0];
+    document.documentElement.setAttribute('data-skin',sk[0]);
+    const meta=document.querySelector('meta[name=theme-color]');if(meta)meta.content=sk[3];
+    if(skinBtn){skinBtn.innerHTML=sk[1]+' <span class="lbl">'+sk[2]+'</span>';const nx=SKINS[(SKINS.indexOf(sk)+1)%SKINS.length];skinBtn.title='Tampilan: '+sk[2]+' · ketuk untuk ganti ke '+nx[2];skinBtn.setAttribute('aria-label',skinBtn.title);}
+    if(save){try{localStorage.setItem('pilar_skin',sk[0])}catch(e){}}
+  }
+  applySkin(document.documentElement.getAttribute('data-skin')||'kalem',false);
+  skinBtn?.addEventListener('click',()=>{const cur=document.documentElement.getAttribute('data-skin');const i=SKINS.findIndex(x=>x[0]===cur);applySkin(SKINS[(i+1)%SKINS.length][0],true);});
+
   function syncFx(){
     if(!fxBtn||!P.device)return;
     const mode=P.device.fxMode;
