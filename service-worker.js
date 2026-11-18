@@ -5,7 +5,7 @@
    - HTML stays network-first so deployments are seen quickly when online.
    - Pinned external libraries/models may use stale-while-revalidate.
 */
-const VERSION='084';
+const VERSION='085';
 const CACHE_PREFIX='pilar-hub-';
 const SHELL_CACHE=CACHE_PREFIX+'shell-v'+VERSION;
 const RUNTIME_CACHE=CACHE_PREFIX+'runtime-v'+VERSION;
@@ -14,6 +14,8 @@ const SHELL_ASSETS=[
   './',
   'index.html',
   'css/hub.css',
+  'css/hub-skins.css',
+  'vendor/fonts/plus-jakarta-sans-var.woff2',
   'css/pilar-perf.css',
   'app.js',
   'apps/registry.js',

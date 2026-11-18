@@ -1,0 +1,116 @@
+/* PILAR Hub · skin tampilan
+   data-skin="kalem" (bawaan): terang & tenang — latar biru pucat, kartu putih berbayang lembut, satu biru tegas
+                                (terinspirasi tampilan RAYXO, github.com/fianbiasa/rayxo)
+   data-skin="pink"          : versi kalem bernuansa pink lucu
+   data-skin="gelap"         : tampilan neon gelap asli PILAR (tidak diubah oleh berkas ini) */
+@font-face{font-family:"Plus Jakarta Sans";src:url("../vendor/fonts/plus-jakarta-sans-var.woff2") format("woff2");font-weight:200 800;font-display:swap}
+@font-face{font-family:"Fredoka";src:url("../vendor/fonts/fredoka-var.woff") format("woff");font-weight:300 700;font-display:swap}
+
+html[data-skin="kalem"]{
+  --s-bg:#f4f7fd;--s-bg2:#e9f1fd;--s-card:#ffffff;--s-text:#101b39;--s-muted:#52617f;--s-faint:#8593ad;--s-soft:#eff3fa;
+  --s-line:#e2eaf7;--s-input:#d9e3f3;--s-pri:#086cf0;--s-pri2:#1688ff;--s-acc:#9561f5;--s-pri-soft:#eaf2ff;--s-pri-text:#075fd3;
+  --s-shadow:0 7px 20px rgb(36 77 139 / .07);--s-shadow-hi:0 12px 28px rgb(36 77 139 / .12);--s-brand:0 8px 18px rgb(8 108 240 / .28);
+  --s-ok:#067a45;--s-ok-bg:#e7f8ef;--s-ok-line:#bfe9d3;--s-warn:#a35f00;--s-warn-bg:#fff6e6;--s-warn-line:#fbe0b0;
+  --s-t1:#e8f2ff;--s-c1:#1688ff;--s-t2:#f1eaff;--s-c2:#9561f5;--s-t3:#e3f8f0;--s-c3:#08b982;--s-t4:#fff0e5;--s-c4:#ff8a3d;--s-t5:#ffe9ea;--s-c5:#f04444;
+  --s-head:"Plus Jakarta Sans",ui-sans-serif,system-ui,sans-serif;--s-glow:radial-gradient(1100px 500px at 15% -10%,#dfeafd 0,transparent 60%),radial-gradient(900px 500px at 100% 0,#eef3ff 0,transparent 55%)
+}
+html[data-skin="pink"]{
+  --s-bg:#fff6fa;--s-bg2:#ffeaf3;--s-card:#ffffff;--s-text:#3a1430;--s-muted:#87587a;--s-faint:#b48aa6;--s-soft:#fff0f6;
+  --s-line:#f9dce9;--s-input:#f4cadc;--s-pri:#e8418e;--s-pri2:#f472b6;--s-acc:#a855f7;--s-pri-soft:#ffe6f1;--s-pri-text:#be185d;
+  --s-shadow:0 7px 20px rgb(190 24 93 / .07);--s-shadow-hi:0 12px 28px rgb(190 24 93 / .13);--s-brand:0 8px 18px rgb(232 65 142 / .3);
+  --s-ok:#0f7a55;--s-ok-bg:#e6f8f0;--s-ok-line:#bfead6;--s-warn:#a2580c;--s-warn-bg:#fff4e6;--s-warn-line:#fbdcb0;
+  --s-t1:#ffe6f1;--s-c1:#ec4899;--s-t2:#f3e8ff;--s-c2:#a855f7;--s-t3:#e2f8ef;--s-c3:#10b981;--s-t4:#fff0e3;--s-c4:#fb923c;--s-t5:#e6f4ff;--s-c5:#38bdf8;
+  --s-head:"Fredoka","Plus Jakarta Sans",ui-rounded,system-ui,sans-serif;--s-glow:radial-gradient(1000px 520px at 10% -10%,#ffe0ee 0,transparent 60%),radial-gradient(900px 520px at 100% 0,#f6e9ff 0,transparent 55%),radial-gradient(700px 400px at 50% 110%,#ffeef6 0,transparent 60%)
+}
+
+:is(html[data-skin="kalem"],html[data-skin="pink"]){color-scheme:light}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) :is(html,body){background:var(--s-bg);color:var(--s-text);font-family:"Plus Jakarta Sans",ui-sans-serif,system-ui,sans-serif}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) body{background:var(--s-bg);color:var(--s-text);font-family:"Plus Jakarta Sans",ui-sans-serif,system-ui,sans-serif}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) ::selection{background:var(--s-pri-soft);color:var(--s-pri-text)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) button:focus-visible{outline-color:var(--s-pri)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-boot{background:var(--s-bg);background-image:var(--s-glow);color:var(--s-text)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) :is(.boot-grid,.boot-scan){display:none}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-card{border:1px solid var(--s-line);background:rgba(255,255,255,.62);box-shadow:var(--s-shadow-hi)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-head{border-bottom:1px solid var(--s-line);background:rgba(255,255,255,.7)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-brand strong{color:var(--s-text);font-family:var(--s-head)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) :is(.boot-brand sup,.boot-brand small,.boot-app-meta span){color:var(--s-muted)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-app-meta b{color:var(--s-text)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-mark i{background:linear-gradient(var(--s-pri2),var(--s-pri));box-shadow:none}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .creator-id{color:var(--s-muted);background:var(--s-soft);border-color:var(--s-line);opacity:1}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) :is(.boot-fx-btn,.boot-fullscreen-btn,.boot-skin-btn){border:1px solid var(--s-line);background:var(--s-card);color:var(--s-text);box-shadow:var(--s-shadow)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) :is(.boot-fx-btn,.boot-fullscreen-btn,.boot-skin-btn):hover,
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-fullscreen-btn[aria-pressed="true"]{border-color:var(--s-pri);color:var(--s-pri-text);background:var(--s-pri-soft)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-actions{border-left:1px solid var(--s-line);background:rgba(244,247,253,.55)}
+html[data-skin="pink"] .boot-actions{background:rgba(255,240,246,.55)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) :is(.boot-copy,.boot-actions){scrollbar-color:var(--s-input) transparent}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-kicker{color:var(--s-pri)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-copy h1{color:var(--s-text);font-family:var(--s-head);letter-spacing:-.035em}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-copy h1 span{background-image:linear-gradient(90deg,var(--s-pri) 0%,var(--s-acc) 35%,var(--s-pri2) 65%,var(--s-pri) 100%)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-copy>p{color:var(--s-muted)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-philosophy span{color:var(--s-muted);border-color:var(--s-line);background:var(--s-card);box-shadow:var(--s-shadow)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) :is(.boot-device-title,.boot-mode-title,.pilar-library-title span){color:var(--s-muted)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-library-title small{color:var(--s-faint)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-cap{color:var(--s-muted);border-color:var(--s-line);background:var(--s-card)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-cap.ok{color:var(--s-ok);border-color:var(--s-ok-line);background:var(--s-ok-bg)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-cap.warn{color:var(--s-warn);border-color:var(--s-warn-line);background:var(--s-warn-bg)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-mode{border:1px solid var(--s-line);background:var(--s-card);color:var(--s-text);box-shadow:var(--s-shadow)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-mode:hover:not(:disabled){border-color:var(--s-pri);box-shadow:var(--s-shadow-hi)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-mode.recommended{border-color:var(--s-pri);background:linear-gradient(90deg,var(--s-pri-soft),var(--s-card) 70%)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-mode-icon{background:var(--s-pri-soft);color:var(--s-pri)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-mode.recommended .boot-mode-icon{background:var(--s-pri);color:#fff;box-shadow:var(--s-brand)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-mode small{color:var(--s-muted)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-mode em{background:var(--s-pri-soft);color:var(--s-pri-text);border-color:transparent}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-privacy{color:var(--s-faint)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .app-inspector-card{border:1px solid var(--s-line);background:radial-gradient(circle at 12% 15%,var(--s-pri-soft),transparent 40%),var(--s-card);box-shadow:var(--s-shadow)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .app-inspector-card::after{border-color:var(--s-pri-soft);box-shadow:none}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .app-inspector-icon{border-color:var(--s-line);background:var(--s-pri-soft);box-shadow:none}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .app-inspector-category{color:var(--s-pri)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .app-inspector-copy h2{color:var(--s-text);font-family:var(--s-head)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .app-inspector-copy p{color:var(--s-muted)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .app-inspector-meta span{border-color:var(--s-line);color:var(--s-muted);background:var(--s-soft)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .app-inspector-meta span:last-child{color:var(--s-ok);border-color:var(--s-ok-line);background:var(--s-ok-bg)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-app-card{border:1px solid var(--s-line);background:var(--s-card);color:var(--s-text);box-shadow:var(--s-shadow)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-app-card:not(:disabled):hover{border-color:var(--s-pri2);box-shadow:var(--s-shadow-hi)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-app-card.current{border-color:var(--s-pri);background:linear-gradient(90deg,var(--s-pri-soft),var(--s-card) 75%);box-shadow:inset 3px 0 0 var(--s-pri),var(--s-shadow)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-app-card strong{color:var(--s-text)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-app-card small{color:var(--s-faint)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-app-card .app-subtitle{color:var(--s-muted)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-app-card em{color:var(--s-pri-text);border-color:transparent;background:var(--s-pri-soft)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-app-card.current em{color:#fff;background:var(--s-pri);border-color:var(--s-pri);box-shadow:var(--s-brand)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-app-icon{background:var(--s-t1)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-app-card:nth-child(5n+2) .pilar-app-icon{background:var(--s-t2)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-app-card:nth-child(5n+3) .pilar-app-icon{background:var(--s-t3)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-app-card:nth-child(5n+4) .pilar-app-icon{background:var(--s-t4)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-app-card:nth-child(5n+5) .pilar-app-icon{background:var(--s-t5)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-foot{border-top:1px solid var(--s-line);background:rgba(255,255,255,.75);color:var(--s-faint)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-foot span:last-child{color:var(--s-pri-text)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .primary{background:var(--s-pri);border-color:var(--s-pri);box-shadow:var(--s-brand)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-fullscreen-app-host,:is(html[data-skin="kalem"],html[data-skin="pink"]) .pilar-fullscreen-app-frame{background:var(--s-bg)}
+@media(max-width:760px){:is(html[data-skin="kalem"],html[data-skin="pink"]) .boot-actions{border-left:0;border-top:1px solid var(--s-line)}}
+html[data-fx="lite"]:is([data-skin="kalem"],[data-skin="pink"]) :is(.pilar-app-card,.boot-mode,.app-inspector-card,.boot-philosophy span){box-shadow:none}
+
+/* sentuhan lucu khusus pink */
+html[data-skin="pink"] .boot-kicker::before{content:"✿ ";color:var(--s-pri2)}
+html[data-skin="pink"] .boot-kicker::after{content:" ♡";color:var(--s-acc)}
+html[data-skin="pink"] :is(.pilar-app-card,.boot-mode,.app-inspector-card,.boot-card){border-radius:22px}
+html[data-skin="pink"] .pilar-app-icon{border-radius:50%}
+html[data-skin="pink"] .boot-philosophy span{border-radius:999px;font-family:var(--s-head);letter-spacing:.08em}
+html[data-skin="pink"] .pilar-app-card:not(:disabled):hover{transform:translateY(-2px) rotate(-.4deg)}
+
+/* tombol pilih skin */
+.boot-skin-btn{min-height:38px;padding:0 10px;border:1px solid #294861;border-radius:12px;background:#081725;color:#dceafb;font:800 12px/1 Inter,system-ui;white-space:nowrap;cursor:pointer}
+.boot-skin-btn:hover{border-color:#5ee9ff;color:#5ee9ff;background:rgba(94,233,255,.1)}
+@media(max-width:760px){.boot-skin-btn .lbl{display:none}}
+@media(max-width:760px){
+  .boot-card{max-width:100vw}
+  .boot-head{flex-wrap:wrap;row-gap:10px}
+  .boot-brand{flex:1 1 auto}
+  .boot-head-right{margin-left:0;flex:1 0 100%;justify-content:flex-end}
+  .boot-skin-btn,.boot-fx-btn{min-height:36px}
+}
+/* elemen Pulse (dibuat oleh core/pulse.js) ikut skin terang */
+:is(html[data-skin="kalem"],html[data-skin="pink"]) #pilarPulseNotice{background:#fffffff5;color:var(--s-muted);border-color:var(--s-line);box-shadow:var(--s-shadow-hi);font-family:"Plus Jakarta Sans",system-ui,sans-serif}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) #pilarPulseNotice b{color:var(--s-text)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) #pilarPulseNotice button{border:1px solid var(--s-line);background:var(--s-soft);color:var(--s-text)}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) #pilarPulseNotice button:first-of-type{background:var(--s-pri);border-color:var(--s-pri);color:#fff}
+:is(html[data-skin="kalem"],html[data-skin="pink"]) #pilarPulseBtn{background:var(--s-card);border-color:var(--s-line);box-shadow:var(--s-shadow-hi)}
