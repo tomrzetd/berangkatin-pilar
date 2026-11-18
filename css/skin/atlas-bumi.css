@@ -1,0 +1,152 @@
+/* DIBUAT OTOMATIS oleh tools/gen-skins.mjs — jangan sunting manual; ubah tools/skin-rules.mjs lalu jalankan ulang.
+   Skin terang PILAR untuk apps/atlas-bumi. Hanya aktif saat skin Hub = Kalem/Pink. */
+
+/* ===== kalem ===== */
+html[data-skin="kalem"][data-app="atlas-bumi"]{color-scheme:light}
+html[data-skin="kalem"][data-app="atlas-bumi"]{--bg:#f6f8fc;--glass:#f2f5fa;--glass2:#f0f4f9;--line:rgba(202,215,235,0.85);--line2:rgba(26,224,255,0.333);--text:#1d2846;--muted:#476591;--acc:#00869b;--acc2:#825af8;--warm:#b26900;--good:#0d8e39;--bad:#f5002b;--f-head:"Fredoka",system-ui,sans-serif;--f-body:"Nunito",system-ui,sans-serif;--tap:44px;--r:16px}
+html[data-skin="kalem"][data-app="atlas-bumi"][data-device="ifp"]{--tap:58px}
+html[data-skin="kalem"][data-app="atlas-bumi"] body{color:var(--text);background:var(--bg)}
+html[data-skin="kalem"][data-app="atlas-bumi"] button,html[data-skin="kalem"][data-app="atlas-bumi"] input{color:inherit}
+html[data-skin="kalem"][data-app="atlas-bumi"] .top{background-color:initial;background-image:linear-gradient(#f6f8fc, rgba(246,248,252,0))}
+html[data-skin="kalem"][data-app="atlas-bumi"] .brand small{color:var(--muted)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .clock small{color:var(--muted)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .btn{color:var(--text);background-color:#f1f4fa;background-image:initial;text-decoration-color:initial;border:1px solid var(--line2)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .btn:hover{background-color:#ecf0f8;background-image:initial}
+html[data-skin="kalem"][data-app="atlas-bumi"] .btn.on{background-color:rgba(94, 233, 255, 0.133);background-image:initial;box-shadow:0 0 0 1px var(--acc) inset;border-color:var(--acc)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .btn.pri{color:rgb(3, 17, 31);background-color:initial;background-image:linear-gradient(135deg, rgb(94, 233, 255), rgb(122, 168, 255));border-top-color:transparent;border-right-color:transparent;border-bottom-color:transparent;border-left-color:transparent}
+html[data-skin="kalem"][data-app="atlas-bumi"] .panel{box-shadow:rgba(36,77,139,0.1) 0px 20px 50px;background:var(--glass);border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="atlas-bumi"][data-fx="lite"] .panel{background-color:#f2f5fa;background-image:initial}
+html[data-skin="kalem"][data-app="atlas-bumi"] .panel::-webkit-scrollbar-thumb{background-color:rgba(94, 233, 255, 0.2);background-image:initial}
+html[data-skin="kalem"][data-app="atlas-bumi"] .sec{border-top:1px solid var(--line)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .sec:first-child{border-top-color:currentcolor;border-right-color:currentcolor;border-bottom-color:currentcolor;border-left-color:currentcolor}
+html[data-skin="kalem"][data-app="atlas-bumi"] .h{color:var(--muted)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .h b{color:var(--acc)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .inp{color:var(--text);background-color:#f5f7fb;background-image:initial;outline-color:initial;border:1px solid var(--line2)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .inp:focus{box-shadow:rgba(94,233,255,0.073) 0px 0px 0px 3px;border-color:var(--acc)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .sug{background-color:#f2f5fa;background-image:initial;border:1px solid var(--line2)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .sug button{background-color:initial;background-image:none;border-top-color:currentcolor;border-right-color:currentcolor;border-bottom-color:rgba(16,27,57,0.075);border-left-color:currentcolor}
+html[data-skin="kalem"][data-app="atlas-bumi"] .sug button:hover,html[data-skin="kalem"][data-app="atlas-bumi"] .sug button.hi{background-color:rgba(94, 233, 255, 0.11);background-image:initial}
+html[data-skin="kalem"][data-app="atlas-bumi"] .sug small{color:var(--muted)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .coord label{color:var(--muted)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .coord .ok{color:var(--good)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .coord .bad{color:var(--bad)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .chip{background-color:#f0f4f9;background-image:initial;border:1px solid var(--line2)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .chip:hover{border-color:var(--acc)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .tog i{background-color:#ecf0f7;background-image:initial;border:1px solid var(--line2)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .tog i::after{background-color:rgb(143, 166, 200);background-image:initial}
+html[data-skin="kalem"][data-app="atlas-bumi"] .tog.on i{background-color:rgba(94, 233, 255, 0.267);background-image:initial;border-color:var(--acc)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .tog.on i::after{box-shadow:0 0 10px var(--acc);background:var(--acc)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .info .sub{color:var(--muted)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .cell{background-color:#f4f7fb;background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .cell small{color:var(--muted)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .fact{background-color:rgba(167, 139, 250, 0.08);background-image:initial;border-left:3px solid var(--acc2)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .missions li{border-bottom-color:rgba(16,27,57,0.128)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .missions li::before{color:var(--muted)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .missions li.ok{color:var(--muted)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .missions li.ok::before{color:var(--good)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .bar{background-color:#ecf0f7;background-image:initial}
+html[data-skin="kalem"][data-app="atlas-bumi"] .bar i{background:linear-gradient(90deg,var(--acc),var(--acc2))}
+html[data-skin="kalem"][data-app="atlas-bumi"] .slide .row{color:var(--muted)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .slide .row b{color:var(--text)}
+html[data-skin="kalem"][data-app="atlas-bumi"] input[type="range"]{accent-color:var(--acc)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .toast{background-color:#f0f4f9;background-image:initial;box-shadow:rgba(94,233,255,0.147) 0px 0px 30px;border:1px solid var(--acc)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .score{color:var(--warm)}
+html[data-skin="kalem"][data-app="atlas-bumi"] #pilarPulseBtn{color:#1b2644;background-color:initial;background-image:linear-gradient(145deg, #f0f5f9, #f4f7fb);border-top-color:#cbdceb;border-right-color:#cbdceb;border-bottom-color:#cbdceb;border-left-color:#cbdceb;box-shadow:rgba(36,77,139,0.1) 0px 12px 34px, rgba(126,238,255,0.022) 0px 0px 0px 1px inset}
+html[data-skin="kalem"][data-app="atlas-bumi"] #pilarPulseBtn::before{color:#202b49;background-color:#f4f7fb;background-image:initial;border-top-color:#cbdceb;border-right-color:#cbdceb;border-bottom-color:#cbdceb;border-left-color:#cbdceb;box-shadow:rgba(36,77,139,0.1) 0px 8px 24px}
+html[data-skin="kalem"][data-app="atlas-bumi"] #pilarPulseBtn::after{background-color:rgb(113, 131, 152);background-image:initial;border-top-color:#d3e0ee;border-right-color:#d3e0ee;border-bottom-color:#d3e0ee;border-left-color:#d3e0ee}
+html[data-skin="kalem"][data-app="atlas-bumi"] #pilarPulseBtn.on{color:#2b3654;border-top-color:#c9d6eb;border-right-color:#c9d6eb;border-bottom-color:#c9d6eb;border-left-color:#c9d6eb}
+html[data-skin="kalem"][data-app="atlas-bumi"] #pilarPulseBtn.on::after{background-color:rgb(99, 227, 160);background-image:initial;box-shadow:rgba(99,227,160,0.413) 0px 0px 8px}
+html[data-skin="kalem"][data-app="atlas-bumi"] #pilarPulseBtn.off::after{background-color:rgb(113, 131, 152);background-image:initial}
+html[data-skin="kalem"][data-app="atlas-bumi"] #pilarPulseBtn.pulse-idle{box-shadow:rgba(36,77,139,0.1) 0px 8px 20px}
+html[data-skin="kalem"][data-app="atlas-bumi"] #pilarPulseBtn:hover,html[data-skin="kalem"][data-app="atlas-bumi"] #pilarPulseBtn:focus-visible,html[data-skin="kalem"][data-app="atlas-bumi"] #pilarPulseBtn.pulse-awake{border-top-color:#1ae0ff;border-right-color:#1ae0ff;border-bottom-color:#1ae0ff;border-left-color:#1ae0ff;box-shadow:rgba(36,77,139,0.1) 0px 14px 38px, rgba(94,233,255,0.055) 0px 0px 0px 3px}
+html[data-skin="kalem"][data-app="atlas-bumi"] #pilarPulseDrawer{color:#192442;background-color:#f4f7fb;background-image:initial;border-top-color:#cbdceb;border-right-color:#cbdceb;border-bottom-color:#cbdceb;border-left-color:#cbdceb;box-shadow:rgba(36,77,139,0.1) 0px 22px 70px}
+html[data-skin="kalem"][data-app="atlas-bumi"] .pp-head{border-bottom-color:#cedeed}
+html[data-skin="kalem"][data-app="atlas-bumi"] .pp-head b{color:#006d7e}
+html[data-skin="kalem"][data-app="atlas-bumi"] .pp-head small{color:#52617a}
+html[data-skin="kalem"][data-app="atlas-bumi"] .pp-clear{color:#35405e!important;background-color:#f3f5f9!important;background-image:initial!important;border-top-color:#ccd7ec!important;border-right-color:#ccd7ec!important;border-bottom-color:#ccd7ec!important;border-left-color:#ccd7ec!important}
+html[data-skin="kalem"][data-app="atlas-bumi"] .pp-empty{color:#52617a}
+html[data-skin="kalem"][data-app="atlas-bumi"] .pp-msg{background-color:#f0f4f9;background-image:initial}
+html[data-skin="kalem"][data-app="atlas-bumi"] .pp-msg.me{background-color:#eef8f5;background-image:initial}
+html[data-skin="kalem"][data-app="atlas-bumi"] .pp-msg time{color:#52617a}
+html[data-skin="kalem"][data-app="atlas-bumi"] .pp-form{border-top-color:#cedeed}
+html[data-skin="kalem"][data-app="atlas-bumi"] .pp-form input{color:#192442;background-color:#f3f7fa;background-image:initial;border-top-color:#ccdcec;border-right-color:#ccdcec;border-bottom-color:#ccdcec;border-left-color:#ccdcec}
+html[data-skin="kalem"][data-app="atlas-bumi"] #pilarPulseNotice{color:#313c5a;background-color:#f4f7fb;background-image:initial;border-top-color:#ccdeec;border-right-color:#ccdeec;border-bottom-color:#ccdeec;border-left-color:#ccdeec;box-shadow:rgba(36,77,139,0.1) 0px 12px 40px}
+html[data-skin="kalem"][data-app="atlas-bumi"] #globe{background:#030812}
+html[data-skin="kalem"][data-app="atlas-bumi"] .top{background:var(--sk-top);box-shadow:0 1px 0 var(--sk-line)}
+html[data-skin="kalem"][data-app="atlas-bumi"] .clock,html[data-skin="kalem"][data-app="atlas-bumi"] .brand b{color:var(--sk-ink)}
+html[data-skin="kalem"][data-app="atlas-bumi"]{--sk-top:rgba(244,247,253,.94);--sk-line:#dfe7f4;--sk-ink:#101b39}
+
+/* ===== pink ===== */
+html[data-skin="pink"][data-app="atlas-bumi"]{color-scheme:light}
+html[data-skin="pink"][data-app="atlas-bumi"]{--bg:#fcf6f9;--glass:#fbf2f6;--glass2:#faeff4;--line:rgba(241,197,216,0.85);--line2:rgba(26,224,255,0.333);--text:#47213d;--muted:#476591;--acc:#00869b;--acc2:#825af8;--warm:#b26900;--good:#0d8e39;--bad:#f5002b;--f-head:"Fredoka",system-ui,sans-serif;--f-body:"Nunito",system-ui,sans-serif;--tap:44px;--r:16px}
+html[data-skin="pink"][data-app="atlas-bumi"][data-device="ifp"]{--tap:58px}
+html[data-skin="pink"][data-app="atlas-bumi"] body{color:var(--text);background:var(--bg)}
+html[data-skin="pink"][data-app="atlas-bumi"] button,html[data-skin="pink"][data-app="atlas-bumi"] input{color:inherit}
+html[data-skin="pink"][data-app="atlas-bumi"] .top{background-color:initial;background-image:linear-gradient(#fcf6f9, rgba(252,246,249,0))}
+html[data-skin="pink"][data-app="atlas-bumi"] .brand small{color:var(--muted)}
+html[data-skin="pink"][data-app="atlas-bumi"] .clock small{color:var(--muted)}
+html[data-skin="pink"][data-app="atlas-bumi"] .btn{color:var(--text);background-color:#fbf0f4;background-image:initial;text-decoration-color:initial;border:1px solid var(--line2)}
+html[data-skin="pink"][data-app="atlas-bumi"] .btn:hover{background-color:#f9ebf1;background-image:initial}
+html[data-skin="pink"][data-app="atlas-bumi"] .btn.on{background-color:rgba(94, 233, 255, 0.133);background-image:initial;box-shadow:0 0 0 1px var(--acc) inset;border-color:var(--acc)}
+html[data-skin="pink"][data-app="atlas-bumi"] .btn.pri{color:rgb(3, 17, 31);background-color:initial;background-image:linear-gradient(135deg, rgb(94, 233, 255), rgb(122, 168, 255));border-top-color:transparent;border-right-color:transparent;border-bottom-color:transparent;border-left-color:transparent}
+html[data-skin="pink"][data-app="atlas-bumi"] .panel{box-shadow:rgba(190,60,120,0.1) 0px 20px 50px;background:var(--glass);border:1px solid var(--line)}
+html[data-skin="pink"][data-app="atlas-bumi"][data-fx="lite"] .panel{background-color:#fbf1f6;background-image:initial}
+html[data-skin="pink"][data-app="atlas-bumi"] .panel::-webkit-scrollbar-thumb{background-color:rgba(94, 233, 255, 0.2);background-image:initial}
+html[data-skin="pink"][data-app="atlas-bumi"] .sec{border-top:1px solid var(--line)}
+html[data-skin="pink"][data-app="atlas-bumi"] .sec:first-child{border-top-color:currentcolor;border-right-color:currentcolor;border-bottom-color:currentcolor;border-left-color:currentcolor}
+html[data-skin="pink"][data-app="atlas-bumi"] .h{color:var(--muted)}
+html[data-skin="pink"][data-app="atlas-bumi"] .h b{color:var(--acc)}
+html[data-skin="pink"][data-app="atlas-bumi"] .inp{color:var(--text);background-color:#fcf4f7;background-image:initial;outline-color:initial;border:1px solid var(--line2)}
+html[data-skin="pink"][data-app="atlas-bumi"] .inp:focus{box-shadow:rgba(94,233,255,0.073) 0px 0px 0px 3px;border-color:var(--acc)}
+html[data-skin="pink"][data-app="atlas-bumi"] .sug{background-color:#fbf2f6;background-image:initial;border:1px solid var(--line2)}
+html[data-skin="pink"][data-app="atlas-bumi"] .sug button{background-color:initial;background-image:none;border-top-color:currentcolor;border-right-color:currentcolor;border-bottom-color:rgba(58,20,48,0.075);border-left-color:currentcolor}
+html[data-skin="pink"][data-app="atlas-bumi"] .sug button:hover,html[data-skin="pink"][data-app="atlas-bumi"] .sug button.hi{background-color:rgba(94, 233, 255, 0.11);background-image:initial}
+html[data-skin="pink"][data-app="atlas-bumi"] .sug small{color:var(--muted)}
+html[data-skin="pink"][data-app="atlas-bumi"] .coord label{color:var(--muted)}
+html[data-skin="pink"][data-app="atlas-bumi"] .coord .ok{color:var(--good)}
+html[data-skin="pink"][data-app="atlas-bumi"] .coord .bad{color:var(--bad)}
+html[data-skin="pink"][data-app="atlas-bumi"] .chip{background-color:#faeff4;background-image:initial;border:1px solid var(--line2)}
+html[data-skin="pink"][data-app="atlas-bumi"] .chip:hover{border-color:var(--acc)}
+html[data-skin="pink"][data-app="atlas-bumi"] .tog i{background-color:#f9eaf0;background-image:initial;border:1px solid var(--line2)}
+html[data-skin="pink"][data-app="atlas-bumi"] .tog i::after{background-color:rgb(143, 166, 200);background-image:initial}
+html[data-skin="pink"][data-app="atlas-bumi"] .tog.on i{background-color:rgba(94, 233, 255, 0.267);background-image:initial;border-color:var(--acc)}
+html[data-skin="pink"][data-app="atlas-bumi"] .tog.on i::after{box-shadow:0 0 10px var(--acc);background:var(--acc)}
+html[data-skin="pink"][data-app="atlas-bumi"] .info .sub{color:var(--muted)}
+html[data-skin="pink"][data-app="atlas-bumi"] .cell{background-color:#fcf3f7;background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="atlas-bumi"] .cell small{color:var(--muted)}
+html[data-skin="pink"][data-app="atlas-bumi"] .fact{background-color:rgba(167, 139, 250, 0.08);background-image:initial;border-left:3px solid var(--acc2)}
+html[data-skin="pink"][data-app="atlas-bumi"] .missions li{border-bottom-color:rgba(58,20,48,0.128)}
+html[data-skin="pink"][data-app="atlas-bumi"] .missions li::before{color:var(--muted)}
+html[data-skin="pink"][data-app="atlas-bumi"] .missions li.ok{color:var(--muted)}
+html[data-skin="pink"][data-app="atlas-bumi"] .missions li.ok::before{color:var(--good)}
+html[data-skin="pink"][data-app="atlas-bumi"] .bar{background-color:#f9eaf0;background-image:initial}
+html[data-skin="pink"][data-app="atlas-bumi"] .bar i{background:linear-gradient(90deg,var(--acc),var(--acc2))}
+html[data-skin="pink"][data-app="atlas-bumi"] .slide .row{color:var(--muted)}
+html[data-skin="pink"][data-app="atlas-bumi"] .slide .row b{color:var(--text)}
+html[data-skin="pink"][data-app="atlas-bumi"] input[type="range"]{accent-color:var(--acc)}
+html[data-skin="pink"][data-app="atlas-bumi"] .toast{background-color:#faeff4;background-image:initial;box-shadow:rgba(94,233,255,0.147) 0px 0px 30px;border:1px solid var(--acc)}
+html[data-skin="pink"][data-app="atlas-bumi"] .score{color:var(--warm)}
+html[data-skin="pink"][data-app="atlas-bumi"] #pilarPulseBtn{color:#451f3b;background-color:initial;background-image:linear-gradient(145deg, #faeff4, #fbf3f7);border-top-color:#f1c5d8;border-right-color:#f1c5d8;border-bottom-color:#f1c5d8;border-left-color:#f1c5d8;box-shadow:rgba(190,60,120,0.1) 0px 12px 34px, rgba(126,238,255,0.022) 0px 0px 0px 1px inset}
+html[data-skin="pink"][data-app="atlas-bumi"] #pilarPulseBtn::before{color:#4a2440;background-color:#fbf3f7;background-image:initial;border-top-color:#f1c5d8;border-right-color:#f1c5d8;border-bottom-color:#f1c5d8;border-left-color:#f1c5d8;box-shadow:rgba(190,60,120,0.1) 0px 8px 24px}
+html[data-skin="pink"][data-app="atlas-bumi"] #pilarPulseBtn::after{background-color:rgb(113, 131, 152);background-image:initial;border-top-color:#f3cfdf;border-right-color:#f3cfdf;border-bottom-color:#f3cfdf;border-left-color:#f3cfdf}
+html[data-skin="pink"][data-app="atlas-bumi"] #pilarPulseBtn.on{color:#552f4b;border-top-color:#f0c4d7;border-right-color:#f0c4d7;border-bottom-color:#f0c4d7;border-left-color:#f0c4d7}
+html[data-skin="pink"][data-app="atlas-bumi"] #pilarPulseBtn.on::after{background-color:rgb(99, 227, 160);background-image:initial;box-shadow:rgba(99,227,160,0.413) 0px 0px 8px}
+html[data-skin="pink"][data-app="atlas-bumi"] #pilarPulseBtn.off::after{background-color:rgb(113, 131, 152);background-image:initial}
+html[data-skin="pink"][data-app="atlas-bumi"] #pilarPulseBtn.pulse-idle{box-shadow:rgba(190,60,120,0.1) 0px 8px 20px}
+html[data-skin="pink"][data-app="atlas-bumi"] #pilarPulseBtn:hover,html[data-skin="pink"][data-app="atlas-bumi"] #pilarPulseBtn:focus-visible,html[data-skin="pink"][data-app="atlas-bumi"] #pilarPulseBtn.pulse-awake{border-top-color:#1ae0ff;border-right-color:#1ae0ff;border-bottom-color:#1ae0ff;border-left-color:#1ae0ff;box-shadow:rgba(190,60,120,0.1) 0px 14px 38px, rgba(94,233,255,0.055) 0px 0px 0px 3px}
+html[data-skin="pink"][data-app="atlas-bumi"] #pilarPulseDrawer{color:#431d39;background-color:#fcf3f7;background-image:initial;border-top-color:#f1c5d8;border-right-color:#f1c5d8;border-bottom-color:#f1c5d8;border-left-color:#f1c5d8;box-shadow:rgba(190,60,120,0.1) 0px 22px 70px}
+html[data-skin="pink"][data-app="atlas-bumi"] .pp-head{border-bottom-color:#f2c9db}
+html[data-skin="pink"][data-app="atlas-bumi"] .pp-head b{color:#006d7e}
+html[data-skin="pink"][data-app="atlas-bumi"] .pp-head small{color:#7a5263}
+html[data-skin="pink"][data-app="atlas-bumi"] .pp-clear{color:#5f3955!important;background-color:#fbf1f5!important;background-image:initial!important;border-top-color:#f1c6d9!important;border-right-color:#f1c6d9!important;border-bottom-color:#f1c6d9!important;border-left-color:#f1c6d9!important}
+html[data-skin="pink"][data-app="atlas-bumi"] .pp-empty{color:#7a5263}
+html[data-skin="pink"][data-app="atlas-bumi"] .pp-msg{background-color:#faeff4;background-image:initial}
+html[data-skin="pink"][data-app="atlas-bumi"] .pp-msg.me{background-color:#faecf2;background-image:initial}
+html[data-skin="pink"][data-app="atlas-bumi"] .pp-msg time{color:#7a5263}
+html[data-skin="pink"][data-app="atlas-bumi"] .pp-form{border-top-color:#f2c9db}
+html[data-skin="pink"][data-app="atlas-bumi"] .pp-form input{color:#431d39;background-color:#fbf2f6;background-image:initial;border-top-color:#f1c6d9;border-right-color:#f1c6d9;border-bottom-color:#f1c6d9;border-left-color:#f1c6d9}
+html[data-skin="pink"][data-app="atlas-bumi"] #pilarPulseNotice{color:#5b3551;background-color:#fbf3f7;background-image:initial;border-top-color:#f1c7d9;border-right-color:#f1c7d9;border-bottom-color:#f1c7d9;border-left-color:#f1c7d9;box-shadow:rgba(190,60,120,0.1) 0px 12px 40px}
+html[data-skin="pink"][data-app="atlas-bumi"] #globe{background:#030812}
+html[data-skin="pink"][data-app="atlas-bumi"] .top{background:var(--sk-top);box-shadow:0 1px 0 var(--sk-line)}
+html[data-skin="pink"][data-app="atlas-bumi"] .clock,html[data-skin="pink"][data-app="atlas-bumi"] .brand b{color:var(--sk-ink)}
+html[data-skin="pink"][data-app="atlas-bumi"]{--sk-top:rgba(255,246,250,.94);--sk-line:#f6d6e6;--sk-ink:#3a1430}

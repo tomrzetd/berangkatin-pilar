@@ -298,7 +298,8 @@
     document.documentElement.setAttribute('data-skin',sk[0]);
     const meta=document.querySelector('meta[name=theme-color]');if(meta)meta.content=sk[3];
     if(skinBtn){skinBtn.innerHTML=sk[1]+' <span class="lbl">'+sk[2]+'</span>';const nx=SKINS[(SKINS.indexOf(sk)+1)%SKINS.length];skinBtn.title='Tampilan: '+sk[2]+' · ketuk untuk ganti ke '+nx[2];skinBtn.setAttribute('aria-label',skinBtn.title);}
-    if(save){try{localStorage.setItem('pilar_skin',sk[0])}catch(e){}}
+    // ganti skin di Hub = mulai baru: lupakan tema yang dipilih manual di dalam aplikasi agar ikut skin ini
+    if(save){try{localStorage.setItem('pilar_skin',sk[0]);['pilar_lingkaran_theme','pilarMicroscopeTheme'].forEach(k=>localStorage.removeItem(k))}catch(e){}}
   }
   applySkin(document.documentElement.getAttribute('data-skin')||'kalem',false);
   skinBtn?.addEventListener('click',()=>{const cur=document.documentElement.getAttribute('data-skin');const i=SKINS.findIndex(x=>x[0]===cur);applySkin(SKINS[(i+1)%SKINS.length][0],true);});

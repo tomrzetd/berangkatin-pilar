@@ -1,0 +1,124 @@
+/* DIBUAT OTOMATIS oleh tools/gen-skins.mjs — jangan sunting manual; ubah tools/skin-rules.mjs lalu jalankan ulang.
+   Skin terang PILAR untuk apps/puzzlesnap. Hanya aktif saat skin Hub = Kalem/Pink. */
+
+/* ===== kalem ===== */
+html[data-skin="kalem"][data-app="puzzlesnap"]{color-scheme:light}
+html[data-skin="kalem"][data-app="puzzlesnap"]{--lime:#5f8400;--pk:#ee0067;--cy:#0087a2;--yl:#9b7500;--bg:#f6f8fb;--pan:#f2f4f9;--line:#ced9ed;--mut:#52617a;--top:58px;--dock:68px;--btn:44px}
+html[data-skin="kalem"][data-app="puzzlesnap"],html[data-skin="kalem"][data-app="puzzlesnap"] body{color:#16213f;background:var(--bg)}
+html[data-skin="kalem"][data-app="puzzlesnap"] button,html[data-skin="kalem"][data-app="puzzlesnap"] select{color:inherit}
+html[data-skin="kalem"][data-app="puzzlesnap"] #app{background-color:initial;background-image:radial-gradient(circle at 50% 0px, #f3f5f9, #f6f8fb 55%)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .home-btn{color:#101b39;background:var(--pan);border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .pilar-brand{color:var(--lime)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .brand{color:#16213f}
+html[data-skin="kalem"][data-app="puzzlesnap"] .creator{color:var(--mut)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .bubble{color:#242f4d;background:var(--pan);border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .pill{background:var(--pan);border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .pill b{color:var(--yl)}
+html[data-skin="kalem"][data-app="puzzlesnap"] #stage{background-color:#f7f9fb;background-image:initial;box-shadow:rgba(36,77,139,0.1) 0px 20px 60px;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="puzzlesnap"] #stage.drop{outline:4px dashed var(--lime)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .dock button,html[data-skin="kalem"][data-app="puzzlesnap"] .dock select{background:var(--pan);border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .dock button[aria-pressed="true"]{background-color:#eff6f9;background-image:initial;border-color:var(--cy)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .dock .go{color:rgb(17, 17, 34);border-top-color:currentcolor;border-right-color:currentcolor;border-bottom-color:currentcolor;border-left-color:currentcolor;background:linear-gradient(135deg,var(--lime),#7be36a)}
+html[data-skin="kalem"][data-app="puzzlesnap"] button:focus-visible,html[data-skin="kalem"][data-app="puzzlesnap"] select:focus-visible,html[data-skin="kalem"][data-app="puzzlesnap"] input:focus-visible{outline:3px solid var(--yl)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .ov{background-color:rgba(16,27,57,0.5);background-image:initial}
+html[data-skin="kalem"][data-app="puzzlesnap"] .card{background-color:initial;background-image:linear-gradient(160deg, #f0f3f8, #f4f6fa);box-shadow:rgba(36,77,139,0.1) 0px 30px 90px;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .card h1 span{color:transparent}
+html[data-skin="kalem"][data-app="puzzlesnap"] .card p{color:var(--mut)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .opt{background-color:#f2f4f9;background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .opt:hover{border-color:var(--lime)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .opt small{color:var(--mut)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .chip{background-color:#f2f4f9;background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .chip[aria-pressed="true"]{color:rgb(17, 17, 34);background:var(--lime);border-color:var(--lime)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .fine{color:#52617a}
+html[data-skin="kalem"][data-app="puzzlesnap"] .big{color:var(--lime)}
+html[data-skin="kalem"][data-app="puzzlesnap"] input{color:#101b39;background-color:#f5f7fa;background-image:initial;border:2px solid var(--lime)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .btn{color:rgb(17, 17, 34);border-top-color:currentcolor;border-right-color:currentcolor;border-bottom-color:currentcolor;border-left-color:currentcolor;background:var(--lime)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .btn.sec{color:#101b39;background-color:#edf1f6;background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="puzzlesnap"] .lbrow{border-bottom-color:#d0daed}
+html[data-skin="kalem"][data-app="puzzlesnap"] .lbrow b{color:var(--lime)}
+html[data-skin="kalem"][data-app="puzzlesnap"] body[data-ui="ifp"]{--top:80px;--dock:100px;--btn:62px}
+@media (max-width: 700px){html[data-skin="kalem"][data-app="puzzlesnap"]{--top:52px;--dock:62px}}
+html[data-skin="kalem"][data-app="puzzlesnap"][data-fx="lite"] .topbar,html[data-skin="kalem"][data-app="puzzlesnap"][data-fx="lite"] .vision-gate,html[data-skin="kalem"][data-app="puzzlesnap"][data-fx="lite"] .modal,html[data-skin="kalem"][data-app="puzzlesnap"][data-fx="lite"] .nl{background-color:#f6f9fc!important}
+html[data-skin="kalem"][data-app="puzzlesnap"][data-fx="lite"] .backdrop,html[data-skin="kalem"][data-app="puzzlesnap"][data-fx="lite"] .tour-shade{background-color:rgba(16,27,57,0.5)!important}
+html[data-skin="kalem"][data-app="puzzlesnap"][data-fx="lite"] .boot-card,html[data-skin="kalem"][data-app="puzzlesnap"][data-fx="lite"] .modal,html[data-skin="kalem"][data-app="puzzlesnap"][data-fx="lite"] .teamCard,html[data-skin="kalem"][data-app="puzzlesnap"][data-fx="lite"] .login-card{box-shadow:rgba(36,77,139,0.1) 0px 8px 24px!important}
+html[data-skin="kalem"][data-app="puzzlesnap"] #pilarPulseBtn{color:#1b2644;background-color:initial;background-image:linear-gradient(145deg, #f0f5f9, #f4f7fb);border-top-color:#cbdceb;border-right-color:#cbdceb;border-bottom-color:#cbdceb;border-left-color:#cbdceb;box-shadow:rgba(36,77,139,0.1) 0px 12px 34px, rgba(126,238,255,0.022) 0px 0px 0px 1px inset}
+html[data-skin="kalem"][data-app="puzzlesnap"] #pilarPulseBtn::before{color:#202b49;background-color:#f4f7fb;background-image:initial;border-top-color:#cbdceb;border-right-color:#cbdceb;border-bottom-color:#cbdceb;border-left-color:#cbdceb;box-shadow:rgba(36,77,139,0.1) 0px 8px 24px}
+html[data-skin="kalem"][data-app="puzzlesnap"] #pilarPulseBtn::after{background-color:rgb(113, 131, 152);background-image:initial;border-top-color:#d3e0ee;border-right-color:#d3e0ee;border-bottom-color:#d3e0ee;border-left-color:#d3e0ee}
+html[data-skin="kalem"][data-app="puzzlesnap"] #pilarPulseBtn.on{color:#2b3654;border-top-color:#c9d6eb;border-right-color:#c9d6eb;border-bottom-color:#c9d6eb;border-left-color:#c9d6eb}
+html[data-skin="kalem"][data-app="puzzlesnap"] #pilarPulseBtn.on::after{background-color:rgb(99, 227, 160);background-image:initial;box-shadow:rgba(99,227,160,0.413) 0px 0px 8px}
+html[data-skin="kalem"][data-app="puzzlesnap"] #pilarPulseBtn.off::after{background-color:rgb(113, 131, 152);background-image:initial}
+html[data-skin="kalem"][data-app="puzzlesnap"] #pilarPulseBtn.pulse-idle{box-shadow:rgba(36,77,139,0.1) 0px 8px 20px}
+html[data-skin="kalem"][data-app="puzzlesnap"] #pilarPulseBtn:hover,html[data-skin="kalem"][data-app="puzzlesnap"] #pilarPulseBtn:focus-visible,html[data-skin="kalem"][data-app="puzzlesnap"] #pilarPulseBtn.pulse-awake{border-top-color:#1ae0ff;border-right-color:#1ae0ff;border-bottom-color:#1ae0ff;border-left-color:#1ae0ff;box-shadow:rgba(36,77,139,0.1) 0px 14px 38px, rgba(94,233,255,0.055) 0px 0px 0px 3px}
+html[data-skin="kalem"][data-app="puzzlesnap"] #pilarPulseDrawer{color:#192442;background-color:#f4f7fb;background-image:initial;border-top-color:#cbdceb;border-right-color:#cbdceb;border-bottom-color:#cbdceb;border-left-color:#cbdceb;box-shadow:rgba(36,77,139,0.1) 0px 22px 70px}
+html[data-skin="kalem"][data-app="puzzlesnap"] .pp-head{border-bottom-color:#cedeed}
+html[data-skin="kalem"][data-app="puzzlesnap"] .pp-head b{color:#006d7e}
+html[data-skin="kalem"][data-app="puzzlesnap"] .pp-head small{color:#52617a}
+html[data-skin="kalem"][data-app="puzzlesnap"] .pp-clear{color:#35405e!important;background-color:#f3f5f9!important;background-image:initial!important;border-top-color:#ccd7ec!important;border-right-color:#ccd7ec!important;border-bottom-color:#ccd7ec!important;border-left-color:#ccd7ec!important}
+html[data-skin="kalem"][data-app="puzzlesnap"] .pp-empty{color:#52617a}
+html[data-skin="kalem"][data-app="puzzlesnap"] .pp-msg{background-color:#f0f4f9;background-image:initial}
+html[data-skin="kalem"][data-app="puzzlesnap"] .pp-msg.me{background-color:#eef8f5;background-image:initial}
+html[data-skin="kalem"][data-app="puzzlesnap"] .pp-msg time{color:#52617a}
+html[data-skin="kalem"][data-app="puzzlesnap"] .pp-form{border-top-color:#cedeed}
+html[data-skin="kalem"][data-app="puzzlesnap"] .pp-form input{color:#192442;background-color:#f3f7fa;background-image:initial;border-top-color:#ccdcec;border-right-color:#ccdcec;border-bottom-color:#ccdcec;border-left-color:#ccdcec}
+html[data-skin="kalem"][data-app="puzzlesnap"] #pilarPulseNotice{color:#313c5a;background-color:#f4f7fb;background-image:initial;border-top-color:#ccdeec;border-right-color:#ccdeec;border-bottom-color:#ccdeec;border-left-color:#ccdeec;box-shadow:rgba(36,77,139,0.1) 0px 12px 40px}
+
+/* ===== pink ===== */
+html[data-skin="pink"][data-app="puzzlesnap"]{color-scheme:light}
+html[data-skin="pink"][data-app="puzzlesnap"]{--lime:#5f8400;--pk:#ee0067;--cy:#0087a2;--yl:#9b7500;--bg:#fcf5f8;--pan:#fbf0f5;--line:#f2c9db;--mut:#7a5263;--top:58px;--dock:68px;--btn:44px}
+html[data-skin="pink"][data-app="puzzlesnap"],html[data-skin="pink"][data-app="puzzlesnap"] body{color:#401a36;background:var(--bg)}
+html[data-skin="pink"][data-app="puzzlesnap"] button,html[data-skin="pink"][data-app="puzzlesnap"] select{color:inherit}
+html[data-skin="pink"][data-app="puzzlesnap"] #app{background-color:initial;background-image:radial-gradient(circle at 50% 0px, #fbf1f5, #fcf5f8 55%)}
+html[data-skin="pink"][data-app="puzzlesnap"] .home-btn{color:#3a1430;background:var(--pan);border:1px solid var(--line)}
+html[data-skin="pink"][data-app="puzzlesnap"] .pilar-brand{color:var(--lime)}
+html[data-skin="pink"][data-app="puzzlesnap"] .brand{color:#401a36}
+html[data-skin="pink"][data-app="puzzlesnap"] .creator{color:var(--mut)}
+html[data-skin="pink"][data-app="puzzlesnap"] .bubble{color:#4e2844;background:var(--pan);border:1px solid var(--line)}
+html[data-skin="pink"][data-app="puzzlesnap"] .pill{background:var(--pan);border:1px solid var(--line)}
+html[data-skin="pink"][data-app="puzzlesnap"] .pill b{color:var(--yl)}
+html[data-skin="pink"][data-app="puzzlesnap"] #stage{background-color:#fcf6f9;background-image:initial;box-shadow:rgba(190,60,120,0.1) 0px 20px 60px;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="puzzlesnap"] #stage.drop{outline:4px dashed var(--lime)}
+html[data-skin="pink"][data-app="puzzlesnap"] .dock button,html[data-skin="pink"][data-app="puzzlesnap"] .dock select{background:var(--pan);border:1px solid var(--line)}
+html[data-skin="pink"][data-app="puzzlesnap"] .dock button[aria-pressed="true"]{background-color:#faeef3;background-image:initial;border-color:var(--cy)}
+html[data-skin="pink"][data-app="puzzlesnap"] .dock .go{color:rgb(17, 17, 34);border-top-color:currentcolor;border-right-color:currentcolor;border-bottom-color:currentcolor;border-left-color:currentcolor;background:linear-gradient(135deg,var(--lime),#7be36a)}
+html[data-skin="pink"][data-app="puzzlesnap"] button:focus-visible,html[data-skin="pink"][data-app="puzzlesnap"] select:focus-visible,html[data-skin="pink"][data-app="puzzlesnap"] input:focus-visible{outline:3px solid var(--yl)}
+html[data-skin="pink"][data-app="puzzlesnap"] .ov{background-color:rgba(58,20,48,0.5);background-image:initial}
+html[data-skin="pink"][data-app="puzzlesnap"] .card{background-color:initial;background-image:linear-gradient(160deg, #faeef3, #fbf2f6);box-shadow:rgba(190,60,120,0.1) 0px 30px 90px;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="puzzlesnap"] .card h1 span{color:transparent}
+html[data-skin="pink"][data-app="puzzlesnap"] .card p{color:var(--mut)}
+html[data-skin="pink"][data-app="puzzlesnap"] .opt{background-color:#fbf0f5;background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="puzzlesnap"] .opt:hover{border-color:var(--lime)}
+html[data-skin="pink"][data-app="puzzlesnap"] .opt small{color:var(--mut)}
+html[data-skin="pink"][data-app="puzzlesnap"] .chip{background-color:#fbf0f5;background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="puzzlesnap"] .chip[aria-pressed="true"]{color:rgb(17, 17, 34);background:var(--lime);border-color:var(--lime)}
+html[data-skin="pink"][data-app="puzzlesnap"] .fine{color:#7a5263}
+html[data-skin="pink"][data-app="puzzlesnap"] .big{color:var(--lime)}
+html[data-skin="pink"][data-app="puzzlesnap"] input{color:#3a1430;background-color:#fcf4f7;background-image:initial;border:2px solid var(--lime)}
+html[data-skin="pink"][data-app="puzzlesnap"] .btn{color:rgb(17, 17, 34);border-top-color:currentcolor;border-right-color:currentcolor;border-bottom-color:currentcolor;border-left-color:currentcolor;background:var(--lime)}
+html[data-skin="pink"][data-app="puzzlesnap"] .btn.sec{color:#3a1430;background-color:#f9ebf1;background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="puzzlesnap"] .lbrow{border-bottom-color:#f2cbdc}
+html[data-skin="pink"][data-app="puzzlesnap"] .lbrow b{color:var(--lime)}
+html[data-skin="pink"][data-app="puzzlesnap"] body[data-ui="ifp"]{--top:80px;--dock:100px;--btn:62px}
+@media (max-width: 700px){html[data-skin="pink"][data-app="puzzlesnap"]{--top:52px;--dock:62px}}
+html[data-skin="pink"][data-app="puzzlesnap"][data-fx="lite"] .topbar,html[data-skin="pink"][data-app="puzzlesnap"][data-fx="lite"] .vision-gate,html[data-skin="pink"][data-app="puzzlesnap"][data-fx="lite"] .modal,html[data-skin="pink"][data-app="puzzlesnap"][data-fx="lite"] .nl{background-color:#fcf6f9!important}
+html[data-skin="pink"][data-app="puzzlesnap"][data-fx="lite"] .backdrop,html[data-skin="pink"][data-app="puzzlesnap"][data-fx="lite"] .tour-shade{background-color:rgba(58,20,48,0.5)!important}
+html[data-skin="pink"][data-app="puzzlesnap"][data-fx="lite"] .boot-card,html[data-skin="pink"][data-app="puzzlesnap"][data-fx="lite"] .modal,html[data-skin="pink"][data-app="puzzlesnap"][data-fx="lite"] .teamCard,html[data-skin="pink"][data-app="puzzlesnap"][data-fx="lite"] .login-card{box-shadow:rgba(190,60,120,0.1) 0px 8px 24px!important}
+html[data-skin="pink"][data-app="puzzlesnap"] #pilarPulseBtn{color:#451f3b;background-color:initial;background-image:linear-gradient(145deg, #faeff4, #fbf3f7);border-top-color:#f1c5d8;border-right-color:#f1c5d8;border-bottom-color:#f1c5d8;border-left-color:#f1c5d8;box-shadow:rgba(190,60,120,0.1) 0px 12px 34px, rgba(126,238,255,0.022) 0px 0px 0px 1px inset}
+html[data-skin="pink"][data-app="puzzlesnap"] #pilarPulseBtn::before{color:#4a2440;background-color:#fbf3f7;background-image:initial;border-top-color:#f1c5d8;border-right-color:#f1c5d8;border-bottom-color:#f1c5d8;border-left-color:#f1c5d8;box-shadow:rgba(190,60,120,0.1) 0px 8px 24px}
+html[data-skin="pink"][data-app="puzzlesnap"] #pilarPulseBtn::after{background-color:rgb(113, 131, 152);background-image:initial;border-top-color:#f3cfdf;border-right-color:#f3cfdf;border-bottom-color:#f3cfdf;border-left-color:#f3cfdf}
+html[data-skin="pink"][data-app="puzzlesnap"] #pilarPulseBtn.on{color:#552f4b;border-top-color:#f0c4d7;border-right-color:#f0c4d7;border-bottom-color:#f0c4d7;border-left-color:#f0c4d7}
+html[data-skin="pink"][data-app="puzzlesnap"] #pilarPulseBtn.on::after{background-color:rgb(99, 227, 160);background-image:initial;box-shadow:rgba(99,227,160,0.413) 0px 0px 8px}
+html[data-skin="pink"][data-app="puzzlesnap"] #pilarPulseBtn.off::after{background-color:rgb(113, 131, 152);background-image:initial}
+html[data-skin="pink"][data-app="puzzlesnap"] #pilarPulseBtn.pulse-idle{box-shadow:rgba(190,60,120,0.1) 0px 8px 20px}
+html[data-skin="pink"][data-app="puzzlesnap"] #pilarPulseBtn:hover,html[data-skin="pink"][data-app="puzzlesnap"] #pilarPulseBtn:focus-visible,html[data-skin="pink"][data-app="puzzlesnap"] #pilarPulseBtn.pulse-awake{border-top-color:#1ae0ff;border-right-color:#1ae0ff;border-bottom-color:#1ae0ff;border-left-color:#1ae0ff;box-shadow:rgba(190,60,120,0.1) 0px 14px 38px, rgba(94,233,255,0.055) 0px 0px 0px 3px}
+html[data-skin="pink"][data-app="puzzlesnap"] #pilarPulseDrawer{color:#431d39;background-color:#fcf3f7;background-image:initial;border-top-color:#f1c5d8;border-right-color:#f1c5d8;border-bottom-color:#f1c5d8;border-left-color:#f1c5d8;box-shadow:rgba(190,60,120,0.1) 0px 22px 70px}
+html[data-skin="pink"][data-app="puzzlesnap"] .pp-head{border-bottom-color:#f2c9db}
+html[data-skin="pink"][data-app="puzzlesnap"] .pp-head b{color:#006d7e}
+html[data-skin="pink"][data-app="puzzlesnap"] .pp-head small{color:#7a5263}
+html[data-skin="pink"][data-app="puzzlesnap"] .pp-clear{color:#5f3955!important;background-color:#fbf1f5!important;background-image:initial!important;border-top-color:#f1c6d9!important;border-right-color:#f1c6d9!important;border-bottom-color:#f1c6d9!important;border-left-color:#f1c6d9!important}
+html[data-skin="pink"][data-app="puzzlesnap"] .pp-empty{color:#7a5263}
+html[data-skin="pink"][data-app="puzzlesnap"] .pp-msg{background-color:#faeff4;background-image:initial}
+html[data-skin="pink"][data-app="puzzlesnap"] .pp-msg.me{background-color:#faecf2;background-image:initial}
+html[data-skin="pink"][data-app="puzzlesnap"] .pp-msg time{color:#7a5263}
+html[data-skin="pink"][data-app="puzzlesnap"] .pp-form{border-top-color:#f2c9db}
+html[data-skin="pink"][data-app="puzzlesnap"] .pp-form input{color:#431d39;background-color:#fbf2f6;background-image:initial;border-top-color:#f1c6d9;border-right-color:#f1c6d9;border-bottom-color:#f1c6d9;border-left-color:#f1c6d9}
+html[data-skin="pink"][data-app="puzzlesnap"] #pilarPulseNotice{color:#5b3551;background-color:#fbf3f7;background-image:initial;border-top-color:#f1c7d9;border-right-color:#f1c7d9;border-bottom-color:#f1c7d9;border-left-color:#f1c7d9;box-shadow:rgba(190,60,120,0.1) 0px 12px 40px}

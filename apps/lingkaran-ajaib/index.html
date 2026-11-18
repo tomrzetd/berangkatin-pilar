@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0a1222">
 <meta name="description" content="Lingkaran Ajaib — titik berputar di lingkaran menjadi gelombang, Lissajous, lalu menggambar hati dengan lingkaran berputar (Fourier). Numerasi & matematika SMP yang bisa dilihat.">
 <title>PILAR™ · Lingkaran Ajaib · Gelombang & Gambar</title>
-<script>try{var t=localStorage.getItem('pilar_lingkaran_theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>/* tema: pilihan di aplikasi menang; jika belum memilih, ikut skin Hub (Gelap → gelap, Kalem/Pink → ceria) */try{var t=localStorage.getItem('pilar_lingkaran_theme');if(!t){var k=localStorage.getItem('pilar_skin')||'kalem';t=k==='gelap'?'gelap':'ceria'}document.documentElement.dataset.theme=t}catch(e){}</script>
 <script src="../../core/device-profile.js"></script>
 <style>
 @font-face{font-family:"Fredoka";src:url("../../vendor/fonts/fredoka-var.woff") format("woff");font-weight:300 700;font-display:swap}
@@ -26,6 +26,10 @@ html[data-theme="ceria"]{
  --grid:#17243a12;--axis:#17243a55;--tick:#17243a90;--stage:#fffdf7;
  --bw:3px;--sh:4px 5px 0 #17243a;--btn:#ffffff;--btnon:#ffe27c;--ink:#17243a;--bubble:#ffffff
 }
+/* skin Hub "Pink": versi ceria bernuansa merah muda */
+html[data-skin="pink"][data-theme="ceria"]{--bg:#fff6fa;--bg2:#ffeaf3;--panel2:#fff4f9;--line:#3a1430;--text:#3a1430;--muted:#7a4a68;--pt:#3a1430;
+ --grid:#3a143012;--axis:#3a143055;--tick:#3a143090;--stage:#fffafc;--sh:4px 5px 0 #3a1430;--btnon:#ffc6de;--ink:#3a1430}
+html[data-skin="pink"][data-theme="ceria"] body{background-image:radial-gradient(#f6d3e3 1.3px,transparent 1.3px)}
 html{font-size:clamp(14px,.45vw + 9.5px,23px)}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--f-body);-webkit-tap-highlight-color:transparent;transition:background .3s}

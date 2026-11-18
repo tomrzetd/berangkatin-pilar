@@ -81,4 +81,13 @@
     const de=document.documentElement;
     de.dataset.device=tier;de.dataset.fx=profile.fx;if(bigTouch)de.dataset.bigtouch='1';if(touch)de.dataset.touch='1';
   }catch(_){}
+  /* Skin Hub (Kalem/Gelap/Pink) ikut ke aplikasi. Hanya aplikasi yang memasang css/pilar-skin.css
+     yang berubah tampilan; sisanya tetap seperti aslinya. data-app = slug folder apps/<slug>/. */
+  try{
+    let s='kalem';try{s=localStorage.getItem('pilar_skin')||'kalem'}catch(_){}
+    if(!/^(kalem|gelap|pink)$/.test(s))s='kalem';
+    const de=document.documentElement,m=/\/apps\/([^/]+)\//.exec(location.pathname);
+    if(!de.dataset.skin)de.dataset.skin=s;if(m&&!de.dataset.app)de.dataset.app=m[1];
+    profile.skin=de.dataset.skin;profile.light=profile.skin!=='gelap';
+  }catch(_){}
 })(window);
