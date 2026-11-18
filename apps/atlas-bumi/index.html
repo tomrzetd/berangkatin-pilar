@@ -133,6 +133,7 @@ input[type=range]{width:100%;accent-color:var(--acc);height:calc(var(--tap)*.55)
   </div>
   <button class="btn pri" id="go" type="button" style="width:100%;margin-top:.5rem">🚀 Terbang ke koordinat</button>
  </div>
+ <div class="sec" id="mapSec"></div>
  <div class="sec"><div class="h">Lompat cepat</div><div class="chips" id="chips"></div></div>
  <div class="sec"><div class="h">Lapisan peta</div><div id="layers"></div></div>
  <p class="sec" style="font-size:.66rem;color:var(--muted);font-weight:700;line-height:1.4">Citra: NASA Blue Marble &amp; Black Marble (lewat three-globe) · batas negara: Natural Earth · gunung api: Smithsonian GVP. Awan disimulasikan.</p>
@@ -150,7 +151,7 @@ input[type=range]{width:100%;accent-color:var(--acc);height:calc(var(--tap)*.55)
   <div class="guide"><span class="av">🧑‍🚀</span><span id="say">Halo, penjelajah! Seret bola dunia untuk memutar, cubit/gulir untuk zoom. Ketuk di mana saja untuk melihat koordinatnya, atau ketik tujuan di kiri lalu <b>terbang</b>!</span></div>
  </div>
  <div class="sec" id="place" style="display:none"></div>
- <div class="sec"><div class="h">Misi penjelajah <b id="misN">0/8</b></div><div class="bar"><i id="misBar"></i></div><ul class="missions" id="mis" style="margin-top:.4rem"></ul></div>
+ <div class="sec"><div class="h">Misi penjelajah <b id="misN">0/13</b></div><div class="bar"><i id="misBar"></i></div><ul class="missions" id="mis" style="margin-top:.4rem"></ul></div>
 </aside>
 
 <div class="panel dock" id="dock">
@@ -171,7 +172,7 @@ input[type=range]{width:100%;accent-color:var(--acc);height:calc(var(--tap)*.55)
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="./geo.js?v=1.0.0"></script>
 <script src="./places.js?v=1.0.0"></script>
-<script src="./app.js?v=1.0.0"></script>
+<script src="./app.js?v=1.1.0"></script>
 <script src="../../pulse/config.js"></script>
 <script src="../../core/pulse.js"></script>
 </body>

@@ -8,6 +8,7 @@
   const G = window.AtlasGeo, PLACES = window.ATLAS_PLACES.map(p => ({n: p[0], lat: p[1], lon: p[2], k: p[3], f: p[4]}));
   const D2R = Math.PI / 180, html = document.documentElement;
   const LITE = html.dataset.fx === 'lite';
+  let mapOn = false;   // true saat bola sedang dibuka menjadi peta
   const JKT = [-6.2, 106.82];
   if (!window.THREE || !window.WebGLRenderingContext) { $('err').style.display = 'grid'; $('load').classList.add('off'); return; }
 
@@ -195,6 +196,8 @@
   let selLbl = null, guessLbl = null;
   const tmp = new THREE.Vector3(), camN = new THREE.Vector3();
   function updateLabels() {
+    if (mapOn) { for (const o of LBL) if (o.el.style.display !== 'none') o.el.style.display = 'none'; mapLabels(); return; }
+    if (sizeLbl.style.display !== 'none') sizeLbl.style.display = 'none';
     const w = renderer.domElement.clientWidth, h = renderer.domElement.clientHeight, dist = camera.position.length();
     camN.copy(camera.position).normalize();
     const horizon = 1 / dist + .03, showPlaces = ST.layers.tempat && dist < 2.6;
@@ -244,15 +247,17 @@
   /* ---------- lapisan ---------- */
   const LAYERS = [['siang', '☀️ Siang–malam nyata'], ['awan', '☁️ Awan'], ['lampu', '🌃 Lampu kota (malam)'], ['batas', '🗺️ Batas negara'], ['grid', '🧭 Garis lintang & bujur'], ['tempat', '📍 Nama tempat'], ['api', '🌋 Gunung api (Cincin Api)']];
   $('layers').innerHTML = LAYERS.map(([k, t]) => `<div class="tog" data-l="${k}" role="switch" tabindex="0"><span>${t}</span><i></i></div>`).join('');
-  document.querySelectorAll('.tog').forEach(el => {
+  document.querySelectorAll('.tog[data-l]').forEach(el => {
     const flip = () => { ST.layers[el.dataset.l] = !ST.layers[el.dataset.l]; save(); applyLayers(); onLayer(el.dataset.l); };
     el.onclick = flip; el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); } };
   });
   function applyLayers() {
     const L = ST.layers;
+    document.querySelectorAll('.tog[data-l]').forEach(el => { const on = !!L[el.dataset.l]; el.classList.toggle('on', on); el.setAttribute('aria-checked', on); });
+    U.lights.value = L.lampu ? 1 : 0; U.realSun.value = L.siang ? 1 : 0;
+    if (mapOn) return;
     clouds.visible = L.awan; U.lights.value = L.lampu ? 1 : 0; U.realSun.value = L.siang ? 1 : 0;
     grid.visible = L.grid; borders.visible = L.batas; placePts.visible = L.tempat; if (volPts) volPts.visible = L.api;
-    document.querySelectorAll('.tog').forEach(el => { const on = !!L[el.dataset.l]; el.classList.toggle('on', on); el.setAttribute('aria-checked', on); });
   }
   function onLayer(k) {
     if (k === 'api' && ST.layers.api) { say('🌋 Lihat deretan segitiga oranye mengelilingi Samudra Pasifik: itulah <b>Cincin Api</b>. Indonesia punya lebih dari 120 gunung api aktif karena berada di pertemuan lempeng tektonik.'); flyTo(-2, 118, {dist: 2.6, silent: true}); setTimeout(() => mission('api'), 2600); }
@@ -279,6 +284,7 @@
   }
   let current = null;
   function go(lat, lon, name, how) {
+    if (mapOn || MP.m > 0) { openMap(0); setTimeout(() => go(lat, lon, name, how), 1800); return; }
     if (window.innerWidth < 900 && window.scrollY > 40) window.scrollTo({top: 0, behavior: 'smooth'});
     const from = current ? [current.lat, current.lon] : null;
     current = {lat, lon, name, how};
@@ -363,8 +369,9 @@
     return v2ll(o.clone().addScaledVector(d, t));
   }
   let downAt = null, idleT = 0;
-  renderer.domElement.addEventListener('pointerdown', e => { downAt = {x: e.clientX, y: e.clientY, t: performance.now()}; idleT = 0; if (controls.autoRotate) { controls.autoRotate = false; $('spin').classList.remove('on'); } });
+  renderer.domElement.addEventListener('pointerdown', e => { if (mapOn) { idleT = 0; mapDown(e); return; } downAt = {x: e.clientX, y: e.clientY, t: performance.now()}; idleT = 0; if (controls.autoRotate) { controls.autoRotate = false; $('spin').classList.remove('on'); } });
   renderer.domElement.addEventListener('pointerup', e => {
+    if (mapOn) { mapUp(); return; }
     if (!downAt || flight) return; const moved = Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y), dt = performance.now() - downAt.t; downAt = null;
     if (moved > 6 || dt > 600) return;
     const ll = pickLL(e.clientX, e.clientY); if (!ll) return;
@@ -375,6 +382,7 @@
   });
   let lastHover = 0;
   renderer.domElement.addEventListener('pointermove', e => {
+    if (mapOn) { mapMove(e); return; }
     if (e.pointerType !== 'mouse' || performance.now() - lastHover < 50) return; lastHover = performance.now();
     const ll = pickLL(e.clientX, e.clientY), tip = $('tip');
     if (!ll) { $('readout').innerHTML = 'ARAHKAN KURSOR KE BUMI'; tip.style.display = 'none'; highlight(null); return; }
@@ -388,11 +396,11 @@
   renderer.domElement.addEventListener('pointerleave', () => { $('tip').style.display = 'none'; highlight(null); });
 
   /* ---------- tombol ---------- */
-  const zoom = f => { const d = clamp(camera.position.length() * f, controls.minDistance, controls.maxDistance); flyTo(...v2ll(camera.position), {dist: d}); };
+  const zoom = f => { if (mapOn) { if (MP.m === 1) { const t = controls.target, d = camera.position.clone().sub(t).multiplyScalar(f); if (d.length() > controls.minDistance && d.length() < controls.maxDistance) camera.position.copy(t).add(d); } return; } const d = clamp(camera.position.length() * f, controls.minDistance, controls.maxDistance); flyTo(...v2ll(camera.position), {dist: d}); };
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   $('zIn').onclick = () => zoom(.75); $('zOut').onclick = () => zoom(1.3);
   $('spin').onclick = () => { controls.autoRotate = !controls.autoRotate; $('spin').classList.toggle('on', controls.autoRotate); };
-  $('home').onclick = () => flyTo(-2.5, 118, {dist: fitDist(2.7)});
+  $('home').onclick = () => mapOn ? openMap(0) : flyTo(-2.5, 118, {dist: fitDist(2.7)});
 
   /* ---------- pemandu, toast, misi ---------- */
   function say(h) { $('say').innerHTML = h; }
@@ -405,7 +413,12 @@
     ['sb', 'Kunjungi tempat di belahan bumi selatan DAN bujur barat'],
     ['api', 'Nyalakan lapisan gunung api dan temukan Cincin Api'],
     ['malam', 'Atur jam sampai Indonesia malam dan lihat lampu kota'],
-    ['tebak', 'Tebak Lokasi: 3 tebakan dengan selisih < 500 km']
+    ['tebak', 'Tebak Lokasi: 3 tebakan dengan selisih < 500 km'],
+    ['peta', 'Buka kulit bola menjadi peta datar'],
+    ['tissot', 'Nyalakan lingkaran Tissot di peta Mercator'],
+    ['greenland', 'Ukuran Asli: seret Greenland ke khatulistiwa'],
+    ['indo', 'Ukuran Asli: bawa Indonesia ke lintang Eropa (> 45° LU)'],
+    ['equal', 'Coba peta Equal Earth yang menjaga luas']
   ];
   function renderMissions() {
     $('mis').innerHTML = MIS.map(([k, t]) => `<li class="${ST.done[k] ? 'ok' : ''}">${t}</li>`).join('');
@@ -426,7 +439,7 @@
 
   /* ---------- Tebak Lokasi ---------- */
   const QZ = {on: false, round: 0, score: 0, good: 0, target: null, answered: false, pool: []};
-  $('btnQuiz').onclick = () => QZ.on ? endQuiz() : startQuiz();
+  $('btnQuiz').onclick = () => QZ.on ? endQuiz() : (mapOn ? (openMap(0), setTimeout(startQuiz, 1800)) : startQuiz());
   $('qExit').onclick = endQuiz;
   $('qNext').onclick = nextQ;
   function startQuiz() {
@@ -455,6 +468,293 @@
   }
   function endQuiz() { QZ.on = false; $('quiz').classList.remove('on'); $('btnQuiz').classList.remove('on'); guessPin.visible = false; if (guessLbl) { guessLbl.el.remove(); LBL.splice(LBL.indexOf(guessLbl), 1); guessLbl = null; } ST.layers.tempat = true; applyLayers(); }
 
+  /* =====================================================================
+     BOLA vs PETA — kulit bola dibuka menjadi peta datar (Mercator · Ekuirektangular · Equal Earth),
+     lingkaran Tissot, dan "Ukuran Asli" (seret negara ke lintang lain).
+     Bola melengkung → bola makin besar → bidang datar: radius kelengkungan 1/k, k = 1 − m.
+     ===================================================================== */
+  const PROJ = [['mer', 'Mercator'], ['eqr', 'Ekuirektangular'], ['ee', 'Equal Earth']];
+  const MP = {m: 0, goal: 0, proj: 0, lon0: 0, tissot: false, sizeOn: false, size: null, drag: null, d0: new THREE.Vector3(1, 0, 0), sphereDist: 3.4, mapDist: 8, pinWas: false};
+  const morphU = {m: {value: 0}, proj: {value: 0}};
+  dayTex.wrapS = nightTex.wrapS = THREE.RepeatWrapping;
+  const MORPH_GLSL = `uniform float m; uniform float proj; const float PI=3.141592653589793;
+    vec2 projXY(float lam,float phi){
+      if(proj<0.5){ float p=clamp(phi,-1.4835,1.4835); return vec2(lam,log(tan(PI*0.25+p*0.5))); }
+      if(proj<1.5) return vec2(lam,phi);
+      float th=asin(0.8660254*sin(phi)); float t2=th*th; float t6=t2*t2*t2;
+      float x=3.4641016*lam*cos(th)/(3.0*(9.0*0.003796*t6*t2+7.0*0.000893*t6+3.0*(-0.081106)*t2+1.340264));
+      float y=0.003796*t6*t2*th+0.000893*t6*th+(-0.081106)*t2*th+1.340264*th;
+      return vec2(x,y); }
+    vec3 morphPos(float lam,float phi){
+      vec2 f=projXY(lam,phi); float k=max(1.0-m,0.0008);
+      float L=mix(lam,f.x,m); float P=mix(phi,f.y,m);
+      return vec3(cos(P*k)*sin(L*k)/k, sin(P*k)/k, cos(P*k)*cos(L*k)/k-1.0/k+1.0); }`;
+  const EE = [1.340264, -0.081106, 0.000893, 0.003796], PHI_MAX = 85 * D2R;
+  function projXY(lam, phi, proj = MP.proj) {
+    if (proj === 0) { const p = clamp(phi, -PHI_MAX, PHI_MAX); return [lam, Math.log(Math.tan(Math.PI / 4 + p / 2))]; }
+    if (proj === 1) return [lam, phi];
+    const th = Math.asin(Math.sqrt(3) / 2 * Math.sin(phi)), t2 = th * th, t6 = t2 * t2 * t2;
+    return [2 * Math.sqrt(3) * lam * Math.cos(th) / (3 * (9 * EE[3] * t6 * t2 + 7 * EE[2] * t6 + 3 * EE[1] * t2 + EE[0])), EE[3] * t6 * t2 * th + EE[2] * t6 * th + EE[1] * t2 * th + EE[0] * th];
+  }
+  function invXY(X, Y, proj = MP.proj) {
+    let lam, phi;
+    if (proj === 0) { phi = 2 * Math.atan(Math.exp(Y)) - Math.PI / 2; lam = X; if (Math.abs(phi) > PHI_MAX) return null; }
+    else if (proj === 1) { phi = Y; lam = X; }
+    else {
+      let th = Y / EE[0];
+      for (let i = 0; i < 8; i++) { const t2 = th * th, t6 = t2 * t2 * t2, f = EE[3] * t6 * t2 * th + EE[2] * t6 * th + EE[1] * t2 * th + EE[0] * th - Y, df = 9 * EE[3] * t6 * t2 + 7 * EE[2] * t6 + 3 * EE[1] * t2 + EE[0]; th -= f / df; }
+      const s = Math.sin(th) / (Math.sqrt(3) / 2); if (Math.abs(s) > 1) return null; phi = Math.asin(s);
+      const t2 = th * th, t6 = t2 * t2 * t2; lam = X * 3 * (9 * EE[3] * t6 * t2 + 7 * EE[2] * t6 + 3 * EE[1] * t2 + EE[0]) / (2 * Math.sqrt(3) * Math.cos(th));
+    }
+    if (Math.abs(lam) > Math.PI || Math.abs(phi) > Math.PI / 2) return null;
+    return [phi / D2R, wrap180(lam / D2R + MP.lon0)];
+  }
+  function morphPosJS(lam, phi, m = MP.m) {
+    const f = projXY(lam, phi), k = Math.max(1 - m, .0008), L = lam + (f[0] - lam) * m, P = phi + (f[1] - phi) * m;
+    return new THREE.Vector3(Math.cos(P * k) * Math.sin(L * k) / k, Math.sin(P * k) / k, Math.cos(P * k) * Math.cos(L * k) / k - 1 / k + 1);
+  }
+  const wrap180 = d => ((d + 540) % 360) - 180;
+  const relLam = lon => wrap180(lon - MP.lon0) * D2R;
+  const mapGroup = new THREE.Group(); mapGroup.matrixAutoUpdate = false; mapGroup.visible = false; scene.add(mapGroup);
+
+  /* peta berlapis tekstur yang sama dengan bola */
+  const mapMesh = (() => {
+    const NX = LITE ? 160 : 256, NY = LITE ? 80 : 128, n = (NX + 1) * (NY + 1);
+    const ang = new Float32Array(n * 2), pos = new Float32Array(n * 3), idx = [];
+    for (let j = 0; j <= NY; j++) for (let i = 0; i <= NX; i++) { const k = j * (NX + 1) + i; ang[k * 2] = -Math.PI + 2 * Math.PI * i / NX; ang[k * 2 + 1] = -Math.PI / 2 + Math.PI * j / NY; }
+    for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) { const a = j * (NX + 1) + i, b = a + 1, c = a + NX + 1, d = c + 1; idx.push(a, b, d, a, d, c); }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('ang', new THREE.BufferAttribute(ang, 2)); g.setIndex(idx);
+    const mesh = new THREE.Mesh(g, new THREE.ShaderMaterial({
+      uniforms: {m: morphU.m, proj: morphU.proj, lon0: {value: 0}, dayMap: U.dayMap, nightMap: U.nightMap, sunDir: U.sunDir, realSun: U.realSun, lights: U.lights}, side: THREE.DoubleSide,
+      vertexShader: MORPH_GLSL + `attribute vec2 ang; uniform float lon0; varying vec2 vUv; varying vec3 vN;
+        void main(){ float lam=ang.x, phi=ang.y; vUv=vec2((lam+lon0+PI)/(2.0*PI), phi/PI+0.5);
+          vN=normalize(mat3(modelMatrix)*vec3(cos(phi)*sin(lam),sin(phi),cos(phi)*cos(lam)));
+          gl_Position=projectionMatrix*modelViewMatrix*vec4(morphPos(lam,phi),1.0); }`,
+      fragmentShader: `uniform sampler2D dayMap,nightMap; uniform vec3 sunDir; uniform float realSun,lights; varying vec2 vUv; varying vec3 vN;
+        void main(){ vec3 day=texture2D(dayMap,vUv).rgb; float d=dot(normalize(vN),sunDir);
+          float k= realSun>0.5 ? smoothstep(-0.1,0.16,d) : 1.0; float lit= realSun>0.5 ? 0.4+0.7*clamp(d*1.15+0.12,0.0,1.0) : 1.0;
+          vec3 night=pow(texture2D(nightMap,vUv).rgb,vec3(1.35))*vec3(1.9,1.55,1.05)*lights;
+          gl_FragColor=vec4(mix(night+day*0.16, day*lit, k),1.0); }`
+    }));
+    mesh.frustumCulled = false; return mesh;
+  })();
+  mapGroup.add(mapMesh);
+  const lineVS = MORPH_GLSL + `attribute vec2 ang; void main(){ vec3 p=morphPos(ang.x,ang.y); p=p*(1.0+0.004*(1.0-m))+vec3(0.0,0.0,0.004*m); gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0); }`;
+  const flatMat = (color, op) => new THREE.ShaderMaterial({uniforms: {m: morphU.m, proj: morphU.proj, color: {value: new THREE.Color(color)}, op: {value: op}}, transparent: true, depthWrite: false, side: THREE.DoubleSide,
+    vertexShader: lineVS, fragmentShader: 'uniform vec3 color; uniform float op; void main(){ gl_FragColor=vec4(color,op); }'});
+  function segGeom(rings, closed) {
+    const a = [];
+    rings.forEach(r => { const L = r.length, n = closed ? L : L - 1;
+      for (let i = 0; i < n; i++) { const p = r[i], q = r[(i + 1) % L], l1 = relLam(p[0]), l2 = relLam(q[0]); if (Math.abs(l1 - l2) > Math.PI) continue; a.push(l1, p[1] * D2R, l2, q[1] * D2R); } });
+    const g = new THREE.BufferGeometry(); g.setAttribute('ang', new THREE.BufferAttribute(new Float32Array(a), 2)); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(a.length / 2 * 3), 3)); return g;
+  }
+  function seg(rings, closed, mat) { const o = new THREE.LineSegments(segGeom(rings, closed), mat); o.frustumCulled = false; return o; }
+  const MAPOBJ = {};
+  const matGrid = flatMat(0x9fd8ff, .28), matEq = flatMat(0xffe27c, .95), matBorder = flatMat(0xffffff, .5), matTis = flatMat(0xff5fa2, .95), matTisF = flatMat(0xff5fa2, .25),
+    matSize = flatMat(0xffb347, 1), matSizeF = flatMat(0xffb347, .42), matGhost = flatMat(0xffffff, .55);
+  function tissotRings() {
+    const out = [];
+    for (const lat of [-60, -30, 0, 30, 60]) for (let lon = -165; lon < 180; lon += 30) out.push(geoCircle(lat, lon, 6));
+    return out;
+  }
+  function geoCircle(lat, lon, rDeg) {
+    const la = lat * D2R, lo = lon * D2R, r = rDeg * D2R, c = [Math.cos(la) * Math.cos(lo), Math.cos(la) * Math.sin(lo), Math.sin(la)], e = [-Math.sin(lo), Math.cos(lo), 0];
+    const n = [c[1] * e[2] - c[2] * e[1], c[2] * e[0] - c[0] * e[2], c[0] * e[1] - c[1] * e[0]], pts = [];
+    for (let i = 0; i < 48; i++) { const t = i / 48 * Math.PI * 2, p = [0, 1, 2].map(k => c[k] * Math.cos(r) + (e[k] * Math.cos(t) + n[k] * Math.sin(t)) * Math.sin(r)); pts.push([Math.atan2(p[1], p[0]) / D2R, Math.asin(p[2]) / D2R]); }
+    return pts;
+  }
+  function fillGeom(rings) {
+    const ang = [], idx = []; let base = 0;
+    rings.forEach(r => {
+      const pts = r.map(p => [relLam(p[0]), p[1] * D2R]); let bad = false;
+      for (let i = 1; i < pts.length; i++) if (Math.abs(pts[i][0] - pts[i - 1][0]) > Math.PI) { bad = true; break; }
+      if (bad || pts.length < 3) return;
+      const tri = THREE.ShapeUtils.triangulateShape(pts.map(p => new THREE.Vector2(p[0], p[1])), []);
+      pts.forEach(p => ang.push(p[0], p[1])); tri.forEach(t => idx.push(t[0] + base, t[1] + base, t[2] + base)); base += pts.length;
+    });
+    const g = new THREE.BufferGeometry(); g.setAttribute('ang', new THREE.BufferAttribute(new Float32Array(ang), 2)); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(ang.length / 2 * 3), 3)); g.setIndex(idx); return g;
+  }
+  function replace(key, obj) { if (MAPOBJ[key]) { mapGroup.remove(MAPOBJ[key]); MAPOBJ[key].geometry.dispose(); } MAPOBJ[key] = obj; if (obj) { obj.frustumCulled = false; mapGroup.add(obj); } }
+  function rebuildMap() {
+    const gl = []; for (let lat = -75; lat <= 75; lat += 15) if (lat) gl.push(Array.from({length: 121}, (_, i) => [-180 + i * 3, lat]));
+    for (let lon = -180; lon < 180; lon += 15) gl.push(Array.from({length: 61}, (_, i) => [lon, -90 + i * 3]));
+    replace('grid', seg(gl, false, matGrid));
+    replace('eq', seg([Array.from({length: 181}, (_, i) => [-180 + i * 2, 0]), Array.from({length: 91}, (_, i) => [0, -90 + i * 2])], false, matEq));
+    if (COUNTRIES.length) replace('border', seg(COUNTRIES.flatMap(c => c.r), true, matBorder));
+    rebuildTissot(); rebuildSize();
+  }
+  function rebuildTissot() {
+    if (!MP.tissot) { replace('tis', null); replace('tisF', null); return; }
+    const t = tissotRings(); replace('tis', seg(t, true, matTis)); replace('tisF', new THREE.Mesh(fillGeom(t), matTisF));
+  }
+
+  /* ---------- Ukuran Asli ---------- */
+  const SIZE_C = [['Greenland', 2166086], ['Indonesia', 1904569], ['Russia', 17098242], ['Australia', 7692024], ['Brazil', 8515767], ['Canada', 9984670], ['India', 3287263], ['Dem. Rep. Congo', 2344858], ['United States of America', 9833520]];
+  const std = (lat, lon) => new THREE.Vector3(Math.cos(lat * D2R) * Math.cos(lon * D2R), Math.cos(lat * D2R) * Math.sin(lon * D2R), Math.sin(lat * D2R));
+  const fromStd = v => [Math.asin(clamp(v.z, -1, 1)) / D2R, Math.atan2(v.y, v.x) / D2R];
+  function pickSize(name) {
+    const c = COUNTRIES.find(x => x.n === name); if (!c) return;
+    const s = new THREE.Vector3(); let n = 0; c.r.forEach(r => r.forEach(p => { s.add(std(p[1], p[0])); n++; }));
+    const c0 = fromStd(s.normalize()); MP.size = {c, name, area: SIZE_C.find(x => x[0] === name)[1], c0, c1: c0.slice()};
+    document.querySelectorAll('[data-sz]').forEach(b => b.classList.toggle('on', b.dataset.sz === name));
+    rebuildSize(); sizeInfo();
+    say(`📐 <b>${G.NAME_ID[name] || name}</b> siap dipindah. <b>Seret</b> bentuk oranye ke lintang lain di peta. Di bola bentuknya tetap sama; di peta Mercator ukurannya berubah!`);
+  }
+  function movedRings() {
+    const S = MP.size, q = new THREE.Quaternion().setFromUnitVectors(std(...S.c0), std(...S.c1));
+    return S.c.r.map(r => r.map(p => { const ll = fromStd(std(p[1], p[0]).applyQuaternion(q)); return [ll[1], ll[0]]; }));
+  }
+  function rebuildSize() {
+    if (!MP.sizeOn || !MP.size) { replace('size', null); replace('sizeF', null); replace('ghost', null); return; }
+    const rings = movedRings();
+    replace('ghost', seg(MP.size.c.r, true, matGhost)); replace('sizeF', new THREE.Mesh(fillGeom(rings), matSizeF)); replace('size', seg(rings, true, matSize));
+  }
+  function sizeInfo() {
+    const S = MP.size; if (!S) return;
+    const nm = G.NAME_ID[S.name] || S.name, f0 = 1 / Math.cos(S.c0[0] * D2R) ** 2, f1 = 1 / Math.cos(S.c1[0] * D2R) ** 2, mer = MP.proj === 0;
+    $('mapInfo').innerHTML = `<div class="cell w"><small>Luas asli ${nm}</small><b>${(S.area / 1e6).toFixed(2).replace('.', ',')} juta km² · ${(30370000 / S.area).toFixed(1).replace('.', ',')}× lebih kecil dari Afrika</b></div>
+      <div class="cell"><small>Lintang asal → kini</small><b>${Math.round(S.c0[0])}° → ${Math.round(S.c1[0])}°</b></div>
+      <div class="cell"><small>${mer ? 'Mercator memperbesar' : 'Proyeksi ini'}</small><b>${mer ? '×' + f1.toFixed(1).replace('.', ',') + ' luas' : MP.proj === 2 ? 'luas tetap ✓' : 'melebar ke samping'}</b></div>
+      ${mer ? `<p class="sub" style="grid-column:1/-1;margin:.2rem 0 0;font-size:.78rem">Di Mercator, luas tampak = luas asli × 1 ÷ cos²(lintang). Dipindah dari ${Math.round(S.c0[0])}° ke ${Math.round(S.c1[0])}°, ukurannya di peta berubah ×${(f1 / f0).toFixed(2).replace('.', ',')}.</p>` : ''}`;
+  }
+
+  /* ---------- transisi bola ↔ peta & kamera ---------- */
+  function mapFit() {
+    const hw = Math.abs(projXY(Math.PI, 0)[0]), hh = Math.abs(projXY(0, Math.PI / 2)[1]);
+    const vf = camera.fov * D2R / 2, hf = Math.atan(Math.tan(vf) * camera.aspect);
+    return Math.max(hw / Math.tan(hf), hh / Math.tan(vf)) * 1.08;
+  }
+  function setBasis() {
+    const z = ll2v(0, MP.lon0).normalize(), y = new THREE.Vector3(0, 1, 0), x = new THREE.Vector3().crossVectors(y, z);
+    mapGroup.matrix.makeBasis(x, y, z); mapGroup.matrixWorldNeedsUpdate = true; MP.d0.copy(z); mapMesh.material.uniforms.lon0.value = MP.lon0 * D2R;
+  }
+  /* Peta dunia dipusatkan di bujur 20° BT (seperti atlas umum): sambungan peta jatuh di Samudra Pasifik,
+     sehingga Greenland, Afrika, Eropa, Amerika, dan Indonesia utuh. */
+  const MAP_LON0 = 20;
+  function openMap(goal, viaSlider) {
+    if (flight) return;
+    if (MP.m === 0 && goal > 0) {
+      if (!viaSlider && Math.abs(wrap180(v2ll(camera.position)[1] - MAP_LON0)) > 3) { flyTo(0, MAP_LON0, {dist: Math.max(2.6, camera.position.length()), done: () => openMap(goal)}); return; }
+      MP.lon0 = MAP_LON0; MP.sphereDist = camera.position.length(); setBasis(); rebuildMap();
+      MP.pinWas = pin.visible; if (QZ.on) endQuiz();
+    }
+    MP.goal = goal; MP.mapDist = mapFit(); controls.enabled = false; controls.autoRotate = false; $('spin').classList.remove('on');
+    syncMapUI();
+    if (goal === 1 && mission('peta')) {} // pesan muncul setelah animasi
+  }
+  function camForMorph() {
+    const m = MP.m, t = MP.d0.clone().multiplyScalar(m), dist = MP.sphereDist + (MP.mapDist - MP.sphereDist) * m;
+    controls.target.copy(t); camera.up.set(0, 1, 0); camera.position.copy(t).addScaledVector(MP.d0, dist); camera.lookAt(t);
+  }
+  function setSphereVisible(v) {
+    mapOn = !v;
+    earth.visible = atmo.visible = v; if (v) { applyLayers(); pin.visible = MP.pinWas; } else { clouds.visible = grid.visible = borders.visible = placePts.visible = false; if (volPts) volPts.visible = false; pin.visible = guessPin.visible = false; if (arc) arc.visible = false; if (plane) plane.visible = false; highlight(null); }
+    if (arc && v) arc.visible = true;
+    mapGroup.visible = !v;
+  }
+  function stepMorph(dt) {
+    if (MP.m === MP.goal && !MP.slide) return;
+    if (!MP.slide) { const s = dt / 1.6; MP.m = MP.goal > MP.m ? Math.min(MP.goal, MP.m + s) : Math.max(MP.goal, MP.m - s); }
+    morphU.m.value = ease(MP.m);
+    if (document.activeElement !== $('morph')) $('morph').value = Math.round(MP.m * 100);
+    $('morphLbl').textContent = Math.round(MP.m * 100) + '%';
+    setSphereVisible(MP.m === 0); camForMorph();
+    if (MP.m === MP.goal && !MP.slide) {
+      if (MP.m === 1) {
+        Object.assign(controls, {enabled: true, enableRotate: false, enablePan: true, screenSpacePanning: true, minDistance: .4, maxDistance: MP.mapDist * 1.5});
+        say(projSay());
+      } else if (MP.m === 0) {
+        Object.assign(controls, {enabled: true, enableRotate: true, enablePan: false, minDistance: 1.08, maxDistance: 7}); controls.target.set(0, 0, 0);
+        say('🌍 Kembali ke bola. Ingat: hanya <b>bola dunia</b> yang menampilkan bentuk, luas, jarak, dan arah sekaligus dengan benar.');
+      }
+      syncMapUI();
+    }
+  }
+  function projSay() {
+    return [
+      '🗺️ Ini peta <b>Mercator</b> (1569). Arah kompas jadi garis lurus, cocok untuk navigasi. Tapi makin jauh dari khatulistiwa, daratan makin <b>melar</b>: lihat Greenland seperti sebesar Afrika!<span style="display:block;margin-top:.3rem;color:var(--acc)">👉 Nyalakan ⭕ Lingkaran Tissot atau 📐 Ukuran Asli.</span>',
+      '🗺️ <b>Ekuirektangular</b>: setiap 1° lintang dan bujur jadi kotak sama besar. Paling mudah dibuat (dipakai untuk tekstur bola ini!), tapi daerah dekat kutub tertarik melebar ke samping.',
+      '🗺️ <b>Equal Earth</b> (2018) menjaga <b>luas</b>: negara dengan luas sama tampak sama besar. Imbalannya, bentuk di tepi peta agak miring. Tidak ada peta datar yang benar semuanya!'
+    ][MP.proj];
+  }
+  function setProj(i) {
+    MP.proj = i; morphU.proj.value = i; MP.mapDist = mapFit(); if (MP.m === 1) { camForMorph(); controls.maxDistance = MP.mapDist * 1.5; say(projSay()); }
+    if (i === 2) mission('equal'); syncMapUI(); sizeInfo();
+  }
+  function syncMapUI() {
+    document.querySelectorAll('[data-mv]').forEach(b => b.classList.toggle('on', (b.dataset.mv === 'peta') === (MP.goal === 1)));
+    document.querySelectorAll('[data-pj]').forEach(b => b.classList.toggle('on', +b.dataset.pj === MP.proj));
+    if (document.activeElement !== $('morph')) $('morph').value = Math.round(MP.m * 100);
+    $('mapTools').style.display = MP.goal === 1 || MP.m > 0 ? '' : 'none';
+    document.querySelectorAll('.tog[data-mt]').forEach(el => { const on = !!MP[el.dataset.mt]; el.classList.toggle('on', on); el.setAttribute('aria-checked', on); });
+    $('sizeBox').style.display = MP.sizeOn ? '' : 'none';
+  }
+  /* UI */
+  $('mapSec').innerHTML = `<div class="h">Bola vs peta datar <b>🗺️</b></div>
+    <div class="chips"><button class="btn sm on" data-mv="bola" type="button">🌍 Bola</button><button class="btn sm" data-mv="peta" type="button">🗺️ Buka jadi peta</button></div>
+    <div class="slide" style="margin-top:.45rem"><div class="row"><span>KUPAS KULIT BOLA</span><b id="morphLbl">0%</b></div><input type="range" id="morph" min="0" max="100" step="1" value="0"></div>
+    <div id="mapTools" style="display:none">
+      <div class="chips" style="margin:.4rem 0">${PROJ.map((p, i) => `<button class="chip" data-pj="${i}" type="button">${p[1]}</button>`).join('')}</div>
+      <div class="tog" data-mt="tissot" role="switch" tabindex="0"><span>⭕ Lingkaran Tissot (ukuran sama di bola)</span><i></i></div>
+      <div class="tog" data-mt="sizeOn" role="switch" tabindex="0"><span>📐 Ukuran Asli (seret negara)</span><i></i></div>
+      <div id="sizeBox" style="display:none"><div class="chips" style="margin:.35rem 0">${SIZE_C.map(([n]) => `<button class="chip" data-sz="${n}" type="button">${G.NAME_ID[n] || n}</button>`).join('')}</div><div class="grid2" id="mapInfo"></div></div>
+    </div>`;
+  document.querySelectorAll('[data-mv]').forEach(b => b.onclick = () => openMap(b.dataset.mv === 'peta' ? 1 : 0));
+  document.querySelectorAll('[data-pj]').forEach(b => b.onclick = () => setProj(+b.dataset.pj));
+  $('morph').oninput = () => {
+    const v = +$('morph').value / 100; $('morphLbl').textContent = Math.round(v * 100) + '%';
+    if (MP.m === 0 && v > 0) { openMap(v, true); }
+    MP.slide = true; MP.m = MP.goal = v; controls.enabled = false;
+  };
+  $('morph').onchange = () => { MP.slide = false; const v = MP.m; MP.goal = v >= .5 ? 1 : 0; if (MP.goal === 1) mission("peta"); if (v === 0) MP.m = 0.0001; };
+  document.querySelectorAll('.tog[data-mt]').forEach(el => {
+    const flip = () => {
+      const k = el.dataset.mt; MP[k] = !MP[k];
+      if (k === 'tissot') { rebuildTissot(); if (MP.tissot) { say('⭕ Semua lingkaran merah muda ini <b>sama besar di bola</b> (jari-jari ±670 km). Di Mercator, lingkaran di lintang 60° jadi <b>2× lebih lebar</b>, jadi luasnya <b>4×</b>! Rumusnya: luas tampak = 1 ÷ cos²(lintang). cos 60° = ½ → 1 ÷ ¼ = 4.'); mission('tissot'); } }
+      if (k === 'sizeOn') { if (MP.sizeOn && !MP.size) pickSize('Greenland'); if (MP.proj !== 0 && MP.sizeOn) setProj(0); rebuildSize(); }
+      syncMapUI();
+    };
+    el.onclick = flip; el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); } };
+  });
+  document.querySelectorAll('[data-sz]').forEach(b => b.onclick = () => pickSize(b.dataset.sz));
+
+  /* sentuhan & kursor di peta */
+  const inv = new THREE.Matrix4();
+  function pickMap(cx, cy) {
+    if (MP.m < 1) return null;
+    const r = renderer.domElement.getBoundingClientRect(); mouse.set((cx - r.left) / r.width * 2 - 1, -(cy - r.top) / r.height * 2 + 1);
+    ray.setFromCamera(mouse, camera); inv.copy(mapGroup.matrixWorld).invert();
+    const o = ray.ray.origin.clone().applyMatrix4(inv), d = ray.ray.direction.clone().transformDirection(inv);
+    if (Math.abs(d.z) < 1e-6) return null; const t = (1.004 - o.z) / d.z; if (t < 0) return null;
+    const p = o.addScaledVector(d, t); return invXY(p.x, p.y);
+  }
+  function mapDown(e) {
+    if (!(MP.sizeOn && MP.size)) return false; const ll = pickMap(e.clientX, e.clientY); if (!ll) return false;
+    const inside = movedRings().some(r => G.pip(ll[0], ll[1], r)) || G.distance(ll, MP.size.c1) < 900;
+    if (!inside) return false;
+    MP.drag = {dLat: ll[0] - MP.size.c1[0], dLon: wrap180(ll[1] - MP.size.c1[1])}; controls.enabled = false; return true;
+  }
+  function mapMove(e) {
+    if (MP.drag) { const ll = pickMap(e.clientX, e.clientY); if (!ll) return; MP.size.c1 = [clamp(ll[0] - MP.drag.dLat, -78, 80), wrap180(ll[1] - MP.drag.dLon)]; rebuildSize(); sizeInfo(); return; }
+    if (e.pointerType !== 'mouse') return;
+    const ll = pickMap(e.clientX, e.clientY);
+    $('readout').innerHTML = ll ? `<b>${G.dms(ll[0], true)}</b> · <b>${G.dms(ll[1], false)}</b>${MP.proj === 0 ? ` · skala luas Mercator <b>×${(1 / Math.cos(ll[0] * D2R) ** 2).toFixed(1).replace('.', ',')}</b>` : ''}` : 'ARAHKAN KURSOR KE PETA';
+  }
+  function mapUp() {
+    if (!MP.drag) return; MP.drag = null; controls.enabled = true; const S = MP.size;
+    if (S.name === 'Greenland' && Math.abs(S.c1[0]) < 15 && mission('greenland')) say('🧊 Greenland di khatulistiwa ternyata <b>kecil</b>! Luas aslinya 2,17 juta km², sedangkan Afrika 30,37 juta km²: Afrika <b>±14×</b> lebih luas. Mercator membuat Greenland tampak raksasa karena letaknya dekat kutub.');
+    if (S.name === 'Indonesia' && S.c1[0] > 45 && mission('indo')) say('🇮🇩 Indonesia dibawa ke lintang Eropa langsung <b>membesar</b> di peta Mercator! Bentang aslinya Sabang–Merauke ±5.100 km, lebih lebar dari daratan Amerika Serikat. Di atlas, Indonesia sering tampak lebih kecil dari aslinya dibanding negara-negara utara.');
+  }
+  function mapLabels() {
+    const show = MP.m === 1 && MP.sizeOn && MP.size;
+    if (!show) { sizeLbl.style.display = 'none'; return; }
+    const S = MP.size, p = morphPosJS(relLam(S.c1[1]), S.c1[0] * D2R, 1).add(new THREE.Vector3(0, 0, .01)).applyMatrix4(mapGroup.matrixWorld).project(camera);
+    const w = renderer.domElement.clientWidth, h = renderer.domElement.clientHeight;
+    sizeLbl.style.display = ''; sizeLbl.textContent = `${G.NAME_ID[S.name] || S.name} · ${(S.area / 1e6).toFixed(2).replace('.', ',')} juta km²`;
+    sizeLbl.style.transform = `translate(${(p.x * .5 + .5) * w}px,${(-p.y * .5 + .5) * h}px) translate(-50%,-50%)`;
+  }
+  const sizeLbl = document.createElement('div'); sizeLbl.className = 'lbl sel'; sizeLbl.style.display = 'none'; $('labels').appendChild(sizeLbl);
+
   /* ---------- ukuran & loop ---------- */
   function resize() {
     const w = $('globe').clientWidth, h = $('globe').clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
@@ -473,14 +773,14 @@
     if (live) { secAcc += dt; if (secAcc > .5) { secAcc = 0; simTime = new Date(); setSun(); } }
     else if (lapse) { simTime = new Date(simTime.getTime() + dt * 36e5); setSun(); checkNight(); }
     cloudU.time.value += dt; clouds.rotation.y += dt * .004;
-    stepFlight(dt);
-    if (!flight) { controls.update(); controls.rotateSpeed = .18 + .5 * Math.min(1, (camera.position.length() - 1) / 2.5); idleT += dt; if (idleT > 45 && !QZ.on && !controls.autoRotate) { controls.autoRotate = true; $('spin').classList.add('on'); } }
+    stepMorph(dt); stepFlight(dt);
+    if (!flight) { controls.update(); controls.rotateSpeed = .18 + .5 * Math.min(1, (camera.position.length() - 1) / 2.5); idleT += dt; if (idleT > 45 && !QZ.on && !mapOn && MP.m === 0 && !controls.autoRotate) { controls.autoRotate = true; $('spin').classList.add('on'); } }
     if (pin.visible) { const s = 1 + ((now / 900) % 1) * 2.2; ring2.scale.set(s, s, s); ring2.material.opacity = 1 - (now / 900) % 1; }
     if (arc) { arcT = Math.min(1, arcT + dt / 1.6); const n = Math.floor(arcT * (arcPts.length - 1)); arc.geometry.setDrawRange(0, n + 1); if (plane) { plane.position.copy(arcPts[n]); plane.visible = arcT < 1; } }
     renderer.render(scene, camera); updateLabels();
     requestAnimationFrame(loop);
   }
   requestAnimationFrame(loop);
-  window.PILAR_ATLAS = {go, flyTo, state: ST, places: PLACES, get countries() { return COUNTRIES; }, camera, pickLL, quiz: QZ, startQuiz, quizGuess, setTime: d => { live = false; simTime = d; setSun(); checkNight(); }};
+  window.PILAR_ATLAS = {map: MP, mapObj: MAPOBJ, openMap, setProj, pickSize, pickMap, go, flyTo, state: ST, places: PLACES, get countries() { return COUNTRIES; }, camera, pickLL, quiz: QZ, startQuiz, quizGuess, setTime: d => { live = false; simTime = d; setSun(); checkNight(); }};
   try { window.PILAR_PULSE?.setApp?.('atlas-bumi'); } catch (_) {}
 })();
