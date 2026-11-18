@@ -60,7 +60,8 @@
     'frost-snake':'Duel numerasi dua tim berbasis touch/multitouch.',
     'baterai-lab':'Petualangan baterai lithium-ion dengan tema Ceria dan eksperimen interaktif.',
     'jejak-kata':'Literasi: baca buku cerita, temukan kata kunci, lalu hubungkan ke topik besar dengan kabel node. Ada topik jebakan dan mode tanding 2 tim.',
-    'lingkaran-ajaib':'Numerasi visual: titik berputar jadi gelombang sin/cos, pola Lissajous, dan menggambar hati dengan lingkaran berputar (Fourier).'
+    'lingkaran-ajaib':'Numerasi visual: titik berputar jadi gelombang sin/cos, pola Lissajous, dan menggambar hati dengan lingkaran berputar (Fourier).',
+    'atlas-bumi':'Geografi 3D: terbang ke kota atau koordinat mana pun, lihat siang–malam nyata, garis lintang–bujur, zona waktu, arah kiblat, dan Cincin Api.'
   };
 
   function apps(){return Array.isArray(window.PILAR_APP_REGISTRY)?window.PILAR_APP_REGISTRY:[]}

@@ -1,0 +1,32 @@
+// node apps/atlas-bumi/test-geo.js
+const G = require('./geo.js');
+const fs = require('fs'), path = require('path');
+let ok = 0, bad = 0; const t = (c, m) => { if (c) ok++; else { bad++; console.log('GAGAL:', m); } };
+const JKT = [-6.2, 106.82];
+const dJ = G.distance(JKT, [-8.49, 140.4]); t(dJ > 3600 && dJ < 3800, 'Jakarta–Merauke ±3.700 km: ' + dJ.toFixed(0));
+const dL = G.distance(JKT, [51.507, -0.128]); t(dL > 11600 && dL < 11800, 'Jakarta–London ±11.700 km: ' + dL.toFixed(0));
+const q = G.qibla(JKT); t(q > 293 && q < 297, 'kiblat Jakarta ±295°: ' + q.toFixed(1));
+t(G.compass(q) === 'barat laut', 'kiblat ke barat laut');
+t(Math.abs(G.parseCoord("6°10'30\" LS", true) + 6.175) < 1e-6, 'DMS LS');
+t(Math.abs(G.parseCoord('106°49′ BT', false) - 106.8167) < 1e-3, 'DMS BT');
+t(G.parseCoord('-6,175', true) === -6.175, 'desimal koma');
+t(G.parseCoord('74 W', false) === -74, 'W');
+t(G.parseCoord('6.2 BT', true) === null, 'BT untuk lintang ditolak');
+t(G.parseCoord('95 LU', true) === null, 'lintang > 90 ditolak');
+t(G.parseCoord('abc', true) === null, 'teks ngawur ditolak');
+t(G.dms(-6.175, true) === '6°10′30″ LS', 'format DMS: ' + G.dms(-6.175, true));
+// matahari: 21 Juni siang UTC → lintang ±23,4, bujur ±0
+const s = G.subsolar(new Date(Date.UTC(2026, 5, 21, 12, 0)));
+t(Math.abs(s[0] - 23.44) < .5 && Math.abs(s[1]) < 2, 'subsolar Juni ' + s.map(x => x.toFixed(2)));
+const s2 = G.subsolar(new Date(Date.UTC(2026, 2, 20, 5, 0)));
+t(Math.abs(s2[0]) < 1 && Math.abs(s2[1] - 105) < 3, 'subsolar ekuinoks Maret jam 12 WIB ±105° BT: ' + s2.map(x => x.toFixed(2)));
+t(G.sunElevation(JKT, new Date(Date.UTC(2026, 9, 10, 5, 0))) > 70, 'matahari tinggi di Jakarta pukul 12 WIB');
+t(G.sunElevation(JKT, new Date(Date.UTC(2026, 9, 10, 17, 0))) < -50, 'tengah malam Jakarta');
+t(G.timeZone([-8.65, 115.22], 'Indonesia').name === 'WITA' && G.timeZone([-0.03, 109.33], 'Indonesia').name === 'WIB' && G.timeZone([-2.53, 140.72], 'Indonesia').name === 'WIT', 'WIB/WITA/WIT');
+const C = G.prepCountries(JSON.parse(fs.readFileSync(path.join(__dirname, 'data/countries.json'), 'utf8')));
+const nm = p => (G.countryAt(C, p[0], p[1]) || {}).n;
+t(nm([-6.2, 106.82]) === 'Indonesia', 'Jakarta di Indonesia: ' + nm([-6.2, 106.82]));
+t(nm([-0.5, 117.15]) === 'Indonesia' && nm([3.14, 101.69]) === 'Malaysia' && nm([48.86, 2.29]) === 'France' && nm([-15, 133]) === 'Australia' && nm([-3.12, -60.02]) === 'Brazil', 'negara-negara');
+t(!nm([-10, 80]) && G.ocean(-10, 80) === 'Samudra Hindia' && G.ocean(30, -40) === 'Samudra Atlantik' && G.ocean(10, -150) === 'Samudra Pasifik', 'samudra');
+const mid = G.interpolate(JKT, [51.507, -0.128], .5); t(Math.abs(G.distance(JKT, mid) - dL / 2) < 1, 'titik tengah lingkaran besar');
+console.log(ok + ' lulus, ' + bad + ' gagal'); process.exit(bad ? 1 : 0);
