@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#030812">
+<meta name="description" content="Atlas Bumi 3D — bola dunia interaktif: terbang ke kota atau koordinat mana pun, siang–malam nyata, garis lintang–bujur, zona waktu, arah kiblat, cincin api, dan tebak lokasi.">
+<title>PILAR™ · Atlas Bumi 3D</title>
+<script src="../../core/device-profile.js"></script>
+<style>
+@font-face{font-family:"Fredoka";src:url("../../vendor/fonts/fredoka-var.woff") format("woff");font-weight:300 700;font-display:swap}
+@font-face{font-family:"Nunito";src:url("../../vendor/fonts/nunito-var.woff") format("woff");font-weight:200 1000;font-display:swap}
+:root{--bg:#030812;--glass:#0a1426d9;--glass2:#0d1a31;--line:#2a4a7a66;--line2:#5ee9ff55;--text:#e6f0ff;--muted:#8fa6c8;--acc:#5ee9ff;--acc2:#a78bfa;--warm:#ffb347;--good:#5ef08f;--bad:#ff6b85;
+ --f-head:"Fredoka",system-ui,sans-serif;--f-body:"Nunito",system-ui,sans-serif;--tap:44px;--r:16px}
+html[data-device="ifp"]{--tap:58px}
+html{font-size:clamp(13px,.42vw + 8.5px,22px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--f-body);overflow:hidden;-webkit-tap-highlight-color:transparent}
+button,input{font:inherit;color:inherit}
+#globe{position:fixed;inset:0}
+#globe canvas{display:block;width:100%;height:100%;touch-action:none;outline:none}
+#labels{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.lbl{position:absolute;left:0;top:0;transform:translate(-50%,-140%);white-space:nowrap;font:800 .74rem var(--f-body);letter-spacing:.04em;color:#dff6ff;padding:.12em .5em;border-radius:6px;background:#06101fcc;border:1px solid #5ee9ff44;text-shadow:0 1px 2px #000;will-change:transform}
+.lbl.sel{font:600 .95rem var(--f-head);background:#5ee9ff;color:#03111f;border-color:#fff;box-shadow:0 0 22px #5ee9ff88;transform:translate(-50%,-175%)}
+.lbl.grat{background:transparent;border:0;color:#ffe27caa;font-size:.68rem}
+.lbl.guess{background:#ffb347;color:#1d0f00;border-color:#fff}
+/* ---------- bingkai ---------- */
+.top{position:fixed;left:0;right:0;top:0;display:flex;align-items:center;gap:.8rem;padding:.55rem .9rem;z-index:5;background:linear-gradient(#030812ee,#03081200);pointer-events:none}
+.top>*{pointer-events:auto}
+.brand{display:flex;align-items:center;gap:.6rem}
+.brand b{font:600 1.15rem var(--f-head);letter-spacing:.18em}
+.brand small{display:block;font:800 .62rem var(--f-body);letter-spacing:.2em;color:var(--muted)}
+.clock{margin:0 auto;text-align:center;font:600 1.5rem var(--f-head);letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.clock small{display:block;font:800 .66rem var(--f-body);letter-spacing:.18em;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4em;min-height:var(--tap);padding:.3em .9em;border-radius:12px;border:1px solid var(--line2);background:#0c1a30;color:var(--text);font:600 .9rem var(--f-head);cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s}
+.btn:hover{background:#12264a}.btn:active{transform:translateY(1px)}
+.btn.on{background:#5ee9ff22;border-color:var(--acc);box-shadow:0 0 0 1px var(--acc) inset}
+.btn.pri{background:linear-gradient(135deg,#5ee9ff,#7aa8ff);color:#03111f;border-color:transparent}
+.btn.sm{min-height:calc(var(--tap)*.78);font-size:.8rem;padding:.2em .65em}
+.panel{position:fixed;z-index:4;background:var(--glass);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 20px 50px #0008;backdrop-filter:blur(10px)}
+html[data-fx="lite"] .panel{backdrop-filter:none;background:#08122aee}
+.left{left:.8rem;top:4.4rem;width:min(330px,28vw);max-height:calc(100dvh - 10.5rem);overflow:auto;padding:.8rem .85rem}
+.right{right:.8rem;top:4.4rem;width:min(350px,28vw);max-height:calc(100dvh - 10.5rem);overflow:auto;padding:.8rem .85rem}
+.panel::-webkit-scrollbar{width:6px}.panel::-webkit-scrollbar-thumb{background:#5ee9ff33;border-radius:9px}
+.sec{border-top:1px solid var(--line);padding-top:.65rem;margin-top:.65rem}
+.sec:first-child{border:0;padding:0;margin:0}
+.h{display:flex;align-items:center;justify-content:space-between;font:800 .68rem var(--f-body);letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.h b{color:var(--acc);font-weight:900}
+.search{position:relative}
+.inp{width:100%;min-height:var(--tap);padding:.3em .8em;border-radius:12px;border:1px solid var(--line2);background:#050d1c;color:var(--text);font:700 .95rem var(--f-body);outline:none}
+.inp:focus{border-color:var(--acc);box-shadow:0 0 0 3px #5ee9ff22}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:9;background:#081428f7;border:1px solid var(--line2);border-radius:12px;max-height:46vh;overflow:auto;display:none}
+.sug.on{display:block}
+.sug button{display:flex;width:100%;gap:.5em;align-items:center;justify-content:space-between;text-align:left;padding:.55em .8em;border:0;background:none;cursor:pointer;font:700 .9rem var(--f-body);border-bottom:1px solid #ffffff0c}
+.sug button:hover,.sug button.hi{background:#5ee9ff1c}
+.sug small{color:var(--muted);font-weight:800;font-size:.72rem;white-space:nowrap}
+.coord{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.4rem}
+.coord label{font:800 .66rem var(--f-body);letter-spacing:.12em;color:var(--muted)}
+.coord .ok{color:var(--good)}.coord .bad{color:var(--bad)}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.chip{padding:.28em .7em;border-radius:999px;border:1px solid var(--line2);background:#0b1a33;font:800 .78rem var(--f-body);cursor:pointer;min-height:calc(var(--tap)*.7)}
+.chip:hover{border-color:var(--acc)}
+.tog{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.32rem 0;font-weight:800;font-size:.88rem;cursor:pointer}
+.tog i{position:relative;flex:none;width:2.6em;height:1.45em;border-radius:99px;background:#1b2a46;border:1px solid var(--line2);transition:.2s}
+.tog i::after{content:"";position:absolute;top:.15em;left:.15em;width:1.05em;height:1.05em;border-radius:50%;background:#8fa6c8;transition:.2s}
+.tog.on i{background:#5ee9ff44;border-color:var(--acc)}.tog.on i::after{left:1.35em;background:var(--acc);box-shadow:0 0 10px var(--acc)}
+.info h2{margin:.1rem 0 .15rem;font:600 1.35rem/1.15 var(--f-head)}
+.info .sub{color:var(--muted);font-weight:800;font-size:.84rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.55rem}
+.cell{border:1px solid var(--line);border-radius:12px;padding:.4rem .55rem;background:#06101f}
+.cell small{display:block;font:800 .6rem var(--f-body);letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.cell b{font:600 .98rem var(--f-head);font-variant-numeric:tabular-nums}
+.cell.w{grid-column:1/-1}
+.fact{margin:.55rem 0 0;padding:.5rem .65rem;border-left:3px solid var(--acc2);background:#a78bfa14;border-radius:8px;font-weight:700;font-size:.88rem;line-height:1.45}
+.qibla{display:flex;align-items:center;gap:.6rem}
+.qibla svg{width:3rem;height:3rem;flex:none}
+.guide{display:grid;grid-template-columns:auto 1fr;gap:.55rem;align-items:start;font-weight:700;font-size:.9rem;line-height:1.45}
+.guide .av{font-size:2rem;line-height:1}
+.missions{list-style:none;margin:0;padding:0}
+.missions li{display:flex;gap:.45em;padding:.3em 0;font-weight:700;font-size:.86rem;border-bottom:1px dashed #ffffff14}
+.missions li::before{content:"◻";color:var(--muted);flex:none}.missions li.ok{color:var(--muted)}.missions li.ok::before{content:"✔";color:var(--good)}
+.bar{height:6px;border-radius:9px;background:#1b2a46;overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .5s}
+/* ---------- dock bawah ---------- */
+.dock{left:50%;bottom:.8rem;transform:translateX(-50%);width:min(760px,calc(100vw - 1.6rem));padding:.55rem .8rem;display:grid;grid-template-columns:auto 1fr auto;gap:.8rem;align-items:center}
+.dock .ctl{display:flex;gap:.3rem}
+.slide{display:grid;gap:.15rem}
+.slide .row{display:flex;justify-content:space-between;font:800 .66rem var(--f-body);letter-spacing:.14em;color:var(--muted)}
+.slide .row b{color:var(--text);font:600 .82rem var(--f-head);letter-spacing:.04em}
+input[type=range]{width:100%;accent-color:var(--acc);height:calc(var(--tap)*.55)}
+.readout{position:fixed;left:.9rem;bottom:.9rem;z-index:4;font:800 .74rem var(--f-body);letter-spacing:.1em;color:var(--muted);font-variant-numeric:tabular-nums;pointer-events:none}
+.readout b{color:var(--acc)}
+.tip{position:fixed;z-index:6;pointer-events:none;padding:.3em .6em;border-radius:8px;background:#081428ee;border:1px solid var(--line2);font:800 .8rem var(--f-body);display:none;white-space:nowrap}
+.toast{position:fixed;left:50%;top:5rem;transform:translateX(-50%) translateY(-12px);opacity:0;z-index:20;padding:.6rem 1rem;border-radius:14px;background:#0b1a33f2;border:1px solid var(--acc);font:600 .98rem var(--f-head);transition:.3s;pointer-events:none;max-width:90vw;text-align:center;box-shadow:0 0 30px #5ee9ff44}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.quiz{display:none}.quiz.on{display:block}
+.quiz .q{font:600 1.2rem var(--f-head);margin:.2rem 0 .4rem}
+.score{font:600 1.6rem var(--f-head);color:var(--warm)}
+.err{position:fixed;inset:0;display:none;place-items:center;text-align:center;padding:2rem;z-index:30;background:var(--bg)}
+.load{position:fixed;inset:0;display:grid;place-items:center;z-index:25;background:var(--bg);transition:opacity .6s;font:600 1.1rem var(--f-head);letter-spacing:.2em;color:var(--muted)}
+.load.off{opacity:0;pointer-events:none}
+.mtabs{display:none}
+@media(max-width:900px){
+ body{overflow:auto}
+ #globe{position:relative;height:58vh}
+ #labels{position:absolute;top:0;height:58vh}
+ .top{position:absolute}
+ .clock{font-size:1.1rem}.brand small{display:none}
+ .panel{position:relative;left:auto;right:auto;top:auto;width:auto;max-height:none;margin:.6rem .7rem;backdrop-filter:none}
+ .dock{position:relative;transform:none;left:auto;bottom:auto;width:auto;grid-template-columns:1fr}
+ .readout{position:absolute;top:calc(58vh - 1.8rem);bottom:auto}
+}
+</style>
+</head>
+<body>
+<div class="load" id="load">🌍 MEMUAT BUMI…</div>
+<div class="err" id="err"><div><h2>WebGL tidak tersedia</h2><p>Perangkat atau browser ini belum mendukung grafik 3D. Coba Chrome terbaru atau aktifkan akselerasi perangkat keras.</p><a class="btn" href="../../">⬅ Kembali ke Hub</a></div></div>
+<div id="globe"></div>
+<div id="labels"></div>
+<header class="top">
+ <a class="btn sm" href="../../" title="Kembali ke PILAR Hub">⬅ Hub</a>
+ <div class="brand"><span style="font-size:1.5rem">🌍</span><div><b>ATLAS BUMI</b><small>PILAR · OBSERVATORIUM 3D</small></div></div>
+ <div class="clock"><span id="clk">--.--.--</span><small id="clkSub">WIB · SIMULASI LANGSUNG</small></div>
+ <button class="btn sm" id="btnQuiz" type="button">🎯 Tebak Lokasi</button>
+</header>
+
+<aside class="panel left" id="leftPanel">
+ <div class="sec">
+  <div class="h">Terbang ke <b>✈</b></div>
+  <div class="search"><input class="inp" id="q" placeholder="Cari kota, tempat, atau negara…" autocomplete="off"><div class="sug" id="sug"></div></div>
+  <div class="coord">
+   <div><label for="lat">LINTANG</label><input class="inp" id="lat" placeholder="6°10′ LS"><small id="latOk" class="ok"></small></div>
+   <div><label for="lon">BUJUR</label><input class="inp" id="lon" placeholder="106°49′ BT"><small id="lonOk" class="ok"></small></div>
+  </div>
+  <button class="btn pri" id="go" type="button" style="width:100%;margin-top:.5rem">🚀 Terbang ke koordinat</button>
+ </div>
+ <div class="sec"><div class="h">Lompat cepat</div><div class="chips" id="chips"></div></div>
+ <div class="sec"><div class="h">Lapisan peta</div><div id="layers"></div></div>
+</aside>
+
+<aside class="panel right" id="rightPanel">
+ <div class="sec quiz" id="quiz">
+  <div class="h">Tebak lokasi <b id="qRound">1/5</b></div>
+  <div class="q" id="qTarget">—</div>
+  <p class="sub" id="qHint" style="margin:.1rem 0 .5rem;font-weight:700;color:var(--muted)">Ketuk bola dunia di tempat yang kamu kira.</p>
+  <div style="display:flex;align-items:center;justify-content:space-between"><span class="score" id="qScore">0</span><button class="btn sm" id="qNext" type="button" disabled>Berikutnya ➜</button></div>
+  <button class="btn sm" id="qExit" type="button" style="margin-top:.4rem">✖ Selesai</button>
+ </div>
+ <div class="sec info" id="info">
+  <div class="guide"><span class="av">🧑‍🚀</span><span id="say">Halo, penjelajah! Seret bola dunia untuk memutar, cubit/gulir untuk zoom. Ketuk di mana saja untuk melihat koordinatnya, atau ketik tujuan di kiri lalu <b>terbang</b>!</span></div>
+ </div>
+ <div class="sec" id="place" style="display:none"></div>
+ <div class="sec"><div class="h">Misi penjelajah <b id="misN">0/8</b></div><div class="bar"><i id="misBar"></i></div><ul class="missions" id="mis" style="margin-top:.4rem"></ul></div>
+</aside>
+
+<div class="panel dock" id="dock">
+ <div class="ctl"><button class="btn sm" id="zOut" type="button" aria-label="Perkecil">−</button><button class="btn sm" id="zIn" type="button" aria-label="Perbesar">+</button><button class="btn sm" id="spin" type="button" title="Putar otomatis">⟳</button><button class="btn sm" id="home" type="button" title="Kembali ke Indonesia">🇮🇩</button></div>
+ <div class="slide">
+  <div class="row"><span>JAM (WIB)</span><b id="tLbl">—</b></div>
+  <input type="range" id="tHour" min="0" max="24" step="0.25">
+  <div class="row"><span>TANGGAL · MUSIM</span><b id="dLbl">—</b></div>
+  <input type="range" id="tDay" min="0" max="364" step="1">
+ </div>
+ <div class="ctl"><button class="btn sm on" id="live" type="button" title="Waktu sekarang">● Sekarang</button><button class="btn sm" id="lapse" type="button" title="Percepat waktu">⏩</button></div>
+</div>
+<div class="readout" id="readout">ARAHKAN KURSOR KE BUMI</div>
+<div class="tip" id="tip"></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="./geo.js?v=1.0.0"></script>
+<script src="./places.js?v=1.0.0"></script>
+<script src="./app.js?v=1.0.0"></script>
+<script src="../../pulse/config.js"></script>
+<script src="../../core/pulse.js"></script>
+</body>
+</html>
