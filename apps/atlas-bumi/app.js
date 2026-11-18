@@ -60,7 +60,7 @@
         vec3 night=texture2D(nightMap,vUv).rgb; night=pow(night,vec3(1.35))*vec3(1.9,1.55,1.05)*lights;
         col = mix(night + day*0.05, col, k);
         float w=texture2D(waterMap,vUv).r; vec3 v=normalize(cameraPosition-vP); vec3 h=normalize(sunDir+v);
-        col += vec3(0.85,0.92,1.0)*pow(max(dot(n,h),0.0),55.0)*w*0.6*k*realSun;
+        col += vec3(0.85,0.92,1.0)*pow(max(dot(n,h),0.0),90.0)*w*0.38*k*realSun;
         float fr=pow(1.0-max(dot(n,v),0.0),2.6); col += vec3(0.25,0.55,1.0)*fr*0.55*(0.25+0.75*k);
         col += vec3(1.0,0.42,0.12)*0.22*max(0.0,1.0-abs(d)*6.0)*realSun;
         gl_FragColor=vec4(col,1.0);
@@ -279,6 +279,7 @@
   }
   let current = null;
   function go(lat, lon, name, how) {
+    if (window.innerWidth < 900 && window.scrollY > 40) window.scrollTo({top: 0, behavior: 'smooth'});
     const from = current ? [current.lat, current.lon] : null;
     current = {lat, lon, name, how};
     if (from && G.distance(from, [lat, lon]) > 30) drawArc(from, [lat, lon]);
@@ -294,6 +295,7 @@
     const el = G.sunElevation(p, now), dj = G.distance(JKT, p), bj = G.bearing(JKT, p), qb = G.qibla(p), dm = G.distance(p, G.MECCA);
     const info = PLACES.find(x => x.n === name);
     const sunTxt = el > 6 ? `☀️ Siang (matahari ${Math.round(el)}° di atas cakrawala)` : el > -6 ? '🌅 Senja / fajar' : `🌙 Malam (matahari ${Math.round(-el)}° di bawah cakrawala)`;
+    const nearP = name ? null : PLACES.map(x => [x, G.distance(p, [x.lat, x.lon])]).sort((a, b) => a[1] - b[1])[0];
     const title = name || (cname ? 'Titik di ' + cname : 'Titik di ' + where);
     if (selLbl) { selLbl.el.remove(); LBL.splice(LBL.indexOf(selLbl), 1); }
     selLbl = label('📍 ' + (name || G.dec(lat, 2) + '°, ' + G.dec(lon, 2) + '°'), lat, lon, 'sel', 1.02);
@@ -305,7 +307,8 @@
         <div class="cell"><small>Lintang (desimal)</small><b>${G.dec(lat, 4)}°</b></div><div class="cell"><small>Bujur (desimal)</small><b>${G.dec(lon, 4)}°</b></div>
         <div class="cell"><small>Zona waktu</small><b>${tz.name.split(' ')[0]}</b></div><div class="cell"><small>Jam di sana</small><b>${G.hhmm(local.getUTCHours() + local.getUTCMinutes() / 60)}</b></div>
         <div class="cell w"><small>Matahari sekarang</small><b>${sunTxt}</b></div>
-        <div class="cell w"><small>Dari Jakarta</small><b>${dj < 5 ? 'Kamu di Jakarta!' : `${Math.round(dj).toLocaleString('id-ID')} km ke arah ${G.compass(bj)} · ±${(dj / 850).toFixed(1).replace('.', ',')} jam terbang`}</b></div>
+        ${nearP && nearP[1] < 300 ? `<div class="cell w"><small>Tempat terdekat</small><b>📍 ${nearP[0].n} · ${nearP[1] < 1 ? '< 1' : Math.round(nearP[1]).toLocaleString('id-ID')} km</b></div>` : ''}
+        <div class="cell w"><small>Dari Jakarta</small><b>${dj < 15 ? 'Ini Jakarta, titik acuan kita 📌' : `${Math.round(dj).toLocaleString('id-ID')} km ke arah ${G.compass(bj)} · ±${(dj / 850).toFixed(1).replace('.', ',')} jam terbang`}</b></div>
         <div class="cell w qibla"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="none" stroke="#5ee9ff55" stroke-width="2"/><text x="20" y="7.5" text-anchor="middle" font-size="6" fill="#8fa6c8" font-weight="900">U</text><g transform="rotate(${qb.toFixed(1)} 20 20)"><path d="M20 6 L24 22 L20 19 L16 22Z" fill="#5ef08f"/></g></svg>
           <div><small>Arah kiblat dari sini</small><b>${dm < 3 ? 'Kamu di Mekkah 🕋' : `${Math.round(qb)}° (${G.compass(qb)}) · ${Math.round(dm).toLocaleString('id-ID')} km`}</b></div></div>
       </div>${info ? `<p class="fact">💡 ${info.f}</p>` : ''}
@@ -389,7 +392,7 @@
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   $('zIn').onclick = () => zoom(.75); $('zOut').onclick = () => zoom(1.3);
   $('spin').onclick = () => { controls.autoRotate = !controls.autoRotate; $('spin').classList.toggle('on', controls.autoRotate); };
-  $('home').onclick = () => flyTo(-2.5, 118, {dist: 2.7});
+  $('home').onclick = () => flyTo(-2.5, 118, {dist: fitDist(2.7)});
 
   /* ---------- pemandu, toast, misi ---------- */
   function say(h) { $('say').innerHTML = h; }
@@ -459,7 +462,10 @@
     const wide = w > 900; camera.setViewOffset(w, h, wide ? 0 : 0, 0, w, h);
   }
   new ResizeObserver(resize).observe($('globe'));
-  camera.position.copy(ll2v(-2.5, 118, 1).normalize().multiplyScalar(3.4)); camera.lookAt(0, 0, 0); controls.update();
+  /* jarak kamera agar seluruh bola terlihat juga di layar tegak (HP) */
+  function fitDist(d) { const hf = 2 * Math.atan(Math.tan(camera.fov * D2R / 2) * camera.aspect); return Math.max(d, 1.12 / Math.sin(Math.min(camera.fov * D2R, hf) / 2)); }
+  resize(); camera.position.copy(ll2v(-2.5, 118, 1).normalize().multiplyScalar(fitDist(3.4))); camera.lookAt(0, 0, 0); controls.update();
+  if (matchMedia('(hover: none)').matches) $('readout').textContent = 'KETUK BUMI UNTUK MELIHAT KOORDINAT';
   applyLayers(); renderMissions(); setSun(); resize();
   let last = performance.now(), secAcc = 0;
   function loop(now) {

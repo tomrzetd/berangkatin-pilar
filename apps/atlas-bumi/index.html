@@ -39,8 +39,8 @@ button,input{font:inherit;color:inherit}
 .btn.sm{min-height:calc(var(--tap)*.78);font-size:.8rem;padding:.2em .65em}
 .panel{position:fixed;z-index:4;background:var(--glass);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 20px 50px #0008;backdrop-filter:blur(10px)}
 html[data-fx="lite"] .panel{backdrop-filter:none;background:#08122aee}
-.left{left:.8rem;top:4.4rem;width:min(330px,28vw);max-height:calc(100dvh - 10.5rem);overflow:auto;padding:.8rem .85rem}
-.right{right:.8rem;top:4.4rem;width:min(350px,28vw);max-height:calc(100dvh - 10.5rem);overflow:auto;padding:.8rem .85rem}
+.left{left:.8rem;top:4.4rem;width:min(330px,28vw);max-height:calc(100dvh - 5.4rem);overflow:auto;padding:.8rem .85rem}
+.right{right:.8rem;top:4.4rem;width:min(350px,28vw);max-height:calc(100dvh - 5.4rem);overflow:auto;padding:.8rem .85rem}
 .panel::-webkit-scrollbar{width:6px}.panel::-webkit-scrollbar-thumb{background:#5ee9ff33;border-radius:9px}
 .sec{border-top:1px solid var(--line);padding-top:.65rem;margin-top:.65rem}
 .sec:first-child{border:0;padding:0;margin:0}
@@ -81,7 +81,7 @@ html[data-fx="lite"] .panel{backdrop-filter:none;background:#08122aee}
 .missions li::before{content:"◻";color:var(--muted);flex:none}.missions li.ok{color:var(--muted)}.missions li.ok::before{content:"✔";color:var(--good)}
 .bar{height:6px;border-radius:9px;background:#1b2a46;overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .5s}
 /* ---------- dock bawah ---------- */
-.dock{left:50%;bottom:.8rem;transform:translateX(-50%);width:min(760px,calc(100vw - 1.6rem));padding:.55rem .8rem;display:grid;grid-template-columns:auto 1fr auto;gap:.8rem;align-items:center}
+.dock{left:50%;bottom:.8rem;transform:translateX(-50%);width:min(760px,calc(100vw - min(330px,28vw) - min(350px,28vw) - 3.4rem));padding:.55rem .8rem;display:grid;grid-template-columns:auto 1fr auto;gap:.8rem;align-items:center}
 .dock .ctl{display:flex;gap:.3rem}
 .slide{display:grid;gap:.15rem}
 .slide .row{display:flex;justify-content:space-between;font:800 .66rem var(--f-body);letter-spacing:.14em;color:var(--muted)}
@@ -135,6 +135,7 @@ input[type=range]{width:100%;accent-color:var(--acc);height:calc(var(--tap)*.55)
  </div>
  <div class="sec"><div class="h">Lompat cepat</div><div class="chips" id="chips"></div></div>
  <div class="sec"><div class="h">Lapisan peta</div><div id="layers"></div></div>
+ <p class="sec" style="font-size:.66rem;color:var(--muted);font-weight:700;line-height:1.4">Citra: NASA Blue Marble &amp; Black Marble (lewat three-globe) · batas negara: Natural Earth · gunung api: Smithsonian GVP. Awan disimulasikan.</p>
 </aside>
 
 <aside class="panel right" id="rightPanel">
