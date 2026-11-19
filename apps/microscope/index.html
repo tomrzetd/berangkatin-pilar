@@ -1885,7 +1885,7 @@
             releaseGalleryUrls() { this.galleryObjectUrls.forEach(url=>URL.revokeObjectURL(url)); this.galleryObjectUrls.clear(); }
 
             restorePreferences() {
-                const theme=localStorage.getItem('pilarMicroscopeTheme')||'dark'; if(theme==='dark')document.body.classList.add('dark-mode');
+                let theme=null;try{theme=localStorage.getItem('pilarMicroscopeTheme')||((localStorage.getItem('pilar_skin')||'kalem')==='gelap'?'dark':'light')}catch(_){theme='dark'} if(theme==='dark')document.body.classList.add('dark-mode');
                 const isDark=document.body.classList.contains('dark-mode');document.getElementById('themeToggle').innerHTML=isDark?'<i class="fas fa-sun"></i> Light Mode':'<i class="fas fa-moon"></i> Dark Mode';
             }
 

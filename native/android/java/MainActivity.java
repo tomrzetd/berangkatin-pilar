@@ -53,6 +53,13 @@ public class MainActivity extends BridgeActivity {
         s.setLoadWithOverviewMode(true);
         wv.setWebViewClient(new PilarClient(bridge));
         wv.setWebChromeClient(new PilarChrome(bridge));
+        // IFP multi-siswa: tekan lama / angkat satu jari saat jari lain menempel jangan memunculkan
+        // menu seleksi/konteks bawaan WebView. Kolom teks tetap bisa diseleksi lewat JS (core/device-profile.js).
+        wv.setHapticFeedbackEnabled(false);
+        wv.setOnLongClickListener(v -> {
+            WebView.HitTestResult h = ((WebView) v).getHitTestResult();
+            return h == null || h.getType() != WebView.HitTestResult.EDIT_TEXT_TYPE;
+        });
     }
 
     @Override

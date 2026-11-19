@@ -1,0 +1,330 @@
+/* DIBUAT OTOMATIS oleh tools/gen-skins.mjs — jangan sunting manual; ubah tools/skin-rules.mjs lalu jalankan ulang.
+   Skin terang PILAR untuk apps/soundscope. Hanya aktif saat skin Hub = Kalem/Pink. */
+
+/* ===== kalem ===== */
+html[data-skin="kalem"][data-app="soundscope"]{color-scheme:light}
+html[data-skin="kalem"][data-app="soundscope"]{--bg1:#f5f7fb;--bg2:#f3f6fa;--panel:#f1f5fa;--line:#cddbec;--text:#192442;--muted:#52617a;--good:#198a4f;--warn:#9f6f00;--bad:#f70025;--blue:#007be3;--cyan:#008497;--pink:#c9001e;--btn:3.4rem;--r:1.2rem;color-scheme:light}
+html[data-skin="kalem"][data-app="soundscope"] body{color:var(--text);background-color:#f5f7fb}
+html[data-skin="kalem"][data-app="soundscope"] .top small{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .brand{background-color:initial;background-image:radial-gradient(80% 140% at 25% 30%, rgba(16,27,57,0.176), rgba(16,27,57,0.055));box-shadow:rgba(255,255,255,0.099) 0px 2px 0px inset, rgba(36,77,139,0.1) 0px 12px 30px;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .brand i{box-shadow:rgba(58,160,255,0.099) 0px 0px 0px 0.35rem;background:var(--blue)}
+html[data-skin="kalem"][data-app="soundscope"] .panel,html[data-skin="kalem"][data-app="soundscope"] .stage{background-color:initial;background-image:linear-gradient(#f1f5fa, #f3f6fa);box-shadow:rgba(36,77,139,0.1) 0px 18px 52px;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .stage{background-color:initial;background-image:radial-gradient(circle at 50% 28%, #ebf1f7, #f3f6fa 48%, #f6f8fb 100%)}
+html[data-skin="kalem"][data-app="soundscope"] .ph{background-color:rgba(16,27,57,0.055);background-image:initial;border-bottom:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] button,html[data-skin="kalem"][data-app="soundscope"] select,html[data-skin="kalem"][data-app="soundscope"] input[type="text"],html[data-skin="kalem"][data-app="soundscope"] input[type="number"]{color:var(--text)}
+html[data-skin="kalem"][data-app="soundscope"] .btn{background-color:rgba(16,27,57,0.11);background-image:initial;box-shadow:rgba(36,77,139,0.1) 0px 10px 22px;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .btn:focus-visible,html[data-skin="kalem"][data-app="soundscope"] .chip:focus-visible{outline:3px solid var(--warn)}
+html[data-skin="kalem"][data-app="soundscope"] .btn.primary{background-color:rgba(58, 160, 255, 0.2);background-image:initial;border-top-color:rgba(26,144,255,0.5);border-right-color:rgba(26,144,255,0.5);border-bottom-color:rgba(26,144,255,0.5);border-left-color:rgba(26,144,255,0.5)}
+html[data-skin="kalem"][data-app="soundscope"] .btn.good{background-color:rgba(56, 230, 153, 0.16);background-image:initial;border-top-color:rgba(51,229,150,0.5);border-right-color:rgba(51,229,150,0.5);border-bottom-color:rgba(51,229,150,0.5);border-left-color:rgba(51,229,150,0.5)}
+html[data-skin="kalem"][data-app="soundscope"] .btn.warn{background-color:rgba(255, 208, 66, 0.15);background-image:initial;border-top-color:rgba(255,198,26,0.5);border-right-color:rgba(255,198,26,0.5);border-bottom-color:rgba(255,198,26,0.5);border-left-color:rgba(255,198,26,0.5)}
+html[data-skin="kalem"][data-app="soundscope"] .btn.danger{background-color:rgba(255, 83, 83, 0.14);background-image:initial;border-top-color:rgba(255,26,26,0.5);border-right-color:rgba(255,26,26,0.5);border-bottom-color:rgba(255,26,26,0.5);border-left-color:rgba(255,26,26,0.5)}
+html[data-skin="kalem"][data-app="soundscope"] .btn.on{outline:3px solid var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] label{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] select,html[data-skin="kalem"][data-app="soundscope"] input[type="text"],html[data-skin="kalem"][data-app="soundscope"] input[type="number"]{background-color:rgba(16,27,57,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] input[type="range"]{accent-color:var(--blue)}
+html[data-skin="kalem"][data-app="soundscope"] .hint{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .card{background-color:rgba(16,27,57,0.066);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .pill{color:var(--muted);background-color:rgba(16,27,57,0.066);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .dot{background:var(--warn)}
+html[data-skin="kalem"][data-app="soundscope"] .dot.good{background:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .dot.bad{background:var(--bad)}
+html[data-skin="kalem"][data-app="soundscope"] .kpis{background-color:rgba(16,27,57,0.055);background-image:initial;border-bottom:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .kpi{background-color:rgba(16,27,57,0.066);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .kpi small{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .meter{background-color:rgba(16,27,57,0.132);background-image:initial}
+html[data-skin="kalem"][data-app="soundscope"] .meter i{background:linear-gradient(90deg,var(--good),var(--warn),var(--pink))}
+html[data-skin="kalem"][data-app="soundscope"] .chip{background-color:rgba(16,27,57,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .chip[aria-pressed="true"]{background-color:rgba(56, 230, 153, 0.2);background-image:initial;border-color:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .cv{background-color:rgba(16,27,57,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .cap{background-color:rgba(16,27,57,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .sig{background-color:rgba(16,27,57,0.06);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .sig .bars i{background:var(--blue)}
+html[data-skin="kalem"][data-app="soundscope"] .camBox{background-color:#fafbfd;background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] #toast div{background-color:#fafbfd;background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .hubBtn{color:var(--text);background-color:rgba(16,27,57,0.07);background-image:initial;text-decoration-color:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .hubBtn:hover{background-color:rgba(58, 160, 255, 0.14);background-image:initial;border-color:var(--blue)}
+html[data-skin="kalem"][data-app="soundscope"] .creatorTag{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .generator-off{color:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .tunerNote{color:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .tunerHz{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .tunerTarget{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .tunerMeter{background-color:initial;background-image:linear-gradient(90deg, rgba(58, 160, 255, 0.2), rgba(56, 230, 153, 0.13) 42%, rgba(56, 230, 153, 0.3) 48%, rgba(56, 230, 153, 0.3) 52%, rgba(255, 77, 109, 0.15) 58%, rgba(255, 77, 109, 0.2));border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .tunerMeter::before{background:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .tunerNeedle{background-color:rgb(255, 255, 255);background-image:initial;box-shadow:rgba(255,255,255,0.44) 0px 0px 14px}
+html[data-skin="kalem"][data-app="soundscope"] .tunerScale{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .tunerStrings button{color:var(--text);background-color:rgba(16,27,57,0.066);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .tunerStrings button.on{background-color:rgba(56, 230, 153, 0.18);background-image:initial;box-shadow:rgba(56,230,153,0.11) 0px 0px 0px 1px;border-color:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .tunerHist{background-color:rgba(16,27,57,0.066);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .tools [data-tool="morse"]{background-color:initial;background-image:linear-gradient(105deg, rgba(105, 186, 255, 0.24), rgba(99, 227, 160, 0.12));border-top-color:rgba(26,225,255,0.45);border-right-color:rgba(26,225,255,0.45);border-bottom-color:rgba(26,225,255,0.45);border-left-color:rgba(26,225,255,0.45)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-kicker{color:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-live{background-color:rgba(16,27,57,0.07);background-image:initial;border-top-color:rgba(26,149,255,0.32);border-right-color:rgba(26,149,255,0.32);border-bottom-color:rgba(26,149,255,0.32);border-left-color:rgba(26,149,255,0.32)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-live > i{background-color:rgb(108, 120, 147);background-image:initial}
+html[data-skin="kalem"][data-app="soundscope"] .morse-live.on > i{box-shadow:0 0 .8rem var(--good);background:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-sub{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-step{background-color:#f2f6fa;background-image:initial;border-top-color:rgba(75,150,205,0.3);border-right-color:rgba(75,150,205,0.3);border-bottom-color:rgba(75,150,205,0.3);border-left-color:rgba(75,150,205,0.3)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-step small{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-step.current{background-color:#edf8f8;background-image:initial;box-shadow:rgba(99,227,160,0.072) 0px 0px 22px inset, rgba(99,227,160,0.072) 0px 0px 17px;border-color:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-step.current::after{color:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-visual{background-color:#f4f7fb;background-image:radial-gradient(circle at 85% 40%, rgba(43, 133, 177, 0.1), transparent 42%), initial;border-top-color:rgba(68,151,212,0.35);border-right-color:rgba(68,151,212,0.35);border-bottom-color:rgba(68,151,212,0.35);border-left-color:rgba(68,151,212,0.35)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-visual .cap{background-color:#f6f8fb;background-image:initial}
+html[data-skin="kalem"][data-app="soundscope"] .morse-legend{color:#475270}
+html[data-skin="kalem"][data-app="soundscope"] .morse-legend b{color:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-strip{background-color:#f6f8fb;background-image:initial;border-top-color:rgba(16,27,57,0.176);border-right-color:rgba(16,27,57,0.176);border-bottom-color:rgba(16,27,57,0.176);border-left-color:rgba(16,27,57,0.176)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-token{background-color:rgba(16,27,57,0.055);background-image:initial;border-top-color:rgba(84,150,196,0.35);border-right-color:rgba(84,150,196,0.35);border-bottom-color:rgba(84,150,196,0.35);border-left-color:rgba(84,150,196,0.35)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-token.current{color:rgb(6, 23, 40);box-shadow:rgba(99,227,160,0.22) 0px 0px 15px;background:var(--good);border-color:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-token.sp{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-caption{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-modes .on{color:rgb(5, 32, 50);border-top-color:transparent;border-right-color:transparent;border-bottom-color:transparent;border-left-color:transparent;background:linear-gradient(105deg,var(--blue),var(--good))}
+html[data-skin="kalem"][data-app="soundscope"] .morse-config select,html[data-skin="kalem"][data-app="soundscope"] .morse-config textarea{color:var(--text);background-color:#f4f7fb;background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-big{color:var(--good);background-color:#f6f8fc;background-image:initial;border-top-color:rgba(60,220,137,0.28);border-right-color:rgba(60,220,137,0.28);border-bottom-color:rgba(60,220,137,0.28);border-left-color:rgba(60,220,137,0.28)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-note{color:#52617a}
+html[data-skin="kalem"][data-app="soundscope"] .morse-stats > div{background-color:rgba(16,27,57,0.057);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-stats small{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-progress{background-color:rgba(16,27,57,0.11);background-image:initial}
+html[data-skin="kalem"][data-app="soundscope"] .morse-progress i{background:linear-gradient(90deg,var(--blue),var(--good))}
+html[data-skin="kalem"][data-app="soundscope"] .morse-meter-row > span{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-meter-row:first-of-type .morse-progress i{background-color:initial;background-image:linear-gradient(90deg, rgb(108, 120, 147), rgb(105, 186, 255))}
+html[data-skin="kalem"][data-app="soundscope"] .morse-token.b-pre{color:#316892;border-top-color:rgba(83,148,198,0.55);border-right-color:rgba(83,148,198,0.55);border-bottom-color:rgba(83,148,198,0.55);border-left-color:rgba(83,148,198,0.55)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-token.b-sync{color:#855e00;border-top-color:#ffba1a;border-right-color:#ffba1a;border-bottom-color:#ffba1a;border-left-color:#ffba1a}
+html[data-skin="kalem"][data-app="soundscope"] .morse-token.b-head{color:#7c26ff;border-top-color:#761aff;border-right-color:#761aff;border-bottom-color:#761aff;border-left-color:#761aff}
+html[data-skin="kalem"][data-app="soundscope"] .morse-token.b-body{color:#116f41;border-top-color:rgba(60,220,137,0.55);border-right-color:rgba(60,220,137,0.55);border-bottom-color:rgba(60,220,137,0.55);border-left-color:rgba(60,220,137,0.55)}
+html[data-skin="kalem"][data-app="soundscope"] .morse-token.b-err{color:#101b39!important;background-color:rgb(255, 109, 131)!important;background-image:initial!important;border-top-color:#ff1a3c!important;border-right-color:#ff1a3c!important;border-bottom-color:#ff1a3c!important;border-left-color:#ff1a3c!important}
+html[data-skin="kalem"][data-app="soundscope"] .morse-progress.fx0 i{background-color:initial;background-image:linear-gradient(90deg, rgb(105, 186, 255), rgb(126, 231, 255))}
+html[data-skin="kalem"][data-app="soundscope"] .morse-progress.fx1 i{background-color:initial;background-image:linear-gradient(90deg, rgb(255, 168, 90), rgb(255, 211, 108))}
+html[data-skin="kalem"][data-app="soundscope"] .tools [data-tool="acoustic"]{background-color:initial;background-image:linear-gradient(105deg, rgba(105, 186, 255, 0.18), rgba(126, 238, 255, 0.08));border-top-color:rgba(26,225,255,0.42);border-right-color:rgba(26,225,255,0.42);border-bottom-color:rgba(26,225,255,0.42);border-left-color:rgba(26,225,255,0.42)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-kicker{color:var(--cyan)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-stage-head h2 em{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-live{color:var(--muted);border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-live i{background-color:rgb(113, 131, 152);background-image:initial}
+html[data-skin="kalem"][data-app="soundscope"] .acp-live.on i{box-shadow:0 0 .8rem var(--good);background:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-live.on{color:var(--text);border-top-color:rgba(60,220,137,0.45);border-right-color:rgba(60,220,137,0.45);border-bottom-color:rgba(60,220,137,0.45);border-left-color:rgba(60,220,137,0.45)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-chain span{background-color:#f4f7fb;background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-chain i{color:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-radar-wrap,html[data-skin="kalem"][data-app="soundscope"] .acp-corr-wrap{background-color:#f4f7fb;background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-overlay b{color:var(--warn);text-shadow:rgba(255,211,108,0.087) 0px 0px 22px}
+html[data-skin="kalem"][data-app="soundscope"] .acp-overlay small{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-cap{color:var(--muted);background-color:#f6f8fb;background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-aha{color:#333e5c;background-color:rgba(240,249,246,0.35);background-image:initial;border-top-color:rgba(60,220,137,0.25);border-right-color:rgba(60,220,137,0.25);border-bottom-color:rgba(60,220,137,0.25);border-left-color:rgba(60,220,137,0.25)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-family-head span{color:var(--cyan)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-family-head small{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-modes button small{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-status{color:var(--muted);background-color:rgba(105, 186, 255, 0.06);background-image:initial;border-left:3px solid var(--blue)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-readout > div{background-color:rgba(16,27,57,0.048);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-readout small{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-safety{border-top:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .anchor-row{background-color:rgba(16,27,57,0.042);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .anchor-q{color:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .anchor-tile{background-color:rgba(16,27,57,0.054);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .anchor-tile.ok{background-color:rgba(240,249,246,0.28);background-image:initial;border-top-color:rgba(60,220,137,0.45);border-right-color:rgba(60,220,137,0.45);border-bottom-color:rgba(60,220,137,0.45);border-left-color:rgba(60,220,137,0.45)}
+html[data-skin="kalem"][data-app="soundscope"] .anchor-tile span{color:var(--warn)}
+html[data-skin="kalem"][data-app="soundscope"] .anchor-tile small{color:var(--muted)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-radar-wrap{background-color:initial;background-image:radial-gradient(circle at 50% 54%, #ebf1f7, #f4f7fb 70%);box-shadow:rgba(126,238,255,0.033) 0px 0px 0px 1px inset, rgba(36,77,139,0.1) 0px 10px 30px}
+html[data-skin="kalem"][data-app="soundscope"] .acp-corr-wrap{background-color:initial;background-image:linear-gradient(#f3f6fa, #f4f7fb)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-overlay{background-color:#f6f8fb;background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-chain span:first-child{border-top-color:rgba(60,220,137,0.4);border-right-color:rgba(60,220,137,0.4);border-bottom-color:rgba(60,220,137,0.4);border-left-color:rgba(60,220,137,0.4)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-chain span:last-child{color:var(--warn);border-top-color:rgba(255,186,26,0.5);border-right-color:rgba(255,186,26,0.5);border-bottom-color:rgba(255,186,26,0.5);border-left-color:rgba(255,186,26,0.5)}
+html[data-skin="kalem"][data-app="soundscope"] .anchor-tile.ok b{color:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-runtime{background-color:rgba(16,27,57,0.042);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .acp-runtime span{color:var(--cyan)}
+html[data-skin="kalem"][data-app="soundscope"][data-fx="lite"] .topbar,html[data-skin="kalem"][data-app="soundscope"][data-fx="lite"] .vision-gate,html[data-skin="kalem"][data-app="soundscope"][data-fx="lite"] .modal,html[data-skin="kalem"][data-app="soundscope"][data-fx="lite"] .nl{background-color:#f6f9fc!important}
+html[data-skin="kalem"][data-app="soundscope"][data-fx="lite"] .backdrop,html[data-skin="kalem"][data-app="soundscope"][data-fx="lite"] .tour-shade{background-color:rgba(16,27,57,0.5)!important}
+html[data-skin="kalem"][data-app="soundscope"][data-fx="lite"] .boot-card,html[data-skin="kalem"][data-app="soundscope"][data-fx="lite"] .modal,html[data-skin="kalem"][data-app="soundscope"][data-fx="lite"] .teamCard,html[data-skin="kalem"][data-app="soundscope"][data-fx="lite"] .login-card{box-shadow:rgba(36,77,139,0.1) 0px 8px 24px!important}
+html[data-skin="kalem"][data-app="soundscope"] .pro-ch b.tag{color:rgb(4, 18, 26)}
+html[data-skin="kalem"][data-app="soundscope"] .pro-liss{background-color:rgba(16,27,57,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .pro-pad button{color:var(--text);background-color:rgba(16,27,57,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .pro-pad button.hit{background-color:rgba(58, 160, 255, 0.35);background-image:initial;border-top-color:#1a90ff;border-right-color:#1a90ff;border-bottom-color:#1a90ff;border-left-color:#1a90ff}
+html[data-skin="kalem"][data-app="soundscope"] .pro-digits{border:1px dashed var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .pro-flow span{background-color:rgba(16,27,57,0.06);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .pro-flow span.on{color:var(--good);border-color:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .pro-text{color:var(--text);background-color:rgba(16,27,57,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .pro-out{background-color:rgba(16,27,57,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .pro-out b.ok{color:var(--good)}
+html[data-skin="kalem"][data-app="soundscope"] .pro-out b.bad{color:var(--bad)}
+html[data-skin="kalem"][data-app="soundscope"] .pro-age td{border-bottom:1px solid var(--line)}
+html[data-skin="kalem"][data-app="soundscope"] .pro-age tr.hit td{background-color:rgba(56, 230, 153, 0.16);background-image:initial}
+html[data-skin="kalem"][data-app="soundscope"] #pilarPulseBtn{color:#1b2644;background-color:initial;background-image:linear-gradient(145deg, #f0f5f9, #f4f7fb);border-top-color:#cbdceb;border-right-color:#cbdceb;border-bottom-color:#cbdceb;border-left-color:#cbdceb;box-shadow:rgba(36,77,139,0.1) 0px 12px 34px, rgba(126,238,255,0.022) 0px 0px 0px 1px inset}
+html[data-skin="kalem"][data-app="soundscope"] #pilarPulseBtn::before{color:#202b49;background-color:#f4f7fb;background-image:initial;border-top-color:#cbdceb;border-right-color:#cbdceb;border-bottom-color:#cbdceb;border-left-color:#cbdceb;box-shadow:rgba(36,77,139,0.1) 0px 8px 24px}
+html[data-skin="kalem"][data-app="soundscope"] #pilarPulseBtn::after{background-color:rgb(113, 131, 152);background-image:initial;border-top-color:#d3e0ee;border-right-color:#d3e0ee;border-bottom-color:#d3e0ee;border-left-color:#d3e0ee}
+html[data-skin="kalem"][data-app="soundscope"] #pilarPulseBtn.on{color:#2b3654;border-top-color:#c9d6eb;border-right-color:#c9d6eb;border-bottom-color:#c9d6eb;border-left-color:#c9d6eb}
+html[data-skin="kalem"][data-app="soundscope"] #pilarPulseBtn.on::after{background-color:rgb(99, 227, 160);background-image:initial;box-shadow:rgba(99,227,160,0.413) 0px 0px 8px}
+html[data-skin="kalem"][data-app="soundscope"] #pilarPulseBtn.off::after{background-color:rgb(113, 131, 152);background-image:initial}
+html[data-skin="kalem"][data-app="soundscope"] #pilarPulseBtn.pulse-idle{box-shadow:rgba(36,77,139,0.1) 0px 8px 20px}
+html[data-skin="kalem"][data-app="soundscope"] #pilarPulseBtn:hover,html[data-skin="kalem"][data-app="soundscope"] #pilarPulseBtn:focus-visible,html[data-skin="kalem"][data-app="soundscope"] #pilarPulseBtn.pulse-awake{border-top-color:#1ae0ff;border-right-color:#1ae0ff;border-bottom-color:#1ae0ff;border-left-color:#1ae0ff;box-shadow:rgba(36,77,139,0.1) 0px 14px 38px, rgba(94,233,255,0.055) 0px 0px 0px 3px}
+html[data-skin="kalem"][data-app="soundscope"] #pilarPulseDrawer{color:#192442;background-color:#f4f7fb;background-image:initial;border-top-color:#cbdceb;border-right-color:#cbdceb;border-bottom-color:#cbdceb;border-left-color:#cbdceb;box-shadow:rgba(36,77,139,0.1) 0px 22px 70px}
+html[data-skin="kalem"][data-app="soundscope"] .pp-head{border-bottom-color:#cedeed}
+html[data-skin="kalem"][data-app="soundscope"] .pp-head b{color:#006d7e}
+html[data-skin="kalem"][data-app="soundscope"] .pp-head small{color:#52617a}
+html[data-skin="kalem"][data-app="soundscope"] .pp-clear{color:#35405e!important;background-color:#f3f5f9!important;background-image:initial!important;border-top-color:#ccd7ec!important;border-right-color:#ccd7ec!important;border-bottom-color:#ccd7ec!important;border-left-color:#ccd7ec!important}
+html[data-skin="kalem"][data-app="soundscope"] .pp-empty{color:#52617a}
+html[data-skin="kalem"][data-app="soundscope"] .pp-msg{background-color:#f0f4f9;background-image:initial}
+html[data-skin="kalem"][data-app="soundscope"] .pp-msg.me{background-color:#eef8f5;background-image:initial}
+html[data-skin="kalem"][data-app="soundscope"] .pp-msg time{color:#52617a}
+html[data-skin="kalem"][data-app="soundscope"] .pp-form{border-top-color:#cedeed}
+html[data-skin="kalem"][data-app="soundscope"] .pp-form input{color:#192442;background-color:#f3f7fa;background-image:initial;border-top-color:#ccdcec;border-right-color:#ccdcec;border-bottom-color:#ccdcec;border-left-color:#ccdcec}
+html[data-skin="kalem"][data-app="soundscope"] #pilarPulseNotice{color:#313c5a;background-color:#f4f7fb;background-image:initial;border-top-color:#ccdeec;border-right-color:#ccdeec;border-bottom-color:#ccdeec;border-left-color:#ccdeec;box-shadow:rgba(36,77,139,0.1) 0px 12px 40px}
+html[data-skin="kalem"][data-app="soundscope"] canvas{background:#0a1524;border-radius:10px}
+html[data-skin="kalem"][data-app="soundscope"] .cv .cap{background:rgba(255,255,255,.94);color:#101b39}
+
+/* ===== pink ===== */
+html[data-skin="pink"][data-app="soundscope"]{color-scheme:light}
+html[data-skin="pink"][data-app="soundscope"]{--bg1:#fcf4f7;--bg2:#fbf2f6;--panel:#fbf0f5;--line:#f1c7d9;--text:#431d39;--muted:#7a5263;--good:#198a4f;--warn:#9f6f00;--bad:#f70025;--blue:#007be3;--cyan:#008497;--pink:#c9001e;--btn:3.4rem;--r:1.2rem;color-scheme:light}
+html[data-skin="pink"][data-app="soundscope"] body{color:var(--text);background-color:#fcf4f7}
+html[data-skin="pink"][data-app="soundscope"] .top small{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .brand{background-color:initial;background-image:radial-gradient(80% 140% at 25% 30%, rgba(58,20,48,0.176), rgba(58,20,48,0.055));box-shadow:rgba(255,255,255,0.099) 0px 2px 0px inset, rgba(190,60,120,0.1) 0px 12px 30px;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .brand i{box-shadow:rgba(58,160,255,0.099) 0px 0px 0px 0.35rem;background:var(--blue)}
+html[data-skin="pink"][data-app="soundscope"] .panel,html[data-skin="pink"][data-app="soundscope"] .stage{background-color:initial;background-image:linear-gradient(#fbf0f5, #fbf2f6);box-shadow:rgba(190,60,120,0.1) 0px 18px 52px;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .stage{background-color:initial;background-image:radial-gradient(circle at 50% 28%, #f9eaf0, #fbf2f6 48%, #fcf5f8 100%)}
+html[data-skin="pink"][data-app="soundscope"] .ph{background-color:rgba(58,20,48,0.055);background-image:initial;border-bottom:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] button,html[data-skin="pink"][data-app="soundscope"] select,html[data-skin="pink"][data-app="soundscope"] input[type="text"],html[data-skin="pink"][data-app="soundscope"] input[type="number"]{color:var(--text)}
+html[data-skin="pink"][data-app="soundscope"] .btn{background-color:rgba(58,20,48,0.11);background-image:initial;box-shadow:rgba(190,60,120,0.1) 0px 10px 22px;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .btn:focus-visible,html[data-skin="pink"][data-app="soundscope"] .chip:focus-visible{outline:3px solid var(--warn)}
+html[data-skin="pink"][data-app="soundscope"] .btn.primary{background-color:rgba(58, 160, 255, 0.2);background-image:initial;border-top-color:rgba(26,144,255,0.5);border-right-color:rgba(26,144,255,0.5);border-bottom-color:rgba(26,144,255,0.5);border-left-color:rgba(26,144,255,0.5)}
+html[data-skin="pink"][data-app="soundscope"] .btn.good{background-color:rgba(56, 230, 153, 0.16);background-image:initial;border-top-color:rgba(51,229,150,0.5);border-right-color:rgba(51,229,150,0.5);border-bottom-color:rgba(51,229,150,0.5);border-left-color:rgba(51,229,150,0.5)}
+html[data-skin="pink"][data-app="soundscope"] .btn.warn{background-color:rgba(255, 208, 66, 0.15);background-image:initial;border-top-color:rgba(255,198,26,0.5);border-right-color:rgba(255,198,26,0.5);border-bottom-color:rgba(255,198,26,0.5);border-left-color:rgba(255,198,26,0.5)}
+html[data-skin="pink"][data-app="soundscope"] .btn.danger{background-color:rgba(255, 83, 83, 0.14);background-image:initial;border-top-color:rgba(255,26,26,0.5);border-right-color:rgba(255,26,26,0.5);border-bottom-color:rgba(255,26,26,0.5);border-left-color:rgba(255,26,26,0.5)}
+html[data-skin="pink"][data-app="soundscope"] .btn.on{outline:3px solid var(--good)}
+html[data-skin="pink"][data-app="soundscope"] label{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] select,html[data-skin="pink"][data-app="soundscope"] input[type="text"],html[data-skin="pink"][data-app="soundscope"] input[type="number"]{background-color:rgba(58,20,48,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] input[type="range"]{accent-color:var(--blue)}
+html[data-skin="pink"][data-app="soundscope"] .hint{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .card{background-color:rgba(58,20,48,0.066);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .pill{color:var(--muted);background-color:rgba(58,20,48,0.066);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .dot{background:var(--warn)}
+html[data-skin="pink"][data-app="soundscope"] .dot.good{background:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .dot.bad{background:var(--bad)}
+html[data-skin="pink"][data-app="soundscope"] .kpis{background-color:rgba(58,20,48,0.055);background-image:initial;border-bottom:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .kpi{background-color:rgba(58,20,48,0.066);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .kpi small{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .meter{background-color:rgba(58,20,48,0.132);background-image:initial}
+html[data-skin="pink"][data-app="soundscope"] .meter i{background:linear-gradient(90deg,var(--good),var(--warn),var(--pink))}
+html[data-skin="pink"][data-app="soundscope"] .chip{background-color:rgba(58,20,48,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .chip[aria-pressed="true"]{background-color:rgba(56, 230, 153, 0.2);background-image:initial;border-color:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .cv{background-color:rgba(58,20,48,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .cap{background-color:rgba(58,20,48,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .sig{background-color:rgba(58,20,48,0.06);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .sig .bars i{background:var(--blue)}
+html[data-skin="pink"][data-app="soundscope"] .camBox{background-color:#fdf9fb;background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] #toast div{background-color:#fdf9fb;background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .hubBtn{color:var(--text);background-color:rgba(58,20,48,0.07);background-image:initial;text-decoration-color:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .hubBtn:hover{background-color:rgba(58, 160, 255, 0.14);background-image:initial;border-color:var(--blue)}
+html[data-skin="pink"][data-app="soundscope"] .creatorTag{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .generator-off{color:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .tunerNote{color:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .tunerHz{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .tunerTarget{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .tunerMeter{background-color:initial;background-image:linear-gradient(90deg, rgba(58, 160, 255, 0.2), rgba(56, 230, 153, 0.13) 42%, rgba(56, 230, 153, 0.3) 48%, rgba(56, 230, 153, 0.3) 52%, rgba(255, 77, 109, 0.15) 58%, rgba(255, 77, 109, 0.2));border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .tunerMeter::before{background:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .tunerNeedle{background-color:rgb(255, 255, 255);background-image:initial;box-shadow:rgba(255,255,255,0.44) 0px 0px 14px}
+html[data-skin="pink"][data-app="soundscope"] .tunerScale{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .tunerStrings button{color:var(--text);background-color:rgba(58,20,48,0.066);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .tunerStrings button.on{background-color:rgba(56, 230, 153, 0.18);background-image:initial;box-shadow:rgba(56,230,153,0.11) 0px 0px 0px 1px;border-color:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .tunerHist{background-color:rgba(58,20,48,0.066);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .tools [data-tool="morse"]{background-color:initial;background-image:linear-gradient(105deg, rgba(105, 186, 255, 0.24), rgba(99, 227, 160, 0.12));border-top-color:rgba(26,225,255,0.45);border-right-color:rgba(26,225,255,0.45);border-bottom-color:rgba(26,225,255,0.45);border-left-color:rgba(26,225,255,0.45)}
+html[data-skin="pink"][data-app="soundscope"] .morse-kicker{color:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .morse-live{background-color:rgba(58,20,48,0.07);background-image:initial;border-top-color:rgba(26,149,255,0.32);border-right-color:rgba(26,149,255,0.32);border-bottom-color:rgba(26,149,255,0.32);border-left-color:rgba(26,149,255,0.32)}
+html[data-skin="pink"][data-app="soundscope"] .morse-live > i{background-color:rgb(108, 120, 147);background-image:initial}
+html[data-skin="pink"][data-app="soundscope"] .morse-live.on > i{box-shadow:0 0 .8rem var(--good);background:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .morse-sub{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .morse-step{background-color:#fbf1f6;background-image:initial;border-top-color:rgba(75,150,205,0.3);border-right-color:rgba(75,150,205,0.3);border-bottom-color:rgba(75,150,205,0.3);border-left-color:rgba(75,150,205,0.3)}
+html[data-skin="pink"][data-app="soundscope"] .morse-step small{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .morse-step.current{background-color:#ebf9f9;background-image:initial;box-shadow:rgba(99,227,160,0.072) 0px 0px 22px inset, rgba(99,227,160,0.072) 0px 0px 17px;border-color:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .morse-step.current::after{color:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .morse-visual{background-color:#fcf3f7;background-image:radial-gradient(circle at 85% 40%, rgba(43, 133, 177, 0.1), transparent 42%), initial;border-top-color:rgba(68,151,212,0.35);border-right-color:rgba(68,151,212,0.35);border-bottom-color:rgba(68,151,212,0.35);border-left-color:rgba(68,151,212,0.35)}
+html[data-skin="pink"][data-app="soundscope"] .morse-visual .cap{background-color:#fcf5f8;background-image:initial}
+html[data-skin="pink"][data-app="soundscope"] .morse-legend{color:#714b67}
+html[data-skin="pink"][data-app="soundscope"] .morse-legend b{color:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .morse-strip{background-color:#fcf5f8;background-image:initial;border-top-color:rgba(58,20,48,0.176);border-right-color:rgba(58,20,48,0.176);border-bottom-color:rgba(58,20,48,0.176);border-left-color:rgba(58,20,48,0.176)}
+html[data-skin="pink"][data-app="soundscope"] .morse-token{background-color:rgba(58,20,48,0.055);background-image:initial;border-top-color:rgba(84,150,196,0.35);border-right-color:rgba(84,150,196,0.35);border-bottom-color:rgba(84,150,196,0.35);border-left-color:rgba(84,150,196,0.35)}
+html[data-skin="pink"][data-app="soundscope"] .morse-token.current{color:rgb(6, 23, 40);box-shadow:rgba(99,227,160,0.22) 0px 0px 15px;background:var(--good);border-color:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .morse-token.sp{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .morse-caption{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .morse-modes .on{color:rgb(5, 32, 50);border-top-color:transparent;border-right-color:transparent;border-bottom-color:transparent;border-left-color:transparent;background:linear-gradient(105deg,var(--blue),var(--good))}
+html[data-skin="pink"][data-app="soundscope"] .morse-config select,html[data-skin="pink"][data-app="soundscope"] .morse-config textarea{color:var(--text);background-color:#fcf3f7;background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .morse-big{color:var(--good);background-color:#fcf6f8;background-image:initial;border-top-color:rgba(60,220,137,0.28);border-right-color:rgba(60,220,137,0.28);border-bottom-color:rgba(60,220,137,0.28);border-left-color:rgba(60,220,137,0.28)}
+html[data-skin="pink"][data-app="soundscope"] .morse-note{color:#7a5263}
+html[data-skin="pink"][data-app="soundscope"] .morse-stats > div{background-color:rgba(58,20,48,0.057);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .morse-stats small{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .morse-progress{background-color:rgba(58,20,48,0.11);background-image:initial}
+html[data-skin="pink"][data-app="soundscope"] .morse-progress i{background:linear-gradient(90deg,var(--blue),var(--good))}
+html[data-skin="pink"][data-app="soundscope"] .morse-meter-row > span{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .morse-meter-row:first-of-type .morse-progress i{background-color:initial;background-image:linear-gradient(90deg, rgb(108, 120, 147), rgb(105, 186, 255))}
+html[data-skin="pink"][data-app="soundscope"] .morse-token.b-pre{color:#316892;border-top-color:rgba(83,148,198,0.55);border-right-color:rgba(83,148,198,0.55);border-bottom-color:rgba(83,148,198,0.55);border-left-color:rgba(83,148,198,0.55)}
+html[data-skin="pink"][data-app="soundscope"] .morse-token.b-sync{color:#855e00;border-top-color:#ffba1a;border-right-color:#ffba1a;border-bottom-color:#ffba1a;border-left-color:#ffba1a}
+html[data-skin="pink"][data-app="soundscope"] .morse-token.b-head{color:#7c26ff;border-top-color:#761aff;border-right-color:#761aff;border-bottom-color:#761aff;border-left-color:#761aff}
+html[data-skin="pink"][data-app="soundscope"] .morse-token.b-body{color:#116f41;border-top-color:rgba(60,220,137,0.55);border-right-color:rgba(60,220,137,0.55);border-bottom-color:rgba(60,220,137,0.55);border-left-color:rgba(60,220,137,0.55)}
+html[data-skin="pink"][data-app="soundscope"] .morse-token.b-err{color:#3a1430!important;background-color:rgb(255, 109, 131)!important;background-image:initial!important;border-top-color:#ff1a3c!important;border-right-color:#ff1a3c!important;border-bottom-color:#ff1a3c!important;border-left-color:#ff1a3c!important}
+html[data-skin="pink"][data-app="soundscope"] .morse-progress.fx0 i{background-color:initial;background-image:linear-gradient(90deg, rgb(105, 186, 255), rgb(126, 231, 255))}
+html[data-skin="pink"][data-app="soundscope"] .morse-progress.fx1 i{background-color:initial;background-image:linear-gradient(90deg, rgb(255, 168, 90), rgb(255, 211, 108))}
+html[data-skin="pink"][data-app="soundscope"] .tools [data-tool="acoustic"]{background-color:initial;background-image:linear-gradient(105deg, rgba(105, 186, 255, 0.18), rgba(126, 238, 255, 0.08));border-top-color:rgba(26,225,255,0.42);border-right-color:rgba(26,225,255,0.42);border-bottom-color:rgba(26,225,255,0.42);border-left-color:rgba(26,225,255,0.42)}
+html[data-skin="pink"][data-app="soundscope"] .acp-kicker{color:var(--cyan)}
+html[data-skin="pink"][data-app="soundscope"] .acp-stage-head h2 em{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .acp-live{color:var(--muted);border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .acp-live i{background-color:rgb(113, 131, 152);background-image:initial}
+html[data-skin="pink"][data-app="soundscope"] .acp-live.on i{box-shadow:0 0 .8rem var(--good);background:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .acp-live.on{color:var(--text);border-top-color:rgba(60,220,137,0.45);border-right-color:rgba(60,220,137,0.45);border-bottom-color:rgba(60,220,137,0.45);border-left-color:rgba(60,220,137,0.45)}
+html[data-skin="pink"][data-app="soundscope"] .acp-chain span{background-color:#fcf3f7;background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .acp-chain i{color:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .acp-radar-wrap,html[data-skin="pink"][data-app="soundscope"] .acp-corr-wrap{background-color:#fcf3f7;background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .acp-overlay b{color:var(--warn);text-shadow:rgba(255,211,108,0.087) 0px 0px 22px}
+html[data-skin="pink"][data-app="soundscope"] .acp-overlay small{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .acp-cap{color:var(--muted);background-color:#fcf5f8;background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .acp-aha{color:#5d3753;background-color:rgba(239,250,247,0.35);background-image:initial;border-top-color:rgba(60,220,137,0.25);border-right-color:rgba(60,220,137,0.25);border-bottom-color:rgba(60,220,137,0.25);border-left-color:rgba(60,220,137,0.25)}
+html[data-skin="pink"][data-app="soundscope"] .acp-family-head span{color:var(--cyan)}
+html[data-skin="pink"][data-app="soundscope"] .acp-family-head small{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .acp-modes button small{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .acp-status{color:var(--muted);background-color:rgba(105, 186, 255, 0.06);background-image:initial;border-left:3px solid var(--blue)}
+html[data-skin="pink"][data-app="soundscope"] .acp-readout > div{background-color:rgba(58,20,48,0.048);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .acp-readout small{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .acp-safety{border-top:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .anchor-row{background-color:rgba(58,20,48,0.042);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .anchor-q{color:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .anchor-tile{background-color:rgba(58,20,48,0.054);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .anchor-tile.ok{background-color:rgba(239,250,247,0.28);background-image:initial;border-top-color:rgba(60,220,137,0.45);border-right-color:rgba(60,220,137,0.45);border-bottom-color:rgba(60,220,137,0.45);border-left-color:rgba(60,220,137,0.45)}
+html[data-skin="pink"][data-app="soundscope"] .anchor-tile span{color:var(--warn)}
+html[data-skin="pink"][data-app="soundscope"] .anchor-tile small{color:var(--muted)}
+html[data-skin="pink"][data-app="soundscope"] .acp-radar-wrap{background-color:initial;background-image:radial-gradient(circle at 50% 54%, #f9eaf0, #fcf3f7 70%);box-shadow:rgba(126,238,255,0.033) 0px 0px 0px 1px inset, rgba(190,60,120,0.1) 0px 10px 30px}
+html[data-skin="pink"][data-app="soundscope"] .acp-corr-wrap{background-color:initial;background-image:linear-gradient(#fbf2f6, #fcf3f7)}
+html[data-skin="pink"][data-app="soundscope"] .acp-overlay{background-color:#fcf5f8;background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .acp-chain span:first-child{border-top-color:rgba(60,220,137,0.4);border-right-color:rgba(60,220,137,0.4);border-bottom-color:rgba(60,220,137,0.4);border-left-color:rgba(60,220,137,0.4)}
+html[data-skin="pink"][data-app="soundscope"] .acp-chain span:last-child{color:var(--warn);border-top-color:rgba(255,186,26,0.5);border-right-color:rgba(255,186,26,0.5);border-bottom-color:rgba(255,186,26,0.5);border-left-color:rgba(255,186,26,0.5)}
+html[data-skin="pink"][data-app="soundscope"] .anchor-tile.ok b{color:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .acp-runtime{background-color:rgba(58,20,48,0.042);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .acp-runtime span{color:var(--cyan)}
+html[data-skin="pink"][data-app="soundscope"][data-fx="lite"] .topbar,html[data-skin="pink"][data-app="soundscope"][data-fx="lite"] .vision-gate,html[data-skin="pink"][data-app="soundscope"][data-fx="lite"] .modal,html[data-skin="pink"][data-app="soundscope"][data-fx="lite"] .nl{background-color:#fcf6f9!important}
+html[data-skin="pink"][data-app="soundscope"][data-fx="lite"] .backdrop,html[data-skin="pink"][data-app="soundscope"][data-fx="lite"] .tour-shade{background-color:rgba(58,20,48,0.5)!important}
+html[data-skin="pink"][data-app="soundscope"][data-fx="lite"] .boot-card,html[data-skin="pink"][data-app="soundscope"][data-fx="lite"] .modal,html[data-skin="pink"][data-app="soundscope"][data-fx="lite"] .teamCard,html[data-skin="pink"][data-app="soundscope"][data-fx="lite"] .login-card{box-shadow:rgba(190,60,120,0.1) 0px 8px 24px!important}
+html[data-skin="pink"][data-app="soundscope"] .pro-ch b.tag{color:rgb(4, 18, 26)}
+html[data-skin="pink"][data-app="soundscope"] .pro-liss{background-color:rgba(58,20,48,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .pro-pad button{color:var(--text);background-color:rgba(58,20,48,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .pro-pad button.hit{background-color:rgba(58, 160, 255, 0.35);background-image:initial;border-top-color:#1a90ff;border-right-color:#1a90ff;border-bottom-color:#1a90ff;border-left-color:#1a90ff}
+html[data-skin="pink"][data-app="soundscope"] .pro-digits{border:1px dashed var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .pro-flow span{background-color:rgba(58,20,48,0.06);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .pro-flow span.on{color:var(--good);border-color:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .pro-text{color:var(--text);background-color:rgba(58,20,48,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .pro-out{background-color:rgba(58,20,48,0.07);background-image:initial;border:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .pro-out b.ok{color:var(--good)}
+html[data-skin="pink"][data-app="soundscope"] .pro-out b.bad{color:var(--bad)}
+html[data-skin="pink"][data-app="soundscope"] .pro-age td{border-bottom:1px solid var(--line)}
+html[data-skin="pink"][data-app="soundscope"] .pro-age tr.hit td{background-color:rgba(56, 230, 153, 0.16);background-image:initial}
+html[data-skin="pink"][data-app="soundscope"] #pilarPulseBtn{color:#451f3b;background-color:initial;background-image:linear-gradient(145deg, #faeff4, #fbf3f7);border-top-color:#f1c5d8;border-right-color:#f1c5d8;border-bottom-color:#f1c5d8;border-left-color:#f1c5d8;box-shadow:rgba(190,60,120,0.1) 0px 12px 34px, rgba(126,238,255,0.022) 0px 0px 0px 1px inset}
+html[data-skin="pink"][data-app="soundscope"] #pilarPulseBtn::before{color:#4a2440;background-color:#fbf3f7;background-image:initial;border-top-color:#f1c5d8;border-right-color:#f1c5d8;border-bottom-color:#f1c5d8;border-left-color:#f1c5d8;box-shadow:rgba(190,60,120,0.1) 0px 8px 24px}
+html[data-skin="pink"][data-app="soundscope"] #pilarPulseBtn::after{background-color:rgb(113, 131, 152);background-image:initial;border-top-color:#f3cfdf;border-right-color:#f3cfdf;border-bottom-color:#f3cfdf;border-left-color:#f3cfdf}
+html[data-skin="pink"][data-app="soundscope"] #pilarPulseBtn.on{color:#552f4b;border-top-color:#f0c4d7;border-right-color:#f0c4d7;border-bottom-color:#f0c4d7;border-left-color:#f0c4d7}
+html[data-skin="pink"][data-app="soundscope"] #pilarPulseBtn.on::after{background-color:rgb(99, 227, 160);background-image:initial;box-shadow:rgba(99,227,160,0.413) 0px 0px 8px}
+html[data-skin="pink"][data-app="soundscope"] #pilarPulseBtn.off::after{background-color:rgb(113, 131, 152);background-image:initial}
+html[data-skin="pink"][data-app="soundscope"] #pilarPulseBtn.pulse-idle{box-shadow:rgba(190,60,120,0.1) 0px 8px 20px}
+html[data-skin="pink"][data-app="soundscope"] #pilarPulseBtn:hover,html[data-skin="pink"][data-app="soundscope"] #pilarPulseBtn:focus-visible,html[data-skin="pink"][data-app="soundscope"] #pilarPulseBtn.pulse-awake{border-top-color:#1ae0ff;border-right-color:#1ae0ff;border-bottom-color:#1ae0ff;border-left-color:#1ae0ff;box-shadow:rgba(190,60,120,0.1) 0px 14px 38px, rgba(94,233,255,0.055) 0px 0px 0px 3px}
+html[data-skin="pink"][data-app="soundscope"] #pilarPulseDrawer{color:#431d39;background-color:#fcf3f7;background-image:initial;border-top-color:#f1c5d8;border-right-color:#f1c5d8;border-bottom-color:#f1c5d8;border-left-color:#f1c5d8;box-shadow:rgba(190,60,120,0.1) 0px 22px 70px}
+html[data-skin="pink"][data-app="soundscope"] .pp-head{border-bottom-color:#f2c9db}
+html[data-skin="pink"][data-app="soundscope"] .pp-head b{color:#006d7e}
+html[data-skin="pink"][data-app="soundscope"] .pp-head small{color:#7a5263}
+html[data-skin="pink"][data-app="soundscope"] .pp-clear{color:#5f3955!important;background-color:#fbf1f5!important;background-image:initial!important;border-top-color:#f1c6d9!important;border-right-color:#f1c6d9!important;border-bottom-color:#f1c6d9!important;border-left-color:#f1c6d9!important}
+html[data-skin="pink"][data-app="soundscope"] .pp-empty{color:#7a5263}
+html[data-skin="pink"][data-app="soundscope"] .pp-msg{background-color:#faeff4;background-image:initial}
+html[data-skin="pink"][data-app="soundscope"] .pp-msg.me{background-color:#faecf2;background-image:initial}
+html[data-skin="pink"][data-app="soundscope"] .pp-msg time{color:#7a5263}
+html[data-skin="pink"][data-app="soundscope"] .pp-form{border-top-color:#f2c9db}
+html[data-skin="pink"][data-app="soundscope"] .pp-form input{color:#431d39;background-color:#fbf2f6;background-image:initial;border-top-color:#f1c6d9;border-right-color:#f1c6d9;border-bottom-color:#f1c6d9;border-left-color:#f1c6d9}
+html[data-skin="pink"][data-app="soundscope"] #pilarPulseNotice{color:#5b3551;background-color:#fbf3f7;background-image:initial;border-top-color:#f1c7d9;border-right-color:#f1c7d9;border-bottom-color:#f1c7d9;border-left-color:#f1c7d9;box-shadow:rgba(190,60,120,0.1) 0px 12px 40px}
+html[data-skin="pink"][data-app="soundscope"] canvas{background:#0a1524;border-radius:10px}
+html[data-skin="pink"][data-app="soundscope"] .cv .cap{background:rgba(255,255,255,.94);color:#101b39}

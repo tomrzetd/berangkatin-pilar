@@ -81,4 +81,41 @@
     const de=document.documentElement;
     de.dataset.device=tier;de.dataset.fx=profile.fx;if(bigTouch)de.dataset.bigtouch='1';if(touch)de.dataset.touch='1';
   }catch(_){}
+  /* Skin Hub (Kalem/Gelap/Pink) ikut ke aplikasi. Hanya aplikasi yang memasang css/pilar-skin.css
+     yang berubah tampilan; sisanya tetap seperti aslinya. data-app = slug folder apps/<slug>/. */
+  try{
+    let s='kalem';try{s=localStorage.getItem('pilar_skin')||'kalem'}catch(_){}
+    if(!/^(kalem|gelap|pink)$/.test(s))s='kalem';
+    const de=document.documentElement,m=/\/apps\/([^/]+)\//.exec(location.pathname);
+    if(!de.dataset.skin)de.dataset.skin=s;if(m&&!de.dataset.app)de.dataset.app=m[1];
+    profile.skin=de.dataset.skin;profile.light=profile.skin!=='gelap';
+  }catch(_){}
+  /* ===== Penjaga sentuhan (IFP multi-siswa) =====
+     Di IFP/Android, tekan lama ATAU saat satu jari diangkat sementara jari teman masih menempel,
+     browser bisa menganggapnya "klik kanan" → menu konteks muncul di tengah duel.
+     Aturan: menu konteks hanya diizinkan untuk mouse sungguhan dan di kolom teks
+     (input/textarea/contenteditable, atau elemen ber-atribut data-allow-contextmenu). */
+  try{
+    const now=()=>performance.now();let lastTouch=-1e9,active=0;
+    const mark=()=>{lastTouch=now()};
+    const opt={capture:true,passive:true};
+    addEventListener('touchstart',e=>{active=e.touches.length;mark()},opt);
+    addEventListener('touchend',e=>{active=e.touches.length;mark()},opt);
+    addEventListener('touchcancel',e=>{active=e.touches.length;mark()},opt);
+    addEventListener('pointerdown',e=>{if(e.pointerType&&e.pointerType!=='mouse')mark()},opt);
+    addEventListener('pointerup',e=>{if(e.pointerType&&e.pointerType!=='mouse')mark()},opt);
+    const editable=t=>t&&t.closest&&t.closest('input,textarea,select,[contenteditable]:not([contenteditable="false"]),[data-allow-contextmenu]');
+    const fromTouch=e=>(e.pointerType&&e.pointerType!=='mouse')||(e.sourceCapabilities&&e.sourceCapabilities.firesTouchEvents)||active>0||now()-lastTouch<1800;
+    addEventListener('contextmenu',e=>{if(editable(e.target))return;if(fromTouch(e)){e.preventDefault();e.stopPropagation()}},{capture:true});
+    /* blok seleksi teks liar saat dua jari atau lebih menempel (bukan saat membaca dengan satu jari) */
+    addEventListener('selectstart',e=>{if(active>1&&!editable(e.target))e.preventDefault()},{capture:true});
+    /* klik ganda dari sentuhan beruntun dua siswa → jangan diterjemahkan sebagai zoom/klik ganda */
+    addEventListener('dblclick',e=>{if(fromTouch(e)&&!editable(e.target)&&!e.target.closest?.('[data-allow-dblclick]'))e.preventDefault()},{capture:true});
+    const st=document.createElement('style');st.id='pilarTouchGuard';
+    st.textContent='html[data-touch] body{-webkit-touch-callout:none}'
+      +'html[data-touch] :is(button,a,[role=button],label,summary,canvas,svg,img,video){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}'
+      +'html[data-touch] :is(button,a,[role=button],label,summary,input[type=range]){touch-action:manipulation}';
+    (document.head||document.documentElement).appendChild(st);
+    profile.touchGuard=true;
+  }catch(_){}
 })(window);
