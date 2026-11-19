@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f2ecdf">
+<meta name="description" content="na Daluang — ngaguratkeun gagasan, ngahirupkeun aksara. Ulin aksara Sunda: rakit ngalagena + rarangkén, gurat aksara, tulis ngaran, jeung maca.">
+<title>PILAR™ · na Daluang · Aksara Sunda</title>
+<link rel="stylesheet" href="../../css/pilar-kertas.css">
+<script src="../../core/device-profile.js"></script>
+<style>
+@font-face{font-family:"Noto Sans Sundanese";src:url("../../vendor/fonts/noto-sans-sundanese-var.woff") format("woff");font-weight:400 700;font-display:block}
+:root{--tap:52px}
+html{font-size:clamp(14.5px,.48vw + 9.4px,23px)}
+html[data-device="ifp"]{--tap:64px}
+*{box-sizing:border-box}
+.aks{font-family:"Noto Sans Sundanese",serif;font-weight:500;line-height:1.15}
+.wrap{max-width:1880px;margin:auto;padding:.8rem 1rem 1.4rem}
+.hidden{display:none!important}
+
+/* ---------- kepala ---------- */
+.top{display:flex;align-items:flex-start;gap:1rem;padding-bottom:.7rem;border-bottom:1.5px dashed var(--k-line);margin-bottom:.9rem;flex-wrap:wrap}
+.brand{margin-right:auto;min-width:0}
+.logo{display:flex;align-items:baseline;gap:.35rem;margin:.25rem 0 .1rem;line-height:.9}
+.logo i{font:italic 500 clamp(1.1rem,1.6vw,1.6rem) var(--k-serif);color:var(--k-sage-d)}
+.logo b{font:800 clamp(2.1rem,4vw,3.6rem) var(--k-serif);letter-spacing:-.035em;color:var(--k-ink)}
+.logo .aks{font-size:clamp(1.1rem,1.7vw,1.6rem);color:var(--k-ink3);margin-left:.4rem;transform:translateY(-.2em)}
+.tagline{margin:.2rem 0 0;font:italic 500 clamp(.95rem,1.2vw,1.2rem) var(--k-serif);color:var(--k-ink2)}
+.top .right{display:flex;flex-direction:column;align-items:flex-end;gap:.45rem}
+.creator{padding:.25em .6em;border:1px dashed var(--k-line);border-radius:3px;background:var(--k-card)}
+.home{align-self:flex-start}
+
+/* ---------- tab gaya kartu indeks ---------- */
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:0 0 .9rem}
+.tab{display:flex;align-items:center;gap:.55em;min-height:var(--tap);padding:.4em 1.1em .4em .8em;border:1.5px solid var(--k-line);border-bottom-width:3px;border-radius:10px 14px 4px 4px;
+ background:var(--k-card2);font:700 1rem var(--k-sans);color:var(--k-ink2);cursor:pointer;touch-action:manipulation}
+.tab .n{font:500 .7rem var(--k-mono);color:var(--k-ink3)}
+.tab .aks{font-size:1.25rem;color:var(--k-sage-d)}
+.tab[aria-selected=true]{background:var(--k-card);color:var(--k-ink);border-color:var(--k-ink);box-shadow:2px 3px 0 var(--k-ink);transform:translateY(-2px)}
+
+/* ---------- tata letak ---------- */
+.grid3{display:grid;grid-template-columns:minmax(15rem,1fr) minmax(0,1.5fr) minmax(16rem,1.05fr);gap:1rem;align-items:start}
+.grid2{display:grid;grid-template-columns:minmax(15rem,.8fr) minmax(0,1.6fr);gap:1rem;align-items:start}
+.k-card h2{margin:.35rem 0 .5rem;font-size:1.35rem}
+.k-card h3{margin:.8rem 0 .4rem;font-size:1.05rem}
+.note{font-size:.88rem;color:var(--k-ink2);line-height:1.5}
+.hand{font:600 1.3rem/1.15 var(--k-hand);color:var(--k-sage-d)}
+
+/* palet aksara */
+.pal{display:grid;grid-template-columns:repeat(auto-fill,minmax(3.6rem,1fr));gap:.4rem}
+.key{display:grid;place-items:center;gap:.05rem;min-height:var(--tap);padding:.3rem .2rem;border:1.5px solid var(--k-line);border-radius:4px 8px 5px 7px;background:var(--k-card);cursor:pointer;
+ color:var(--k-ink);touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.key .aks{font-size:1.75rem}
+.key small{font:500 .64rem var(--k-mono);color:var(--k-ink2);letter-spacing:.04em}
+.key.on{background:var(--k-sage);border-color:var(--k-ink);box-shadow:2px 2px 0 var(--k-ink)}
+.key:active{transform:translate(1px,2px)}
+.key.serapan{background:var(--k-card2);border-style:dashed}
+.rk-group{margin-top:.55rem}
+.rk-group > b{display:block;font:500 .66rem var(--k-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--k-ink3);margin-bottom:.3rem}
+.rk{display:grid;grid-template-columns:2.6rem 1fr;align-items:center;gap:.5rem;width:100%;min-height:calc(var(--tap)*.9);margin:.3rem 0;padding:.25rem .6rem .25rem .35rem;text-align:left;
+ border:1.5px solid var(--k-line);border-radius:4px 9px 5px 8px;background:var(--k-card);cursor:grab;color:var(--k-ink);touch-action:none;user-select:none;-webkit-user-select:none}
+.rk,.key{-webkit-touch-callout:none}
+.rk .aks{font-size:1.75rem;text-align:center;color:var(--k-sage-d)}
+.rk span:last-child{display:grid;line-height:1.2}
+.rk span b{font:700 .95rem var(--k-sans)}.rk span small{font:500 .7rem var(--k-mono);color:var(--k-ink2)}
+.rk.on{background:var(--k-sage);border-color:var(--k-ink);box-shadow:2px 2px 0 var(--k-ink)}
+.rk.off{opacity:.38}
+.rk .pos{font:500 .6rem var(--k-mono);color:var(--k-ink3)}
+
+/* lembar daluang (kertas kulit kayu) */
+.daluang{position:relative;border:1.5px solid #cdbb94;border-radius:6px 16px 9px 14px/14px 8px 16px 9px;padding:1rem;
+ background:radial-gradient(120% 90% at 30% 20%,#f6ecd3 0,#eedfbd 60%,#e4d0a6 100%);box-shadow:var(--k-shadow),var(--k-shadow2)}
+.daluang::after{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--k-grain);opacity:.9;pointer-events:none}
+html[data-fx="lite"] .daluang::after{display:none}
+.stage{position:relative;display:grid;place-items:center;min-height:clamp(15rem,34vh,26rem)}
+.glyph{position:relative;z-index:1;font-size:clamp(7rem,15vw,15rem);color:#2a2a1c;line-height:1;padding:.1em .3em;text-shadow:1px 1px 0 #fff6}
+.glyph.pop{animation:pop .4s}
+@keyframes pop{40%{transform:scale(1.07)}}
+.slot{position:absolute;font:500 .66rem var(--k-mono);letter-spacing:.12em;text-transform:uppercase;color:#8a7a55;border:1.5px dashed #c8b58a;border-radius:6px;padding:.25em .55em;background:#fbf4e2aa;z-index:2;transition:background .15s,transform .15s}
+.slot.atas{top:.2rem;left:50%;transform:translateX(-50%)}.slot.bawah{bottom:.2rem;left:50%;transform:translateX(-50%)}
+.slot.kiri{left:.2rem;top:50%;transform:translateY(-50%)}.slot.kanan{right:.2rem;top:50%;transform:translateY(-50%)}
+.slot.hint{background:var(--k-butter);color:var(--k-ink);border-color:var(--k-ink)}
+.stage.drop{outline:3px dashed var(--k-sage-d);outline-offset:-6px;border-radius:12px}
+.reading{position:relative;z-index:1;display:flex;align-items:baseline;justify-content:center;gap:.6rem;margin-top:.3rem}
+.reading .lbl{font:500 .7rem var(--k-mono);letter-spacing:.12em;color:#7d6c48;text-transform:uppercase}
+.reading b{font:800 clamp(2rem,3.4vw,3.2rem) var(--k-serif);letter-spacing:-.02em}
+.formula{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:.35rem;justify-content:center;align-items:center;margin:.5rem 0 .2rem}
+.formula .pc{display:grid;justify-items:center;padding:.25rem .55rem;border:1.5px solid #cdbb94;border-radius:5px;background:#fbf6e8}
+.formula .pc .aks{font-size:1.7rem}.formula .pc small{font:500 .62rem var(--k-mono);color:var(--k-ink2)}
+.formula .op{font:700 1.1rem var(--k-serif);color:#8a7a55}
+.explain{position:relative;z-index:1;margin:.7rem auto 0;max-width:36rem;padding:.6rem .8rem;border-left:4px solid var(--k-sage-d);background:#fbf6e8e6;border-radius:2px 8px 8px 2px;font-size:.95rem;line-height:1.5}
+.explain .warn{color:var(--k-red);font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.row.c{justify-content:center}
+
+/* tantangan */
+.target{font:800 1.9rem var(--k-serif);letter-spacing:-.02em;margin:.1rem 0}
+.target small{display:block;font:italic 500 .95rem var(--k-serif);color:var(--k-ink2)}
+.slots{display:flex;flex-wrap:wrap;gap:.35rem;margin:.6rem 0}
+.us{min-width:3.4rem;min-height:3.6rem;display:grid;place-items:center;padding:.2rem .4rem;border:1.5px dashed var(--k-line);border-radius:5px;background:var(--k-card2)}
+.us .aks{font-size:1.7rem}.us small{font:500 .62rem var(--k-mono);color:var(--k-ink3)}
+.us.done{border-style:solid;border-color:var(--k-sage-d);background:var(--k-sage)}
+.us.next{border-color:var(--k-ink);background:var(--k-butter)}
+.stamp{display:inline-block;font:700 1rem var(--k-serif);color:var(--k-sage-d);border:2px solid var(--k-sage-d);border-radius:6px;padding:.1em .6em;transform:rotate(-4deg)}
+.prog{font:500 .74rem var(--k-mono);color:var(--k-ink2)}
+
+/* gurat */
+.cvwrap{position:relative;aspect-ratio:1/1;width:min(100%,72vh);margin:auto}
+#gCanvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;border-radius:8px;cursor:crosshair;z-index:1}
+.gHead{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;flex-wrap:wrap;position:relative;z-index:1;margin-bottom:.5rem}
+.gHead b{font:800 1.6rem var(--k-serif)}
+.stars{font-size:1.7rem;letter-spacing:.1em;color:#b89a3c;min-height:2.2rem}
+.score{font:500 .8rem var(--k-mono);color:var(--k-ink2)}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;max-height:62vh;overflow:auto;padding:.1rem}
+.chips .key{width:3.4rem}
+.chips .key.got{background:#e9efd9}
+.chips .key.got::after{content:"★";position:absolute;margin:-2.3rem 0 0 2.2rem;font-size:.75rem;color:#b89a3c}
+.chips .key{position:relative}
+
+/* ngaran */
+.nInput{width:100%;min-height:var(--tap);padding:.5em .8em;border:1.5px solid var(--k-ink);border-radius:5px 9px 6px 8px;background:var(--k-card);font:600 1.25rem var(--k-sans);color:var(--k-ink);box-shadow:inset 2px 2px 0 #22372b10}
+.nOut{position:relative;z-index:1;text-align:center;padding:1.2rem .5rem}
+.nOut .aks{font-size:clamp(3.4rem,7vw,7rem);color:#2a2a1c;word-break:break-word}
+.nOut .lat{font:italic 600 1.4rem var(--k-serif);color:#6b5a38;margin-top:.3rem}
+.bd{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:.45rem;justify-content:center}
+.bd .u{display:grid;justify-items:center;gap:.1rem;padding:.35rem .55rem;border:1.5px solid #cdbb94;border-radius:5px;background:#fbf6e8;cursor:pointer;min-width:3.6rem}
+.bd .u .aks{font-size:2rem}.bd .u b{font:700 .9rem var(--k-serif)}.bd .u small{font:500 .6rem var(--k-mono);color:var(--k-ink2);text-align:center;max-width:9rem}
+.bd .sp{width:.8rem}
+
+/* maca */
+.qcard{text-align:center}
+.qword{position:relative;z-index:1;font-size:clamp(3.6rem,8vw,8rem);color:#2a2a1c;margin:.4rem 0 .2rem}
+.qopts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-top:.8rem}
+.qopts .k-btn{min-height:calc(var(--tap)*1.2);font:700 1.25rem var(--k-serif)}
+.qopts .k-btn.right{background:var(--k-sage2)}.qopts .k-btn.wrong{background:#f2cfc4}
+.meaning{position:relative;z-index:1;min-height:1.6rem;font:italic 500 1.1rem var(--k-serif);color:var(--k-ink2)}
+
+/* ghost seret */
+.dragGhost{position:fixed;z-index:90;pointer-events:none;font-size:2.4rem;padding:.1em .3em;border:1.5px solid var(--k-ink);border-radius:6px;background:var(--k-butter);box-shadow:2px 3px 0 var(--k-ink);transform:translate(-50%,-60%)}
+.toast{position:fixed;left:50%;bottom:1.2rem;transform:translateX(-50%);z-index:80;padding:.55em 1em;border:1.5px solid var(--k-ink);border-radius:5px;background:var(--k-butter);box-shadow:2px 3px 0 var(--k-ink);font-weight:700;display:none}
+.toast.on{display:block;animation:pop .35s}
+
+/* modal ngeunaan */
+.modal{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:1rem;background:rgba(34,55,43,.36)}
+.modal[hidden]{display:none}
+.modal .k-card{width:min(720px,100%);max-height:92vh;overflow:auto}
+.x{float:right;width:2.6rem;height:2.6rem;border:1.5px solid var(--k-ink);border-radius:50%;background:var(--k-peach);box-shadow:2px 3px 0 var(--k-ink);font:900 1.1rem/1 var(--k-sans);cursor:pointer;color:var(--k-ink)}
+
+@media(max-width:1100px){.grid3{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr)}.grid3 .col-r{grid-column:1/-1}}
+@media(max-width:760px){
+ .grid3,.grid2{grid-template-columns:minmax(0,1fr)}
+ .top .right{flex-direction:row;flex-wrap:wrap;align-items:center;width:100%;justify-content:space-between}
+ .tab{padding:.35em .7em;font-size:.9rem}.tab .n{display:none}
+ .slot{font-size:.55rem}
+ .cvwrap{width:100%}
+ .rk{touch-action:pan-y}
+ #p-maca .qcard,#p-ngaran .daluang{order:-1}
+ .chips{max-height:none}
+}
+</style>
+</head>
+<body class="kertas">
+<div class="wrap">
+ <header class="top">
+  <a class="k-btn sm home" href="../../" title="Kembali ke PILAR Hub">← Hub</a>
+  <div class="brand">
+   <span class="k-label sage">PILAR · Basa Sunda · Aksara</span>
+   <div class="logo"><i>na</i><b>Daluang</b><span class="aks" aria-hidden="true">ᮔ ᮓᮜᮥᮃᮀ</span></div>
+   <p class="tagline">Ngaguratkeun gagasan, ngahirupkeun aksara.</p>
+  </div>
+  <div class="right">
+   <span class="k-credit creator">by : rizalabdurrahman05@guru.smp.belajar.id</span>
+   <button class="k-btn sm info" id="aboutBtn" type="button">📜 Naon ari daluang?</button>
+  </div>
+ </header>
+
+ <nav class="tabs" role="tablist">
+  <button class="tab" role="tab" data-tab="rakit" aria-selected="true"><span class="n">01</span><span class="aks">ᮛᮊᮤᮒ᮪</span>🧩 Rakit Aksara</button>
+  <button class="tab" role="tab" data-tab="gurat" aria-selected="false"><span class="n">02</span><span class="aks">ᮌᮥᮛᮒ᮪</span>✍️ Gurat</button>
+  <button class="tab" role="tab" data-tab="ngaran" aria-selected="false"><span class="n">03</span><span class="aks">ᮍᮛᮔ᮪</span>🏷️ Tulis Ngaran</button>
+  <button class="tab" role="tab" data-tab="maca" aria-selected="false"><span class="n">04</span><span class="aks">ᮙᮎ</span>🔎 Maca</button>
+ </nav>
+
+ <!-- ============ 01 RAKIT ============ -->
+ <section class="pane" id="p-rakit">
+  <div class="grid3">
+   <div class="k-card k-tape l">
+    <span class="k-num">LANGKAH 1</span>
+    <h2>Pilih aksara dasar</h2>
+    <p class="note"><b>Ngalagena</b> = huruf konsonan yang <span class="k-u">sudah membawa vokal “a”</span>. Jadi <span class="aks" style="font-size:1.5em">ᮊ</span> dibaca <b>ka</b>, bukan k.</p>
+    <div class="pal" id="palNg"></div>
+    <h3>Aksara swara <small class="k-num">· vokal mandiri</small></h3>
+    <div class="pal" id="palSw"></div>
+    <p class="note" style="margin-top:.6rem">Garis putus-putus = aksara serapan (f, v, q, x, z, kh, sy).</p>
+   </div>
+   <div class="daluang" id="sheet">
+    <div class="stage" id="stage">
+     <span class="slot atas" data-pos="atas">atas</span><span class="slot bawah" data-pos="bawah">bawah</span>
+     <span class="slot kiri" data-pos="kiri">kiri</span><span class="slot kanan" data-pos="kanan">kanan</span>
+     <div class="glyph aks" id="glyph">ᮊ</div>
+    </div>
+    <div class="reading"><span class="lbl">dibaca</span><b id="reading">ka</b></div>
+    <div class="formula" id="formula"></div>
+    <div class="explain" id="explain"></div>
+    <div class="row c" style="position:relative;z-index:1;margin-top:.7rem">
+     <button class="k-btn sm ghost" id="resetMarks" type="button">↺ Lepas rarangkén</button>
+     <button class="k-btn sm pri hidden" id="addUnit" type="button">➕ Tambahkeun ka kecap</button>
+    </div>
+   </div>
+   <div class="col-r">
+    <div class="k-card k-tape r">
+     <span class="k-num">LANGKAH 2</span>
+     <h2>Tempel rarangkén</h2>
+     <p class="note">Ketuk, atau <b>seret</b> tanda ke lembar daluang. Perhatikan letaknya: atas, bawah, kiri, atau kanan.</p>
+     <div id="palRk"></div>
+    </div>
+    <div class="k-card k-tape g" style="margin-top:1.1rem" id="chal">
+     <span class="k-label peach">Tantangan · Rakit Kecap</span>
+     <div class="target" id="tWord">cai<small>air</small></div>
+     <div class="slots" id="tSlots"></div>
+     <p class="note" id="tMsg">Rakit suku kata pertama, lalu tekan <b>➕ Tambahkeun</b>.</p>
+     <div class="row"><span class="prog" id="tProg">0/10</span><button class="k-btn sm" id="tUndo" type="button">⌫ Hapus hiji</button><button class="k-btn sm" id="tSkip" type="button">⟳ Kecap séjén</button></div>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <!-- ============ 02 GURAT ============ -->
+ <section class="pane hidden" id="p-gurat">
+  <div class="grid2">
+   <div class="k-card k-tape l">
+    <span class="k-num">PILIH AKSARA</span>
+    <h2>Gurat di daluang</h2>
+    <p class="note">Ikuti bayangan aksara dengan jari, stylus, atau mouse. Teman boleh ikut menulis bersamaan, karena layar IFP membaca banyak sentuhan.</p>
+    <div class="chips" id="gChips"></div>
+   </div>
+   <div class="daluang">
+    <div class="gHead"><div><span class="k-num" id="gKind">NGALAGENA</span><br><b id="gName">ka</b></div><div style="text-align:right"><div class="stars" id="gStars"></div><div class="score" id="gScore">Belum dinilai</div></div></div>
+    <div class="cvwrap"><canvas id="gCanvas"></canvas></div>
+    <div class="row c" style="position:relative;z-index:1;margin-top:.7rem">
+     <button class="k-btn sm" id="gClear" type="button">🧽 Hapus</button>
+     <button class="k-btn sm" id="gGuide" type="button" aria-pressed="true">👁 Bayangan</button>
+     <button class="k-btn pri" id="gCheck" type="button">✅ Pariksa</button>
+     <button class="k-btn sm" id="gNext" type="button">Satuluyna →</button>
+    </div>
+    <p class="explain" id="gMsg">Gurat aksara mengikuti bayangannya, lalu tekan <b>Pariksa</b>. Nilai dihitung dari seberapa banyak bentuk tertutup goresanmu dan seberapa rapi goresan tetap di dalam bentuk.</p>
+   </div>
+  </div>
+ </section>
+
+ <!-- ============ 03 NGARAN ============ -->
+ <section class="pane hidden" id="p-ngaran">
+  <div class="grid2">
+   <div class="k-card k-tape l">
+    <span class="k-num">KETIK DALAM HURUF LATIN</span>
+    <h2>Tulis ngaran anjeun</h2>
+    <input class="nInput" id="nIn" maxlength="60" autocomplete="off" spellcheck="false" value="Rizal" aria-label="Nama atau kalimat dalam huruf Latin">
+    <p class="note">Tulis sesuai ucapan Sunda: <b>é</b> (sapédah), <b>e</b> pepet (kembang), <b>eu</b> (beureum), <b>ng</b>, <b>ny</b>. Angka otomatis diapit tanda <b>| |</b>.</p>
+    <div class="row" style="margin-top:.4rem">
+     <button class="k-btn sm" data-ex="Sunda" type="button">Sunda</button><button class="k-btn sm" data-ex="Kuningan" type="button">Kuningan</button>
+     <button class="k-btn sm" data-ex="Gunung Ciremai" type="button">Gunung Ciremai</button><button class="k-btn sm" data-ex="Wilujeng enjing" type="button">Wilujeng énjing</button>
+    </div>
+    <h3>Simpen</h3>
+    <div class="row"><button class="k-btn alt" id="nPng" type="button">🖼️ Kartu ngaran (PNG)</button><button class="k-btn sm" id="nCopy" type="button">📋 Salin aksara</button></div>
+    <p class="note">Ketuk tiap suku kata di lembar untuk melihat rakitannya.</p>
+   </div>
+   <div class="daluang">
+    <div class="nOut"><div class="aks" id="nAks"></div><div class="lat" id="nLat"></div></div>
+    <div class="bd" id="nBd"></div>
+    <div class="explain" id="nMsg">Setiap kotak = satu gugus aksara. Hurufnya dirakit dari ngalagena + rarangkén, sama seperti di tab Rakit.</div>
+   </div>
+  </div>
+ </section>
+
+ <!-- ============ 04 MACA ============ -->
+ <section class="pane hidden" id="p-maca">
+  <div class="grid2">
+   <div class="k-card k-tape l">
+    <span class="k-num">KUIS MAMACA</span>
+    <h2>Maca kecap</h2>
+    <p class="note">Baca kata beraksara Sunda, lalu pilih bacaan Latinnya. Setelah menjawab, rakitannya terbuka, jadi kamu belajar dari setiap jawaban.</p>
+    <div class="stamp" id="qScore">0 / 0</div>
+    <p class="note" id="qBest"></p>
+    <div class="row"><button class="k-btn sm" id="qRestart" type="button">↺ Mimitian deui</button></div>
+   </div>
+   <div class="daluang qcard">
+    <span class="k-num" id="qNo" style="position:relative;z-index:1">SOAL 1 / 10</span>
+    <div class="qword aks" id="qWord"></div>
+    <div class="meaning" id="qMean"></div>
+    <div class="bd hidden" id="qBd"></div>
+    <div class="qopts" id="qOpts"></div>
+    <div class="row c" style="margin-top:.7rem;position:relative;z-index:1"><button class="k-btn pri hidden" id="qNext" type="button">Satuluyna →</button></div>
+   </div>
+  </div>
+ </section>
+</div>
+
+<div class="modal" id="about" hidden>
+ <div class="k-card k-tape">
+  <button class="x" data-close type="button" aria-label="Tutup">✕</button>
+  <span class="k-label">Ngeunaan</span>
+  <h2 style="font-size:1.8rem"><i class="k-it">na</i> Daluang</h2>
+  <p><b>Daluang</b> adalah kertas tradisional dari kulit pohon saeh (<i>Broussonetia papyrifera</i>) yang dipukul-pukul sampai tipis. Leluhur Sunda memakainya, selain daun lontar dan nipah, untuk menulis naskah. Namanya <i>na Daluang</i>, “di atas daluang”: tempat kita <b>ngaguratkeun</b> (menggoreskan) gagasan dan menghidupkan aksara.</p>
+  <h3>Cara kerja aksara Sunda</h3>
+  <ul class="note" style="font-size:.95rem">
+   <li><b>Aksara ngalagena</b> (18 pokok + 7 serapan): setiap huruf sudah berbunyi <b>-a</b>.</li>
+   <li><b>Aksara swara</b> (7): vokal yang berdiri sendiri, yaitu a, é, i, o, u, e, eu.</li>
+   <li><b>Rarangkén</b> (13): tanda di atas, bawah, kiri, atau kanan huruf. Ada yang mengganti vokal (panghulu → i, panyuku → u, …), menambah bunyi akhir (panyecek -ng, panglayar -r, pangwisad -h), menyisip (pamingkal -y-, panyakra -r-, panyiku -l-), dan <b>pamaéh</b> yang mematikan vokal.</li>
+  </ul>
+  <p class="note">Aturan di aplikasi ini mengikuti <b>Aksara Sunda Baku</b> dan standar Unicode. Variasi cara menulis atau urutan goresan di kelas mengikuti arahan guru Basa Sunda. Font: Noto Sans Sundanese (OFL), tersimpan lokal sehingga bisa dipakai tanpa internet.</p>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="aksara.js"></script>
+<script src="app.js"></script>
+<script src="../../pulse/config.js"></script>
+<script src="../../core/pulse.js"></script>
+</body>
+</html>

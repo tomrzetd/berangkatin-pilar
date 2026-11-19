@@ -78,6 +78,7 @@ html[data-skin="kalem"][data-app="mbg-duel"] .resultTable th{color:#52617a}
 html[data-skin="kalem"][data-app="mbg-duel"] .creatorFoot{color:rgb(98, 123, 146)}
 html[data-skin="kalem"][data-app="mbg-duel"] body[data-ui="ifp"]{--btn:54px;--cell:clamp(56px,3.45vw,84px)}
 html[data-skin="kalem"][data-app="mbg-duel"] body[data-ui="desktop"]{--cell:clamp(38px,3.15vw,66px)}
+html[data-skin="kalem"][data-app="mbg-duel"][data-fx="lite"] .cell.pathTip::after{box-shadow:none}
 html[data-skin="kalem"][data-app="mbg-duel"] body[data-ui="mobile"]{--cell:min(8.2vw,40px)}
 html[data-skin="kalem"][data-app="mbg-duel"][data-fx="lite"] .topbar,html[data-skin="kalem"][data-app="mbg-duel"][data-fx="lite"] .vision-gate,html[data-skin="kalem"][data-app="mbg-duel"][data-fx="lite"] .modal,html[data-skin="kalem"][data-app="mbg-duel"][data-fx="lite"] .nl{background-color:#f6f9fc!important}
 html[data-skin="kalem"][data-app="mbg-duel"][data-fx="lite"] .backdrop,html[data-skin="kalem"][data-app="mbg-duel"][data-fx="lite"] .tour-shade{background-color:rgba(16,27,57,0.5)!important}
@@ -180,6 +181,7 @@ html[data-skin="pink"][data-app="mbg-duel"] .resultTable th{color:#7a5263}
 html[data-skin="pink"][data-app="mbg-duel"] .creatorFoot{color:rgb(98, 123, 146)}
 html[data-skin="pink"][data-app="mbg-duel"] body[data-ui="ifp"]{--btn:54px;--cell:clamp(56px,3.45vw,84px)}
 html[data-skin="pink"][data-app="mbg-duel"] body[data-ui="desktop"]{--cell:clamp(38px,3.15vw,66px)}
+html[data-skin="pink"][data-app="mbg-duel"][data-fx="lite"] .cell.pathTip::after{box-shadow:none}
 html[data-skin="pink"][data-app="mbg-duel"] body[data-ui="mobile"]{--cell:min(8.2vw,40px)}
 html[data-skin="pink"][data-app="mbg-duel"][data-fx="lite"] .topbar,html[data-skin="pink"][data-app="mbg-duel"][data-fx="lite"] .vision-gate,html[data-skin="pink"][data-app="mbg-duel"][data-fx="lite"] .modal,html[data-skin="pink"][data-app="mbg-duel"][data-fx="lite"] .nl{background-color:#fcf6f9!important}
 html[data-skin="pink"][data-app="mbg-duel"][data-fx="lite"] .backdrop,html[data-skin="pink"][data-app="mbg-duel"][data-fx="lite"] .tour-shade{background-color:rgba(58,20,48,0.5)!important}

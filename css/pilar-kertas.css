@@ -1,0 +1,71 @@
+/* PILAR · Tema "Kertas" v1 — gaya scrapbook / paper-craft editorial (Jejak Kata, na Daluang)
+   DNA: kertas krem bertekstur, kartu bertumpuk seperti kertas ditempel, washi tape, garis tangan,
+   serif editorial (Fraunces) + italic, label mesin tik (IBM Plex Mono), catatan tangan (Caveat),
+   palet tanah: hijau zaitun, sage, krem, peach. Semua bayangan TANPA blur & tekstur statis →
+   tetap ringan di GPU Mali IFP. Font disimpan lokal → jalan offline. */
+@font-face{font-family:"Fraunces";src:url("../vendor/fonts/fraunces-var.woff") format("woff");font-weight:400 800;font-style:normal;font-display:swap}
+@font-face{font-family:"Fraunces";src:url("../vendor/fonts/fraunces-italic-var.woff") format("woff");font-weight:400 700;font-style:italic;font-display:swap}
+@font-face{font-family:"Plus Jakarta Sans";src:url("../vendor/fonts/plus-jakarta-sans-var.woff2") format("woff2");font-weight:200 800;font-display:swap}
+@font-face{font-family:"Plex Mono";src:url("../vendor/fonts/ibm-plex-mono-medium.woff") format("woff");font-weight:500;font-display:swap}
+@font-face{font-family:"Caveat";src:url("../vendor/fonts/caveat-var.woff") format("woff");font-weight:500 700;font-display:swap}
+
+.kertas{
+ --k-paper:#f2ecdf;--k-paper2:#ebe3d1;--k-card:#fbf8f0;--k-card2:#f6f0e2;
+ --k-ink:#22372b;--k-ink2:#5a6a5e;--k-ink3:#8a9488;--k-line:#d6cab0;--k-line2:#e6dcc6;
+ --k-sage:#dfe8d2;--k-sage2:#c9d9b8;--k-sage-d:#4f7048;--k-peach:#f3d3bf;--k-peach-d:#c46a46;
+ --k-sky:#d9e4e6;--k-sky-d:#4d6f78;--k-butter:#f3e2a9;--k-lilac:#e2dbe9;--k-red:#b4513a;
+ --k-tape:rgba(214,190,140,.62);--k-tape2:rgba(196,214,180,.7);
+ --k-shadow:3px 4px 0 #d9ceb6;--k-shadow2:5px 6px 0 #22372b14;
+ --k-r:6px 14px 8px 12px/12px 7px 14px 8px;   /* sudut tak simetris = potongan tangan */
+ --k-serif:"Fraunces",Georgia,"Times New Roman",serif;--k-sans:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;
+ --k-mono:"Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;--k-hand:"Caveat","Segoe Print","Comic Sans MS",cursive;
+ /* tekstur serat kertas (SVG statis, dirender sekali) */
+ --k-grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .2 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+ /* garis bawah tangan & lingkaran spidol */
+ --k-uline:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'%3E%3Cpath d='M2 8 C40 3 80 10 120 6 S180 4 198 7' fill='none' stroke='%234f7048' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+ --k-ring:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 80' preserveAspectRatio='none'%3E%3Cpath d='M30 12 C80 0 170 4 192 30 C206 56 140 76 80 74 C24 72 2 56 8 36 C12 22 40 10 120 8' fill='none' stroke='%234f7048' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+body.kertas{margin:0;min-height:100vh;color:var(--k-ink);font-family:var(--k-sans);line-height:1.55;
+ background:var(--k-grain),var(--k-paper);-webkit-tap-highlight-color:transparent}
+html[data-fx="lite"] body.kertas{background:var(--k-paper)}
+.kertas h1,.kertas h2,.kertas h3{font-family:var(--k-serif);font-weight:700;letter-spacing:-.01em;color:var(--k-ink)}
+.kertas em.k-it,.kertas .k-it{font-family:var(--k-serif);font-style:italic;font-weight:500;color:var(--k-sage-d)}
+.kertas :focus-visible{outline:3px solid var(--k-sage-d);outline-offset:3px}
+.kertas ::selection{background:var(--k-butter)}
+
+/* label mesin tik & stiker kecil */
+.k-label{display:inline-block;font:500 .68rem/1 var(--k-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--k-ink2);
+ background:var(--k-butter);padding:.32em .6em;border-radius:2px;transform:rotate(-1.2deg)}
+.k-label.sage{background:var(--k-sage2)}.k-label.peach{background:var(--k-peach)}.k-label.sky{background:var(--k-sky)}
+.k-num{font:500 .72rem var(--k-mono);color:var(--k-ink3);letter-spacing:.06em}
+.k-credit{font:500 .7rem var(--k-mono);color:var(--k-ink2);letter-spacing:.02em}
+.k-hand{font-family:var(--k-hand);font-weight:600;font-size:1.25em;color:var(--k-sage-d);line-height:1.1}
+
+/* coretan: garis bawah, lingkaran, sorotan */
+.k-u{background:var(--k-uline) no-repeat 0 100%/100% .42em;padding-bottom:.12em}
+.k-o{position:relative;display:inline-block;padding:0 .18em}
+.k-o::after{content:"";position:absolute;inset:-.22em -.35em -.2em -.3em;background:var(--k-ring) no-repeat center/100% 100%;pointer-events:none}
+.k-hl{background:linear-gradient(100deg,transparent 2%,var(--k-peach) 3%,var(--k-peach) 96%,transparent 97%) no-repeat 0 62%/100% 58%;padding:0 .12em}
+
+/* kartu kertas: tumpukan + washi tape */
+.k-card{position:relative;background:var(--k-card);border:1.5px solid var(--k-line);border-radius:var(--k-r);box-shadow:var(--k-shadow),var(--k-shadow2);padding:1.1rem 1.2rem}
+.k-tape::before{content:"";position:absolute;top:-.62rem;left:50%;width:5.6rem;height:1.25rem;margin-left:-2.8rem;background:var(--k-tape);
+ transform:rotate(-2.5deg);clip-path:polygon(3% 0,97% 4%,100% 50%,96% 100%,2% 96%,0 50%);pointer-events:none;z-index:2}
+.k-tape.r::before{left:auto;right:1.2rem;margin:0;transform:rotate(4deg)}.k-tape.l::before{left:1.2rem;margin:0;transform:rotate(-5deg)}
+.k-tape.g::before{background:var(--k-tape2)}
+/* tepi sobek bawah (opsional) */
+.k-torn{--tear:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 8' preserveAspectRatio='none'%3E%3Cpath d='M0 0H100V3L96 6 92 3 88 7 83 4 79 6 74 3 70 7 65 4 61 6 56 3 52 7 47 4 43 6 38 3 34 7 29 4 25 6 20 3 16 7 11 4 7 6 3 3 0 5Z' fill='black'/%3E%3C/svg%3E");
+ -webkit-mask:linear-gradient(#000,#000) top/100% calc(100% - .5rem) no-repeat,var(--tear) bottom/100% .5rem no-repeat;mask:linear-gradient(#000,#000) top/100% calc(100% - .5rem) no-repeat,var(--tear) bottom/100% .5rem no-repeat}
+
+/* tombol kertas */
+.k-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;min-height:var(--tap,52px);padding:.45em 1.05em;border:1.5px solid var(--k-ink);border-radius:5px 9px 6px 8px;
+ background:var(--k-card);color:var(--k-ink);font:700 .95rem var(--k-sans);box-shadow:2px 3px 0 var(--k-ink);cursor:pointer;text-decoration:none;
+ transition:transform .08s,box-shadow .08s;user-select:none;touch-action:manipulation}
+.k-btn:active{transform:translate(2px,3px);box-shadow:0 0 0 var(--k-ink)}
+.k-btn.pri{background:var(--k-sage)}.k-btn.alt{background:var(--k-peach)}.k-btn.info{background:var(--k-sky)}
+.k-btn.on,.k-btn[aria-pressed=true]{background:var(--k-sage2)}
+.k-btn.ghost{box-shadow:none;border-style:dashed;background:transparent}
+.k-btn:disabled{opacity:.45;box-shadow:none;cursor:default;transform:none}
+.k-btn.sm{min-height:calc(var(--tap,52px)*.76);font-size:.85rem;padding:.3em .8em}
+
+@media(prefers-reduced-motion:reduce){.kertas *{animation:none!important;transition:none!important}}

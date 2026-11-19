@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f5f9ff">
+<meta name="theme-color" content="#f2ecdf">
 <meta name="description" content="Jejak Kata · Peta Makna — baca buku cerita, temukan kata kunci, lalu hubungkan ke topik besar dengan kabel ala papan node. Awas topik jebakan! Mode sendiri & tanding 2 tim.">
 <title>PILAR™ · Jejak Kata · Peta Makna</title>
 <link rel="stylesheet" href="../../css/pilar-ceria.css">
+<link rel="stylesheet" href="../../css/pilar-kertas.css">
 <script src="../../core/device-profile.js"></script>
 <style>
 .wrap{max-width:1920px;margin:auto;padding:.7rem .9rem 1.2rem}
@@ -129,17 +130,119 @@ html[data-device="ifp"] .pg p{font-size:1.18rem}
 .board.compact .evb{margin:0 .5rem .35rem}
 .arena.duel .team{grid-template-rows:auto auto minmax(0,.8fr) minmax(0,1.2fr)}
 .node{width:min(13rem,28cqw)}
+
+/* ================= Tema Kertas (scrapbook editorial) — menimpa komponen Ceria ================= */
+body.kertas{--ink:var(--k-ink);--ink2:var(--k-ink2);--paper:var(--k-card2);--yellow:var(--k-butter);--pink:var(--k-peach);--blue:var(--k-sky);
+ --green:var(--k-sage);--purple:var(--k-lilac);--orange:#f0c9a0;--mint:var(--k-sage);--red-d:var(--k-red);--blue-d:var(--k-sky-d);
+ --bw:1.5px;--r:var(--k-r);--r-sm:5px 9px 6px 8px;--shadow:2px 3px 0 var(--k-ink);--shadow-soft:var(--k-shadow),var(--k-shadow2);
+ --f-head:var(--k-serif);--f-body:var(--k-sans)}
+.kertas .c-btn,.kertas button,.kertas .c-tab{font-family:var(--k-sans);font-weight:700}
+.kertas .c-btn{border-width:1.5px;box-shadow:2px 3px 0 var(--k-ink);font-size:.95rem}
+.kertas .c-btn:active{transform:translate(2px,3px);box-shadow:0 0 0 var(--k-ink)}
+.kertas .c-btn.go{background:var(--k-sage2)}.kertas .c-btn.alt{background:var(--k-peach)}.kertas .c-btn.info{background:var(--k-sky)}
+.kertas .c-card{background:var(--k-card);border-color:var(--k-line);position:relative}
+.kertas .c-title{text-transform:none;-webkit-text-stroke:0;text-shadow:none;font-weight:800;letter-spacing:-.02em;line-height:1}
+.kertas .c-sub{font-weight:600;color:var(--k-ink2)}
+.kertas .c-bubble{border-color:var(--k-line);border-width:1.5px;background:var(--k-card);font-weight:600;border-radius:4px 14px 12px 10px;box-shadow:2px 3px 0 #22372b12}
+.kertas .c-bubble::before{border-right-color:var(--k-line)}.kertas .c-bubble::after{border-right-color:var(--k-card)}
+.kertas .c-bubble .q{color:var(--k-sage-d)}
+.kertas .c-callout{background:var(--k-butter);border:1.5px dashed #b8984a;border-radius:4px}
+.kertas .c-opt{border-left-width:6px!important;border-left-color:var(--k-sage-d)!important}
+.kertas .c-opt.on{background:var(--k-sage)}
+
+/* kepala halaman */
+.kertas .top{align-items:flex-start;padding:.2rem 0 .4rem;border-bottom:1.5px dashed var(--k-line);margin-bottom:.8rem}
+.kertas .top .brand{margin-right:auto;display:grid;gap:.15rem;min-width:0}
+.kertas .top .brand .k-label{justify-self:start}
+.kertas .top h1{font-size:clamp(1.5rem,2.6vw,2.5rem);font-weight:800;letter-spacing:-.025em;line-height:1.05;margin:.15rem 0 0}
+.kertas .top h1 .dot{color:var(--k-ink3);font-weight:400}
+.kertas .top small{font:500 .82rem var(--k-sans);color:var(--k-ink2)}
+.kertas .top .right{display:flex;flex-direction:column;align-items:flex-end;gap:.4rem}
+.kertas .top .creator{padding:.25em .6em;border:1px dashed var(--k-line);border-radius:3px;background:var(--k-card)}
+
+/* layar mulai */
+.kertas .start{background:rgba(34,55,43,.28)}
+.kertas .start .c-card{padding:1.6rem 1.6rem 1.4rem}
+.kertas .start .c-card::before{content:"";position:absolute;top:-.2rem;left:50%;width:6.4rem;height:1.3rem;margin-left:-3.2rem;background:var(--k-tape);transform:rotate(-2.5deg);clip-path:polygon(3% 0,97% 4%,100% 50%,96% 100%,2% 96%,0 50%)}
+.kertas .steps div{border:1.5px solid var(--k-line);border-radius:var(--k-r);font-weight:500;background:var(--k-card2);position:relative;padding-top:.9rem}
+.kertas .steps b{font-family:var(--k-serif);font-weight:700}
+.kertas .steps div:nth-child(1){background:#f5ecd0}.kertas .steps div:nth-child(2){background:#e3ebe1}.kertas .steps div:nth-child(3){background:#f4e1d6}
+.kertas .steps div::before{content:"";position:absolute;top:-.45rem;left:1rem;width:2.8rem;height:.9rem;background:var(--k-tape2);transform:rotate(-4deg)}
+
+/* kepala tim & gelembung */
+.kertas .t-head{background:var(--k-card);border:1.5px solid var(--k-line);border-radius:var(--k-r);box-shadow:var(--k-shadow)}
+.kertas .t-head .name{font:700 1.15rem var(--k-serif)}
+.kertas .team[data-side="L"] .t-head{background:#f6e0d3}.kertas .team[data-side="R"] .t-head{background:#dde8e8}
+.kertas .pill{border-width:1.5px;font:500 .8rem var(--k-mono);background:var(--k-card)}
+
+/* buku cerita: halaman buku tua */
+.kertas .book{background:var(--k-grain),#fcf8ee;border:1.5px solid var(--k-line);border-radius:4px 12px 12px 4px;box-shadow:var(--k-shadow),inset 14px 0 18px -16px #22372b55}
+html[data-fx="lite"] .kertas .book{background:#fcf8ee}
+.kertas .cover{padding:1.3rem 1.2rem .6rem}
+.kertas .cover h2{font-size:1.9rem;font-weight:800}.kertas .cover p{font:italic 500 1rem var(--k-serif);color:var(--k-ink2)}
+.kertas .pg{border-top:1.5px dashed var(--k-line2)}
+.kertas .art{border:1.5px solid var(--k-line);border-radius:3px 10px 4px 9px;box-shadow:2px 3px 0 #22372b10}
+.kertas .art::after{background:#22372b0d}
+.kertas .art .no{font:500 .7rem var(--k-mono);letter-spacing:.08em;border:0;background:var(--k-tape);border-radius:1px;padding:.25em .6em;transform:rotate(-2deg)}
+.kertas .pg h3{font-size:1.35rem;font-weight:700}
+.kertas .pg p{font:400 1.12rem/1.9 var(--k-serif);color:#283d31}
+html[data-device="ifp"] .kertas .pg p{font-size:1.2rem}
+.kertas .w{border-radius:2px}
+@media(hover:hover){.kertas .w:hover{background:#f3e2a988}}
+/* stabilo kuning yang dicoret tangan */
+.kertas .kw.found{background:linear-gradient(100deg,transparent 1%,#f2dc7f 2%,#f0d76f 97%,transparent 98%) no-repeat 0 70%/100% 62%;box-shadow:none;font-weight:600}
+.kertas .kw.miss{text-decoration-color:var(--k-red);background:#f6e1d8}
+.kertas .end{font:italic 500 1.05rem var(--k-serif)}
+
+/* papan node: papan gabus/kraft, node = kartu indeks */
+.kertas .board{border:1.5px solid var(--k-line);border-radius:var(--k-r);box-shadow:var(--k-shadow);
+ background:radial-gradient(#22372b24 1.2px,transparent 1.3px) 0 0/22px 22px,var(--k-grain),#e6dac0}
+html[data-fx="lite"] .kertas .board{background:radial-gradient(#22372b24 1.2px,transparent 1.3px) 0 0/22px 22px,#e6dac0}
+.kertas .board .lbl{font:500 .7rem var(--k-mono);letter-spacing:.14em;color:var(--k-ink2);background:var(--k-butter);padding:.25em .55em;transform:rotate(-1deg)}
+.kertas .board .empty{color:var(--k-ink2);font:600 1.2rem/1.15 var(--k-hand)}
+.kertas .wire-bg{stroke:#fbf8f0;stroke-width:8}
+.kertas .wire{stroke:var(--k-ink);stroke-width:3.2}
+.kertas .wire.temp{stroke:var(--k-sky-d)}
+.kertas .wire.ok{stroke:var(--k-sage-d)}.kertas .wire.bad{stroke:var(--k-red)}.kertas .wire.trap{stroke:var(--k-peach-d)}
+.kertas .node{border:1.5px solid var(--k-line);border-radius:3px 8px 4px 7px;background:var(--k-card);box-shadow:2px 3px 0 #22372b26}
+.kertas .node .nh{font:500 .62rem var(--k-mono);letter-spacing:.12em;border-bottom:1px dashed var(--k-line);border-radius:2px 7px 0 0;color:var(--k-ink2)}
+.kertas .node .nb{font:700 1rem/1.2 var(--k-serif)}
+.kertas .node.word .nh{background:#f3e7bd}.kertas .node.topic .nh{background:#dfe8d2}
+.kertas .node.word:nth-child(odd){transform:rotate(-.6deg)}.kertas .node.word:nth-child(even){transform:rotate(.5deg)}
+.kertas .node.word.sel,.kertas .node.topic.hot{outline:2.5px dashed var(--k-sage-d);outline-offset:3px}
+.kertas .node.topic.hot{transform:scale(1.03)}
+.kertas .port{border:1.5px solid var(--k-ink);background:var(--k-butter)}
+.kertas .port.in{background:var(--k-sage2)}
+.kertas .node.linked .port.out{background:var(--k-sage-d)}
+.kertas .evb{border:1px dashed var(--k-ink2);border-radius:3px;background:var(--k-card2);font:500 .7rem var(--k-mono)}
+.kertas .evb.set{background:var(--k-sage);border-style:solid}
+.kertas .cut{border:1.5px solid var(--k-ink);background:var(--k-card)}
+.kertas .node.trap{background:#f6e3d6}.kertas .node.trap .nh{background:#efc8ad}
+.kertas .node.word.ok{background:#e6efdc}.kertas .node.word.bad{background:#f6dfd8}
+.kertas .board.compact .node.word{border-left-color:#c9a94a}.kertas .board.compact .node.topic{border-left-color:var(--k-sage-d)}
+.kertas .lockveil{background:rgba(34,55,43,.78);font-family:var(--k-serif);font-weight:600}
+.kertas .t-modal{background:rgba(34,55,43,.36)}
+.kertas .m-x{border-width:1.5px;background:var(--k-peach);box-shadow:2px 3px 0 var(--k-ink)}
+.kertas .res-grid div{border:1.5px solid var(--k-line);border-radius:3px 8px 4px 7px;background:var(--k-card2);font-weight:600}
+.kertas .big-score{font-family:var(--k-serif);font-weight:800}
+.kertas .banner{border-width:1.5px;border-radius:4px;background:var(--k-butter);font-family:var(--k-serif);font-weight:700;box-shadow:2px 3px 0 var(--k-ink)}
+@media(max-width:899px){.kertas .top .right{flex-direction:row;flex-wrap:wrap;align-items:center;width:100%;justify-content:space-between}}
 </style>
 </head>
-<body class="ceria">
+<body class="ceria kertas">
 <div class="wrap">
- <div class="top">
-  <a class="c-btn sm" href="../../" title="Kembali ke PILAR Hub">⬅ Hub</a>
-  <h1>🔖 Jejak Kata · Peta Makna<small>Baca → temukan kata kunci → hubungkan ke topik besar. Awas topik jebakan!</small></h1>
-  <div class="c-seg">
+ <header class="top">
+  <a class="c-btn sm" href="../../" title="Kembali ke PILAR Hub">← Hub</a>
+  <div class="brand">
+   <span class="k-label">Studio Literasi · PILAR</span>
+   <h1>Jejak <em class="k-it">Kata</em> <span class="dot">·</span> Peta <span class="k-u">Makna</span></h1>
+   <small>Baca → temukan kata kunci → hubungkan ke topik besar. Awas topik jebakan!</small>
+  </div>
+  <div class="right">
+   <span class="k-credit creator">by : rizalabdurrahman05@guru.smp.belajar.id</span>
    <button class="c-btn sm" id="btnMode" type="button">🎮 Ganti mode</button>
   </div>
- </div>
+ </header>
  <div class="banner" id="banner"></div>
  <main class="arena solo" id="arena"></main>
 </div>
@@ -147,8 +250,9 @@ html[data-device="ifp"] .pg p{font-size:1.18rem}
 <div class="start" id="start">
  <div class="c-card">
   <div class="kiko-big" id="kikoBig"></div>
-  <h2 class="c-title" style="font-size:clamp(1.6rem,3.6vw,2.6rem)">Jejak <span class="hl">Kata</span></h2>
-  <p class="c-sub">Petualangan membaca bersama Kiko si burung hantu</p>
+  <span class="k-label sage">Buku cerita · 6 halaman</span>
+  <h2 class="c-title" style="font-size:clamp(2rem,4.4vw,3.3rem)">Jejak <em class="k-it k-o">Kata</em></h2>
+  <p class="c-sub">Petualangan membaca bersama <span class="k-hl">Kiko si burung hantu</span></p>
   <div class="steps">
    <div><b>1 · Baca 📖</b>Gulir buku cerita sampai habis. Pelan-pelan saja, nikmati ceritanya.</div>
    <div><b>2 · Temukan 🔍</b>Ketuk kata yang paling penting. Ada <b style="display:inline">8 kata kunci</b> tersembunyi!</div>
@@ -169,23 +273,23 @@ const $=id=>document.getElementById(id);
    [[frasa|k1]] = kata kunci · ^k1 = kalimat ini bukti untuk k1 */
 const STORY={title:'Celengan Bambu Rani',sub:'Sebuah cerita tentang mimpi, uang jajan, dan sepeda biru',
  pages:[
- {t:'Mimpi Sepeda Biru',bg:'#a7e7ff',art:['🏫','🚶‍♀️','🚲'],p:[
+ {t:'Mimpi Sepeda Biru',bg:'#d6e3e5',art:['🏫','🚶‍♀️','🚲'],p:[
   'Rani duduk di kelas 8. Setiap pagi ia berjalan kaki 4 kilometer ke sekolah. Di toko Pak Darto ada sepeda bekas berwarna biru seharga Rp600.000.',
   '“Kalau punya sepeda, aku tidak akan terlambat lagi,” pikir Rani. Masalahnya, uang jajan Rani hanya Rp10.000 sehari.']},
- {t:'Celengan Bambu',bg:'#b8f3b2',art:['🎋','📒','✏️'],p:[
+ {t:'Celengan Bambu',bg:'#dce7cf',art:['🎋','📒','✏️'],p:[
   'Ayah memberi Rani sepotong bambu, lalu melubanginya menjadi celengan. Malam itu Rani membuat [[catatan keuangan|k1]] di sebuah buku kecil.',
   'Ia menulis dua kolom: [[kebutuhan dan keinginan|k2]]. Ongkos fotokopi tugas masuk kolom kebutuhan, jajan boba masuk kolom keinginan^k2. Rani lalu memutuskan menyisihkan Rp4.000 setiap hari^k1.']},
- {t:'Godaan di Gerbang Sekolah',bg:'#ffe27c',art:['🧋','🙅‍♀️','📅'],p:[
+ {t:'Godaan di Gerbang Sekolah',bg:'#f1e2b2',art:['🧋','🙅‍♀️','📅'],p:[
   'Sepulang sekolah, teman-teman mengajak Rani membeli boba. Rani menggeleng sambil tersenyum, “Aku lagi nabung.”',
   'Hari demi hari ia menabung [[sedikit demi sedikit|k3]]. Rp4.000 memang kecil, tetapi lama-lama menjadi bukit^k3. Rani [[tidak pernah bolos|k4]] memasukkannya, bahkan saat hujan dan saat sedang malas^k4. Setiap Minggu ia mewarnai satu kotak di kalender.']},
- {t:'Ide dari Kain Perca',bg:'#ffbed8',art:['🧵','🐟','🔑'],p:[
+ {t:'Ide dari Kain Perca',bg:'#f2d4c4',art:['🧵','🐟','🔑'],p:[
   'Di rumah, Ibu punya sekantong [[kain perca|k5]] sisa menjahit. Rani menjahitnya menjadi gantungan kunci berbentuk ikan untuk dijual^k5.',
   'Ia memakai Rp20.000 tabungannya sebagai [[modal|k6]] untuk membeli benang dan ring kunci^k6. Satu gantungan dijual Rp5.000, dan dalam sebulan laku 40 buah. Uang hasil jualan ikut masuk celengan.']},
- {t:'Dua Godaan Besar',bg:'#e0caff',art:['🎡','🎟️','💸'],p:[
+ {t:'Dua Godaan Besar',bg:'#e1dae8',art:['🎡','🎟️','💸'],p:[
   'Suatu sore ada pasar malam. Seorang teman berbisik, “Beli kupon undian saja, siapa tahu hadiahnya sepeda!” Rani menghitung: ada ribuan kupon, padahal sepedanya hanya satu. Ia memilih tidak ikut.',
   'Lalu Dina, sahabatnya, menawarkan, “Pinjam saja uangku dulu, nanti kamu ganti.” Rani berterima kasih, tetapi menolak. “Aku tidak mau berutang. Aku ingin sepeda ini hasil usahaku sendiri.”',
   'Dina malah jadi tertarik. Sejak hari itu mereka [[menabung bersama|k7]] setiap pulang sekolah^k7. Mereka juga [[saling mengingatkan|k8]] kalau salah satu tergoda jajan^k8.']},
- {t:'Dua Sepeda di Pagi Hari',bg:'#b9f5e6',art:['🚲','🌅','🚲'],p:[
+ {t:'Dua Sepeda di Pagi Hari',bg:'#d3e6dc',art:['🚲','🌅','🚲'],p:[
   'Lima bulan kemudian, celengan bambu dibelah. Isinya Rp600.000 dari tabungan harian dan Rp180.000 dari jualan gantungan kunci. Rani membeli sepeda biru, dan sisanya ia simpan untuk biaya servis.',
   'Tak lama, Dina juga membeli sepeda. Kini setiap pagi dua sepeda melaju berdampingan ke sekolah. Sepeda itu bukan hadiah. Sepeda itu hasil rencana dan kesabaran.']}
  ]};
@@ -237,7 +341,7 @@ function makeTeam(side,name){
   <button class="c-btn sm go" data-a="check" type="button">${side?'🔒 Kunci jawaban':'✅ Cek peta'}</button></div>
   <div class="t-bub"><div class="c-guide"><div data-r="kiko">${kiko('happy')}</div><div class="c-bubble" data-r="say"></div></div></div>
   <div class="book" data-r="book">${storyHTML}</div>
-  <div class="board" data-r="board"><svg class="wires" data-r="svg"><defs><marker id="${mid}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ffe27c" stroke="#0d1626" stroke-width="1.2"/></marker></defs><g data-r="wg"></g><path class="wire-bg" data-r="tmpbg" d="" style="display:none"/><path class="wire temp" data-r="tmp" d="" style="display:none"/></svg>
+  <div class="board" data-r="board"><svg class="wires" data-r="svg"><defs><marker id="${mid}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#22372b" stroke="#22372b" stroke-width="1.2"/></marker></defs><g data-r="wg"></g><path class="wire-bg" data-r="tmpbg" d="" style="display:none"/><path class="wire temp" data-r="tmp" d="" style="display:none"/></svg>
    <span class="lbl l">🔖 Kantong kata</span><span class="lbl r">Topik besar 🎯</span>
    <div class="empty" data-r="empty">Kata kunci yang kamu temukan di buku akan muncul di sini.</div>
    <div class="lockveil" data-r="veil" hidden>🔒 Jawaban terkunci<br><small>menunggu tim lawan…</small></div></div>
@@ -376,15 +480,15 @@ function lockTeam(T){if(T.locked)return;if(!T.found.length){say(T,'Temukan dulu 
 
 /* ---------- simpan peta sebagai gambar ---------- */
 function savePNG(T){const W=T.board.clientWidth,H=T.board.clientHeight,s=2,c=document.createElement('canvas');c.width=W*s;c.height=(H+60)*s;const x=c.getContext('2d');x.scale(s,s);
- x.fillStyle='#22324a';x.fillRect(0,0,W,H+60);x.fillStyle='#ffffff22';for(let i=0;i<W;i+=22)for(let j=0;j<H+60;j+=22){x.beginPath();x.arc(i,j,1.4,0,7);x.fill()}
- x.fillStyle='#fff';x.font='600 18px Fredoka, sans-serif';x.fillText('Peta Makna · '+STORY.title+' · '+T.name+(T.result?' · '+T.result.total+' poin':''),14,H+38);
- const col={ok:'#6ee08f',bad:'#ff6b85',trap:'#ffa24c'};
+ x.fillStyle='#e6dac0';x.fillRect(0,0,W,H+60);x.fillStyle='#22372b24';for(let i=0;i<W;i+=22)for(let j=0;j<H+60;j+=22){x.beginPath();x.arc(i,j,1.4,0,7);x.fill()}
+ x.fillStyle='#fbf8f0';x.fillRect(0,H,W,60);x.fillStyle='#22372b';x.font='700 19px Fraunces, Georgia, serif';x.fillText('Peta Makna · '+STORY.title+' · '+T.name+(T.result?' · '+T.result.total+' poin':''),14,H+38);
+ const col={ok:'#4f7048',bad:'#b4513a',trap:'#c46a46'};
  for(const k in T.links){const L=T.links[k],a=portXY(T,k,true),b=portXY(T,L.t,false),dx=Math.max(50,Math.abs(b[0]-a[0])*.5);
-  x.lineCap='round';[[9,'#0d1626'],[4.5,col[L.res]||'#ffe27c']].forEach(([w,s2])=>{x.lineWidth=w;x.strokeStyle=s2;x.beginPath();x.moveTo(a[0],a[1]);x.bezierCurveTo(a[0]+dx,a[1],b[0]-dx,b[1],b[0],b[1]);x.stroke()})}
+  x.lineCap='round';[[8,'#fbf8f0'],[3.2,col[L.res]||'#22372b']].forEach(([w,s2])=>{x.lineWidth=w;x.strokeStyle=s2;x.beginPath();x.moveTo(a[0],a[1]);x.bezierCurveTo(a[0]+dx,a[1],b[0]-dx,b[1],b[0],b[1]);x.stroke()})}
  T.board.querySelectorAll('.node').forEach(n=>{const key=n.dataset.k||n.dataset.t,p=T.pos[key],w=n.offsetWidth,h=n.offsetHeight;
-  x.fillStyle='#0d1626';x.beginPath();x.roundRect(p.x+3,p.y+4,w,h,14);x.fill();x.fillStyle=getComputedStyle(n).backgroundColor;x.strokeStyle='#17243a';x.lineWidth=3;x.beginPath();x.roundRect(p.x,p.y,w,h,14);x.fill();x.stroke();
-  x.fillStyle='#17243a';x.font='600 11px Fredoka, sans-serif';x.fillText(n.classList.contains('word')?'KATA KUNCI':'TOPIK',p.x+10,p.y+16);
-  x.font='600 15px Fredoka, sans-serif';x.fillText(n.querySelector('.nb').textContent+' '+(n.querySelector('.mark')?.textContent||''),p.x+10,p.y+38)});
+  x.fillStyle='#22372b26';x.beginPath();x.roundRect(p.x+2,p.y+3,w,h,6);x.fill();x.fillStyle=getComputedStyle(n).backgroundColor;x.strokeStyle='#d6cab0';x.lineWidth=1.5;x.beginPath();x.roundRect(p.x,p.y,w,h,6);x.fill();x.stroke();
+  x.fillStyle='#5a6a5e';x.font='500 10px "Plex Mono", monospace';x.fillText(n.classList.contains('word')?'KATA KUNCI':'TOPIK',p.x+10,p.y+16);
+  x.fillStyle='#22372b';x.font='700 15px Fraunces, Georgia, serif';x.fillText(n.querySelector('.nb').textContent+' '+(n.querySelector('.mark')?.textContent||''),p.x+10,p.y+38)});
  const a=document.createElement('a');a.download='peta-makna-'+(T.side||'solo')+'.png';a.href=c.toDataURL('image/png');a.click()}
 
 /* ---------- mulai ---------- */

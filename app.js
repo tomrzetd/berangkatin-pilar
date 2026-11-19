@@ -59,6 +59,7 @@
     'hunter-ball':'Duel gerak parabola untuk dua tim dengan kontrol sentuh.',
     'frost-snake':'Duel numerasi dua tim berbasis touch/multitouch.',
     'baterai-lab':'Petualangan baterai lithium-ion dengan tema Ceria dan eksperimen interaktif.',
+    'daluang':'Basa Sunda: rakit aksara ngalagena dengan rarangkén, gurat aksara di lembar daluang, tulis ngaran dalam aksara Sunda, dan kuis maca kecap.',
     'jejak-kata':'Literasi: baca buku cerita, temukan kata kunci, lalu hubungkan ke topik besar dengan kabel node. Ada topik jebakan dan mode tanding 2 tim.',
     'lingkaran-ajaib':'Numerasi visual: titik berputar jadi gelombang sin/cos, pola Lissajous, dan menggambar hati dengan lingkaran berputar (Fourier).',
     'atlas-bumi':'Geografi 3D: terbang ke kota atau koordinat mana pun, lihat siang–malam nyata, garis lintang–bujur, zona waktu, arah kiblat, dan Cincin Api.'
