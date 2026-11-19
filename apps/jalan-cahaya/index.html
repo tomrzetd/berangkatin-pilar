@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eef2f7">
+<meta name="description" content="Jalan Cahaya — lab optik bercerita: lensa, prisma, pantulan total, serat optik internet, kamera HP, dan teropong bintang. Berakhir di bengkel rekayasa.">
+<title>PILAR™ · Jalan Cahaya · Lab Optik</title>
+<script src="../../core/device-profile.js"></script>
+<style>
+@font-face{font-family:"Plus Jakarta Sans";src:url("../../vendor/fonts/plus-jakarta-sans-var.woff2") format("woff2");font-weight:200 800;font-display:swap}
+@font-face{font-family:"Fraunces";src:url("../../vendor/fonts/fraunces-var.woff") format("woff");font-weight:400 800;font-display:swap}
+@font-face{font-family:"Fraunces";src:url("../../vendor/fonts/fraunces-italic-var.woff") format("woff");font-weight:400 700;font-style:italic;font-display:swap}
+@font-face{font-family:"Plex Mono";src:url("../../vendor/fonts/ibm-plex-mono-medium.woff") format("woff");font-weight:500;font-display:swap}
+:root{
+ --bg:#eef2f7;--bench:#f7f9fc;--bench2:#e9eef5;--grid:#1e3a5f10;--card:#ffffff;--card2:#f4f7fb;--ink:#13203a;--ink2:#4f5d77;--ink3:#8592a8;--line:#dde5f0;
+ --pri:#e5383b;--pri2:#ff6b6b;--acc:#086cf0;--ok:#16a34a;--warn:#d97706;--glass:#9fd0ec4a;--glassLine:#3c7aa6cc;--metal:#8b97a6;
+ --shadow:0 8px 24px rgb(30 58 95/.08);--r:16px;--fs:1;
+ --serif:"Fraunces",Georgia,serif;--sans:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;--mono:"Plex Mono",ui-monospace,Consolas,monospace;
+}
+html[data-skin="pink"]{--bg:#fff3f8;--bench:#fffafc;--bench2:#fbeaf2;--grid:#7a1f4c10;--card:#fff;--card2:#fff5fa;--ink:#3a1430;--ink2:#7a4a68;--ink3:#b08aa0;--line:#f6d6e6;--acc:#d63384}
+html[data-skin="gelap"]{--bg:#060b14;--bench:#0b1322;--bench2:#0e1830;--grid:#9fc3ff10;--card:#0f1a2c;--card2:#13213a;--ink:#e8f0ff;--ink2:#a9b8d3;--ink3:#6f7f9c;--line:#22324d;
+ --glass:#7cc7ff26;--glassLine:#7cc7ffaa;--metal:#a9b4c4;--shadow:0 10px 30px #0006;--acc:#5aa9ff}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit}
+.app{height:100vh;height:100dvh;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;gap:clamp(6px,.8vh,12px);padding:clamp(6px,.9vh,14px) clamp(8px,1vw,18px)}
+
+/* kepala tipis */
+.hd{display:flex;align-items:center;gap:clamp(8px,1vw,16px);min-height:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45em;min-height:clamp(36px,4.6vh,54px);padding:0 1em;border:1px solid var(--line);border-radius:999px;background:var(--card);
+ font-weight:700;font-size:clamp(13px,1.45vh,18px);cursor:pointer;text-decoration:none;color:var(--ink);box-shadow:var(--shadow);touch-action:manipulation;white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn.pri{background:var(--pri);border-color:var(--pri);color:#fff}
+.btn.acc{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.sm{min-height:clamp(32px,3.8vh,46px);padding:0 .8em;font-size:clamp(12px,1.3vh,16px)}
+.brand{display:grid;line-height:1.05}
+.brand b{font:800 clamp(17px,2.4vh,30px) var(--serif);letter-spacing:-.02em}
+.brand b i{color:var(--pri);font-style:italic;font-weight:600}
+.brand small{font:500 clamp(9px,1.05vh,13px) var(--mono);letter-spacing:.12em;color:var(--ink3);text-transform:uppercase}
+.credit{margin-left:auto;font:500 clamp(9px,1.05vh,13px) var(--mono);color:var(--ink2);padding:.3em .7em;border:1px dashed var(--line);border-radius:8px;background:var(--card2)}
+
+/* utama: panggung + panel */
+.main{display:grid;grid-template-columns:minmax(0,1fr) clamp(300px,29vw,560px);gap:clamp(8px,1vw,16px);min-height:0}
+.stage{position:relative;min-height:0;border-radius:var(--r);overflow:hidden;background:var(--bench);border:1px solid var(--line);box-shadow:var(--shadow)}
+#cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
+.hud{position:absolute;left:12px;top:12px;display:flex;flex-wrap:wrap;gap:6px;max-width:70%;pointer-events:none;z-index:3}
+.chip{font:500 clamp(12px,1.75vh,22px) var(--mono);padding:.35em .7em;border-radius:999px;background:var(--card2);background:color-mix(in srgb,var(--card) 88%,transparent);border:1px solid var(--line);color:var(--ink);white-space:nowrap}
+.chip b{color:var(--pri)}
+.chip.ok{border-color:var(--ok);color:var(--ok)}
+.tools{position:absolute;left:12px;bottom:12px;display:flex;gap:6px;z-index:3;flex-wrap:wrap;align-items:center}
+.tools .lbl{font:500 clamp(11px,1.3vh,16px) var(--mono);padding:.4em .7em;border-radius:999px;background:var(--card);border:1px solid var(--line)}
+.aux{position:absolute;right:12px;top:12px;z-index:3;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#000;box-shadow:var(--shadow)}
+.aux canvas{display:block;width:100%;height:100%}
+.aux .cap{position:absolute;left:0;right:0;bottom:0;padding:.35em .6em;font:500 clamp(10px,1.2vh,15px) var(--mono);color:#fff;background:linear-gradient(transparent,#000b)}
+.hint{position:absolute;right:12px;bottom:12px;z-index:3;font:600 clamp(11px,1.3vh,16px) var(--sans);color:var(--ink2);background:var(--card2);background:color-mix(in srgb,var(--card) 85%,transparent);padding:.4em .8em;border-radius:999px;border:1px solid var(--line);pointer-events:none}
+.toast{position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:6;padding:.55em 1.1em;border-radius:999px;background:var(--ok);color:#fff;font-weight:800;font-size:clamp(13px,1.6vh,20px);box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .25s}
+.toast.on{opacity:1}
+
+/* panel cerita: harus muat satu layar (auto-fit lewat --fs) */
+.panel{min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:calc(.7vh*var(--fs) + 4px);padding:clamp(12px,1.6vh,22px) clamp(14px,1.3vw,24px);border-radius:var(--r);background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);font-size:calc(clamp(13px,1.62vh,21px)*var(--fs))}
+.kick{font:500 .72em var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--pri)}
+.panel h1{margin:0;font:800 1.75em/1.05 var(--serif);letter-spacing:-.02em}
+.panel h1 i{font-weight:600;color:var(--pri)}
+.story{margin:0;line-height:1.5;color:var(--ink)}
+.story b{color:var(--pri)}
+.mission{border:1.5px solid var(--line);border-left:5px solid var(--acc);border-radius:12px;padding:.6em .8em;background:var(--card2);display:grid;gap:.25em}
+.mission .mh{display:flex;justify-content:space-between;align-items:center;gap:.5em;font:800 .78em var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--acc)}
+.mission .mt{line-height:1.4}
+.mission .st{font:500 .82em var(--mono);color:var(--ink2)}
+.mission.done{border-left-color:var(--ok);background:var(--card2);background:color-mix(in srgb,var(--ok) 9%,var(--card))}
+.mission.done .mh{color:var(--ok)}
+.ctrls{display:grid;gap:.5em}
+.ctl{display:grid;grid-template-columns:minmax(6.5em,auto) 1fr auto;align-items:center;gap:.6em}
+.ctl label{font-weight:700;font-size:.9em}
+.ctl output{font:500 .85em var(--mono);min-width:4.5em;text-align:right;color:var(--ink2)}
+.ctl input[type=range]{width:100%;accent-color:var(--pri);height:calc(24px*var(--fs) + 8px)}
+.row{display:flex;flex-wrap:wrap;gap:.45em}
+.row .btn{font-size:.85em;min-height:calc(2.3em)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:.45em .9em;font-weight:700;font-size:.85em;cursor:pointer}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.fact{margin-top:auto;border-radius:12px;padding:.65em .85em;background:var(--card2);background:linear-gradient(135deg,color-mix(in srgb,var(--pri) 9%,var(--card)),var(--card2));border:1px solid var(--line);line-height:1.45;font-size:.92em}
+.fact summary{list-style:none;cursor:pointer;font:800 .78em var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--pri)}
+.fact summary::-webkit-details-marker{display:none}
+.fact p{margin:.3em 0 0}
+.fact .src{display:block;margin-top:.3em;font:500 .78em var(--mono);color:var(--ink3)}
+.msgbox{display:grid;gap:.35em}
+.msgbox input{width:100%;min-height:2.4em;border:1px solid var(--line);border-radius:10px;padding:0 .7em;font:600 1em var(--mono);background:var(--card2);color:var(--ink)}
+.rx{font:600 1.05em var(--mono);padding:.4em .7em;border-radius:10px;background:var(--card2);border:1px dashed var(--line);min-height:2.2em;word-break:break-all}
+.rx .bad{color:var(--pri);text-decoration:underline wavy}
+
+/* navigasi bab */
+.nav{display:flex;align-items:center;gap:clamp(6px,.8vw,12px);padding-right:clamp(54px,4.2vw,76px)} /* ruang tombol obrolan PILAR */
+.dots{flex:1;display:flex;gap:clamp(4px,.5vw,8px);overflow:hidden}
+.dot{flex:1;min-width:0;display:flex;align-items:center;gap:.4em;min-height:clamp(36px,4.6vh,54px);padding:0 .7em;border-radius:12px;border:1px solid var(--line);background:var(--card);cursor:pointer;
+ font-weight:700;font-size:clamp(11px,1.3vh,16px);color:var(--ink2);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;touch-action:manipulation}
+.dot .no{font:500 .85em var(--mono);color:var(--ink3)}
+.dot .ic{font-size:1.15em}
+.dot.cur{border-color:var(--ink);color:var(--ink);box-shadow:inset 0 -3px 0 var(--pri)}
+.dot.done .no::after{content:" ✓";color:var(--ok)}
+.dot span.t{overflow:hidden;text-overflow:ellipsis}
+
+/* bengkel */
+.shop{position:absolute;inset:0;display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(8px,1vw,16px);padding:clamp(10px,1.4vh,20px);overflow:hidden;font-size:calc(clamp(12px,1.42vh,19px)*var(--sfs,1))}
+.shop.on{display:grid}
+.proj{display:flex;flex-direction:column;gap:.45em;min-height:0;overflow:hidden;border-radius:14px;padding:.9em 1em;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+.proj .pic{font-size:2.2em;line-height:1}
+.proj h3{margin:0;font:800 1.25em/1.1 var(--serif)}
+.proj .why{margin:0;color:var(--ink2);line-height:1.4}
+.proj h4{margin:.2em 0 0;font:800 .74em var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--pri)}
+.proj ul,.proj ol{margin:0;padding-left:1.2em;line-height:1.4}
+.proj .safe{margin-top:auto;font-size:.88em;padding:.45em .6em;border-radius:10px;background:var(--card2);background:color-mix(in srgb,var(--warn) 12%,var(--card));border:1px solid var(--line);border:1px solid color-mix(in srgb,var(--warn) 40%,var(--line))}
+.proj .btn{align-self:flex-start}
+.proj.pick{outline:3px solid var(--ok);outline-offset:-3px}
+
+@media (max-width:900px) and (orientation:portrait){
+ .main{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1.05fr) minmax(0,1fr)}
+ .credit{display:none}
+ .hd .credit{display:block;position:absolute;right:10px;top:46px;font-size:8.5px;padding:.15em .4em;border:0;background:none;opacity:.8}
+ .dot span.t{display:none}.dot{justify-content:center;padding:0}
+ .shop{grid-template-columns:minmax(0,1fr);overflow:auto}
+ .aux{width:44%!important;height:auto!important;aspect-ratio:4/3}
+ .hud{max-width:96%}
+ .chip{font-size:12px}
+ .hd,.nav{min-width:0}
+ .panel{overflow-y:auto}
+ .dot .no{display:none}.dot .ic{font-size:1.25em}
+ .shop{grid-auto-rows:max-content}.proj{overflow:visible}
+ .brand small{display:none}
+ .tools .btn.sm{min-height:34px;padding:0 .55em}
+}
+@media print{
+ html,body{overflow:visible;height:auto}.app{height:auto;display:block}.hd,.nav,.panel,#cv,.hud,.tools,.hint{display:none!important}
+ .stage{border:0;box-shadow:none;overflow:visible}.shop{position:static;display:grid!important;grid-template-columns:1fr;overflow:visible}.proj{break-inside:avoid;box-shadow:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+ <header class="hd">
+  <a class="btn sm" href="../../" title="Kembali ke PILAR Hub">← Hub</a>
+  <div class="brand"><b>Jalan <i>Cahaya</i></b><small>Lab Optik · PILAR</small></div>
+  <span class="credit">by : rizalabdurrahman05@guru.smp.belajar.id</span>
+  <button class="btn sm" id="fsBtn" type="button" title="Layar penuh">⛶</button>
+ </header>
+ <main class="main">
+  <section class="stage" id="stage">
+   <canvas id="cv"></canvas>
+   <div class="hud" id="hud"></div>
+   <div class="tools" id="tools"></div>
+   <div class="aux" id="aux" hidden><canvas id="auxCv"></canvas><div class="cap" id="auxCap"></div></div>
+   <div class="hint" id="hint"></div>
+   <div class="shop" id="shop"></div>
+   <div class="toast" id="toast"></div>
+  </section>
+  <aside class="panel" id="panel">
+   <div class="kick" id="pKick"></div>
+   <h1 id="pTitle"></h1>
+   <p class="story" id="pStory"></p>
+   <div class="mission" id="pMission"><div class="mh"><span>🎯 Misi</span><span id="mStep"></span></div><div class="mt" id="mText"></div><div class="st" id="mState"></div></div>
+   <div class="ctrls" id="pCtrls"></div>
+   <details class="fact" id="pFact" open><summary>💡 Kisah nyata</summary><p id="fText"></p><span class="src" id="fSrc"></span></details>
+  </aside>
+ </main>
+ <nav class="nav">
+  <button class="btn sm" id="prev" type="button" aria-label="Bab sebelumnya">←</button>
+  <div class="dots" id="dots"></div>
+  <button class="btn sm pri" id="next" type="button">Lanjut →</button>
+ </nav>
+</div>
+<script src="optics.js"></script>
+<script src="scenes.js"></script>
+<script src="app.js"></script>
+<script src="../../pulse/config.js"></script>
+<script src="../../core/pulse.js"></script>
+</body>
+</html>
