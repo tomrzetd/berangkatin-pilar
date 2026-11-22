@@ -14,7 +14,7 @@ import {fileURLToPath} from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : path.join(ROOT, 'native', 'www'));
 const MIRROR = !process.argv.includes('--no-mirror');
-const SKIP = new Set(['.git', '.github', 'native', 'tools', 'node_modules', '.gitignore', 'README.md', 'SECURITY.md']);
+const SKIP = new Set(['.git', '.github', 'native', 'tools', 'tests', 'docs', 'node_modules', '.gitignore', 'README.md', 'SECURITY.md']);
 const SKIP_RE = [/^PATCH-NOTES/i, /\.md$/i, /^developer\/patch-v2-tests/];
 const HOSTS = ['cdn.jsdelivr.net', 'cdnjs.cloudflare.com', 'storage.googleapis.com'];
 const KEEP_ONLINE = [/cdn\.jsdelivr\.net\/npm\/@supabase\//];   // butuh internet apa pun yang terjadi

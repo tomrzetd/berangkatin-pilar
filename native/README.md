@@ -4,7 +4,7 @@ Semua aplikasi PILAR Hub dibungkus menjadi aplikasi yang bisa di-install dan ber
 
 | Platform | Berkas | Untuk |
 |---|---|---|
-| Windows x64 | `PILAR-Hub-…-x64-nsis.exe` (installer) · `PILAR-Hub-…-portable.exe` (tanpa install) | laptop sekolah / pemerintah, PC yang terhubung ke IFP |
+| Windows x64 | `PILAR-Hub-Setup-…-x64.exe` (installer) · `PILAR-Hub-…-portable.exe` (tanpa install) | laptop sekolah / pemerintah, PC yang terhubung ke IFP |
 | Linux x64 | `.AppImage` · `.deb` | laptop Linux |
 | Android | `PILAR-Hub-…-debug.apk` (dan `.apk` rilis bila kunci rilis dipasang) | HP & IFP Hisense (Android 13), tablet |
 

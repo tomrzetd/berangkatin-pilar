@@ -44,6 +44,7 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
+#include <Preferences.h>
 
 #define STEP_PIN   26
 #define DIR_PIN    27
@@ -60,7 +61,10 @@ static const long HOME_MAX_TRAVEL = 16000;
 static const uint32_t HOME_TIMEOUT_MS = 30000;
 
 static const char* AP_SSID = "PILAR-Scope";
-static const char* AP_PASS = "stem12345"; // GANTI sebelum penggunaan publik.
+// Sandi WiFi alat. Biarkan kosong: tiap alat membuat sandi acak 10 huruf sekali saja (disimpan di NVS)
+// dan menampilkannya di Serial Monitor saat menyala. Dulu sandinya sama untuk semua alat ("stem12345"),
+// sehingga siapa pun di dekat sekolah bisa menyambung dan menggerakkan motor fokus.
+static const char* AP_PASS = "";
 
 static const char* BLE_SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E";
 static const char* BLE_RX_UUID      = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E";
@@ -266,8 +270,20 @@ void setup() {
   focus.setMaxSpeed(1000);
   focus.setAcceleration(1800);
 
+  String apPass = AP_PASS;
+  if (apPass.length() < 8) {
+    Preferences prefs; prefs.begin("pilarscope", false);
+    apPass = prefs.getString("appass", "");
+    if (apPass.length() < 8) {
+      const char* cs = "abcdefghjkmnpqrstuvwxyz23456789";   // tanpa huruf yang mirip (i, l, o, 0, 1)
+      apPass = ""; for (int i = 0; i < 10; i++) apPass += cs[esp_random() % 31];
+      prefs.putString("appass", apPass);
+    }
+    prefs.end();
+  }
   WiFi.mode(WIFI_AP);
-  WiFi.softAP(AP_SSID, AP_PASS);
+  WiFi.softAP(AP_SSID, apPass.c_str());
+  Serial.printf("WiFi %s · sandi: %s\n", AP_SSID, apPass.c_str());
   ws.begin();
   ws.onEvent(onWs);
 

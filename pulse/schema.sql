@@ -1,5 +1,5 @@
--- PILAR Pulse v0.1
--- Run once in Supabase SQL Editor.
+-- PILAR Pulse · skema dasar
+-- Jalankan sekali di Supabase SQL Editor, lalu jalankan pulse/migrations/002 dan 003 berurutan.
 -- Privacy model: Supabase anonymous auth per browser; no fingerprinting, no precise location.
 
 create extension if not exists pgcrypto;
@@ -54,6 +54,16 @@ create table if not exists public.pilar_messages (
 
 create index if not exists pilar_messages_visitor_idx on public.pilar_messages(visitor_id, created_at);
 
+-- Admin ditentukan oleh UUID akun yang didaftarkan manual (allowlist), BUKAN klaim email di token:
+-- klaim email bisa dipalsukan bila konfirmasi email di Supabase mati. Akun anonim tidak pernah admin.
+create table if not exists public.pilar_admins (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  note text,
+  created_at timestamptz not null default now()
+);
+alter table public.pilar_admins enable row level security;
+revoke all on public.pilar_admins from anon, authenticated;
+
 create or replace function public.pilar_is_admin()
 returns boolean
 language sql
@@ -61,7 +71,8 @@ stable
 security definer
 set search_path = public
 as $$
-  select lower(coalesce(auth.jwt()->>'email','')) = 'rizalabdurrahman05@guru.smp.belajar.id';
+  select coalesce((auth.jwt()->>'is_anonymous')::boolean,false) = false
+     and exists (select 1 from public.pilar_admins a where a.user_id = auth.uid());
 $$;
 
 revoke all on function public.pilar_is_admin() from public;

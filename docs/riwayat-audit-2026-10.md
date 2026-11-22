@@ -1,4 +1,6 @@
-# PILAR · Patch audit Oktober 2026
+# Riwayat · patch audit Oktober 2026
+
+> Arsip catatan. Isi patch ini sudah lama masuk ke `main`, jadi langkah "cara menerapkan" di bawah tidak perlu dijalankan lagi.
 
 Patch ini menindaklanjuti audit menyeluruh (keamanan, IFP/MPI, fisika, 3D). Semua tes lama tetap lulus.
 

@@ -15,7 +15,6 @@ export const RULES = {
   // grafik osiloskop/spektrum digambar dengan warna terang di kanvas transparan → layar instrumen tetap gelap
   'soundscope': { exclude: [], extra: `@@ canvas{background:#0a1524;border-radius:10px}
 @@ .cv .cap{background:rgba(255,255,255,.94);color:#101b39}` },
-  'pak-taro': { exclude: [] },
   'bioweb': { exclude: [] },
   'rubik-orbit': { exclude: [] },
   'puzzlesnap': { exclude: [] },

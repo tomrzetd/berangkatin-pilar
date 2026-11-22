@@ -70,8 +70,10 @@ function serve(request) {
 function setupSession(ses) {
   const allow = new Set(['media', 'mediaKeySystem', 'fullscreen', 'pointerLock', 'clipboard-read', 'clipboard-sanitized-write',
     'serial', 'hid', 'usb', 'bluetooth', 'notifications', 'idle-detection', 'speaker-selection', 'window-management']);
-  ses.setPermissionRequestHandler((wc, perm, cb) => cb(allow.has(perm)));
-  ses.setPermissionCheckHandler((wc, perm) => allow.has(perm));
+  // izin perangkat hanya untuk halaman PILAR sendiri (app://pilar), tidak untuk situs luar mana pun
+  const ours = u => String(u || '').startsWith('app://pilar');
+  ses.setPermissionRequestHandler((wc, perm, cb, details) => cb(allow.has(perm) && ours(details?.requestingUrl || wc?.getURL?.())));
+  ses.setPermissionCheckHandler((wc, perm, origin) => allow.has(perm) && ours(origin || wc?.getURL?.()));
   ses.setDevicePermissionHandler(() => true);
   // ESP32 lewat USB: pilih port yang paling mungkin (CP210x, CH340, Espressif native USB), atau tanya bila banyak
   ses.on('select-serial-port', async (event, ports, wc, callback) => {
