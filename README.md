@@ -147,7 +147,7 @@ Nama penerima di aplikasi pembayaran harus **Kamonesan, Apps & Embedde** (Kuning
 
 ## Pembuat
 
-Dibuat dan dirawat oleh guru di Kuningan, Jawa Barat.
+Dibuat dan dirawat oleh :
 
 `by : rizalabdurrahman05@guru.smp.belajar.id`
 
