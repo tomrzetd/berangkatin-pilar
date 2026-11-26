@@ -1,5 +1,5 @@
 name: Aplikasi native (Electron x86 + Android)
-run-name: "native · ${{ github.event_name == 'pull_request' && format('PR #{0} · {1}', github.event.number, github.event.pull_request.title) || github.event_name == 'workflow_dispatch' && format('manual · {0}', github.ref_name) || github.event.head_commit.message }}"
+run-name: "native · ${{ github.event_name == 'pull_request' && format('PR #{0} · {1}', github.event.number, github.event.pull_request.title) || format('{0} · build #{1}', github.ref_name, github.run_number) }}"
 
 on:
   push:
