@@ -139,7 +139,9 @@ Menambah aplikasi baru:
 
 ## Dukung pengembang
 
-PILAR gratis untuk sekolah mana pun. Kalau aplikasi ini bermanfaat dan Bapak/Ibu ingin membantu biaya perangkat uji, IFP, komponen elektronik, dan hosting, dukungan bisa dikirim lewat QRIS berikut. Berapa pun jumlahnya, terima kasih banyak.
+PILAR gratis untuk sekolah mana pun, dan semua fiturnya tetap gratis. Dukungan sifatnya sukarela, tidak membuka fitur tambahan, dan tidak pernah ditampilkan di dalam aplikasi yang dipakai siswa. Berbagi PILAR ke rekan guru dan mengirim masukan juga sudah sangat membantu.
+
+Kalau Bapak/Ibu ingin ikut membantu biaya perangkat uji, IFP, komponen elektronik, dan hosting, dukungan bisa dikirim lewat QRIS pribadi pengembang berikut. QRIS ini bukan rekening sekolah atau dinas. Berapa pun jumlahnya, terima kasih banyak.
 
 <p align="center"><img src="docs/gambar/qris-dukungan.png" alt="QRIS dukungan pengembang PILAR" width="260"></p>
 
@@ -153,6 +155,14 @@ Dibuat dan dirawat oleh :
 
 Saran, laporan masalah, dan ide aplikasi baru bisa dikirim lewat GitHub Issues atau tombol Chat di Hub.
 
+## Cara PILAR dibuat
+
+PILAR dirancang, diuji di kelas, dan dirawat oleh guru. Sebagian kode dan teks ditulis dengan bantuan asisten AI (Claude), lalu diperiksa, dicoba di perangkat sungguhan, dan disesuaikan dengan kebutuhan kelas. Uji otomatis di `tests/` dan GitHub Actions memeriksa hitungan fisika, logika, dan aksara setiap ada perubahan.
+
+Aplikasi sudah dicoba di browser laptop, Electron, dan IFP Android, tetapi belum di semua merek perangkat. Kalau ada yang tidak berjalan mulus di perangkat Bapak/Ibu, mohon kabari lewat Issue beserta merek dan tipe perangkatnya.
+
 ## Lisensi
 
-Repo ini belum memakai lisensi terbuka. Bila ingin memakai ulang atau mengembangkan kodenya di luar pemakaian kelas, silakan hubungi pembuat terlebih dahulu. Font di `vendor/fonts` memakai lisensi SIL Open Font License, dan berkas lisensinya ada di folder yang sama.
+- **Kode** memakai lisensi [MIT](LICENSE). Bapak/Ibu boleh memakai, mengubah, dan membagikan ulang, termasuk memasangnya di sekolah lain, asalkan pemberitahuan hak cipta tetap disertakan.
+- **Konten belajar** buatan PILAR (cerita, misi, soal, dan gambar buatan sendiri) memakai [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.id). Boleh diadaptasi untuk kelas sendiri, dengan menyebut sumber dan membagikan hasil adaptasinya dengan lisensi yang sama.
+- **Pustaka, font, citra, dan data pihak ketiga** memakai lisensinya masing-masing. Daftarnya ada di [`KREDIT.md`](KREDIT.md).
