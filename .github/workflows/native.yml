@@ -131,7 +131,7 @@ jobs:
         with: {name: pilar-android, path: native/out/*.apk}
 
   android-smoke:
-    name: Uji emulator · ${{ matrix.label }}
+    name: Uji emulator · ${{ matrix.label }} · ${{ matrix.shard }}/2
     needs: android
     runs-on: ubuntu-latest
     timeout-minutes: 50
@@ -139,8 +139,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {label: ifp-tablet, profile: pixel_c, order: normal}
-          - {label: hp, profile: pixel_6, order: normal}
+          # dua shard per perangkat: emulator CI macet setelah ~18 halaman WebGL
+          - {label: ifp-tablet, profile: pixel_c, order: normal, shard: 1}
+          - {label: ifp-tablet, profile: pixel_c, order: normal, shard: 2}
+          - {label: hp, profile: pixel_6, order: normal, shard: 1}
+          - {label: hp, profile: pixel_6, order: normal, shard: 2}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -154,7 +157,7 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
       - uses: reactivecircus/android-emulator-runner@v2
-        env: {SMOKE_ORDER: '${{ matrix.order }}'}
+        env: {SMOKE_ORDER: '${{ matrix.order }}', SMOKE_SHARD: '${{ matrix.shard }}/2'}
         with:
           api-level: 33
           target: google_apis
@@ -166,10 +169,10 @@ jobs:
           cores: 4
           emulator-boot-timeout: 900
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back emulated -camera-front emulated
-          script: node native/android/ci-smoke.mjs "$(ls apk/*-debug.apk | head -1)" native/www android-smoke ${{ matrix.label }}
+          script: node native/android/ci-smoke.mjs "$(ls apk/*-debug.apk | head -1)" native/www android-smoke ${{ matrix.label }}-${{ matrix.shard }}
       - uses: actions/upload-artifact@v4
         if: always()
-        with: {name: 'android-smoke-${{ matrix.label }}', path: android-smoke, retention-days: 14}
+        with: {name: 'android-smoke-${{ matrix.label }}-${{ matrix.shard }}', path: android-smoke, retention-days: 14}
 
   release:
     name: Terbitkan unduhan

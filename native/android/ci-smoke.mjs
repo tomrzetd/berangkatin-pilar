@@ -87,6 +87,13 @@ await attach(false);
 const reg = await fs.readFile(path.join(www, 'apps/registry.js'), 'utf8');
 let pages = [['hub', '/index.html'], ...[...reg.matchAll(/id:'([^']+)'[^}]*?url:'([^']+)'/g)].map(m => [m[1], '/' + m[2]])];
 if (process.env.SMOKE_ORDER === 'reverse') pages = [pages[0], ...pages.slice(1).reverse()];
+/* SMOKE_SHARD="k/n": emulator CI hanya tahan ~18 halaman WebGL (beban menumpuk di GPU
+   swiftshader, tidak hilang walau aplikasi dimulai ulang) → aplikasi dibagi ke n emulator.
+   Hub selalu diuji; uji mendalam hanya di shard 1. */
+const [shardK, shardN] = (process.env.SMOKE_SHARD || '1/1').split('/').map(Number);
+if (shardN > 1) pages = [pages[0], ...pages.slice(1).filter((_, i) => i % shardN === shardK - 1)];
+const runDeep = shardK === 1;
+console.log(`[android-smoke] shard ${shardK}/${shardN}: ${pages.length} halaman${runDeep ? ' + uji mendalam' : ''} → ${pages.map(p => p[0]).join(' ')}`);
 const pss = () => { try { return (execFileSync('adb', ['shell', 'dumpsys', 'meminfo', PKG], {encoding: 'utf8', timeout: 25000}).match(/TOTAL PSS:\s*(\d+)|TOTAL\s+(\d+)/) || []).slice(1).find(Boolean) / 1024 | 0; } catch (_) { return -1; } };
 /* Uji mendalam dijalankan selagi proses masih segar (sebelumnya di akhir, setelah 22 halaman WebGL) */
 let deepResult;
@@ -103,7 +110,7 @@ const DEEP = `(async()=>{const r={};const t0=performance.now();
  try{const fa=await fetch('/_cdn/cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2');r.fontawesome=fa.ok?'ok':'GAGAL '+fa.status}catch(e){r.fontawesome='GAGAL '+e}
  return JSON.stringify(r)})()`;
 const deepCur = {id: 'deep', errors: []}; cur = deepCur;
-const deep = wsClosed ? {error: 'closed'} : await send('Runtime.evaluate', {expression: DEEP, awaitPromise: true, returnByValue: true, timeout: 120000}, 150000);
+const deep = !runDeep ? {result: {result: {value: 'dilewati (shard ' + shardK + ')'}}} : wsClosed ? {error: 'closed'} : await send('Runtime.evaluate', {expression: DEEP, awaitPromise: true, returnByValue: true, timeout: 120000}, 150000);
 const deepRes = deep.result?.result?.value || ('GAGAL ' + JSON.stringify(deep.result?.exceptionDetails || deep).slice(0, 400));
 console.log('[android-smoke] uji mendalam offline:', deepRes);
 deepCur.deep = deepRes; if (/GAGAL/.test(deepRes)) deepCur.errors.push(deepRes);
@@ -137,11 +144,11 @@ for (const [pid2, p] of pages) {
     (cur.errors.length ? '\n   ' + cur.errors.slice(0, 8).join('\n   ') : ''));
 }
 
-results.push(deepResult);
+if (runDeep) results.push(deepResult);
 cur = null; try { ws.close(); } catch (_) {}
 const crash = adb('logcat', '-d', '-b', 'crash');
 await fs.writeFile(path.join(outDir, label + '-report.json'), JSON.stringify({info, results, crash}, null, 1));
 console.log(`[android-smoke] ${label}: ${results.filter(r => !r.errors.length).length}/${results.length} halaman bersih; crash log ${crash.trim() ? 'ADA' : 'kosong'}`);
 if (crash.includes(PKG)) { console.error(crash); process.exit(1); }
-if (results.length < pages.length + 1 || results.some(r => r.errors.some(e => !/favicon/.test(e)))) { console.error('[android-smoke] ada halaman bermasalah'); process.exit(1); }
+if (results.length < pages.length + (runDeep ? 1 : 0) || results.some(r => r.errors.some(e => !/favicon/.test(e)))) { console.error('[android-smoke] ada halaman bermasalah'); process.exit(1); }
 process.exit(0);
