@@ -3,7 +3,8 @@
    node ci-smoke.mjs <apk> <www> <folder-keluaran> <label>
    Memasang APK, memberi izin kamera/mikrofon, membuka Hub lalu setiap aplikasi lewat
    Chrome DevTools Protocol (WebView debug), mencatat error JS & tangkapan layar. */
-import {execFileSync} from 'node:child_process';
+import {execFileSync, spawn} from 'node:child_process';
+import {openSync} from 'node:fs';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 
@@ -19,6 +20,11 @@ for (const p of ['CAMERA', 'RECORD_AUDIO']) try { adb('shell', 'pm', 'grant', PK
 // Uji OFFLINE: matikan jaringan emulator — semua pustaka harus berasal dari APK
 for (const c of [['svc', 'wifi', 'disable'], ['svc', 'data', 'disable']]) try { adb('shell', ...c); } catch (_) {}
 adb('logcat', '-c');
+/* logcat direkam terus ke artefak: bila emulator macet, baris terakhirnya tetap tersimpan */
+const logcatProc = spawn('adb', ['logcat', '-v', 'time'], {stdio: ['ignore', openSync(path.join(outDir, label + '-logcat.txt'), 'w'), 'ignore'], detached: true});
+logcatProc.unref();
+const T0 = Date.now();
+const step = (pg, what) => console.log(`[android-smoke]   ${((Date.now() - T0) / 1000).toFixed(1)}s ${pg}: ${what}`);
 const sleepInit = 9000;
 let info = null;
 
@@ -129,15 +135,19 @@ for (const [pid2, p] of pages) {
     await attach(true); sinceRestart = 1;
   }
   cur = {id: pid2, url: p, errors: []};
+  step(pid2, 'navigate');
   const nav = await send('Page.navigate', {url: 'https://localhost' + p});
   if (nav.error) { cur.errors.push('navigate: ' + nav.error); results.push(cur); dumpLogs(pid2); console.log(`[android-smoke] ✗ ${label}/${pid2} ${nav.error}`); break; }
   await sleep(8000);
+  step(pid2, 'evaluate');
   const ev = await send('Runtime.evaluate', {returnByValue: true, expression:
     `JSON.stringify({title:document.title,native:window.PILAR_NATIVE&&PILAR_NATIVE.platform,tier:window.PILAR&&PILAR.device&&PILAR.device.tier,
       text:(document.body&&document.body.innerText||'').length,w:innerWidth,h:innerHeight,dpr:devicePixelRatio,
       heap:performance.memory?Math.round(performance.memory.usedJSHeapSize/1048576):-1,href:location.pathname})`});
   try { Object.assign(cur, JSON.parse(ev.result.result.value)); } catch (_) { cur.errors.push('evaluate gagal ' + (ev.error || '')); if (ev.error) { results.push(cur); dumpLogs(pid2); break; } }
+  step(pid2, 'screenshot');
   const shot = await send('Page.captureScreenshot', {format: 'png'});
+  step(pid2, shot.error ? 'screenshot ' + shot.error : 'meminfo');
   if (shot.result?.data) await fs.writeFile(path.join(outDir, `${label}-${pid2}.png`), Buffer.from(shot.result.data, 'base64'));
   results.push(cur);
   console.log(`[android-smoke] ${cur.errors.length ? '✗' : '✓'} ${label}/${pid2} "${cur.title}" ${cur.w}x${cur.h}@${cur.dpr} tier=${cur.tier} native=${cur.native} teks=${cur.text} heap=${cur.heap}MB pss=${pss()}MB` +
