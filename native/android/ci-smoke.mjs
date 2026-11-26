@@ -4,7 +4,7 @@
    Memasang APK, memberi izin kamera/mikrofon, membuka Hub lalu setiap aplikasi lewat
    Chrome DevTools Protocol (WebView debug), mencatat error JS & tangkapan layar. */
 import {execFileSync, spawn} from 'node:child_process';
-import {openSync} from 'node:fs';
+import {openSync, readFileSync} from 'node:fs';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 
@@ -21,9 +21,20 @@ for (const p of ['CAMERA', 'RECORD_AUDIO']) try { adb('shell', 'pm', 'grant', PK
 for (const c of [['svc', 'wifi', 'disable'], ['svc', 'data', 'disable']]) try { adb('shell', ...c); } catch (_) {}
 adb('logcat', '-c');
 /* logcat direkam terus ke artefak: bila emulator macet, baris terakhirnya tetap tersimpan */
-const logcatProc = spawn('adb', ['logcat', '-v', 'time'], {stdio: ['ignore', openSync(path.join(outDir, label + '-logcat.txt'), 'w'), 'ignore'], detached: true});
+const LOGCAT = path.join(outDir, label + '-logcat.txt');
+const logcatProc = spawn('adb', ['logcat', '-v', 'time'], {stdio: ['ignore', openSync(LOGCAT, 'w'), 'ignore'], detached: true});
 logcatProc.unref();
 const T0 = Date.now();
+/* artefak tidak selalu bisa diunduh: saat gagal, ekor logcat dicetak ke log job */
+let tailPrinted = false;
+function printLogcatTail(why) {
+  if (tailPrinted) return; tailPrinted = true;
+  try {
+    const lines = readFileSync(LOGCAT, 'utf8').split('\n');
+    console.log(`--- ${why}: ${lines.length} baris logcat, 150 terakhir ---\n` + lines.slice(-150).join('\n'));
+  } catch (e) { console.log('logcat tidak terbaca', e.message); }
+}
+process.on('uncaughtException', e => { console.error(e); printLogcatTail('galat ' + (e.code || e.message)); process.exit(1); });
 const step = (pg, what) => console.log(`[android-smoke]   ${((Date.now() - T0) / 1000).toFixed(1)}s ${pg}: ${what}`);
 const sleepInit = 9000;
 let info = null;
@@ -139,12 +150,19 @@ for (const [pid2, p] of pages) {
   const nav = await send('Page.navigate', {url: 'https://localhost' + p});
   if (nav.error) { cur.errors.push('navigate: ' + nav.error); results.push(cur); dumpLogs(pid2); console.log(`[android-smoke] ✗ ${label}/${pid2} ${nav.error}`); break; }
   await sleep(8000);
+  /* ping bertahap: JS hidup? → status font → baru evaluate penuh (innerText memaksa layout) */
+  const ping = await send('Runtime.evaluate', {expression: '1+1', returnByValue: true}, 20000);
+  step(pid2, 'ping JS ' + (ping.error || ping.result?.result?.value));
+  if (ping.error) { cur.errors.push('ping ' + ping.error); results.push(cur); printLogcatTail('JS ' + pid2 + ' tidak menjawab'); dumpLogs(pid2); break; }
+  const fnt = await send('Runtime.evaluate', {returnByValue: true, expression:
+    `JSON.stringify({ready:document.readyState,fonts:document.fonts.status,fx:document.documentElement.dataset.fx||'',nodes:document.getElementsByTagName('*').length})`}, 20000);
+  step(pid2, 'status ' + (fnt.error || fnt.result?.result?.value));
   step(pid2, 'evaluate');
   const ev = await send('Runtime.evaluate', {returnByValue: true, expression:
     `JSON.stringify({title:document.title,native:window.PILAR_NATIVE&&PILAR_NATIVE.platform,tier:window.PILAR&&PILAR.device&&PILAR.device.tier,
       text:(document.body&&document.body.innerText||'').length,w:innerWidth,h:innerHeight,dpr:devicePixelRatio,
       heap:performance.memory?Math.round(performance.memory.usedJSHeapSize/1048576):-1,href:location.pathname})`});
-  try { Object.assign(cur, JSON.parse(ev.result.result.value)); } catch (_) { cur.errors.push('evaluate gagal ' + (ev.error || '')); if (ev.error) { results.push(cur); dumpLogs(pid2); break; } }
+  try { Object.assign(cur, JSON.parse(ev.result.result.value)); } catch (_) { cur.errors.push('evaluate gagal ' + (ev.error || '')); if (ev.error) { results.push(cur); printLogcatTail('evaluate ' + pid2 + ' ' + ev.error); dumpLogs(pid2); break; } }
   step(pid2, 'screenshot');
   const shot = await send('Page.captureScreenshot', {format: 'png'});
   step(pid2, shot.error ? 'screenshot ' + shot.error : 'meminfo');
