@@ -3,7 +3,8 @@
    node ci-smoke.mjs <apk> <www> <folder-keluaran> <label>
    Memasang APK, memberi izin kamera/mikrofon, membuka Hub lalu setiap aplikasi lewat
    Chrome DevTools Protocol (WebView debug), mencatat error JS & tangkapan layar. */
-import {execFileSync} from 'node:child_process';
+import {execFileSync, spawn} from 'node:child_process';
+import {openSync, readFileSync} from 'node:fs';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 
@@ -19,6 +20,22 @@ for (const p of ['CAMERA', 'RECORD_AUDIO']) try { adb('shell', 'pm', 'grant', PK
 // Uji OFFLINE: matikan jaringan emulator — semua pustaka harus berasal dari APK
 for (const c of [['svc', 'wifi', 'disable'], ['svc', 'data', 'disable']]) try { adb('shell', ...c); } catch (_) {}
 adb('logcat', '-c');
+/* logcat direkam terus ke artefak: bila emulator macet, baris terakhirnya tetap tersimpan */
+const LOGCAT = path.join(outDir, label + '-logcat.txt');
+const logcatProc = spawn('adb', ['logcat', '-v', 'time'], {stdio: ['ignore', openSync(LOGCAT, 'w'), 'ignore'], detached: true});
+logcatProc.unref();
+const T0 = Date.now();
+/* artefak tidak selalu bisa diunduh: saat gagal, ekor logcat dicetak ke log job */
+let tailPrinted = false;
+function printLogcatTail(why) {
+  if (tailPrinted) return; tailPrinted = true;
+  try {
+    const lines = readFileSync(LOGCAT, 'utf8').split('\n');
+    console.log(`--- ${why}: ${lines.length} baris logcat, 150 terakhir ---\n` + lines.slice(-150).join('\n'));
+  } catch (e) { console.log('logcat tidak terbaca', e.message); }
+}
+process.on('uncaughtException', e => { console.error(e); printLogcatTail('galat ' + (e.code || e.message)); process.exit(1); });
+const step = (pg, what) => console.log(`[android-smoke]   ${((Date.now() - T0) / 1000).toFixed(1)}s ${pg}: ${what}`);
 const sleepInit = 9000;
 let info = null;
 
@@ -87,6 +104,13 @@ await attach(false);
 const reg = await fs.readFile(path.join(www, 'apps/registry.js'), 'utf8');
 let pages = [['hub', '/index.html'], ...[...reg.matchAll(/id:'([^']+)'[^}]*?url:'([^']+)'/g)].map(m => [m[1], '/' + m[2]])];
 if (process.env.SMOKE_ORDER === 'reverse') pages = [pages[0], ...pages.slice(1).reverse()];
+/* SMOKE_SHARD="k/n": emulator CI (GPU swiftshader) macet bila terlalu banyak beban WebGL
+   menumpuk, walau aplikasi dimulai ulang. Shard 1 = hub + uji mendalam saja (MediaPipe,
+   three.js, TF.js); shard 2..n membagi aplikasi bergiliran. n = 1: semuanya di satu emulator. */
+const [shardK, shardN] = (process.env.SMOKE_SHARD || '1/1').split('/').map(Number);
+if (shardN > 1) pages = shardK === 1 ? [pages[0]] : [pages[0], ...pages.slice(1).filter((_, i) => i % (shardN - 1) === shardK - 2)];
+const runDeep = shardK === 1;
+console.log(`[android-smoke] shard ${shardK}/${shardN}: ${pages.length} halaman${runDeep ? ' + uji mendalam' : ''} → ${pages.map(p => p[0]).join(' ')}`);
 const pss = () => { try { return (execFileSync('adb', ['shell', 'dumpsys', 'meminfo', PKG], {encoding: 'utf8', timeout: 25000}).match(/TOTAL PSS:\s*(\d+)|TOTAL\s+(\d+)/) || []).slice(1).find(Boolean) / 1024 | 0; } catch (_) { return -1; } };
 /* Uji mendalam dijalankan selagi proses masih segar (sebelumnya di akhir, setelah 22 halaman WebGL) */
 let deepResult;
@@ -103,7 +127,7 @@ const DEEP = `(async()=>{const r={};const t0=performance.now();
  try{const fa=await fetch('/_cdn/cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2');r.fontawesome=fa.ok?'ok':'GAGAL '+fa.status}catch(e){r.fontawesome='GAGAL '+e}
  return JSON.stringify(r)})()`;
 const deepCur = {id: 'deep', errors: []}; cur = deepCur;
-const deep = wsClosed ? {error: 'closed'} : await send('Runtime.evaluate', {expression: DEEP, awaitPromise: true, returnByValue: true, timeout: 120000}, 150000);
+const deep = !runDeep ? {result: {result: {value: 'dilewati (shard ' + shardK + ')'}}} : wsClosed ? {error: 'closed'} : await send('Runtime.evaluate', {expression: DEEP, awaitPromise: true, returnByValue: true, timeout: 120000}, 150000);
 const deepRes = deep.result?.result?.value || ('GAGAL ' + JSON.stringify(deep.result?.exceptionDetails || deep).slice(0, 400));
 console.log('[android-smoke] uji mendalam offline:', deepRes);
 deepCur.deep = deepRes; if (/GAGAL/.test(deepRes)) deepCur.errors.push(deepRes);
@@ -122,26 +146,37 @@ for (const [pid2, p] of pages) {
     await attach(true); sinceRestart = 1;
   }
   cur = {id: pid2, url: p, errors: []};
+  step(pid2, 'navigate');
   const nav = await send('Page.navigate', {url: 'https://localhost' + p});
   if (nav.error) { cur.errors.push('navigate: ' + nav.error); results.push(cur); dumpLogs(pid2); console.log(`[android-smoke] ✗ ${label}/${pid2} ${nav.error}`); break; }
   await sleep(8000);
+  /* ping bertahap: JS hidup? → status font → baru evaluate penuh (innerText memaksa layout) */
+  const ping = await send('Runtime.evaluate', {expression: '1+1', returnByValue: true}, 20000);
+  step(pid2, 'ping JS ' + (ping.error || ping.result?.result?.value));
+  if (ping.error) { cur.errors.push('ping ' + ping.error); results.push(cur); printLogcatTail('JS ' + pid2 + ' tidak menjawab'); dumpLogs(pid2); break; }
+  const fnt = await send('Runtime.evaluate', {returnByValue: true, expression:
+    `JSON.stringify({ready:document.readyState,fonts:document.fonts.status,fx:document.documentElement.dataset.fx||'',nodes:document.getElementsByTagName('*').length})`}, 20000);
+  step(pid2, 'status ' + (fnt.error || fnt.result?.result?.value));
+  step(pid2, 'evaluate');
   const ev = await send('Runtime.evaluate', {returnByValue: true, expression:
     `JSON.stringify({title:document.title,native:window.PILAR_NATIVE&&PILAR_NATIVE.platform,tier:window.PILAR&&PILAR.device&&PILAR.device.tier,
       text:(document.body&&document.body.innerText||'').length,w:innerWidth,h:innerHeight,dpr:devicePixelRatio,
       heap:performance.memory?Math.round(performance.memory.usedJSHeapSize/1048576):-1,href:location.pathname})`});
-  try { Object.assign(cur, JSON.parse(ev.result.result.value)); } catch (_) { cur.errors.push('evaluate gagal ' + (ev.error || '')); if (ev.error) { results.push(cur); dumpLogs(pid2); break; } }
+  try { Object.assign(cur, JSON.parse(ev.result.result.value)); } catch (_) { cur.errors.push('evaluate gagal ' + (ev.error || '')); if (ev.error) { results.push(cur); printLogcatTail('evaluate ' + pid2 + ' ' + ev.error); dumpLogs(pid2); break; } }
+  step(pid2, 'screenshot');
   const shot = await send('Page.captureScreenshot', {format: 'png'});
+  step(pid2, shot.error ? 'screenshot ' + shot.error : 'meminfo');
   if (shot.result?.data) await fs.writeFile(path.join(outDir, `${label}-${pid2}.png`), Buffer.from(shot.result.data, 'base64'));
   results.push(cur);
   console.log(`[android-smoke] ${cur.errors.length ? '✗' : '✓'} ${label}/${pid2} "${cur.title}" ${cur.w}x${cur.h}@${cur.dpr} tier=${cur.tier} native=${cur.native} teks=${cur.text} heap=${cur.heap}MB pss=${pss()}MB` +
     (cur.errors.length ? '\n   ' + cur.errors.slice(0, 8).join('\n   ') : ''));
 }
 
-results.push(deepResult);
+if (runDeep) results.push(deepResult);
 cur = null; try { ws.close(); } catch (_) {}
 const crash = adb('logcat', '-d', '-b', 'crash');
 await fs.writeFile(path.join(outDir, label + '-report.json'), JSON.stringify({info, results, crash}, null, 1));
 console.log(`[android-smoke] ${label}: ${results.filter(r => !r.errors.length).length}/${results.length} halaman bersih; crash log ${crash.trim() ? 'ADA' : 'kosong'}`);
 if (crash.includes(PKG)) { console.error(crash); process.exit(1); }
-if (results.length < pages.length + 1 || results.some(r => r.errors.some(e => !/favicon/.test(e)))) { console.error('[android-smoke] ada halaman bermasalah'); process.exit(1); }
+if (results.length < pages.length + (runDeep ? 1 : 0) || results.some(r => r.errors.some(e => !/favicon/.test(e)))) { console.error('[android-smoke] ada halaman bermasalah'); process.exit(1); }
 process.exit(0);

@@ -1,5 +1,5 @@
 name: Aplikasi native (Electron x86 + Android)
-run-name: "native · ${{ github.event_name == 'pull_request' && format('PR #{0} · {1}', github.event.number, github.event.pull_request.title) || github.event_name == 'workflow_dispatch' && format('manual · {0}', github.ref_name) || github.event.head_commit.message }}"
+run-name: "native · ${{ github.event_name == 'pull_request' && format('PR #{0} · {1}', github.event.number, github.event.pull_request.title) || format('{0} · build #{1}', github.ref_name, github.run_number) }}"
 
 on:
   push:
@@ -131,7 +131,7 @@ jobs:
         with: {name: pilar-android, path: native/out/*.apk}
 
   android-smoke:
-    name: Uji emulator · ${{ matrix.label }}
+    name: Uji emulator · ${{ matrix.label }} · ${{ matrix.shard }}/4
     needs: android
     runs-on: ubuntu-latest
     timeout-minutes: 50
@@ -139,8 +139,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {label: ifp-tablet, profile: pixel_c, order: normal}
-          - {label: hp, profile: pixel_6, order: normal}
+          # 4 emulator per perangkat: shard 1 = uji mendalam, shard 2-4 = ~7 aplikasi masing-masing
+          # (emulator CI macet bila beban WebGL menumpuk, lihat ci-smoke.mjs)
+          - {label: ifp-tablet, profile: pixel_c, order: normal, shard: 1}
+          - {label: ifp-tablet, profile: pixel_c, order: normal, shard: 2}
+          - {label: ifp-tablet, profile: pixel_c, order: normal, shard: 3}
+          - {label: ifp-tablet, profile: pixel_c, order: normal, shard: 4}
+          - {label: hp, profile: pixel_6, order: normal, shard: 1}
+          - {label: hp, profile: pixel_6, order: normal, shard: 2}
+          - {label: hp, profile: pixel_6, order: normal, shard: 3}
+          - {label: hp, profile: pixel_6, order: normal, shard: 4}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -153,8 +161,10 @@ jobs:
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      # -gpu angle_indirect (ANGLE di atas Vulkan SwiftShader): penerjemah GL lama
+      # (swiftshader_indirect) membuat proses emulator crash saat merender jejak-kata/daluang
       - uses: reactivecircus/android-emulator-runner@v2
-        env: {SMOKE_ORDER: '${{ matrix.order }}'}
+        env: {SMOKE_ORDER: '${{ matrix.order }}', SMOKE_SHARD: '${{ matrix.shard }}/4'}
         with:
           api-level: 33
           target: google_apis
@@ -165,11 +175,11 @@ jobs:
           heap-size: 576M
           cores: 4
           emulator-boot-timeout: 900
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back emulated -camera-front emulated
-          script: node native/android/ci-smoke.mjs "$(ls apk/*-debug.apk | head -1)" native/www android-smoke ${{ matrix.label }}
+          emulator-options: -no-window -gpu angle_indirect -no-snapshot -noaudio -no-boot-anim -camera-back emulated -camera-front emulated
+          script: node native/android/ci-smoke.mjs "$(ls apk/*-debug.apk | head -1)" native/www android-smoke ${{ matrix.label }}-${{ matrix.shard }}
       - uses: actions/upload-artifact@v4
         if: always()
-        with: {name: 'android-smoke-${{ matrix.label }}', path: android-smoke, retention-days: 14}
+        with: {name: 'android-smoke-${{ matrix.label }}-${{ matrix.shard }}', path: android-smoke, retention-days: 14}
 
   release:
     name: Terbitkan unduhan
