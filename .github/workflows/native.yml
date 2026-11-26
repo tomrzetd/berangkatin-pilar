@@ -131,7 +131,7 @@ jobs:
         with: {name: pilar-android, path: native/out/*.apk}
 
   android-smoke:
-    name: Uji emulator · ${{ matrix.label }} · ${{ matrix.shard }}/4
+    name: Uji emulator · ${{ matrix.label }} · ${{ matrix.shard }}/4${{ matrix.gpu && format(' · {0}', matrix.gpu) || '' }}
     needs: android
     runs-on: ubuntu-latest
     timeout-minutes: 50
@@ -149,6 +149,9 @@ jobs:
           - {label: hp, profile: pixel_6, order: normal, shard: 2}
           - {label: hp, profile: pixel_6, order: normal, shard: 3}
           - {label: hp, profile: pixel_6, order: normal, shard: 4}
+          # eksperimen: mode GPU emulator lain untuk shard yang membuat emulator crash
+          - {label: hp, profile: pixel_6, order: normal, shard: 3, gpu: guest}
+          - {label: hp, profile: pixel_6, order: normal, shard: 3, gpu: angle_indirect}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -173,11 +176,11 @@ jobs:
           heap-size: 576M
           cores: 4
           emulator-boot-timeout: 900
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back emulated -camera-front emulated
-          script: node native/android/ci-smoke.mjs "$(ls apk/*-debug.apk | head -1)" native/www android-smoke ${{ matrix.label }}-${{ matrix.shard }}
+          emulator-options: -no-window -gpu ${{ matrix.gpu || 'swiftshader_indirect' }} -no-snapshot -noaudio -no-boot-anim -camera-back emulated -camera-front emulated
+          script: node native/android/ci-smoke.mjs "$(ls apk/*-debug.apk | head -1)" native/www android-smoke ${{ matrix.label }}-${{ matrix.shard }}${{ matrix.gpu && format('-{0}', matrix.gpu) || '' }}
       - uses: actions/upload-artifact@v4
         if: always()
-        with: {name: 'android-smoke-${{ matrix.label }}-${{ matrix.shard }}', path: android-smoke, retention-days: 14}
+        with: {name: 'android-smoke-${{ matrix.label }}-${{ matrix.shard }}${{ matrix.gpu && format(''-{0}'', matrix.gpu) || '''' }}', path: android-smoke, retention-days: 14}
 
   release:
     name: Terbitkan unduhan
