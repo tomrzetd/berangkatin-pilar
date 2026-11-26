@@ -87,11 +87,11 @@ await attach(false);
 const reg = await fs.readFile(path.join(www, 'apps/registry.js'), 'utf8');
 let pages = [['hub', '/index.html'], ...[...reg.matchAll(/id:'([^']+)'[^}]*?url:'([^']+)'/g)].map(m => [m[1], '/' + m[2]])];
 if (process.env.SMOKE_ORDER === 'reverse') pages = [pages[0], ...pages.slice(1).reverse()];
-/* SMOKE_SHARD="k/n": emulator CI hanya tahan ~18 halaman WebGL (beban menumpuk di GPU
-   swiftshader, tidak hilang walau aplikasi dimulai ulang) → aplikasi dibagi ke n emulator.
-   Hub selalu diuji; uji mendalam hanya di shard 1. */
+/* SMOKE_SHARD="k/n": emulator CI (GPU swiftshader) macet bila terlalu banyak beban WebGL
+   menumpuk, walau aplikasi dimulai ulang. Shard 1 = hub + uji mendalam saja (MediaPipe,
+   three.js, TF.js); shard 2..n membagi aplikasi bergiliran. n = 1: semuanya di satu emulator. */
 const [shardK, shardN] = (process.env.SMOKE_SHARD || '1/1').split('/').map(Number);
-if (shardN > 1) pages = [pages[0], ...pages.slice(1).filter((_, i) => i % shardN === shardK - 1)];
+if (shardN > 1) pages = shardK === 1 ? [pages[0]] : [pages[0], ...pages.slice(1).filter((_, i) => i % (shardN - 1) === shardK - 2)];
 const runDeep = shardK === 1;
 console.log(`[android-smoke] shard ${shardK}/${shardN}: ${pages.length} halaman${runDeep ? ' + uji mendalam' : ''} → ${pages.map(p => p[0]).join(' ')}`);
 const pss = () => { try { return (execFileSync('adb', ['shell', 'dumpsys', 'meminfo', PKG], {encoding: 'utf8', timeout: 25000}).match(/TOTAL PSS:\s*(\d+)|TOTAL\s+(\d+)/) || []).slice(1).find(Boolean) / 1024 | 0; } catch (_) { return -1; } };
